@@ -1,0 +1,13 @@
+id: analysis_dp_gmm
+name: DP GMM
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Simplified DP GMM
+  defaults:
+    alpha: 1.0
+    sigma2: null
+    n_iter: 50
+    burn_in: 10

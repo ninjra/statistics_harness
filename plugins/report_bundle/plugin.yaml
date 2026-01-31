@@ -1,0 +1,9 @@
+id: report_bundle
+name: Report Bundle
+version: 0.1.0
+type: report
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Build report
+  defaults: {}

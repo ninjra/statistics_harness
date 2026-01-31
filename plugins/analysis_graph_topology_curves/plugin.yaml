@@ -1,0 +1,11 @@
+id: analysis_graph_topology_curves
+name: Graph Topology Curves
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Approximate topology curves
+  defaults:
+    max_points: 100
+    n_thresholds: 10

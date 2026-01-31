@@ -1,0 +1,16 @@
+id: analysis_online_conformal_changepoint
+name: Online Conformal Changepoint
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Rolling mean conformal changepoint detection
+  defaults:
+    time_column: null
+    value_column: null
+    alpha: 0.1
+    forecast_window: 5
+    calib_window: 10
+    alarm_rate_window: 10
+    alarm_rate_threshold: 0.4
