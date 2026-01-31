@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statistic-harness"
+version = "0.1.0"
+description = "Local-only statistic harness"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "ninjra"}]
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "jinja2",
+  "python-multipart",
+  "pydantic",
+  "pyyaml",
+  "numpy",
+  "pandas",
+  "openpyxl",
+  "scikit-learn",
+  "jsonschema",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "ruff",
+  "mypy",
+]
+
+[project.scripts]
+stat-harness = "statistic_harness.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

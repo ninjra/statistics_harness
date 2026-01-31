@@ -1,0 +1,13 @@
+id: analysis_scan_statistics
+name: Scan Statistics
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Window scan statistics
+  defaults:
+    value_column: null
+    min_window: 5
+    max_window: 20
+    n_permutations: 100

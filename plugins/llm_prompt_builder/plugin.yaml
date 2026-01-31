@@ -1,0 +1,9 @@
+id: llm_prompt_builder
+name: LLM Prompt Builder
+version: 0.1.0
+type: llm
+entrypoint: plugin.py:Plugin
+depends_on: [report_bundle]
+settings:
+  description: Offline prompt builder
+  defaults: {}

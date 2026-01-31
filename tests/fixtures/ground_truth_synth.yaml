@@ -1,0 +1,11 @@
+features:
+  - x1
+  - x2
+changepoints:
+  - 10
+dependence_shift_pairs:
+  - [a, b]
+anomalies:
+  - 7
+min_anomaly_hits: 1
+changepoint_tolerance: 5

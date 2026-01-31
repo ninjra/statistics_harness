@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plugins</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <h1>Plugins</h1>
+  <ul>
+    {% for plugin in plugins %}
+      <li>{{ plugin.plugin_id }} - {{ plugin.name }} ({{ plugin.type }})</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Statistic Harness Report",
+  "type": "object",
+  "required": ["run_id", "created_at", "status", "input", "plugins"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "status": {"type": "string"},
+    "input": {
+      "type": "object",
+      "required": ["filename", "rows", "cols", "inferred_types"],
+      "properties": {
+        "filename": {"type": "string"},
+        "rows": {"type": "integer"},
+        "cols": {"type": "integer"},
+        "inferred_types": {"type": "object"}
+      }
+    },
+    "plugins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "summary", "metrics", "findings", "artifacts", "error"],
+        "properties": {
+          "status": {"type": "string"},
+          "summary": {"type": "string"},
+          "metrics": {"type": "object"},
+          "findings": {"type": "array"},
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "type", "description"],
+              "properties": {
+                "path": {"type": "string"},
+                "type": {"type": "string"},
+                "description": {"type": "string"}
+              }
+            }
+          },
+          "error": {
+            "anyOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "required": ["type", "message", "traceback"],
+                "properties": {
+                  "type": {"type": "string"},
+                  "message": {"type": "string"},
+                  "traceback": {"type": "string"}
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

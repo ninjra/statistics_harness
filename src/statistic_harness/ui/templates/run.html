@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Run {{ run_id }}</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <h1>Run {{ run_id }}</h1>
+  <p>Check reports:</p>
+  <ul>
+    <li><a href="/api/runs/{{ run_id }}/report.json">report.json</a></li>
+    <li><a href="/api/runs/{{ run_id }}/report.md">report.md</a></li>
+  </ul>
+</body>
+</html>

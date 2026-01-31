@@ -1,0 +1,10 @@
+id: profile_basic
+name: Profile Basic
+version: 0.1.0
+type: profile
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Basic profiling
+  defaults:
+    max_corr_cols: 10

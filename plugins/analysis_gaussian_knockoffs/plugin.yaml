@@ -1,0 +1,12 @@
+id: analysis_gaussian_knockoffs
+name: Gaussian Knockoffs
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: [ingest_tabular]
+settings:
+  description: Simple knockoff-style feature selection
+  defaults:
+    target_column: null
+    fdr_q: 0.1
+    lasso_alpha: 0.01
