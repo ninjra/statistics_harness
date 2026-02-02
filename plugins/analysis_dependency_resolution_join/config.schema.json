@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "start_column": {"type": ["string", "null"]},
+    "end_column": {"type": ["string", "null"]},
+    "id_column": {"type": ["string", "null"]},
+    "dependency_column": {"type": ["string", "null"]},
+    "near_zero_threshold_seconds": {"type": "number", "minimum": 0},
+    "max_examples": {"type": "integer", "minimum": 0}
+  }
+}

@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
 
 import numpy as np
-import pandas as pd
 from sklearn.linear_model import Ridge
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
@@ -48,7 +45,9 @@ class Plugin:
             anomaly_mask = (test_y < lower) | (test_y > upper)
             test_indices = np.arange(n)[test_idx]
 
-            for idx, is_anom, lo, hi, score in zip(test_indices, anomaly_mask, lower, upper, np.abs(test_y - test_pred)):
+            for idx, is_anom, lo, hi, score in zip(
+                test_indices, anomaly_mask, lower, upper, np.abs(test_y - test_pred)
+            ):
                 if is_anom:
                     findings.append(
                         {
@@ -64,7 +63,28 @@ class Plugin:
         anomalies_path = artifacts_dir / "anomalies.json"
         write_json(anomalies_path, findings)
         artifacts.append(
-            PluginArtifact(path=str(anomalies_path.relative_to(ctx.run_dir)), type="json", description="Anomalies")
+            PluginArtifact(
+                path=str(anomalies_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Anomalies",
+            )
         )
 
-        return PluginResult("ok", "Computed conformal anomalies", {"count": len(findings)}, findings, artifacts, None)
+        if not findings:
+            return PluginResult(
+                "skipped",
+                "No anomalies detected",
+                {"count": 0},
+                [],
+                artifacts,
+                None,
+            )
+
+        return PluginResult(
+            "ok",
+            "Computed conformal anomalies",
+            {"count": len(findings)},
+            findings,
+            artifacts,
+            None,
+        )

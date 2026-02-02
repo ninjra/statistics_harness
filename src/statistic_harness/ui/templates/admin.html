@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="top-nav">
+        <a href="/">Home</a>
+        <a href="/projects">Projects</a>
+        <a href="/templates">Templates</a>
+        <a href="/trace">Trace</a>
+        <a href="/vectors">Vectors</a>
+        <a href="/admin">Admin</a>
+        <a href="/logout">Logout</a>
+      </nav>
+
+      <h1>Admin</h1>
+      <p class="muted">Tenant: {{ tenant_id }}</p>
+
+      {% if message %}
+      <p class="pill ok">{{ message }}</p>
+      {% endif %}
+      {% if error %}
+      <p class="pill error">{{ error }}</p>
+      {% endif %}
+      {% if new_api_key %}
+      <section class="card">
+        <h2>New API Key</h2>
+        <p class="muted">Copy this key now. It will not be shown again.</p>
+        <pre>{{ new_api_key }}</pre>
+      </section>
+      {% endif %}
+
+      <section class="card">
+        <h2>Create User</h2>
+        <form action="/admin/users" method="post" class="stack">
+          <label>Email</label>
+          <input type="email" name="email" required />
+          <label>Name</label>
+          <input type="text" name="name" />
+          <label>Password</label>
+          <input type="password" name="password" required />
+          <label>Role</label>
+          <select name="role">
+            <option value="member">member</option>
+            <option value="admin">admin</option>
+          </select>
+          <label><input type="checkbox" name="is_admin" /> Global admin</label>
+          <button type="submit">Create user</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Create Tenant</h2>
+        <form action="/admin/tenants" method="post" class="stack">
+          <label>Tenant ID</label>
+          <input type="text" name="tenant_id" placeholder="tenant_alpha" required />
+          <label>Name</label>
+          <input type="text" name="name" placeholder="Tenant Alpha" />
+          <button type="submit">Create tenant</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Users</h2>
+        {% if users %}
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Admin</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.email }}</td>
+              <td>{{ user.name or "" }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ "yes" if user.is_admin else "no" }}</td>
+              <td>{{ "disabled" if user.disabled_at else "active" }}</td>
+              <td>
+                {% if not user.disabled_at %}
+                <form action="/admin/users/{{ user.user_id }}/disable" method="post">
+                  <button type="submit">Disable</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="muted">No users in this tenant.</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>Create API Key</h2>
+        <form action="/admin/api-keys" method="post" class="stack">
+          <label>User</label>
+          <select name="user_id">
+            {% for user in users %}
+            <option value="{{ user.user_id }}">{{ user.email }}</option>
+            {% endfor %}
+          </select>
+          <label>Name</label>
+          <input type="text" name="name" placeholder="cli" />
+          <button type="submit">Create key</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>API Keys</h2>
+        {% if api_keys %}
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Name</th>
+              <th>Created</th>
+              <th>Last used</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key in api_keys %}
+            <tr>
+              <td>{{ key.email }}</td>
+              <td>{{ key.name or "" }}</td>
+              <td>{{ key.created_at }}</td>
+              <td>{{ key.last_used_at or "" }}</td>
+              <td>{{ "revoked" if key.revoked_at else "active" }}</td>
+              <td>
+                {% if not key.revoked_at %}
+                <form action="/admin/api-keys/{{ key.key_id }}/revoke" method="post">
+                  <button type="submit">Revoke</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="muted">No API keys yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>Tenants</h2>
+        {% if tenants %}
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tenant in tenants %}
+            <tr>
+              <td>{{ tenant.tenant_id }}</td>
+              <td>{{ tenant.name or "" }}</td>
+              <td>{{ "yes" if tenant.is_default else "no" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="muted">No tenants.</p>
+        {% endif %}
+      </section>
+    </div>
+  </body>
+</html>

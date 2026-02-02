@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "max_examples": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "max_variants": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "min_variant_fraction": {
+      "minimum": 0,
+      "type": "number"
+    }
+  },
+  "title": "Process Sequence Config",
+  "type": "object"
+}

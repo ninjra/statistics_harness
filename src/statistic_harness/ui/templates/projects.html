@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Projects</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Projects</p>
+        <h1>All Projects</h1>
+        <p class="lead">Projects group uploads, runs, and known issues by ERP.</p>
+      </div>
+      <div class="hero-panel">
+        <form action="/projects" method="post" class="stack">
+          <label>Project name</label>
+          <input type="text" name="name" placeholder="New project" required />
+          <label>ERP type</label>
+          <input type="text" name="erp_type" value="unknown" />
+          <button type="submit">Create Project</button>
+        </form>
+      </div>
+    </header>
+
+    <section class="card">
+      {% if projects %}
+        <div class="grid">
+          {% for project in projects %}
+            <div class="card subtle">
+              <h3><a href="/projects/{{ project.project_id }}">{{ project.name or project.project_id }}</a></h3>
+              <p class="muted">ERP: {{ project.erp_type or 'unknown' }}</p>
+              <p class="muted">Datasets: {{ project.dataset_count }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">No projects created yet.</p>
+      {% endif %}
+    </section>
+
+    <p><a href="/">Back</a></p>
+  </div>
+</body>
+</html>

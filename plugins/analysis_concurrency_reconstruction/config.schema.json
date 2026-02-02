@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "start_column": {"type": ["string", "null"]},
+    "end_column": {"type": ["string", "null"]},
+    "host_column": {"type": ["string", "null"]},
+    "capacity_column": {"type": ["string", "null"]},
+    "capacity_limit": {"type": ["number", "null"]},
+    "max_hosts": {"type": "integer", "minimum": 1},
+    "max_examples": {"type": "integer", "minimum": 0}
+  }
+}

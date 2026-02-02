@@ -1,0 +1,38 @@
+id: analysis_close_cycle_contention
+name: Close Cycle Contention Analysis
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Detect close-cycle slowdowns and contention (e.g., qemail/qpec)
+  defaults:
+    process_column: null
+    timestamp_column: null
+    start_column: null
+    end_column: null
+    duration_column: null
+    server_column: null
+    user_column: null
+    param_column: null
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    min_close_count: 20
+    min_open_count: 10
+    slowdown_ratio_threshold: 2.0
+    correlation_threshold: 0.7
+    max_unique_ratio: 0.05
+    min_days: 5
+    max_examples: 25
+    min_recommendation_pct: 0.1
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

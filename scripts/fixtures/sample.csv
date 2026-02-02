@@ -1,0 +1,11 @@
+process_id,process_name,start_ts,end_ts,duration_sec,user_id,params,status
+1,qemail,2026-01-20T01:00:00,2026-01-20T01:02:00,120,u1,"queue=start;range=2026-01-20",ok
+2,qpec,2026-01-20T01:02:00,2026-01-20T01:07:00,300,u1,"batch=close;src=erp",ok
+3,qemail,2026-01-21T02:00:00,2026-01-21T02:01:00,60,u2,"queue=start;range=2026-01-21",ok
+4,upload,2026-01-21T03:00:00,2026-01-21T03:04:00,240,u2,"file=client_a.xlsx;stage=ingest",ok
+5,transform,2026-01-21T03:05:00,2026-01-21T03:20:00,900,u2,"template=v1;file=client_a.xlsx",ok
+6,qpec,2026-01-22T01:05:00,2026-01-22T01:10:00,300,u1,"batch=close;src=erp",ok
+7,qemail,2026-01-23T01:00:00,2026-01-23T01:05:00,300,u3,"queue=start;range=2026-01-23",ok
+8,payout,2026-01-23T02:00:00,2026-01-23T02:20:00,1200,u3,"step=validate;batch=42",ok
+9,payout,2026-01-23T02:21:00,2026-01-23T02:50:00,1740,u3,"step=apply;batch=42",ok
+10,report,2026-01-23T03:00:00,2026-01-23T03:03:00,180,u3,"template=ops;batch=42",ok

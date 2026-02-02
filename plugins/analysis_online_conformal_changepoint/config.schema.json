@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "alarm_rate_threshold": {
+      "type": "number"
+    },
+    "alarm_rate_window": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "alpha": {
+      "type": "number"
+    },
+    "calib_window": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "forecast_window": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "time_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "value_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "Online Conformal Changepoint Config",
+  "type": "object"
+}

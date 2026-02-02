@@ -14,16 +14,15 @@ Build a local-only, plugin-first data analysis harness that:
 6) Includes a test suite that passes (`pytest -q`) with synthetic fixtures and an evaluator harness.
 
 ## 1) Phase constraints
-### Phase 1 (this repo must implement fully)
-- Local-only: no auth, no multi-tenant.
+### Phase 1 (default behavior)
+- Local-only by default; auth and multi-tenant are off unless explicitly enabled.
 - No external services: no Qdrant, no server DBs.
 - No network calls during analysis runs.
 - Portable across Windows 11 + WSL2 (code must be OS-agnostic; scripts provided for PS + bash).
 
-### Phase 2 (future stub only)
-- Multi-tenant + auth
-- isolated per-tenant storage namespace
-- NOT implemented now; only leave clear TODOs and a minimal `core/tenancy.py` placeholder.
+### Phase 2 (optional, behind flags)
+- Multi-tenant + auth are supported when enabled via feature flags.
+- Tenant-aware storage namespaces are enforced when tenancy is enabled.
 
 ## 2) Non-negotiables
 - All pipeline steps must be plugins/modules, including ingest + report.

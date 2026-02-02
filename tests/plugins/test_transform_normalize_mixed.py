@@ -1,0 +1,45 @@
+import pandas as pd
+
+from plugins.transform_normalize_mixed.plugin import Plugin
+from statistic_harness.core.utils import quote_identifier
+from tests.conftest import make_context
+
+
+def test_transform_normalize_mixed_basic(run_dir):
+    df = pd.DataFrame(
+        {
+            "Name": [" Foo ", "Bar"],
+            "Amount": ["1,000", "2"],
+            "ID": ["001", "002"],
+        }
+    )
+    ctx = make_context(run_dir, df, {})
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+
+    dataset_template = ctx.storage.fetch_dataset_template(ctx.dataset_version_id)
+    assert dataset_template
+    assert dataset_template["status"] == "ready"
+    template = ctx.storage.fetch_template(int(dataset_template["template_id"]))
+    assert template
+    fields = ctx.storage.fetch_template_fields(int(dataset_template["template_id"]))
+    assert len(fields) == 3
+
+    name_col = fields[0]["safe_name"]
+    amount_col = fields[1]["safe_name"]
+    id_col = fields[2]["safe_name"]
+
+    with ctx.storage.connection() as conn:
+        cur = conn.execute(
+            f"""
+            SELECT {quote_identifier(name_col)}, {quote_identifier(amount_col)}, {quote_identifier(id_col)}
+            FROM {quote_identifier(template['table_name'])}
+            WHERE dataset_version_id = ? AND row_index = ?
+            """,
+            (ctx.dataset_version_id, 0),
+        )
+        row = cur.fetchone()
+        assert row is not None
+        assert row[0] == "foo"
+        assert isinstance(row[1], (int, float))
+        assert row[2] == "001"

@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
+from statistic_harness.core.stat_controls import benjamini_hochberg, confidence_from_p
 from statistic_harness.core.utils import write_json
 
 
@@ -11,7 +12,9 @@ class Plugin:
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
-            return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
+            return PluginResult(
+                "skipped", "Not enough numeric columns", {}, [], [], None
+            )
         values = numeric.to_numpy()
         n = values.shape[0]
         split = n // 2
@@ -57,9 +60,8 @@ class Plugin:
             mid = (~lower) & (~upper)
             q = np.sqrt(-2 * np.log(p[lower]))
             x[lower] = (
-                (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5])
-                / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
-            )
+                ((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]
+            ) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
             q = p[mid] - 0.5
             r = q * q
             x[mid] = (
@@ -89,7 +91,9 @@ class Plugin:
         pairs = []
         for i in range(delta.shape[0]):
             for j in range(i + 1, delta.shape[1]):
-                pairs.append((i, j, (numeric.columns[i], numeric.columns[j]), float(delta[i, j])))
+                pairs.append(
+                    (i, j, (numeric.columns[i], numeric.columns[j]), float(delta[i, j]))
+                )
         pairs.sort(key=lambda x: x[3], reverse=True)
         max_pairs = int(ctx.settings.get("max_pairs", 5))
         selected = pairs[:max_pairs]
@@ -105,16 +109,41 @@ class Plugin:
                 perm_second = perm[split:]
                 z1p = to_gaussian(perm_first)
                 z2p = to_gaussian(perm_second)
-                delta_p = np.abs(np.corrcoef(z1p, rowvar=False) - np.corrcoef(z2p, rowvar=False))
+                delta_p = np.abs(
+                    np.corrcoef(z1p, rowvar=False) - np.corrcoef(z2p, rowvar=False)
+                )
                 perm_scores.append(delta_p[i, j])
             if perm_scores:
                 p_value = float((np.array(perm_scores) >= score).mean())
-            findings.append({"kind": "dependence_shift", "pair": [a, b], "delta": score, "p_value": p_value})
+            findings.append(
+                {
+                    "kind": "dependence_shift",
+                    "pair": [a, b],
+                    "delta": score,
+                    "p_value": p_value,
+                }
+            )
+        if findings:
+            q_values = benjamini_hochberg([f["p_value"] for f in findings])
+            for finding, q_value in zip(findings, q_values):
+                finding["q_value"] = q_value
+                finding["confidence"] = confidence_from_p(q_value)
 
         artifacts_dir = ctx.artifacts_dir("analysis_gaussian_copula_shift")
         out_path = artifacts_dir / "summary.json"
         write_json(out_path, findings)
         artifacts = [
-            PluginArtifact(path=str(out_path.relative_to(ctx.run_dir)), type="json", description="Dependence shift")
+            PluginArtifact(
+                path=str(out_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Dependence shift",
+            )
         ]
-        return PluginResult("ok", "Computed copula shift", {"pairs": len(findings)}, findings, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Computed copula shift",
+            {"pairs": len(findings)},
+            findings,
+            artifacts,
+            None,
+        )

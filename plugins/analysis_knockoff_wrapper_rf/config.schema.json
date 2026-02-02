@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "fdr_q": {
+      "type": "number"
+    },
+    "n_estimators": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "target_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "Knockoff Wrapper RF Config",
+  "type": "object"
+}

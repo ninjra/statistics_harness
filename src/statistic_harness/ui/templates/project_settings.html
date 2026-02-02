@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project Settings — {{ project.name or project_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Plugin Settings</p>
+        <h1>{{ project.name or project_id }}</h1>
+        {% if message %}
+          <p class="status">{{ message }}</p>
+        {% endif %}
+      </div>
+      <div class="hero-panel">
+        <p class="muted">Edit JSON overrides per plugin. Blank means defaults.</p>
+      </div>
+    </header>
+
+    <form action="/projects/{{ project_id }}/settings" method="post" class="stack">
+      {% for spec in plugin_specs %}
+        <section class="card">
+          <h3>{{ spec.plugin_id }}</h3>
+          <p class="muted">{{ spec.settings.description if spec.settings else "" }}</p>
+          <label>Overrides JSON</label>
+          <textarea name="settings__{{ spec.plugin_id }}" rows="6" spellcheck="false">{% if plugin_settings.get(spec.plugin_id) %}{{ plugin_settings.get(spec.plugin_id) | tojson(indent=2) }}{% endif %}</textarea>
+          {% if spec.settings and spec.settings.defaults %}
+            <details>
+              <summary>Defaults</summary>
+              <pre>{{ spec.settings.defaults | tojson(indent=2) }}</pre>
+            </details>
+          {% endif %}
+        </section>
+      {% endfor %}
+      <div class="button-row">
+        <button type="submit">Save Settings</button>
+        <a class="button ghost" href="/projects/{{ project_id }}">Back to Project</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

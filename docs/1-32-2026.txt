@@ -1,0 +1,166 @@
+
+{
+  "ship_gate": "ANY_REGRESS=>DO_NOT_SHIP",
+  "recommendations": [
+    {
+      "id": "R1",
+      "title": "Stop truncating by default; ingest full dataset with streaming",
+      "improved": "Accuracy + completeness of every analysis (entire dataset).",
+      "risked": "Silent partial-data insights, false trends, missed sequences (current default max_rows=10000).",
+      "enforcement_location": "plugins/ingest_tabular/plugin.py (remove head/max_rows default); core/pipeline.py (pass ingest settings); add chunked reader+inserter.",
+      "regression_detection": "Integration test: fixture with >10k rows must persist exact rowcount; assert analysis plugins see full rowcount; performance test on large CSV to ensure runtime stays bounded."
+    },
+    {
+      "id": "R2",
+      "title": "Add Project/Dataset layer separate from Run",
+      "improved": "Frictionless reruns + durable ‘project’ semantics; one dataset ingested once, many analysis runs later.",
+      "risked": "Data duplication, inability to backfill new techniques on historical datasets without re-ingest, unclear lineage across reruns.",
+      "enforcement_location": "core/storage.py schema: add projects, datasets, dataset_versions; core/pipeline.py: create/lookup project_id by file hash; run references dataset_id.",
+      "regression_detection": "DB migration test from empty and from existing state.sqlite; unit tests: same file re-upload creates new run but reuses dataset_id."
+    },
+    {
+      "id": "R3",
+      "title": "Deduplicate uploads via content fingerprint (sha256) + stable IDs",
+      "improved": "Low-friction: re-uploading the same file becomes instant; enables reliable trace from ‘file’ to everything derived.",
+      "risked": "Unbounded DB growth, ambiguous tracing (same filename != same content), duplicate findings.",
+      "enforcement_location": "Upload path: compute sha256; store in sqlite uploads/projects; pipeline.run uses fingerprint to resolve project_id/dataset_id.",
+      "regression_detection": "Test: same file bytes under different filenames must map to same project; changed bytes must map to new project."
+    },
+    {
+      "id": "R4",
+      "title": "Store dataset rows inside SQLite (choose a scalable representation)",
+      "improved": "Meets your explicit requirement: “load all data into SQLite” + enables SQL-level lineage queries.",
+      "risked": "If you keep only canonical.csv on disk, you lose the ability to query/associate historically when files move or are pruned; also breaks your requirement.",
+      "enforcement_location": "New schema + ingest plugin: insert into sqlite within a transaction; consider per-dataset wide table (fast reads) vs generic row_json table (schema-flexible).",
+      "regression_detection": "Property test: round-trip CSV -> sqlite -> export produces identical row counts and stable column mapping; performance test: ingestion uses batch inserts and commits in chunks."
+    },
+    {
+      "id": "R5",
+      "title": "Make raw data append-only (block DELETE/UPDATE on raw tables)",
+      "improved": "Guarantees “must never go away” at the database layer, not just by convention.",
+      "risked": "Accidental cleanup code, ‘INSERT OR REPLACE’ patterns, or future ‘vacuum/cleanup’ features can silently destroy history.",
+      "enforcement_location": "SQLite triggers (BEFORE DELETE/UPDATE -> RAISE(ABORT)); storage layer disallows destructive operations; provide soft-delete/tombstone metadata if needed.",
+      "regression_detection": "DB tests: attempts to delete/update raw rows must fail; migration tests ensure triggers exist after schema upgrades."
+    },
+    {
+      "id": "R6",
+      "title": "Version all derived results (never overwrite plugin outputs)",
+      "improved": "Historical reproducibility + auditability; supports “new techniques over old data” without losing prior states.",
+      "risked": "Current `INSERT OR REPLACE` overwrites results for a run/plugin; you lose historical comparisons and audit trail.",
+      "enforcement_location": "storage.py: replace plugin_results PK with (run_id, plugin_id, plugin_version, executed_at) or add result_id; pipeline records plugin manifest version + code hash.",
+      "regression_detection": "Test: re-run same plugin twice yields two stored executions; query returns latest by default but retains history."
+    },
+    {
+      "id": "R7",
+      "title": "Normalize the parameter field into key/value entities + canonical forms",
+      "improved": "Enables grouping by ‘one or more parameters’ and robust cross-project association/tracing.",
+      "risked": "Free-form parameter strings will cause missed joins, false joins, and brittle logic (whitespace/casing/ordering differences).",
+      "enforcement_location": "New tables: parameter_entities, parameter_kv, row_parameter_link; add parsing/normalization step in ingest/profile plugin.",
+      "regression_detection": "Fixtures with same logical params in different text formats must normalize to same entity_id; fuzz tests for whitespace/order/case."
+    },
+    {
+      "id": "R8",
+      "title": "Add a lineage/association graph table and use recursive CTE for trace",
+      "improved": "Direct implementation of ‘trace a single CSV through all associated processes and parameters’.",
+      "risked": "Without explicit edges, tracing becomes ad-hoc, slow, and inconsistent across new plugins/techniques.",
+      "enforcement_location": "SQLite tables: entities(entity_id, type, key), edges(src_entity_id, dst_entity_id, kind, evidence_json, score); helper APIs in Storage.",
+      "regression_detection": "Golden test: known small dataset yields expected reachable nodes; performance test: trace query completes under budget for N projects."
+    },
+    {
+      "id": "R9",
+      "title": "Introduce an AutoPlanner that chooses plugins based on dataset profile",
+      "improved": "Meets your ‘don’t tell harness what to look for’ requirement while keeping runtime bounded and relevant.",
+      "risked": "Running every plugin always can be slow/noisy; requiring user selection is friction and misses insights.",
+      "enforcement_location": "core/pipeline.py: add planning phase after ingest/profile; plugin manifests add capability tags (needs_numeric/needs_timestamp/needs_eventlog).",
+      "regression_detection": "Planner unit tests: different fixture types select expected plugin bundles; snapshot tests for plan stability."
+    },
+    {
+      "id": "R10",
+      "title": "Process/sequence mining plugin for ‘grouped sequences of processes’",
+      "improved": "Directly targets your core insight: discover frequent variants, transitions, bottlenecks, rare paths by parameter groups.",
+      "risked": "Existing numeric-focused plugins won’t surface process variants; you miss the “sequence of processes” requirement.",
+      "enforcement_location": "New analysis plugin: detect event-log columns (case/parameter, activity/process, timestamp/order); compute frequent subsequences + transition anomalies; store results as findings with evidence rows.",
+      "regression_detection": "Synthetic event-log fixture with known variants; assert discovered top variants and transition matrix entries."
+    },
+    {
+      "id": "R11",
+      "title": "Add ‘evidence first’ for every finding (row pointers + minimal slices)",
+      "improved": "Inspectability: every insight is traceable to specific rows and parameter entities; supports debugging false positives.",
+      "risked": "Users will distrust findings without reproducible evidence; hard to validate “hidden trends” claims.",
+      "enforcement_location": "Finding schema: include dataset_id, row_ids, column_ids, and query snippet used to produce the finding; store evidence_json separately for indexing.",
+      "regression_detection": "Tests: every finding must include evidence pointers; schema validation enforces non-empty evidence for non-skipped plugins."
+    },
+    {
+      "id": "R12",
+      "title": "Add statistical controls to reduce false discoveries (ranking + correction)",
+      "improved": "Accuracy: fewer spurious ‘patterns’ when scanning many columns/parameters automatically.",
+      "risked": "Autonomous search across many hypotheses will generate false positives that look convincing.",
+      "enforcement_location": "Common library in core/: effect sizes, multiple-testing corrections, confidence scoring; plugins output comparable scores.",
+      "regression_detection": "Benchmark tests on null datasets should produce low finding counts; compare distribution of p-values/scores on synthetic null."
+    },
+    {
+      "id": "R13",
+      "title": "Resource budgets (time/memory/row limits) with explicit reporting",
+      "improved": "Performance + reliability on wide/deep datasets without manual tuning.",
+      "risked": "One heavy plugin can stall the whole harness; OOM on large Excel/CSV; unpredictable runtimes.",
+      "enforcement_location": "Pipeline runner: optional per-plugin process isolation with timeouts; plugin context includes budget; findings include whether sampling/approx was used.",
+      "regression_detection": "Load test: large fixture must complete within budget; verify plugins report ‘sampled=true’ when budgets force sampling."
+    },
+    {
+      "id": "R14",
+      "title": "Thread-safe SQLite usage in the API server",
+      "improved": "Stability when multiple projects/runs are triggered concurrently from UI/CLI.",
+      "risked": "Shared connection/state can deadlock, throw thread errors, or corrupt expectations under concurrency.",
+      "enforcement_location": "core/storage.py: open connections per request/run (or connection pool); set WAL; wrap writes in transactions; avoid global Pipeline with a single connection.",
+      "regression_detection": "Concurrency test: start multiple runs in parallel; assert all complete and DB remains consistent; run under uvicorn with multiple workers if applicable."
+    },
+    {
+      "id": "R15",
+      "title": "Schema migrations with `PRAGMA user_version` + migration tests",
+      "improved": "Safe evolution as you add techniques/tables over time; protects existing historical DB.",
+      "risked": "Manual schema edits break old installs; silent partial migrations; loss of data or inability to read old projects.",
+      "enforcement_location": "storage.py: migration runner; add schema_migrations table; tests that migrate from prior versions.",
+      "regression_detection": "Golden DB file for vN -> migrate -> validate integrity + data preservation; CI runs migrations."
+    },
+    {
+      "id": "R16",
+      "title": "UX: eliminate manual upload_id + add project index/search/trace views",
+      "improved": "Frictionless: upload → auto-run (or one-click) → results; plus global search by parameter/process/file hash.",
+      "risked": "Current flow causes user error and slows iteration; tracing remains “developer only”.",
+      "enforcement_location": "ui/server.py + templates: on upload, redirect to create_run automatically; add /projects list; add /trace endpoint; store upload metadata in sqlite.",
+      "regression_detection": "UI smoke tests (FastAPI TestClient): upload returns run_id immediately; trace endpoint returns deterministic structure for fixtures."
+    },
+    {
+      "id": "R17",
+      "title": "Index strategy for trace + association (FTS5 / normalized lookup tables)",
+      "improved": "Fast cross-project search by parameter/process; supports ‘associable’ discovery at scale.",
+      "risked": "Trace queries become slow as DB grows; users perceive it as broken.",
+      "enforcement_location": "SQLite: indexes on (entity.type, entity.key), (edges.src, edges.dst), (parameter_kv.key,value); optional FTS table for raw parameter text.",
+      "regression_detection": "Performance regression test: N projects, M rows; trace/search stays under latency budget."
+    },
+    {
+      "id": "R18",
+      "title": "Backfill mechanism when adding new plugins/techniques",
+      "improved": "Your stated goal: new techniques can mine deeper/wider across historical projects automatically.",
+      "risked": "New plugins only apply to new uploads; historical DB becomes inconsistent; you miss ‘hidden’ patterns present in old data.",
+      "enforcement_location": "Queue table in sqlite (analysis_jobs) + worker loop; CLI command `backfill --plugin <id> --all-projects` that schedules jobs; store plugin versioned outputs.",
+      "regression_detection": "Test: adding a plugin schedules jobs for existing datasets; rerun does not duplicate jobs; job completion persists results without overwrites."
+    },
+    {
+      "id": "R19",
+      "title": "Data governance guardrails (PII detection tags + optional encryption)",
+      "improved": "Security/compliance posture while retaining data; enables safe long-term retention.",
+      "risked": "‘Never delete’ can conflict with policy requirements if sensitive fields exist; also increases blast radius if DB is copied.",
+      "enforcement_location": "Profile plugin: detect likely PII patterns; tag columns; optionally encrypt sensitive columns (application-layer) or isolate into separate DB with restricted access.",
+      "regression_detection": "PII fixture tests: known patterns detected; ensure tags propagate into report/findings; verify encrypted columns are not emitted in artifacts by default."
+    },
+    {
+      "id": "R20",
+      "title": "Column name canonicalization + safe SQL identifier handling",
+      "improved": "Robust ingestion from arbitrary Excel/CSV headers; prevents SQL errors and injection via column names.",
+      "risked": "Headers with spaces/quotes/duplicates/reserved words break table creation or cause ambiguous queries.",
+      "enforcement_location": "Ingest step: map original headers -> safe internal column_ids; store mapping table; always use parameterized SQL and quoted identifiers.",
+      "regression_detection": "Fuzz tests on random/hostile headers; ingestion must succeed and preserve mapping deterministically."
+    }
+  ]
+}

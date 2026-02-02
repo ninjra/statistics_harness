@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Row Trace</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Row Trace</h1>
+  <p>Dataset Version: {{ dataset_version_id }}</p>
+  <p>Row Index: {{ row_index }}</p>
+  {% if source_dataset_version_id %}
+    <p>Source Dataset Version: {{ source_dataset_version_id }}</p>
+  {% endif %}
+  {% if payload.rows %}
+    {% for row in payload.rows %}
+      <section>
+        <h2>Row {{ row.row_index }}</h2>
+        <p>Dataset Version: {{ row.dataset_version_id }}</p>
+        <p>Row ID: {{ row.row_id }}</p>
+        {% if row.row_json %}
+          <details>
+            <summary>Row JSON</summary>
+            <pre>{{ row.row_json }}</pre>
+          </details>
+        {% endif %}
+        <h3>Values</h3>
+        <ul>
+          {% for key, value in row.values.items() %}
+            <li>{{ key }}: {{ value }}</li>
+          {% endfor %}
+        </ul>
+        {% if row.parameters %}
+          <h3>Parameters</h3>
+          <ul>
+            {% for param in row.parameters %}
+              <li>
+                {{ param.canonical }}
+                {% if param.kv %}
+                  <ul>
+                    {% for pair in param.kv %}
+                      <li>{{ pair.key }}={{ pair.value }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </section>
+    {% endfor %}
+  {% else %}
+    <p>No rows found.</p>
+  {% endif %}
+  <a href="/trace">Back to Trace</a>
+</body>
+</html>

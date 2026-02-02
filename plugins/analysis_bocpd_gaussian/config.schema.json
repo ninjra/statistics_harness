@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "hazard": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "peak_threshold": {
+      "type": "number"
+    },
+    "time_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "value_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "BOCPD Gaussian Config",
+  "type": "object"
+}

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
@@ -12,7 +11,9 @@ class Plugin:
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
-            return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
+            return PluginResult(
+                "skipped", "Not enough numeric columns", {}, [], [], None
+            )
         target_column = ctx.settings.get("target_column") or numeric.columns[-1]
         y = numeric[target_column]
         X = numeric.drop(columns=[target_column])
@@ -29,14 +30,32 @@ class Plugin:
         threshold = np.quantile(score_values, 1 - float(ctx.settings.get("fdr_q", 0.1)))
         findings = []
         for feature, score in scores.items():
-            selected = score >= threshold
-            findings.append({"kind": "feature_discovery", "feature": feature, "score": float(score), "selected": selected})
+            selected = bool(score >= threshold)
+            findings.append(
+                {
+                    "kind": "feature_discovery",
+                    "feature": feature,
+                    "score": float(score),
+                    "selected": selected,
+                }
+            )
 
         artifacts_dir = ctx.artifacts_dir("analysis_gaussian_knockoffs")
         selection_path = artifacts_dir / "selection.json"
         write_json(selection_path, findings)
         artifacts = [
-            PluginArtifact(path=str(selection_path.relative_to(ctx.run_dir)), type="json", description="Selection")
+            PluginArtifact(
+                path=str(selection_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Selection",
+            )
         ]
         selected_count = sum(1 for f in findings if f["selected"])
-        return PluginResult("ok", "Computed knockoff selection", {"selected": selected_count}, findings, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Computed knockoff selection",
+            {"selected": selected_count},
+            findings,
+            artifacts,
+            None,
+        )

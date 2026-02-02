@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Evaluate Run {{ run_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Evaluate Run {{ run_id }}</h1>
+  <p>Run status: <span id="run-status">{{ run_status }}</span></p>
+  {% if run_status != "completed" %}
+    <p id="run-status-note">Run is still in progress. This page will update automatically.</p>
+  {% endif %}
+  <p>
+    <a href="/runs/{{ run_id }}/report">View report</a>
+    {% if upload_id %}
+      | <a href="/known-issues?upload_id={{ upload_id }}">Edit known issues</a>
+      | <a href="/runs/{{ run_id }}/evaluate?known=1">Load known issues</a>
+    {% endif %}
+  </p>
+  <h3>How to fill this</h3>
+  <p>Set <code>strict: true</code> to enforce no false positives.</p>
+  <p>Then list only the issues you already know are true:</p>
+  <ul>
+    <li><code>features</code>: column names you expect to be selected.</li>
+    <li><code>changepoints</code>: row indexes (0-based), or objects with tolerances.</li>
+    <li><code>dependence_shift_pairs</code>: lists like <code>[colA, colB]</code>.</li>
+    <li><code>anomalies</code>: row indexes (0-based), or objects with tolerances.</li>
+  </ul>
+  <pre>strict: true
+features:
+  - ColumnA
+changepoints:
+  - index: 120
+    tolerance:
+      absolute: 2
+dependence_shift_pairs:
+  - [ColumnX, ColumnY]
+anomalies:
+  - row_index: 55
+    tolerance:
+      absolute: 0
+min_anomaly_hits: 1</pre>
+  {% if ground_truth_source %}
+    <p>Ground truth source: <strong>{{ ground_truth_source }}</strong></p>
+  {% endif %}
+  <form action="/runs/{{ run_id }}/evaluate" method="post">
+    <label>Ground Truth YAML:</label>
+    <textarea name="ground_truth" rows="16" cols="80">{{ ground_truth }}</textarea>
+    <button type="submit" id="evaluate-button">Evaluate</button>
+  </form>
+  <p>
+    <a href="/runs/{{ run_id }}/evaluate?template=1">Generate template</a>
+    {% if upload_id %}
+      | <a href="/runs/{{ run_id }}/evaluate?known=1">Use known issues</a>
+    {% endif %}
+  </p>
+  {% if result %}
+    <h2>Result: {{ result }}</h2>
+    {% if evaluated_at %}
+      <p>Evaluated at: {{ evaluated_at }}</p>
+    {% endif %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+  <script>
+    const statusEl = document.getElementById("run-status");
+    const noteEl = document.getElementById("run-status-note");
+    const evalBtn = document.getElementById("evaluate-button");
+    const params = new URLSearchParams(window.location.search);
+    const templateFlag = params.get("template");
+    const knownFlag = params.get("known");
+    const reloadKey = `eval-reload:{{ run_id }}:${templateFlag || ""}:${knownFlag || ""}`;
+    const alreadyReloaded = sessionStorage.getItem(reloadKey) === "1";
+    async function pollStatus() {
+      const resp = await fetch(`/api/runs/{{ run_id }}`);
+      if (!resp.ok) return;
+      const payload = await resp.json();
+      const status = payload.run?.status || "";
+      if (statusEl) statusEl.textContent = status;
+      if (status === "completed") {
+        if (noteEl) noteEl.remove();
+        if (evalBtn) evalBtn.disabled = false;
+        if ((templateFlag || knownFlag) && !alreadyReloaded) {
+          sessionStorage.setItem(reloadKey, "1");
+          window.location.reload();
+        }
+        return;
+      }
+      if (evalBtn) evalBtn.disabled = true;
+      setTimeout(pollStatus, 2000);
+    }
+    pollStatus();
+  </script>
+  <a href="/runs/{{ run_id }}">Back</a>
+</body>
+</html>

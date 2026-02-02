@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Run {{ run_id }} Report</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Run Report</p>
+        <h1>{{ run_label or run_id }}</h1>
+        {% if project %}
+          <p class="lead">Project: <strong>{{ project.name or project.project_id }}</strong></p>
+        {% endif %}
+        <p class="muted">Status: {{ report.status }}</p>
+        {% if evaluation %}
+          <p class="muted">Known issues: <strong>{{ evaluation.result }}</strong></p>
+          {% if evaluation.messages %}
+            <ul>
+              {% for message in evaluation.messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% else %}
+          <p class="muted">Known issues: not evaluated</p>
+        {% endif %}
+      </div>
+      <div class="hero-panel">
+        <p class="muted">Run seed: {{ report.lineage.run.run_seed }}</p>
+        <p class="muted">Dataset: {{ report.lineage.dataset.dataset_version_id }}</p>
+        {% if report.lineage.raw_format %}
+          <p class="muted">Raw format: {{ report.lineage.raw_format.fingerprint }}</p>
+        {% endif %}
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Known Issues (highest priority)</h2>
+      {% if known_results and known_results.results %}
+        <p class="muted">Strict mode: {{ "on" if known_results.strict else "off" }}</p>
+        <ul class="clean-list">
+          {% for issue in known_results.results %}
+            <li>
+              <span class="pill {{ 'ok' if issue.status == 'pass' else 'error' }}">{{ issue.status }}</span>
+              <strong>{{ issue.title }}</strong>
+              {% if issue.plugin_id %}
+                <span class="muted">({{ issue.plugin_id }})</span>
+              {% endif %}
+              {% if issue.description %}
+                <div class="muted">{{ issue.description }}</div>
+              {% endif %}
+              <div class="muted">
+                Matched: {{ issue.matched }} |
+                Expected: ≥ {{ issue.min_count }}
+                {% if issue.max_count is not none %}
+                  and ≤ {{ issue.max_count }}
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        {% if known_results.unexpected %}
+          <div class="card subtle">
+            <p class="muted">Unexpected findings detected (strict mode):</p>
+            <ul class="clean-list">
+              {% for item in known_results.unexpected %}
+                <li>{{ item.plugin_id }}: {{ item.kind }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% else %}
+        <p class="muted">No known issues saved for this ERP/upload.</p>
+      {% endif %}
+    </section>
+
+    {% if report_errors %}
+      <section class="card">
+        <h2>Errors</h2>
+        <ul class="clean-list">
+          {% for err in report_errors %}
+            <li>
+              <span class="pill error">error</span>
+              <strong>{{ err.plugin_id }}</strong>
+              {% if err.message %}
+                <div class="muted">{{ err.message }}</div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+
+    <section class="card">
+      <h2>Insights</h2>
+      {% for plugin_id, plugin in report.plugins.items() %}
+        <div class="card subtle">
+          <div class="card-header">
+            <div>
+              <h3>{{ plugin_labels.get(plugin_id, plugin_id) }}</h3>
+              {% if plugin_descriptions.get(plugin_id) %}
+                <p class="muted">{{ plugin_descriptions.get(plugin_id) }}</p>
+              {% endif %}
+              <p class="muted">ID: {{ plugin_id }}</p>
+            </div>
+            <span class="pill {{ plugin.status }}">{{ plugin.status }}</span>
+          </div>
+          <p class="muted">{{ plugin.summary }}</p>
+          {% if plugin.error %}
+            <pre>{{ plugin.error }}</pre>
+          {% endif %}
+          {% set plugin_insights = insights.get(plugin_id) %}
+          {% if plugin_insights %}
+            {% for item in plugin_insights %}
+              <div class="insight">
+                <div class="insight-header">
+                  <h4>{{ item.title }}</h4>
+                  <span class="badge">{{ item.measurement_type }}</span>
+                </div>
+                {% if item.bullets %}
+                  <ul>
+                    {% for bullet in item.bullets %}
+                      <li>{{ bullet }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                {% if item.evidence and item.evidence.dataset_version_id %}
+                  <div class="evidence">
+                    <span class="muted">Evidence:</span>
+                    <a href="/trace?entity_type=dataset_version&key={{ item.evidence.dataset_version_id }}">Trace dataset</a>
+                    <a href="/vectors?collection=report_{{ report.run_id }}">Vectors</a>
+                    {% if item.evidence.row_ids %}
+                      {% for row_id in item.evidence.row_ids[:3] %}
+                        <a href="/trace/row?dataset_version_id={{ item.evidence.dataset_version_id }}&row_index={{ row_id }}">Row {{ row_id }}</a>
+                      {% endfor %}
+                      {% if item.evidence.row_ids|length > 3 %}
+                        <span class="muted">…</span>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="muted">No findings.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section>
+
+    <p>
+      <a href="/runs/{{ run_id }}">Run Status</a>
+      {% if project %}
+        | <a href="/projects/{{ project.project_id }}">Back to Project</a>
+      {% endif %}
+    </p>
+  </div>
+</body>
+</html>

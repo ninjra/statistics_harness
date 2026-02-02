@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "process_column": {"type": ["string", "null"]},
+    "module_column": {"type": ["string", "null"]},
+    "user_column": {"type": ["string", "null"]},
+    "queue_column": {"type": ["string", "null"]},
+    "eligible_column": {"type": ["string", "null"]},
+    "start_column": {"type": ["string", "null"]},
+    "wait_threshold_seconds": {"type": "number", "minimum": 0},
+    "max_groups": {"type": "integer", "minimum": 1},
+    "max_examples": {"type": "integer", "minimum": 0}
+  }
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
+from statistic_harness.core.stat_controls import benjamini_hochberg, confidence_from_p
 from statistic_harness.core.utils import write_json
 
 
@@ -44,13 +45,35 @@ class Plugin:
         results = []
         if best:
             results.append(
-                {"kind": "cluster", "start": int(best["start"]), "end": int(best["end"]), "score": float(best["score"]), "p_value": p_value}
+                {
+                    "kind": "cluster",
+                    "start": int(best["start"]),
+                    "end": int(best["end"]),
+                    "score": float(best["score"]),
+                    "p_value": p_value,
+                }
             )
+        if results:
+            q_values = benjamini_hochberg([r["p_value"] for r in results])
+            for finding, q_value in zip(results, q_values):
+                finding["q_value"] = q_value
+                finding["confidence"] = confidence_from_p(q_value)
 
         artifacts_dir = ctx.artifacts_dir("analysis_scan_statistics")
         out_path = artifacts_dir / "results.json"
         write_json(out_path, results)
         artifacts = [
-            PluginArtifact(path=str(out_path.relative_to(ctx.run_dir)), type="json", description="Scan results")
+            PluginArtifact(
+                path=str(out_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Scan results",
+            )
         ]
-        return PluginResult("ok", "Computed scan statistics", {"count": len(results)}, results, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Computed scan statistics",
+            {"count": len(results)},
+            results,
+            artifacts,
+            None,
+        )

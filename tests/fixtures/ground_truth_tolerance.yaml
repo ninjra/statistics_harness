@@ -1,0 +1,13 @@
+features:
+  - x1
+changepoints:
+  - 100
+changepoint_tolerance:
+  absolute: 5
+  relative: 0.2
+anomalies:
+  - 50
+anomaly_tolerance:
+  absolute: 0
+  relative: 0.1
+min_anomaly_hits: 1

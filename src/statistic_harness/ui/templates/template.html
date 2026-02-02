@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Template {{ template.name }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Template {{ template.name }}</h1>
+  <h2>Fields</h2>
+  <ul>
+    {% for field in fields %}
+      <li>{{ field.name }} ({{ field.dtype or 'text' }})</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Map Dataset to Template</h2>
+  <form action="/templates/{{ template.template_id }}/map" method="post">
+    <label>Dataset Version ID:</label>
+    <input type="text" name="dataset_version_id" required />
+    <label>Mapping JSON:</label>
+    <textarea name="mapping_json" rows="6" cols="60" required>{"field":"raw_column"}</textarea>
+    <button type="submit">Apply Mapping</button>
+  </form>
+
+  <h2>Run Combined Analysis</h2>
+  <form action="/templates/{{ template.template_id }}/run" method="post">
+    <label>Plugins (comma separated):</label>
+    <input type="text" name="plugins" placeholder="auto or plugin_id,plugin_id" />
+    <label>Settings JSON:</label>
+    <textarea name="settings_json" rows="4" cols="60"></textarea>
+    <label>Project IDs (comma separated):</label>
+    <input type="text" name="project_ids" />
+    <label>Dataset IDs (comma separated):</label>
+    <input type="text" name="dataset_ids" />
+    <label>Dataset Version IDs (comma separated):</label>
+    <input type="text" name="dataset_version_ids" />
+    <label>Raw Format IDs (comma separated):</label>
+    <input type="text" name="raw_format_ids" />
+    <label>Created After (ISO timestamp):</label>
+    <input type="text" name="created_after" placeholder="2026-01-01T00:00:00Z" />
+    <label>Created Before (ISO timestamp):</label>
+    <input type="text" name="created_before" placeholder="2026-12-31T23:59:59Z" />
+    <label>Run seed:</label>
+    <input type="number" name="run_seed" value="0" />
+    <button type="submit">Run</button>
+  </form>
+  <p><a href="/templates/{{ template.template_id }}/results">View Combined Results</a></p>
+
+  <a href="/templates">Back</a>
+</body>
+</html>

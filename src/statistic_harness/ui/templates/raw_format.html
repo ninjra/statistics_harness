@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw Format {{ format_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Raw Format {{ format_id }}</h1>
+  <h2>Notes</h2>
+  <ul>
+    {% for note in notes %}
+      <li>{{ note.note }} ({{ note.created_at }})</li>
+    {% endfor %}
+  </ul>
+  <form action="/raw-formats/{{ format_id }}/notes" method="post">
+    <label>New note:</label>
+    <input type="text" name="note" required />
+    <button type="submit">Add</button>
+  </form>
+  <h2>Mapping Presets</h2>
+  <ul>
+    {% for mapping in mappings %}
+      <li>
+        template {{ mapping.template_id }} | {{ mapping.mapping_hash }}
+        {% if mapping.notes %} - {{ mapping.notes }}{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  <form action="/raw-formats/{{ format_id }}/mappings" method="post">
+    <label>Template ID:</label>
+    <input type="number" name="template_id" required />
+    <label>Mapping JSON:</label>
+    <textarea name="mapping_json" rows="6" cols="60" required>{"field":"raw_column"}</textarea>
+    <label>Notes:</label>
+    <input type="text" name="notes" />
+    <button type="submit">Save Mapping</button>
+  </form>
+  <a href="/raw-formats">Back</a>
+</body>
+</html>

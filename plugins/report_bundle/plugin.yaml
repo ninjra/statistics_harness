@@ -7,3 +7,12 @@ depends_on: []
 settings:
   description: Build report
   defaults: {}
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - docs

@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "artifacts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "type",
+          "description"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "budget": {
+      "additionalProperties": true,
+      "properties": {
+        "cpu_limit_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "row_limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sampled": {
+          "type": "boolean"
+        },
+        "time_limit_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "row_limit",
+        "sampled",
+        "time_limit_ms",
+        "cpu_limit_ms"
+      ],
+      "type": "object"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "traceback": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message",
+            "traceback"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "findings": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "evidence": {
+            "additionalProperties": true,
+            "properties": {
+              "column_ids": {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              "dataset_id": {
+                "type": "string"
+              },
+              "dataset_version_id": {
+                "type": "string"
+              },
+              "query": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "row_ids": {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              "row_ranges": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "end": {
+                      "type": "integer"
+                    },
+                    "start": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dataset_id",
+              "dataset_version_id",
+              "row_ids",
+              "column_ids"
+            ],
+            "type": "object"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "measurement_type": {
+            "enum": [
+              "measured",
+              "modeled",
+              "not_applicable",
+              "error"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "measurement_type",
+          "evidence"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "skipped",
+        "error"
+      ],
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "metrics",
+    "findings",
+    "artifacts",
+    "budget"
+  ],
+  "title": "Plugin Result",
+  "type": "object"
+}

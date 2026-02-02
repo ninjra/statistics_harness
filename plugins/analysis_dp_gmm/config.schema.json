@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "alpha": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "burn_in": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "n_iter": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "sigma2": {
+      "type": [
+        "number",
+        "null"
+      ]
+    }
+  },
+  "title": "DP GMM Config",
+  "type": "object"
+}

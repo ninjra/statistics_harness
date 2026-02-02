@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Role Overrides {{ project_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Role Overrides</h1>
+  <p><a href="/projects/{{ project_id }}">Back to Project</a></p>
+
+  <form action="/projects/{{ project_id }}/roles" method="post">
+    <label>Dataset version:</label>
+    <select name="dataset_version_id" onchange="this.form.submit()">
+      {% for dataset in datasets %}
+        <option value="{{ dataset.dataset_version_id }}" {% if dataset.dataset_version_id == dataset_version_id %}selected{% endif %}>
+          {{ dataset.dataset_version_id }} (rows: {{ dataset.row_count }})
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <form action="/projects/{{ project_id }}/roles" method="post">
+    <input type="hidden" name="dataset_version_id" value="{{ dataset_version_id }}" />
+    <datalist id="column-list">
+      {% for col in columns %}
+        <option value="{{ col.original_name }}"></option>
+      {% endfor %}
+    </datalist>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Column Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for role in role_keys %}
+          <tr>
+            <td>{{ role }}</td>
+            <td>
+              <input type="text" name="{{ role }}" list="column-list" value="{{ overrides.get(role, '') }}" />
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit">Save Overrides</button>
+  </form>
+</body>
+</html>

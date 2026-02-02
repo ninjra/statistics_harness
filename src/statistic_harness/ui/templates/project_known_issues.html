@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Known Issues — {{ project.name or project_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Known Issues</p>
+        <h1>{{ project.name or project_id }}</h1>
+        <p class="lead">ERP: {{ project.erp_type or "unknown" }}</p>
+      </div>
+      <div class="hero-panel">
+        <p class="muted">Natural language notes are stored alongside detection rules.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Settings</h2>
+      <label><input type="checkbox" id="strict-flag" checked /> Strict (no false positives)</label>
+      <label>Notes</label>
+      <textarea id="notes" rows="3"></textarea>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Issues</h2>
+        <div class="button-row">
+          <button type="button" class="ghost" id="quick-qemail">Quick add: QEMAIL close-cycle</button>
+          <button type="button" class="ghost" id="add-issue">Add Issue</button>
+        </div>
+      </div>
+      <div id="issues"></div>
+      <div class="button-row">
+        <button type="button" id="save-issues">Save Known Issues</button>
+        <a class="button ghost" href="/projects/{{ project_id }}">Back to Project</a>
+      </div>
+      <div id="save-result" class="status"></div>
+    </section>
+  </div>
+
+  <script id="plugin-ids-json" type="application/json">{{ plugin_ids | tojson }}</script>
+  <script id="known-issues-json" type="application/json">{{ known_issues | tojson }}</script>
+  <script>
+    const pluginIds = JSON.parse(document.getElementById("plugin-ids-json").textContent || "[]");
+    const known = JSON.parse(document.getElementById("known-issues-json").textContent || "{}");
+    const issuesContainer = document.getElementById("issues");
+    const strictFlag = document.getElementById("strict-flag");
+    const notesEl = document.getElementById("notes");
+    const saveResult = document.getElementById("save-result");
+
+    function kvToText(obj) {
+      if (!obj) return "";
+      const lines = [];
+      for (const key of Object.keys(obj)) {
+        const value = obj[key];
+        if (Array.isArray(value)) {
+          lines.push(`${key}=${value.join(",")}`);
+        } else {
+          lines.push(`${key}=${value}`);
+        }
+      }
+      return lines.join("\\n");
+    }
+
+    function parseKV(text) {
+      const out = {};
+      if (!text) return out;
+      const lines = text.split("\\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const idx = trimmed.indexOf("=");
+        if (idx === -1) continue;
+        const key = trimmed.slice(0, idx).trim();
+        let raw = trimmed.slice(idx + 1).trim();
+        if (!key) continue;
+        let value = raw;
+        if (raw.includes(",")) {
+          value = raw.split(",").map((v) => v.trim()).filter((v) => v.length);
+        } else if (raw.toLowerCase() === "true" || raw.toLowerCase() === "false") {
+          value = raw.toLowerCase() === "true";
+        } else if (!Number.isNaN(Number(raw)) && raw !== "") {
+          value = Number(raw);
+        }
+        out[key] = value;
+      }
+      return out;
+    }
+
+    function addIssueRow(issue = {}) {
+      const row = document.createElement("div");
+      row.className = "issue-row";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.placeholder = "Title";
+      titleInput.value = issue.title || "";
+
+      const descInput = document.createElement("textarea");
+      descInput.rows = 2;
+      descInput.placeholder = "Describe the known issue in plain English.";
+      descInput.value = issue.description || "";
+
+      const pluginSelect = document.createElement("select");
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = "(any plugin)";
+      pluginSelect.appendChild(emptyOption);
+      for (const pid of pluginIds) {
+        const opt = document.createElement("option");
+        opt.value = pid;
+        opt.textContent = pid;
+        pluginSelect.appendChild(opt);
+      }
+      pluginSelect.value = issue.plugin_id || "";
+
+      const kindInput = document.createElement("input");
+      kindInput.type = "text";
+      kindInput.placeholder = "kind (required)";
+      kindInput.value = issue.kind || "";
+
+      const whereInput = document.createElement("textarea");
+      whereInput.rows = 2;
+      whereInput.placeholder = "where: key=value per line";
+      whereInput.value = kvToText(issue.where || {});
+
+      const containsInput = document.createElement("textarea");
+      containsInput.rows = 2;
+      containsInput.placeholder = "contains: key=value per line";
+      containsInput.value = kvToText(issue.contains || {});
+
+      const minCount = document.createElement("input");
+      minCount.type = "number";
+      minCount.placeholder = "min";
+      if (issue.min_count !== undefined && issue.min_count !== null) {
+        minCount.value = issue.min_count;
+      }
+
+      const maxCount = document.createElement("input");
+      maxCount.type = "number";
+      maxCount.placeholder = "max";
+      if (issue.max_count !== undefined && issue.max_count !== null) {
+        maxCount.value = issue.max_count;
+      }
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "ghost";
+      removeBtn.textContent = "Remove";
+      removeBtn.addEventListener("click", () => row.remove());
+
+      row.appendChild(titleInput);
+      row.appendChild(descInput);
+      row.appendChild(pluginSelect);
+      row.appendChild(kindInput);
+      row.appendChild(whereInput);
+      row.appendChild(containsInput);
+      row.appendChild(minCount);
+      row.appendChild(maxCount);
+      row.appendChild(removeBtn);
+      issuesContainer.appendChild(row);
+    }
+
+    function collectIssues() {
+      const issues = [];
+      const rows = document.querySelectorAll(".issue-row");
+      rows.forEach((row) => {
+        const inputs = row.getElementsByTagName("input");
+        const areas = row.getElementsByTagName("textarea");
+        const selects = row.getElementsByTagName("select");
+        const issue = { kind: inputs[1]?.value || "" };
+        if (!issue.kind) return;
+        if (inputs[0]?.value) issue.title = inputs[0].value;
+        if (areas[0]?.value) issue.description = areas[0].value;
+        const pluginId = selects[0]?.value || "";
+        if (pluginId) issue.plugin_id = pluginId;
+        const where = parseKV(areas[1]?.value || "");
+        if (Object.keys(where).length) issue.where = where;
+        const contains = parseKV(areas[2]?.value || "");
+        if (Object.keys(contains).length) issue.contains = contains;
+        if (inputs[2]?.value) issue.min_count = Number(inputs[2].value);
+        if (inputs[3]?.value) issue.max_count = Number(inputs[3].value);
+        issues.push(issue);
+      });
+      return issues;
+    }
+
+    async function saveIssues() {
+      const payload = {
+        strict: strictFlag.checked,
+        notes: notesEl.value || "",
+        expected_findings: collectIssues()
+      };
+      saveResult.textContent = "Saving...";
+      const resp = await fetch("/api/projects/{{ project_id }}/known-issues", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ known_issues: payload })
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        saveResult.textContent = data.detail || "Save failed.";
+        return;
+      }
+      saveResult.textContent = "Saved.";
+    }
+
+    document.getElementById("add-issue").addEventListener("click", () => addIssueRow({}));
+    document.getElementById("save-issues").addEventListener("click", saveIssues);
+    document.getElementById("quick-qemail").addEventListener("click", () => {
+      addIssueRow({
+        title: "QEMAIL close-cycle contention",
+        description: "QEMAIL slows the close cycle; quantify eligible-wait and model capacity impact.",
+        plugin_id: "analysis_queue_delay_decomposition",
+        kind: "eligible_wait_process_stats",
+        where: { process: "qemail" },
+        min_count: 1
+      });
+    });
+
+    if (known) {
+      strictFlag.checked = !!known.strict;
+      notesEl.value = known.notes || "";
+      const existing = known.expected_findings || [];
+      existing.forEach((issue) => addIssueRow(issue));
+    }
+  </script>
+</body>
+</html>

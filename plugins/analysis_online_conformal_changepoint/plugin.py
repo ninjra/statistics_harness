@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
@@ -42,13 +41,31 @@ class Plugin:
             window = anomalies[i - alarm_rate_window : i]
             rate = sum(window) / alarm_rate_window
             if rate > alarm_rate_threshold:
-                changepoints.append({"kind": "changepoint", "index": int(i), "time": int(i), "score": float(rate)})
+                changepoints.append(
+                    {
+                        "kind": "changepoint",
+                        "index": int(i),
+                        "time": int(i),
+                        "score": float(rate),
+                    }
+                )
                 break
 
         artifacts_dir = ctx.artifacts_dir("analysis_online_conformal_changepoint")
         alerts_path = artifacts_dir / "alerts.json"
         write_json(alerts_path, changepoints)
         artifacts = [
-            PluginArtifact(path=str(alerts_path.relative_to(ctx.run_dir)), type="json", description="Changepoints")
+            PluginArtifact(
+                path=str(alerts_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Changepoints",
+            )
         ]
-        return PluginResult("ok", "Detected changepoints", {"count": len(changepoints)}, changepoints, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Detected changepoints",
+            {"count": len(changepoints)},
+            changepoints,
+            artifacts,
+            None,
+        )

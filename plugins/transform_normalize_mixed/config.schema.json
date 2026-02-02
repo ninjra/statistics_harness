@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Normalize Mixed Types Config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "template_name": {
+      "type": "string"
+    },
+    "lowercase": {
+      "type": "boolean"
+    },
+    "strip": {
+      "type": "boolean"
+    },
+    "collapse_whitespace": {
+      "type": "boolean"
+    },
+    "numeric_coercion": {
+      "type": "boolean"
+    },
+    "numeric_threshold": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "exclude_name_patterns": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "chunk_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sample_rows": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

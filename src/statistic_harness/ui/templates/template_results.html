@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Template {{ template_id }} Results</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Template {{ template_id }} Combined Results</h1>
+  <p>Dataset Version: {{ dataset_version_id }}</p>
+  <h2>Filters</h2>
+  <form action="/templates/{{ template_id }}/results" method="get">
+    <label>Project IDs (comma separated):</label>
+    <input type="text" name="project_ids" value="{{ filter_params.project_ids }}" />
+    <label>Dataset IDs (comma separated):</label>
+    <input type="text" name="dataset_ids" value="{{ filter_params.dataset_ids }}" />
+    <label>Dataset Version IDs (comma separated):</label>
+    <input type="text" name="dataset_version_ids" value="{{ filter_params.dataset_version_ids }}" />
+    <label>Raw Format IDs (comma separated):</label>
+    <input type="text" name="raw_format_ids" value="{{ filter_params.raw_format_ids }}" />
+    <label>Created After (ISO timestamp):</label>
+    <input type="text" name="created_after" value="{{ filter_params.created_after }}" />
+    <label>Created Before (ISO timestamp):</label>
+    <input type="text" name="created_before" value="{{ filter_params.created_before }}" />
+    <button type="submit">Apply Filters</button>
+  </form>
+  {% if filters %}
+    <p>Active filters: {{ filters }}</p>
+  {% endif %}
+  <ul>
+    {% for row in results %}
+      <li>
+        <strong>{{ row.plugin_id }}</strong> ({{ row.status }})
+        - {{ row.summary }}
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="/templates/{{ template_id }}">Back</a>
+</body>
+</html>

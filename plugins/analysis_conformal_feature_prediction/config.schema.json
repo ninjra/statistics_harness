@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "alpha": {
+      "type": "number"
+    },
+    "max_target_cols": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "model": {
+      "type": "string"
+    }
+  },
+  "title": "Conformal Feature Prediction Config",
+  "type": "object"
+}

@@ -2,14 +2,132 @@
 <html>
 <head>
   <title>Run {{ run_id }}</title>
-  <link rel="stylesheet" href="/static/app.css" />
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
 </head>
 <body>
-  <h1>Run {{ run_id }}</h1>
-  <p>Check reports:</p>
-  <ul>
-    <li><a href="/api/runs/{{ run_id }}/report.json">report.json</a></li>
-    <li><a href="/api/runs/{{ run_id }}/report.md">report.md</a></li>
-  </ul>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Run</p>
+        <h1>{{ run_label or run_id }}</h1>
+        {% if project %}
+          <p class="lead">Project: <a href="/projects/{{ project.project_id }}">{{ project.name or project.project_id }}</a></p>
+        {% endif %}
+        <p class="muted">Status: <span id="run-status">loading</span></p>
+      </div>
+      <div class="hero-panel">
+        {% if evaluation %}
+          <p class="muted">Known issues: <strong>{{ evaluation.result }}</strong></p>
+          {% if evaluation.messages %}
+            <p class="muted">{{ evaluation.messages|length }} issue(s) flagged</p>
+          {% endif %}
+        {% else %}
+          <p class="muted">Known issues: not evaluated</p>
+        {% endif %}
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Run Links</h2>
+      <ul class="clean-list">
+        <li><a href="/runs/{{ run_id }}/report">View report</a></li>
+        <li><a href="/runs/{{ run_id }}/evaluate">Evaluate</a></li>
+        <li><a href="/vectors?collection=report_{{ run_id }}">Vector search</a></li>
+        <li><a href="/api/runs/{{ run_id }}/report.json">report.json</a></li>
+        <li><a href="/api/runs/{{ run_id }}/report.md">report.md</a></li>
+      </ul>
+      {% if project %}
+        <p><a href="/projects/{{ project.project_id }}">Back to Project</a></p>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <h2>Progress</h2>
+      <div class="progress-row">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <span id="progress-label">0%</span>
+      </div>
+      <ul class="clean-list" id="plugin-progress"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Errors</h2>
+      <ul class="clean-list" id="error-list">
+        <li class="muted">No errors reported.</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    async function pollProgress() {
+      const resp = await fetch(`/api/runs/{{ run_id }}/progress`);
+      if (!resp.ok) return;
+      const payload = await resp.json();
+      const status = payload.run_status || "unknown";
+      document.getElementById("run-status").textContent = status;
+      const percent = payload.percent_complete || 0;
+      const fill = document.getElementById("progress-fill");
+      const label = document.getElementById("progress-label");
+      if (fill) fill.style.width = `${percent}%`;
+      if (label) label.textContent = `${percent}%`;
+      const list = document.getElementById("plugin-progress");
+      if (list) {
+        list.innerHTML = "";
+        (payload.plugins || []).forEach((item) => {
+          const li = document.createElement("li");
+          const statusSpan = document.createElement("span");
+          statusSpan.className = `pill ${item.status}`;
+          statusSpan.textContent = item.status;
+          li.textContent = item.plugin_id + " ";
+          li.appendChild(statusSpan);
+          list.appendChild(li);
+        });
+      }
+      const errorList = document.getElementById("error-list");
+      if (errorList) {
+        errorList.innerHTML = "";
+        const errors = payload.errors || [];
+        if (errors.length === 0) {
+          const li = document.createElement("li");
+          li.className = "muted";
+          li.textContent = "No errors reported.";
+          errorList.appendChild(li);
+        } else {
+          errors.forEach((err) => {
+            const li = document.createElement("li");
+            const badge = document.createElement("span");
+            badge.className = "pill error";
+            badge.textContent = "error";
+            const label = document.createElement("strong");
+            label.textContent = err.plugin_id || "plugin";
+            li.appendChild(label);
+            li.appendChild(document.createTextNode(" "));
+            li.appendChild(badge);
+            if (err.message) {
+              const msg = document.createElement("div");
+              msg.className = "muted";
+              msg.textContent = err.message;
+              li.appendChild(msg);
+            }
+            errorList.appendChild(li);
+          });
+        }
+      }
+      if (status !== "completed" && status !== "failed") {
+        setTimeout(pollProgress, 1500);
+      }
+    }
+    pollProgress();
+  </script>
 </body>
 </html>

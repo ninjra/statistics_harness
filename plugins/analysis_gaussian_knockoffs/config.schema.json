@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "fdr_q": {
+      "type": "number"
+    },
+    "lasso_alpha": {
+      "type": "number"
+    },
+    "target_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "Gaussian Knockoffs Config",
+  "type": "object"
+}

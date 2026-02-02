@@ -2,25 +2,55 @@
 <html>
 <head>
   <title>Statistic Harness</title>
-  <link rel="stylesheet" href="/static/app.css" />
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
 </head>
 <body>
-  <h1>Statistic Harness</h1>
-  <form action="/api/upload" method="post" enctype="multipart/form-data">
-    <label>Upload file:</label>
-    <input type="file" name="file" required />
-    <button type="submit">Upload</button>
-  </form>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Statistic Harness</p>
+        <h1>Deterministic Insight Engine</h1>
+        <p class="lead">Create a project, upload a dataset, and run every analysis plugin automatically.</p>
+        <div class="hero-actions">
+          <a class="button" href="/projects">Browse Projects</a>
+          <a class="button ghost" href="/templates">Templates</a>
+          <a class="button ghost" href="/trace">Trace</a>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <h3>Recent Projects</h3>
+        {% if projects %}
+          <ul class="clean-list">
+            {% for project in projects[:5] %}
+              <li>
+                <a href="/projects/{{ project.project_id }}">{{ project.name or project.project_id }}</a>
+                <span class="muted">({{ project.erp_type or "unknown" }})</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No projects yet.</p>
+        {% endif %}
+      </div>
+    </header>
 
-  <h2>Plugins</h2>
-  <form action="/api/runs" method="post">
-    <label>Upload ID:</label>
-    <input type="text" name="upload_id" required />
-    <label>Plugins (comma separated):</label>
-    <input type="text" name="plugins" value="profile_basic" />
-    <label>Run seed:</label>
-    <input type="number" name="run_seed" value="42" />
-    <button type="submit">Run</button>
-  </form>
+    <section class="card">
+      <h2>Create Project</h2>
+      <form action="/projects" method="post" class="stack">
+        <label>Project name</label>
+        <input type="text" name="name" placeholder="e.g., Quorum Close Cycle Analysis" required />
+        <label>ERP type</label>
+        <input type="text" name="erp_type" value="unknown" />
+        <button type="submit">Create Project</button>
+      </form>
+    </section>
+  </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
@@ -27,6 +27,14 @@ class PluginResult:
     findings: list[dict[str, Any]]
     artifacts: list[PluginArtifact]
     error: PluginError | None = None
+    budget: dict[str, Any] = field(
+        default_factory=lambda: {
+            "row_limit": None,
+            "sampled": False,
+            "time_limit_ms": None,
+            "cpu_limit_ms": None,
+        }
+    )
 
 
 @dataclass
@@ -38,6 +46,19 @@ class PluginContext:
     logger: Callable[[str], None]
     storage: Any
     dataset_loader: Callable[[], Any]
+    budget: dict[str, Any] = field(
+        default_factory=lambda: {
+            "row_limit": None,
+            "sampled": False,
+            "time_limit_ms": None,
+            "cpu_limit_ms": None,
+        }
+    )
+    tenant_id: str | None = None
+    project_id: str | None = None
+    dataset_id: str | None = None
+    dataset_version_id: str | None = None
+    input_hash: str | None = None
 
     def artifacts_dir(self, plugin_id: str) -> Path:
         path = self.run_dir / "artifacts" / plugin_id

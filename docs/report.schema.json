@@ -2,11 +2,98 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Statistic Harness Report",
   "type": "object",
-  "required": ["run_id", "created_at", "status", "input", "plugins"],
+  "required": ["run_id", "created_at", "status", "input", "plugins", "lineage"],
   "properties": {
     "run_id": {"type": "string"},
     "created_at": {"type": "string"},
     "status": {"type": "string"},
+    "lineage": {
+      "type": "object",
+      "required": ["run", "input", "dataset", "plugins"],
+      "properties": {
+        "run": {
+          "type": "object",
+          "required": ["run_id", "created_at", "status", "run_seed"],
+          "properties": {
+            "run_id": {"type": "string"},
+            "created_at": {"type": "string"},
+            "status": {"type": "string"},
+            "run_seed": {"type": "integer"}
+          }
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "upload_id": {"type": "string"},
+            "filename": {"type": "string"},
+            "canonical_path": {"type": "string"},
+            "input_hash": {"type": "string"},
+            "sha256": {"type": "string"},
+            "size_bytes": {"type": "integer"}
+          }
+        },
+        "dataset": {
+          "type": "object",
+          "required": ["dataset_version_id"],
+          "properties": {
+            "project_id": {"type": "string"},
+            "dataset_id": {"type": "string"},
+            "dataset_version_id": {"type": "string"},
+            "table_name": {"type": "string"},
+            "data_hash": {"type": "string"},
+            "row_count": {"type": "integer"},
+            "column_count": {"type": "integer"},
+            "raw_format_id": {"type": "integer"}
+          }
+        },
+        "raw_format": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "properties": {
+                "format_id": {"type": "integer"},
+                "fingerprint": {"type": "string"},
+                "name": {"type": "string"},
+                "created_at": {"type": "string"}
+              }
+            }
+          ]
+        },
+        "template": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "properties": {
+                "template_id": {"type": "integer"},
+                "template_name": {"type": "string"},
+                "template_version": {"type": "string"},
+                "table_name": {"type": "string"},
+                "status": {"type": "string"},
+                "mapping_hash": {"type": "string"},
+                "mapping": {"type": "object"}
+              }
+            }
+          ]
+        },
+        "plugins": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "plugin_version": {"type": "string"},
+              "code_hash": {"type": "string"},
+              "settings_hash": {"type": "string"},
+              "dataset_hash": {"type": "string"},
+              "executed_at": {"type": "string"},
+              "status": {"type": "string"},
+              "summary": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
     "input": {
       "type": "object",
       "required": ["filename", "rows", "cols", "inferred_types"],
@@ -21,12 +108,56 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["status", "summary", "metrics", "findings", "artifacts", "error"],
+        "required": ["status", "summary", "metrics", "findings", "artifacts", "budget", "error"],
         "properties": {
           "status": {"type": "string"},
           "summary": {"type": "string"},
           "metrics": {"type": "object"},
-          "findings": {"type": "array"},
+          "budget": {
+            "type": "object",
+            "required": ["row_limit", "sampled", "time_limit_ms", "cpu_limit_ms"],
+            "properties": {
+              "row_limit": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
+              "sampled": {"type": "boolean"},
+              "time_limit_ms": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
+              "cpu_limit_ms": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
+              "notes": {"anyOf": [{"type": "string"}, {"type": "null"}]}
+            },
+            "additionalProperties": true
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["evidence", "measurement_type"],
+              "properties": {
+                "evidence": {
+                  "type": "object",
+                  "required": [
+                    "dataset_id",
+                    "dataset_version_id",
+                    "row_ids",
+                    "column_ids",
+                    "query"
+                  ],
+                  "properties": {
+                    "dataset_id": {"type": "string"},
+                    "dataset_version_id": {"type": "string"},
+                    "row_ids": {"type": "array", "items": {"type": "integer"}},
+                    "column_ids": {"type": "array", "items": {"type": "integer"}},
+                    "query": {"anyOf": [{"type": "string"}, {"type": "null"}]}
+                  },
+                  "additionalProperties": true
+                }
+                ,
+                "measurement_type": {
+                  "type": "string",
+                  "enum": ["measured", "modeled", "not_applicable", "error"]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
           "artifacts": {
             "type": "array",
             "items": {

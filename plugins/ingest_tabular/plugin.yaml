@@ -10,4 +10,12 @@ settings:
     delimiter: null
     sheet_name: null
     encoding: utf-8
-    max_rows: 10000
+    chunk_size: 1000
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins

@@ -29,6 +29,7 @@ dev = [
   "pytest",
   "ruff",
   "mypy",
+  "playwright",
 ]
 
 [project.scripts]

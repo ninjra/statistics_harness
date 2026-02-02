@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Templates</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Templates</h1>
+  <ul>
+    {% for template in templates %}
+      <li>
+        <strong><a href="/templates/{{ template.template_id }}">{{ template.name }}</a></strong>
+        (id: {{ template.template_id }})
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="/">Back</a>
+</body>
+</html>

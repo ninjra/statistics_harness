@@ -1,0 +1,138 @@
+strict: true
+expected_findings:
+  - plugin_id: analysis_capacity_scaling
+    kind: capacity_scaling
+    where:
+      measurement_type: modeled
+    min_count: 1
+  - plugin_id: analysis_close_cycle_contention
+    kind: close_cycle_contention
+    where:
+      process: qemail
+    min_count: 1
+    max_count: 1
+expected_metrics:
+  - plugin_id: analysis_close_cycle_contention
+    metric: candidates
+    value: 1
+    tolerance: 0
+  - plugin_id: analysis_queue_delay_decomposition
+    metric: standalone_runs
+    value: 45
+    tolerance: 0
+  - plugin_id: analysis_queue_delay_decomposition
+    metric: sequence_runs
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_queue_delay_decomposition
+    metric: eligible_wait_hours_total
+    value: 0.75
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_queue_delay_decomposition
+    metric: eligible_wait_gt_hours_total
+    value: 0.0
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_tail_isolation
+    metric: tail_rows
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_tail_isolation
+    metric: tail_hours_total
+    value: 0.0
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_percentile_analysis
+    metric: groups
+    value: 2
+    tolerance: 0
+  - plugin_id: analysis_attribution
+    metric: total_rows
+    value: 45
+    tolerance: 0
+  - plugin_id: analysis_dependency_resolution_join
+    metric: dependency_rows
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_dependency_resolution_join
+    metric: near_zero_ratio
+    value: 0.0
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_sequence_classification
+    metric: standalone_runs
+    value: 45
+    tolerance: 0
+  - plugin_id: analysis_sequence_classification
+    metric: sequence_runs
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_process_sequence
+    metric: variants
+    value: 2
+    tolerance: 0
+  - plugin_id: analysis_process_sequence
+    metric: transitions
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_chain_makespan
+    metric: chains
+    value: 45
+    tolerance: 0
+  - plugin_id: analysis_chain_makespan
+    metric: max_makespan_seconds
+    value: 180
+    tolerance: 0
+  - plugin_id: analysis_concurrency_reconstruction
+    metric: hosts
+    value: 2
+    tolerance: 0
+  - plugin_id: analysis_concurrency_reconstruction
+    metric: peak_concurrency
+    value: 1
+    tolerance: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: rows
+    value: 45
+    tolerance: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: host_count
+    value: 2
+    tolerance: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: scale_factor
+    value: 1.5
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: baseline_wait_hours
+    value: 0.75
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: modeled_wait_hours
+    value: 0.5
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_capacity_scaling
+    metric: reduction_hours
+    value: 0.25
+    tolerance:
+      absolute: 0.001
+      relative: 0
+  - plugin_id: analysis_determinism_discipline
+    metric: missing_measurement_type
+    value: 0
+    tolerance: 0
+  - plugin_id: analysis_determinism_discipline
+    metric: modeled_missing_assumption
+    value: 0
+    tolerance: 0

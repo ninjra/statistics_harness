@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-python -m venv .venv
+python3 -m venv .venv
 . .venv/bin/activate
-pip install -e ".[dev]"
+./scripts/install_dev.sh

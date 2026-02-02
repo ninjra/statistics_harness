@@ -17,7 +17,9 @@ linear = pd.DataFrame({"x1": x1, "x2": x2, "y": y})
 linear.to_csv("tests/fixtures/synth_linear.csv", index=False)
 
 # Timeseries with mean shift
-values = np.concatenate([rng.normal(loc=0, scale=1, size=100), rng.normal(loc=3, scale=1, size=100)])
+values = np.concatenate(
+    [rng.normal(loc=0, scale=1, size=100), rng.normal(loc=3, scale=1, size=100)]
+)
 timeseries = pd.DataFrame({"value": values})
 timeseries.to_csv("tests/fixtures/synth_timeseries.csv", index=False)
 
@@ -31,6 +33,8 @@ clusters.to_csv("tests/fixtures/synth_clusters.csv", index=False)
 a = rng.normal(size=100)
 b = rng.normal(size=100)
 first = pd.DataFrame({"a": a, "b": b})
-second = pd.DataFrame({"a": rng.normal(size=100), "b": a + rng.normal(scale=0.1, size=100)})
+second = pd.DataFrame(
+    {"a": rng.normal(size=100), "b": a + rng.normal(scale=0.1, size=100)}
+)
 shift = pd.concat([first, second], ignore_index=True)
 shift.to_csv("tests/fixtures/synth_shift_corr.csv", index=False)

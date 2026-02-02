@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raw Formats</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Raw Formats</h1>
+  <ul>
+    {% for fmt in formats %}
+      <li>
+        <strong><a href="/raw-formats/{{ fmt.format_id }}">{{ fmt.format_id }}</a></strong>
+        {{ fmt.fingerprint }}
+        (datasets: {{ fmt.dataset_count }})
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="/">Back</a>
+</body>
+</html>

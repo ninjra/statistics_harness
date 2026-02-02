@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "max_pairs": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "n_permutations": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "segment": {
+      "type": "string"
+    }
+  },
+  "title": "Gaussian Copula Shift Config",
+  "type": "object"
+}

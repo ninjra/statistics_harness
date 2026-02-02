@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto Run Started</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+  <meta http-equiv="refresh" content="2; url=/runs/{{ run_id }}/evaluate?known=1" />
+</head>
+<body>
+  <h1>Auto Run Started</h1>
+  <p>Run ID: {{ run_id }}</p>
+  <p>Redirecting to evaluation...</p>
+  <p>
+    <a href="/runs/{{ run_id }}/evaluate?known=1">Go to evaluation now</a> |
+    <a href="/runs/{{ run_id }}">Run status</a>
+  </p>
+</body>
+</html>

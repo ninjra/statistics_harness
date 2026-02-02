@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Known Issues</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Known Issues</h1>
+  <p>
+    <a href="/">Home</a> |
+    <a href="/projects">Projects</a> |
+    <a href="/trace">Trace</a>
+  </p>
+
+  <label>Upload:</label>
+  <select id="upload-select">
+    <option value="">Select an upload</option>
+    {% for upload in uploads %}
+      <option value="{{ upload.upload_id }}" {% if upload.upload_id == selected_upload_id %}selected{% endif %}>
+        {{ upload.filename }} ({{ upload.size_bytes }} bytes)
+      </option>
+    {% endfor %}
+  </select>
+  <label>ERP type:</label>
+  <input type="text" id="erp-type" value="{{ erp_type or 'unknown' }}" />
+
+  {% if selected_upload %}
+    <p>
+      Selected: <strong>{{ selected_upload.filename }}</strong>
+      {% if sha256 %} | SHA256: {{ sha256[:10] }}...{% endif %}
+    </p>
+  {% else %}
+    <p>No upload selected.</p>
+  {% endif %}
+
+  <section>
+    <h2>Known Issues Editor</h2>
+    <label><input type="checkbox" id="strict-flag" /> Strict (no false positives)</label>
+    <label>Notes:</label>
+    <textarea id="notes" rows="3"></textarea>
+    <label><input type="checkbox" id="autosave-flag" checked /> Auto-save</label>
+    <p>Where/Contains format: one <code>key=value</code> per line. Use commas for lists.</p>
+
+    <div id="issues"></div>
+
+    <button type="button" id="add-issue">Add Issue</button>
+    <button type="button" id="quick-qemail">Quick add: qemail close-cycle contention</button>
+    <button type="button" id="save-issues">Save Known Issues</button>
+    {% if selected_upload_id %}
+      <form action="/runs/auto-evaluate" method="post" style="margin-top: 0.5rem;">
+        <input type="hidden" name="upload_id" value="{{ selected_upload_id }}" />
+        <button type="submit">Run Auto + Evaluate</button>
+      </form>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Generated Ground Truth (read-only)</h2>
+    <textarea id="ground-truth" rows="16" readonly></textarea>
+  </section>
+
+  <pre id="save-result"></pre>
+
+  <script id="known-issues-json" type="application/json">{{ known_issues_json | safe }}</script>
+  <script id="plugin-ids-json" type="application/json">{{ plugin_ids | tojson }}</script>
+  <script id="known-issues-yaml" type="text/plain">{{ known_issues_yaml }}</script>
+  <script>
+    const uploadSelect = document.getElementById("upload-select");
+    const issuesContainer = document.getElementById("issues");
+    const strictFlag = document.getElementById("strict-flag");
+    const notesEl = document.getElementById("notes");
+    const groundTruthEl = document.getElementById("ground-truth");
+    const saveResult = document.getElementById("save-result");
+    const autosaveFlag = document.getElementById("autosave-flag");
+    const erpTypeEl = document.getElementById("erp-type");
+
+    const knownIssues = JSON.parse(document.getElementById("known-issues-json").textContent || "{}");
+    const pluginIds = JSON.parse(document.getElementById("plugin-ids-json").textContent || "[]");
+
+    function kvToText(obj) {
+      if (!obj) return "";
+      const lines = [];
+      for (const key of Object.keys(obj)) {
+        const value = obj[key];
+        if (Array.isArray(value)) {
+          lines.push(`${key}=${value.join(",")}`);
+        } else {
+          lines.push(`${key}=${value}`);
+        }
+      }
+      return lines.join("\n");
+    }
+
+    function parseKV(text) {
+      const out = {};
+      if (!text) return out;
+      const lines = text.split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const idx = trimmed.indexOf("=");
+        if (idx === -1) continue;
+        const key = trimmed.slice(0, idx).trim();
+        let raw = trimmed.slice(idx + 1).trim();
+        if (!key) continue;
+        let value = raw;
+        if (raw.includes(",")) {
+          value = raw.split(",").map((v) => v.trim()).filter((v) => v.length);
+        } else if (raw.toLowerCase() === "true" || raw.toLowerCase() === "false") {
+          value = raw.toLowerCase() === "true";
+        } else if (!Number.isNaN(Number(raw)) && raw !== "") {
+          value = Number(raw);
+        }
+        out[key] = value;
+      }
+      return out;
+    }
+
+    function addIssueRow(issue) {
+      const row = document.createElement("div");
+      row.className = "issue-row";
+      row.style.border = "1px solid #2a3140";
+      row.style.padding = "0.5rem";
+      row.style.marginBottom = "0.5rem";
+      const pluginSelect = document.createElement("select");
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = "(any plugin)";
+      pluginSelect.appendChild(emptyOption);
+      for (const pid of pluginIds) {
+        const opt = document.createElement("option");
+        opt.value = pid;
+        opt.textContent = pid;
+        pluginSelect.appendChild(opt);
+      }
+      pluginSelect.value = issue.plugin_id || "";
+
+      const kindInput = document.createElement("input");
+      kindInput.type = "text";
+      kindInput.placeholder = "kind (required)";
+      kindInput.value = issue.kind || "";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.placeholder = "title (optional)";
+      titleInput.value = issue.title || "";
+
+      const whereInput = document.createElement("textarea");
+      whereInput.rows = 3;
+      whereInput.placeholder = "where: key=value per line";
+      whereInput.value = kvToText(issue.where || {});
+
+      const containsInput = document.createElement("textarea");
+      containsInput.rows = 3;
+      containsInput.placeholder = "contains: key=value per line";
+      containsInput.value = kvToText(issue.contains || {});
+
+      const minCount = document.createElement("input");
+      minCount.type = "number";
+      minCount.placeholder = "min";
+      if (issue.min_count !== undefined && issue.min_count !== null) {
+        minCount.value = issue.min_count;
+      }
+
+      const maxCount = document.createElement("input");
+      maxCount.type = "number";
+      maxCount.placeholder = "max";
+      if (issue.max_count !== undefined && issue.max_count !== null) {
+        maxCount.value = issue.max_count;
+      }
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.addEventListener("click", () => row.remove());
+
+      row.appendChild(pluginSelect);
+      row.appendChild(kindInput);
+      row.appendChild(titleInput);
+      row.appendChild(whereInput);
+      row.appendChild(containsInput);
+      row.appendChild(minCount);
+      row.appendChild(maxCount);
+      row.appendChild(removeBtn);
+
+      issuesContainer.appendChild(row);
+    }
+
+    function collectIssues() {
+      const issues = [];
+      const rows = document.querySelectorAll(".issue-row");
+      rows.forEach((row) => {
+        const selects = row.getElementsByTagName("select");
+        const inputs = row.getElementsByTagName("input");
+        const areas = row.getElementsByTagName("textarea");
+        const plugin_id = selects[0]?.value || "";
+        const kind = inputs[0]?.value || "";
+        const title = inputs[1]?.value || "";
+        const min_count = inputs[2]?.value;
+        const max_count = inputs[3]?.value;
+        const where = parseKV(areas[0]?.value || "");
+        const contains = parseKV(areas[1]?.value || "");
+        const issue = { kind };
+        if (plugin_id) issue.plugin_id = plugin_id;
+        if (title) issue.title = title;
+        if (Object.keys(where).length) issue.where = where;
+        if (Object.keys(contains).length) issue.contains = contains;
+        if (min_count !== undefined && min_count !== "") issue.min_count = Number(min_count);
+        if (max_count !== undefined && max_count !== "") issue.max_count = Number(max_count);
+        if (kind) issues.push(issue);
+      });
+      return issues;
+    }
+
+    function refreshGroundTruth(yamlText) {
+      groundTruthEl.value = yamlText || "";
+    }
+
+    let autosaveTimer = null;
+    function scheduleAutosave() {
+      if (!autosaveFlag || !autosaveFlag.checked) return;
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => {
+        saveKnownIssues(true);
+      }, 800);
+    }
+
+    async function saveKnownIssues(isAuto = false) {
+      const uploadId = uploadSelect.value;
+      if (!uploadId) {
+        saveResult.textContent = "Select an upload first.";
+        return null;
+      }
+      const payload = {
+        strict: strictFlag.checked,
+        notes: notesEl.value || "",
+        expected_findings: collectIssues()
+      };
+      saveResult.textContent = isAuto ? "Auto-saving..." : "Saving...";
+      const resp = await fetch("/api/known-issues", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          upload_id: uploadId,
+          erp_type: erpTypeEl ? erpTypeEl.value : "",
+          known_issues: payload
+        })
+      });
+      const data = await resp.json();
+      saveResult.textContent = JSON.stringify(data, null, 2);
+      if (data.ground_truth_yaml) {
+        refreshGroundTruth(data.ground_truth_yaml);
+      }
+      return data;
+    }
+
+    function reloadWithScope() {
+      const id = uploadSelect ? uploadSelect.value : "";
+      const erp = erpTypeEl ? erpTypeEl.value : "";
+      if (id) {
+        const params = new URLSearchParams({ upload_id: id, erp_type: erp || "unknown" });
+        window.location = `/known-issues?${params.toString()}`;
+      }
+    }
+
+    if (uploadSelect) {
+      uploadSelect.addEventListener("change", () => {
+        reloadWithScope();
+      });
+    }
+    if (erpTypeEl) {
+      erpTypeEl.addEventListener("change", () => {
+        reloadWithScope();
+      });
+    }
+
+    document.getElementById("add-issue").addEventListener("click", () => addIssueRow({}));
+    document.getElementById("quick-qemail").addEventListener("click", () => {
+      addIssueRow({
+        plugin_id: "analysis_close_cycle_contention",
+        kind: "close_cycle_contention",
+        where: { process: "qemail" },
+        min_count: 1,
+        max_count: 1
+      });
+    });
+
+    document.getElementById("save-issues").addEventListener("click", async () => {
+      await saveKnownIssues(false);
+    });
+
+    function init() {
+      strictFlag.checked = !!knownIssues.strict;
+      notesEl.value = knownIssues.notes || "";
+      const issues = knownIssues.expected_findings || [];
+      if (issues.length) {
+        issues.forEach(addIssueRow);
+      } else {
+        addIssueRow({});
+      }
+      const yamlText = document.getElementById("known-issues-yaml").textContent || "";
+      if (yamlText.trim()) {
+        refreshGroundTruth(yamlText);
+      }
+    }
+
+    init();
+
+    document.addEventListener("input", (event) => {
+      if (!event.target) return;
+      if (event.target.closest(".issue-row") || event.target === notesEl || event.target === strictFlag) {
+        scheduleAutosave();
+      }
+    });
+
+    if (autosaveFlag) {
+      autosaveFlag.addEventListener("change", () => {
+        if (autosaveFlag.checked) {
+          scheduleAutosave();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

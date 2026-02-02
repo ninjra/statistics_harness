@@ -3,7 +3,10 @@ name: NOTEARS Linear
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-depends_on: [ingest_tabular]
+capabilities:
+- needs_multi_numeric
+depends_on:
+- ingest_tabular
 settings:
   description: Simplified NOTEARS
   defaults:
@@ -12,3 +15,10 @@ settings:
     max_iter: 100
     lr: 0.01
     weight_threshold: 0.2
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins

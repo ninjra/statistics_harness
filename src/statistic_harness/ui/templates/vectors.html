@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vector Search</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="top-nav">
+        <a href="/">Home</a>
+        <a href="/projects">Projects</a>
+        <a href="/templates">Templates</a>
+        <a href="/trace">Trace</a>
+        <a href="/vectors">Vectors</a>
+      </nav>
+
+      <h1>Vector Search</h1>
+      {% if error %}
+      <p class="pill error">{{ error }}</p>
+      {% endif %}
+
+      <section class="card">
+        <h2>Query</h2>
+        <form action="/vectors/query" method="post" class="stack">
+          <label>Collection</label>
+          {% if collections %}
+            <select name="collection" required>
+              {% for col in collections %}
+                {% set selected = query.collection == col.name %}
+                <option value="{{ col.name }}" {% if selected %}selected{% endif %}>
+                  {{ col.name }} ({{ col.dimensions }})
+                </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input type="text" name="collection" value="{{ query.collection or '' }}" required />
+          {% endif %}
+
+          <label>Text query</label>
+          <textarea name="text" rows="3" placeholder="queue delay summary...">{{ query.text or '' }}</textarea>
+
+          <label>Vector (comma-separated)</label>
+          <textarea name="vector" rows="3" placeholder="0.1, 0.0, ...">{{ query.vector or '' }}</textarea>
+
+          <label>k (page size)</label>
+          <input type="number" name="k" value="{{ query.k or 10 }}" min="1" />
+          <input type="hidden" name="offset" value="{{ query.offset or 0 }}" />
+          <div class="pill-row">
+            <button class="pill" type="submit" name="k" value="10">Top 10</button>
+            <button class="pill" type="submit" name="k" value="25">Top 25</button>
+            <button class="pill" type="submit" name="k" value="50">Top 50</button>
+            <button class="pill" type="submit" name="k" value="100">Top 100</button>
+          </div>
+
+          <label>Dimensions (optional)</label>
+          <input type="number" name="dimensions" value="{{ query.dimensions or '' }}" />
+
+          <button type="submit">Search</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Suggestions</h2>
+        {% if default_collection %}
+        <div class="pill-row">
+          {% set col = default_collection %}
+          <a class="pill" href="/vectors?collection={{ col }}&text=queue%20delay%20summary">Queue delay summary</a>
+          <a class="pill" href="/vectors?collection={{ col }}&text=top%20findings">Top findings</a>
+          <a class="pill" href="/vectors?collection={{ col }}&text=tail%20latency">Tail latency</a>
+          <a class="pill" href="/vectors?collection={{ col }}&text=anomaly%20drivers">Anomaly drivers</a>
+        </div>
+        {% else %}
+        <p class="muted">Select a collection to see suggestions.</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>Collections</h2>
+        {% if collections %}
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Dimensions</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for col in collections %}
+            <tr>
+              <td>{{ col.name }}</td>
+              <td>{{ col.dimensions }}</td>
+              <td>{{ col.created_at or '' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="muted">No collections indexed yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+        {% if results is not none %}
+          {% if results %}
+          {% if pagination %}
+          <div class="pill-row">
+            <span class="muted">Offset {{ pagination.offset }} · Page size {{ pagination.page_size }}</span>
+            {% if pagination.has_prev %}
+              <form action="/vectors/query" method="post">
+                <input type="hidden" name="collection" value="{{ query.collection }}" />
+                <input type="hidden" name="text" value="{{ query.text }}" />
+                <input type="hidden" name="vector" value="{{ query.vector }}" />
+                <input type="hidden" name="k" value="{{ pagination.page_size }}" />
+                <input type="hidden" name="offset" value="{{ pagination.prev_offset }}" />
+                <input type="hidden" name="dimensions" value="{{ query.dimensions or '' }}" />
+                <button class="pill" type="submit">Prev</button>
+              </form>
+            {% endif %}
+            {% if pagination.has_next %}
+              <form action="/vectors/query" method="post">
+                <input type="hidden" name="collection" value="{{ query.collection }}" />
+                <input type="hidden" name="text" value="{{ query.text }}" />
+                <input type="hidden" name="vector" value="{{ query.vector }}" />
+                <input type="hidden" name="k" value="{{ pagination.page_size }}" />
+                <input type="hidden" name="offset" value="{{ pagination.next_offset }}" />
+                <input type="hidden" name="dimensions" value="{{ query.dimensions or '' }}" />
+                <button class="pill" type="submit">Next</button>
+              </form>
+            {% endif %}
+          </div>
+          {% endif %}
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Summary</th>
+                <th>Distance</th>
+                <th>Payload</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in results %}
+              <tr>
+                <td>{{ row.item_id }}</td>
+                <td>
+                  {% if row.payload is mapping %}
+                    {% set plugin_id = row.payload.get('plugin_id') %}
+                    {% set kind = row.payload.get('kind') %}
+                    {% set ptype = row.payload.get('type') %}
+                    {% set idx = row.payload.get('index') %}
+                    {% if plugin_id %}<strong>{{ plugin_id }}</strong>{% endif %}
+                    {% if ptype %}<span class="muted">/ {{ ptype }}</span>{% endif %}
+                    {% if kind %}<span class="muted">/ {{ kind }}</span>{% endif %}
+                    {% if idx is not none %}<span class="muted">#{{ idx }}</span>{% endif %}
+                  {% elif row.payload %}
+                    {{ row.payload }}
+                  {% else %}
+                    <span class="muted">—</span>
+                  {% endif %}
+                </td>
+                <td>{{ "%.4f"|format(row.distance) if row.distance is not none else "" }}</td>
+                <td><pre>{{ row.payload | tojson(indent=2) }}</pre></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <details>
+            <summary>Raw JSON</summary>
+            <pre>{{ results | tojson(indent=2) }}</pre>
+          </details>
+          {% else %}
+          <p class="muted">No matches found.</p>
+          {% endif %}
+        {% else %}
+          <p class="muted">Run a query to see results.</p>
+        {% endif %}
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "max_points": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "n_thresholds": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "title": "Graph Topology Curves Config",
+  "type": "object"
+}

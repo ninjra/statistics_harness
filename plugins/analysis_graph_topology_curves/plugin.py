@@ -70,8 +70,21 @@ class Plugin:
         write_json(out_path, curves)
         findings = []
         if beta1:
-            findings.append({"kind": "topology", "metric": "beta1_peak", "value": float(max(beta1))})
+            findings.append(
+                {"kind": "topology", "metric": "beta1_peak", "value": float(max(beta1))}
+            )
         artifacts = [
-            PluginArtifact(path=str(out_path.relative_to(ctx.run_dir)), type="json", description="Topology curves")
+            PluginArtifact(
+                path=str(out_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Topology curves",
+            )
         ]
-        return PluginResult("ok", "Computed topology curves", {"beta1_peak": max(beta1)}, findings, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Computed topology curves",
+            {"beta1_peak": max(beta1)},
+            findings,
+            artifacts,
+            None,
+        )

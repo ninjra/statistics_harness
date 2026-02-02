@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "max_window": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "min_window": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "n_permutations": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "value_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "Scan Statistics Config",
+  "type": "object"
+}

@@ -27,13 +27,26 @@ class Plugin:
         changepoints = []
         for idx, prob in enumerate(probs):
             if prob >= peak_threshold and idx > 0:
-                changepoints.append({"kind": "changepoint", "index": int(idx), "prob": float(prob)})
+                changepoints.append(
+                    {"kind": "changepoint", "index": int(idx), "prob": float(prob)}
+                )
                 break
 
         artifacts_dir = ctx.artifacts_dir("analysis_bocpd_gaussian")
         out_path = artifacts_dir / "changepoints.json"
         write_json(out_path, changepoints)
         artifacts = [
-            PluginArtifact(path=str(out_path.relative_to(ctx.run_dir)), type="json", description="Changepoints")
+            PluginArtifact(
+                path=str(out_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Changepoints",
+            )
         ]
-        return PluginResult("ok", "Computed BOCPD changepoints", {"count": len(changepoints)}, changepoints, artifacts, None)
+        return PluginResult(
+            "ok",
+            "Computed BOCPD changepoints",
+            {"count": len(changepoints)},
+            changepoints,
+            artifacts,
+            None,
+        )

@@ -1,0 +1,20 @@
+id: profile_eventlog
+name: Profile Eventlog
+version: 0.1.0
+type: profile
+entrypoint: plugin.py:Plugin
+depends_on:
+- ingest_tabular
+settings:
+  description: Event-log field inference
+  defaults:
+    sample_rows: 500
+    min_confidence: 2.0
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins

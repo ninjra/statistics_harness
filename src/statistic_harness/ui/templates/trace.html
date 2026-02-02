@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trace</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark3" />
+</head>
+<body>
+  <h1>Trace</h1>
+  <form method="get" action="/trace">
+    <label>Entity Type:</label>
+    <input type="text" name="entity_type" value="{{ entity_type }}" required />
+    <label>Key:</label>
+    <input type="text" name="key" value="{{ key }}" required />
+    <label>Max Depth:</label>
+    <input type="number" name="max_depth" value="{{ max_depth }}" />
+    <button type="submit">Trace</button>
+  </form>
+  {% if result %}
+    <h2>Result</h2>
+    <pre>{{ result }}</pre>
+  {% endif %}
+  <a href="/">Back</a>
+</body>
+</html>

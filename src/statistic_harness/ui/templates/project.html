@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project {{ project.name or project_id }}</title>
+  <link rel="stylesheet" href="/static/app.css?v=dark4" />
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/templates">Templates</a>
+      <a href="/trace">Trace</a>
+      <a href="/vectors">Vectors</a>
+    </nav>
+    <header class="hero compact">
+      <div>
+        <p class="eyebrow">Project</p>
+        <h1>{{ project.name or project_id }}</h1>
+        <p class="lead">ERP: <strong>{{ project.erp_type if project else 'unknown' }}</strong></p>
+        {% if message %}
+          <p class="status">{{ message }}</p>
+        {% endif %}
+      </div>
+      <div class="hero-panel">
+        <form action="/projects/{{ project_id }}/erp" method="post" class="stack">
+          <label>ERP type</label>
+          <input type="text" name="erp_type" value="{{ project.erp_type if project else 'unknown' }}" />
+          <button type="submit">Update ERP</button>
+        </form>
+        <p class="muted">
+          <a href="/projects/{{ project_id }}/roles">Role Overrides</a>
+          | <a href="/projects/{{ project_id }}/settings">Plugin Settings</a>
+        </p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Upload & Run All</h2>
+      <p class="muted">Uploads are hashed and deduplicated automatically. This will run every analysis plugin.</p>
+      <form id="project-upload-form" class="stack">
+        <input type="file" id="project-file" required />
+        <button type="submit">Upload & Run All Plugins</button>
+      </form>
+      <div id="upload-status" class="status"></div>
+      <div id="run-status" class="status muted"></div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Known Issues</h2>
+        <p class="muted">Stored by ERP type. These are used to evaluate outputs deterministically.</p>
+        {% if known_issues and known_issues.expected_findings %}
+          <ul class="clean-list">
+            {% for issue in known_issues.expected_findings %}
+              <li>
+                <strong>{{ issue.title or issue.kind }}</strong>
+                {% if issue.description %}<span class="muted"> — {{ issue.description }}</span>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No known issues saved yet.</p>
+        {% endif %}
+        <a class="button ghost" href="/projects/{{ project_id }}/known-issues">Manage Known Issues</a>
+      </section>
+
+      <section class="card">
+        <h2>Recent Runs</h2>
+        {% if runs %}
+          <ul class="clean-list">
+            {% for run in runs %}
+              <li>
+                <a href="/runs/{{ run.run_id }}/report">{{ run.label or run.run_id }}</a>
+                <span class="pill {{ run.status }}" data-run-id="{{ run.run_id }}">{{ run.status }}</span>
+                {% if run.evaluation %}
+                  <span class="pill {{ 'ok' if run.evaluation.ok else 'error' }}" data-eval-id="{{ run.run_id }}">{{ run.evaluation.result }}</span>
+                {% endif %}
+                <a class="pill" href="/vectors?collection=report_{{ run.run_id }}">Vectors</a>
+                <span class="muted">{{ run.created_at }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No runs yet.</p>
+        {% endif %}
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Datasets</h2>
+      {% if datasets %}
+        <ul class="clean-list">
+          {% for dataset in datasets %}
+            <li>
+              <strong>{{ dataset.source_filename or dataset.dataset_version_id }}</strong>
+              <span class="muted">created: {{ dataset.first_run_at or dataset.created_at }}</span>
+              {% if dataset.last_run_at %}
+                <span class="muted">last run: {{ dataset.last_run_at }}</span>
+              {% endif %}
+              <span class="muted">rows: {{ dataset.row_count }}, cols: {{ dataset.column_count }}</span>
+              {% if dataset.raw_format_id %}
+                <a href="/raw-formats/{{ dataset.raw_format_id }}">format {{ dataset.raw_format_id }}</a>
+              {% endif %}
+              <a href="/api/datasets/{{ dataset.dataset_version_id }}/status" target="_blank">status</a>
+              <button type="button" class="ghost rerun-btn" data-dataset="{{ dataset.dataset_version_id }}">Rerun All Plugins</button>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No datasets yet.</p>
+      {% endif %}
+    </section>
+
+    <p><a href="/projects">Back</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("project-upload-form");
+    const fileInput = document.getElementById("project-file");
+    const uploadStatus = document.getElementById("upload-status");
+    const runStatus = document.getElementById("run-status");
+    const projectId = "{{ project_id }}";
+
+    async function pollRun(runId) {
+      if (!runId) return;
+      const resp = await fetch(`/api/runs/${runId}`);
+      if (!resp.ok) return;
+      const payload = await resp.json();
+      const status = payload.run?.status || "unknown";
+      runStatus.textContent = `Run ${runId}: ${status}`;
+      if (status === "completed") {
+        runStatus.innerHTML = `Run ${runId}: completed — <a href=\"/runs/${runId}/report\">View report</a>`;
+        return;
+      }
+      setTimeout(() => pollRun(runId), 1500);
+    }
+
+    if (form) {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+          uploadStatus.textContent = "Select a file first.";
+          return;
+        }
+        uploadStatus.textContent = "Uploading...";
+        const file = fileInput.files[0];
+        const uploadResp = await fetch(`/api/upload/raw?filename=${encodeURIComponent(file.name)}`, {
+          method: "POST",
+          body: file
+        });
+        const uploadPayload = await uploadResp.json();
+        if (!uploadResp.ok) {
+          uploadStatus.textContent = uploadPayload.detail || "Upload failed.";
+          return;
+        }
+        uploadStatus.textContent = `Upload complete (sha ${uploadPayload.sha256.slice(0, 8)}...). Running analysis...`;
+
+        const formData = new FormData();
+        formData.append("upload_id", uploadPayload.upload_id);
+        formData.append("plugins", "all");
+        formData.append("project_id", projectId);
+        const runResp = await fetch("/api/runs", { method: "POST", body: formData });
+        const runPayload = await runResp.json();
+        if (!runResp.ok) {
+          runStatus.textContent = runPayload.detail || "Run failed to start.";
+          return;
+        }
+        runStatus.textContent = `Run ${runPayload.run_id} started...`;
+        pollRun(runPayload.run_id);
+      });
+    }
+
+    async function refreshRunStatus(runId) {
+      const resp = await fetch(`/api/runs/${runId}`);
+      if (!resp.ok) return;
+      const payload = await resp.json();
+      const status = payload.run?.status || "unknown";
+      const pill = document.querySelector(`span[data-run-id='${runId}']`);
+      if (pill) {
+        pill.textContent = status;
+        pill.className = `pill ${status}`;
+      }
+      if (status === "completed") {
+        const evalResp = await fetch(`/api/runs/${runId}/evaluation`);
+        if (evalResp.ok) {
+          const evalPayload = await evalResp.json();
+          let evalPill = document.querySelector(`span[data-eval-id='${runId}']`);
+          if (!evalPill) {
+            evalPill = document.createElement("span");
+            evalPill.setAttribute("data-eval-id", runId);
+            evalPill.className = "pill";
+            pill?.insertAdjacentElement("afterend", evalPill);
+          }
+          evalPill.textContent = evalPayload.result || "evaluated";
+          evalPill.className = `pill ${evalPayload.ok ? "ok" : "error"}`;
+        }
+        return;
+      }
+      setTimeout(() => refreshRunStatus(runId), 2000);
+    }
+
+    document.querySelectorAll("span[data-run-id]").forEach((el) => {
+      const runId = el.getAttribute("data-run-id");
+      if (runId && el.textContent !== "completed") {
+        refreshRunStatus(runId);
+      }
+    });
+
+    async function rerunDataset(datasetId) {
+      const resp = await fetch(`/api/datasets/${datasetId}/rerun`, { method: "POST" });
+      const payload = await resp.json();
+      if (!resp.ok) {
+        uploadStatus.textContent = payload.detail || "Rerun failed.";
+        return;
+      }
+      runStatus.textContent = `Run ${payload.run_id} started...`;
+      pollRun(payload.run_id);
+    }
+
+    document.querySelectorAll(".rerun-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const datasetId = btn.getAttribute("data-dataset");
+        if (datasetId) rerunDataset(datasetId);
+      });
+    });
+  </script>
+</body>
+</html>

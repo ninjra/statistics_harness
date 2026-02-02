@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from statistic_harness.core.utils import safe_join
