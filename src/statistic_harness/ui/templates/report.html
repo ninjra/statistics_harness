@@ -65,6 +65,18 @@
                   and ≤ {{ issue.max_count }}
                 {% endif %}
               </div>
+              {% if issue.baseline_match_fallbacks %}
+                <div class="muted">Baseline fallback: {{ issue.baseline_match_fallbacks | join(", ") }}</div>
+              {% endif %}
+              {% if issue.baseline_match_modes %}
+                <div class="muted">Baseline mode: {{ issue.baseline_match_modes | join(", ") }}</div>
+              {% endif %}
+              {% if issue.baseline_host_sources %}
+                <div class="muted">Baseline host source: {{ issue.baseline_host_sources | join(", ") }}</div>
+              {% endif %}
+              {% if issue.baseline_host_counts %}
+                <div class="muted">Baseline host count: {{ issue.baseline_host_counts | join(", ") }}</div>
+              {% endif %}
             </li>
           {% endfor %}
         </ul>

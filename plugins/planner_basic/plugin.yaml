@@ -17,3 +17,4 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+  - docs

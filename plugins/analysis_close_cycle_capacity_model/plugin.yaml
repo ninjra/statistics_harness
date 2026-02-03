@@ -13,7 +13,7 @@ settings:
     end_column: null
     queue_column: null
     eligible_column: null
-    close_window_mode: infer
+    close_window_mode: infer_or_default
     close_cycle_start_day: 20
     close_cycle_end_day: 5
     min_close_days: 5
@@ -25,7 +25,7 @@ settings:
     min_bucket_rows: 50
     min_buckets_per_group: 5
     min_months: 1
-    baseline_host_count: 2
+    baseline_host_count: null
     added_hosts: 1
     baseline_match_mode: exact
     target_reduction: 0.30

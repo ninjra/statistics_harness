@@ -80,6 +80,9 @@ def build_report(
 
     dataset_version = storage.get_dataset_version(run_row["dataset_version_id"])
     dataset_context = storage.get_dataset_version_context(run_row["dataset_version_id"])
+    project_row = None
+    if dataset_context and dataset_context.get("project_id"):
+        project_row = storage.fetch_project(dataset_context["project_id"])
     dataset_template = storage.fetch_dataset_template(run_row["dataset_version_id"])
     raw_format = None
     raw_format_id = None
@@ -161,6 +164,30 @@ def build_report(
         if dataset_template.get("template_version"):
             template_block["template_version"] = dataset_template["template_version"]
 
+    known_block = None
+    known_scope_type = ""
+    known_scope_value = ""
+    if project_row and project_row.get("erp_type"):
+        known_scope_type = "erp_type"
+        known_scope_value = str(project_row.get("erp_type") or "unknown").strip() or "unknown"
+        known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+    if not known_block and upload_row and upload_row.get("sha256"):
+        known_scope_type = "sha256"
+        known_scope_value = str(upload_row.get("sha256") or "")
+        if known_scope_value:
+            known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+
+    known_payload = None
+    if known_block:
+        known_payload = {
+            "scope_type": known_block.get("scope_type") or known_scope_type,
+            "scope_value": known_block.get("scope_value") or known_scope_value,
+            "strict": bool(known_block.get("strict", True)),
+            "notes": known_block.get("notes") or "",
+            "natural_language": known_block.get("natural_language") or [],
+            "expected_findings": known_block.get("expected_findings") or [],
+        }
+
     report = {
         "run_id": run_id,
         "created_at": now_iso(),
@@ -193,6 +220,14 @@ def build_report(
         },
         "plugins": plugins,
     }
+    if known_payload:
+        report["known_issues"] = known_payload
+    evaluation_path = run_dir / "evaluation.json"
+    if evaluation_path.exists():
+        try:
+            report["evaluation"] = json.loads(evaluation_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            report["evaluation"] = None
 
     schema = read_json(schema_path)
     validate(instance=report, schema=schema)
@@ -203,7 +238,32 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
     report_path = run_dir / "report.json"
     write_json(report_path, report)
 
-    lines = ["# Statistic Harness Report", "", "## Dataset", ""]
+    lines = ["# Statistic Harness Report", ""]
+    known = report.get("known_issues")
+    if isinstance(known, dict):
+        lines.append("## Known Issues")
+        scope_type = known.get("scope_type") or ""
+        scope_value = known.get("scope_value") or ""
+        if scope_type and scope_value:
+            lines.append(f"Scope: {scope_type}={scope_value}")
+        natural = known.get("natural_language") or []
+        if natural:
+            lines.append("")
+            lines.append("Declared:")
+            for entry in natural:
+                text = entry.get("text") if isinstance(entry, dict) else None
+                if text:
+                    lines.append(f"- {text}")
+        expected = known.get("expected_findings") or []
+        if expected:
+            lines.append("")
+            lines.append("Checks:")
+            for item in _format_known_issue_checks(report, expected):
+                lines.append(f"- {item}")
+        lines.append("")
+
+    lines.append("## Dataset")
+    lines.append("")
     lines.append(f"Rows: {report['input']['rows']}")
     lines.append(f"Cols: {report['input']['cols']}")
     lineage = report.get("lineage") or {}
@@ -229,15 +289,180 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
     lines.append("")
     lines.append("## Plugins")
     for plugin_id, data in report["plugins"].items():
-        lines.append(f"- **{plugin_id}** ({data['status']}): {data['summary']}")
-    lines.append("")
-    lines.append("## Findings")
-    for plugin_id, data in report["plugins"].items():
-        for finding in data["findings"]:
-            lines.append(f"- {plugin_id}: {finding}")
-    lines.append("")
-    lines.append("## Errors")
-    for plugin_id, data in report["plugins"].items():
-        if data["error"]:
-            lines.append(f"- {plugin_id}: {data['error']['message']}")
+        lines.append(f"### {plugin_id} ({data['status']})")
+        if data.get("summary"):
+            lines.append(f"Summary: {data['summary']}")
+        metrics = data.get("metrics") or {}
+        metric_lines = _format_metrics(metrics)
+        if metric_lines:
+            lines.append("Metrics:")
+            for item in metric_lines:
+                lines.append(f"- {item}")
+        findings = data.get("findings") or []
+        if findings:
+            lines.append("Findings:")
+            for item in _format_findings(findings):
+                lines.append(f"- {item}")
+        artifacts = data.get("artifacts") or []
+        if artifacts:
+            lines.append("Artifacts:")
+            for artifact in artifacts:
+                path = artifact.get("path")
+                desc = artifact.get("description") or ""
+                if path:
+                    lines.append(f"- {path} {('- ' + desc) if desc else ''}".strip())
+        if data.get("error"):
+            lines.append(f"Error: {data['error'].get('message')}")
+        lines.append("")
     (run_dir / "report.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def _format_value(value: Any) -> str:
+    if isinstance(value, float):
+        return f"{value:.4f}"
+    if isinstance(value, (int, bool)):
+        return str(value)
+    if isinstance(value, list):
+        preview = ", ".join(str(v) for v in value[:5])
+        if len(value) > 5:
+            preview += ", ..."
+        return f"[{preview}]"
+    if isinstance(value, dict):
+        return "{...}"
+    text = str(value)
+    if len(text) > 80:
+        return text[:77] + "..."
+    return text
+
+
+def _format_metrics(metrics: dict[str, Any]) -> list[str]:
+    if not isinstance(metrics, dict):
+        return []
+    items: list[tuple[str, Any]] = []
+    for key, value in metrics.items():
+        if isinstance(value, (int, float, str, bool)):
+            items.append((key, value))
+    items = sorted(items, key=lambda item: item[0])
+    return [f"{key}: {_format_value(value)}" for key, value in items]
+
+
+def _format_findings(findings: list[Any]) -> list[str]:
+    rendered: list[str] = []
+    for finding in findings:
+        if not isinstance(finding, dict):
+            rendered.append(_format_value(finding))
+            continue
+        kind = finding.get("kind", "finding")
+        measurement = finding.get("measurement_type", "measured")
+        parts = [f"kind={kind}", f"measurement={measurement}"]
+        key_fields = [
+            "role",
+            "column",
+            "process",
+            "process_norm",
+            "process_id",
+            "process_name",
+            "module",
+            "module_cd",
+            "user",
+            "user_id",
+            "dimension",
+            "key",
+            "sequence",
+            "host",
+            "feature",
+            "metric",
+        ]
+        for field in key_fields:
+            if field in finding and finding[field] not in (None, ""):
+                parts.append(f"{field}={_format_value(finding[field])}")
+        numeric_fields = [
+            key
+            for key, value in finding.items()
+            if isinstance(value, (int, float))
+            and key not in {"row_index"}
+            and (
+                key.endswith("_sec")
+                or key.endswith("_hours")
+                or key.endswith("_count")
+                or key.endswith("_runs")
+                or key.endswith("_ratio")
+                or key.endswith("_pct")
+                or key in {"p50", "p95", "p99", "mean", "min", "max", "score"}
+            )
+        ]
+        for key in sorted(numeric_fields)[:6]:
+            parts.append(f"{key}={_format_value(finding[key])}")
+        evidence = finding.get("evidence")
+        if isinstance(evidence, dict):
+            row_ids = evidence.get("row_ids")
+            col_ids = evidence.get("column_ids")
+            if isinstance(row_ids, list) and row_ids:
+                parts.append(f"rows={len(row_ids)}")
+            if isinstance(col_ids, list) and col_ids:
+                parts.append(f"cols={len(col_ids)}")
+            query = evidence.get("query")
+            if query:
+                parts.append(f"query={_format_value(query)}")
+        rendered.append(", ".join(parts))
+    return rendered
+
+
+def _matches_expected(
+    item: dict[str, Any], where: dict[str, Any] | None, contains: dict[str, Any] | None
+) -> bool:
+    if where:
+        for key, expected in where.items():
+            if item.get(key) != expected:
+                return False
+    if contains:
+        for key, expected in contains.items():
+            actual = item.get(key)
+            if isinstance(actual, str):
+                if str(expected) not in actual:
+                    return False
+            elif isinstance(actual, (list, tuple, set)):
+                if isinstance(expected, (list, tuple, set)):
+                    if not set(expected).issubset(set(actual)):
+                        return False
+                else:
+                    if expected not in actual:
+                        return False
+            else:
+                return False
+    return True
+
+
+def _format_known_issue_checks(
+    report: dict[str, Any], expected: list[dict[str, Any]]
+) -> list[str]:
+    items: list[str] = []
+    for entry in expected:
+        if not isinstance(entry, dict):
+            continue
+        plugin_id = entry.get("plugin_id")
+        kind = entry.get("kind")
+        if not kind:
+            continue
+        where = entry.get("where") or {}
+        contains = entry.get("contains") or {}
+        min_count = int(entry.get("min_count", 1))
+        max_count = entry.get("max_count")
+        candidates = []
+        for pid, plugin in report.get("plugins", {}).items():
+            if plugin_id and pid != plugin_id:
+                continue
+            for item in plugin.get("findings", []):
+                if item.get("kind") == kind:
+                    candidates.append(item)
+        matches = [item for item in candidates if _matches_expected(item, where, contains)]
+        status = "PASS" if len(matches) >= min_count and (max_count is None or len(matches) <= int(max_count)) else "FAIL"
+        detail = f"{len(matches)} match(es)"
+        title = entry.get("title") or entry.get("description") or ""
+        if title:
+            title = title.strip()
+        context = f"{kind} ({plugin_id or '*'})"
+        if title:
+            context = f"{title} :: {context}"
+        items.append(f"{status} - {context} - {detail}")
+    return items

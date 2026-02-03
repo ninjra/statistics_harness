@@ -5,6 +5,7 @@ from typing import Any
 
 import pandas as pd
 
+from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.types import PluginResult
 from statistic_harness.core.utils import quote_identifier
 
@@ -44,13 +45,6 @@ def _tokenize(name: str) -> list[str]:
     return [token for token in raw if token]
 
 
-def _timestamp_ratio(values: pd.Series) -> float:
-    if values.empty:
-        return 0.0
-    parsed = pd.to_datetime(values, errors="coerce", utc=True)
-    return float(parsed.notna().mean())
-
-
 def _numeric_ratio(values: pd.Series) -> float:
     if values.empty:
         return 0.0
@@ -79,16 +73,17 @@ def _score_role(role: str, name: str, tokens: list[str], stats: dict[str, float]
         if any(token in token_set for token in ["time", "date", "dt"]):
             score += 1.0
             reasons.append("time_token")
-        if stats["timestamp_ratio"] >= 0.8:
-            score += 2.0
-            reasons.append("timestamp_high")
-        elif stats["timestamp_ratio"] >= 0.5:
-            score += 1.0
-            reasons.append("timestamp_medium")
+        if stats.get("timestamp_valid"):
+            if stats["timestamp_ratio"] >= 0.8:
+                score += 2.0
+                reasons.append("timestamp_high")
+            elif stats["timestamp_ratio"] >= 0.5:
+                score += 1.0
+                reasons.append("timestamp_medium")
         else:
-            score -= 0.5
+            score -= 0.8
     else:
-        if stats["timestamp_ratio"] >= 0.8:
+        if stats.get("timestamp_valid") and stats["timestamp_ratio"] >= 0.8:
             score -= 0.5
 
     if role in {"process_id", "dependency_id", "master_id", "user_id"}:
@@ -156,10 +151,12 @@ class Plugin:
             if name not in df.columns:
                 continue
             series = df[name].dropna()
+            ts_info = infer_timestamp_series(series, name_hint=name, sample_size=sample_rows)
             stats = {
-                "timestamp_ratio": _timestamp_ratio(series),
+                "timestamp_ratio": ts_info.parse_ratio if ts_info.valid else 0.0,
                 "numeric_ratio": _numeric_ratio(series),
                 "unique_ratio": _unique_ratio(series),
+                "timestamp_valid": ts_info.valid,
             }
             tokens = _tokenize(name)
             best_role = ""

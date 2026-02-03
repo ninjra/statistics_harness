@@ -149,6 +149,8 @@ def _score_host_column(name: str, series: pd.Series) -> float:
     for token in ("host", "server", "node", "instance", "machine"):
         if token in lower_name:
             score += 2.0
+    if "process" in lower_name:
+        score -= 3.0
     sample = series.dropna()
     if sample.empty:
         return score - 5.0
@@ -166,10 +168,12 @@ def _score_host_column(name: str, series: pd.Series) -> float:
         score -= 1.5
 
     unique_ratio = sample.nunique(dropna=True) / max(1, sample.shape[0])
-    if 0.001 <= unique_ratio <= 0.5:
-        score += 2.0
-    elif unique_ratio > 0.9:
-        score -= 1.0
+    if unique_ratio < 0.01:
+        score += 3.0
+    elif unique_ratio < 0.1:
+        score += 1.0
+    elif unique_ratio > 0.5:
+        score -= 1.5
 
     return score
 

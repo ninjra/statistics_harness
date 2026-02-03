@@ -22,7 +22,7 @@
     "min_bucket_rows": { "type": "integer", "minimum": 0 },
     "min_buckets_per_group": { "type": "integer", "minimum": 1 },
     "min_months": { "type": "integer", "minimum": 1 },
-    "baseline_host_count": { "type": "integer", "minimum": 1 },
+    "baseline_host_count": { "type": ["integer", "null"], "minimum": 1 },
     "added_hosts": { "type": "integer", "minimum": 1 },
     "baseline_match_mode": { "type": "string", "enum": ["exact", "at_most"] },
     "target_reduction": { "type": "number", "minimum": 0, "maximum": 1 },

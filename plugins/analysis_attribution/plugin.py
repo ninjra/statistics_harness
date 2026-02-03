@@ -4,6 +4,7 @@ from typing import Any
 
 import pandas as pd
 
+from statistic_harness.core.column_inference import choose_timestamp_column
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -29,6 +30,30 @@ def _pick_column(
         if any(pattern in name for pattern in patterns):
             return col
     return None
+
+
+def _pick_timestamp_column(
+    preferred: str | None,
+    columns: list[str],
+    role_by_name: dict[str, str],
+    roles: set[str],
+    patterns: list[str],
+    lower_names: dict[str, str],
+    df: pd.DataFrame,
+) -> str | None:
+    candidates: list[str] = []
+    if preferred and preferred in columns:
+        candidates.append(preferred)
+    for col in columns:
+        if role_by_name.get(col) in roles and col not in candidates:
+            candidates.append(col)
+    for col in columns:
+        name = lower_names[col]
+        if any(pattern in name for pattern in patterns) and col not in candidates:
+            candidates.append(col)
+    if not candidates:
+        return None
+    return choose_timestamp_column(df, candidates)
 
 
 def _normalize_text(value: Any) -> str:
@@ -100,29 +125,32 @@ class Plugin:
             ["user", "owner", "operator"],
             lower_names,
         )
-        queue_col = _pick_column(
+        queue_col = _pick_timestamp_column(
             ctx.settings.get("queue_column"),
             columns,
             role_by_name,
             {"queue_time"},
             ["queue", "queued", "enqueue"],
             lower_names,
+            df,
         )
-        eligible_col = _pick_column(
+        eligible_col = _pick_timestamp_column(
             ctx.settings.get("eligible_column"),
             columns,
             role_by_name,
             {"eligible", "ready", "available"},
             ["eligible", "ready", "available"],
             lower_names,
+            df,
         )
-        start_col = _pick_column(
+        start_col = _pick_timestamp_column(
             ctx.settings.get("start_column"),
             columns,
             role_by_name,
             {"start_time", "start"},
             ["start", "begin"],
             lower_names,
+            df,
         )
 
         if not start_col or (not queue_col and not eligible_col):

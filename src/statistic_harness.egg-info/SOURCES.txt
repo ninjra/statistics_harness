@@ -11,8 +11,10 @@ src/statistic_harness.egg-info/requires.txt
 src/statistic_harness.egg-info/top_level.txt
 src/statistic_harness/core/__init__.py
 src/statistic_harness/core/auth.py
+src/statistic_harness/core/column_inference.py
 src/statistic_harness/core/dataset_io.py
 src/statistic_harness/core/evaluation.py
+src/statistic_harness/core/known_issue_compiler.py
 src/statistic_harness/core/migrations.py
 src/statistic_harness/core/pipeline.py
 src/statistic_harness/core/planner.py

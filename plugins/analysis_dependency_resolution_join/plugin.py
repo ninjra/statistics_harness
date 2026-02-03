@@ -4,6 +4,7 @@ from typing import Any
 
 import pandas as pd
 
+from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -69,17 +70,15 @@ def _best_datetime_column(
     candidates: list[str], df: pd.DataFrame, min_ratio: float = MIN_DATETIME_RATIO
 ) -> str | None:
     best_col = None
-    best_ratio = 0.0
+    best_score = 0.0
     for col in candidates:
-        series = _sample_series(df[col])
-        if series.empty:
+        info = infer_timestamp_series(df[col], name_hint=col, sample_size=MAX_SAMPLE_ROWS)
+        if not info.valid or info.parse_ratio < min_ratio:
             continue
-        parsed = pd.to_datetime(series, errors="coerce", utc=False)
-        ratio = float(parsed.notna().mean())
-        if ratio > best_ratio:
-            best_ratio = ratio
+        if info.score > best_score:
+            best_score = info.score
             best_col = col
-    if best_ratio < min_ratio:
+    if best_score <= 0.0:
         return None
     return best_col
 

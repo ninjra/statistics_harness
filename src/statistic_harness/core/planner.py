@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+import pandas as pd
+
+from .column_inference import infer_timestamp_series
+from .utils import quote_identifier
+
 from .plugin_manager import PluginSpec
 from .storage import Storage
 
@@ -34,6 +39,32 @@ def _infer_dataset_features(
     )
     if not has_timestamp:
         has_timestamp = any("time" in name or "date" in name for name in names)
+
+    if not has_timestamp:
+        columns = storage.fetch_dataset_columns(dataset_version_id)
+        if columns:
+            safe_cols = [col.get("safe_name") for col in columns if col.get("safe_name")]
+            table_row = storage.get_dataset_version_context(dataset_version_id)
+            if safe_cols and table_row and table_row.get("table_name"):
+                quoted = ", ".join(quote_identifier(col) for col in safe_cols)
+                sql = (
+                    f"SELECT {quoted} FROM {quote_identifier(table_row['table_name'])} "
+                    "ORDER BY row_index LIMIT ?"
+                )
+                with storage.connection() as conn:
+                    df = pd.read_sql_query(sql, conn, params=(200,))
+                df = df.rename(
+                    columns={
+                        col["safe_name"]: col["original_name"]
+                        for col in columns
+                        if col.get("safe_name") in df.columns
+                    }
+                )
+                for col in df.columns:
+                    info = infer_timestamp_series(df[col], name_hint=col, sample_size=200)
+                    if info.valid:
+                        has_timestamp = True
+                        break
 
     has_id = any("id" in role for role in role_values)
     if not has_id:

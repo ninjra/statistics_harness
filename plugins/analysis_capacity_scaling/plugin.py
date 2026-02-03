@@ -4,6 +4,7 @@ from typing import Any
 
 import pandas as pd
 
+from statistic_harness.core.column_inference import choose_timestamp_column
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -42,6 +43,35 @@ def _pick_column(
         if any(pattern in name for pattern in patterns):
             return col
     return None
+
+
+def _pick_timestamp_column(
+    preferred: str | None,
+    columns: list[str],
+    role_by_name: dict[str, str],
+    roles: set[str],
+    patterns: list[str],
+    lower_names: dict[str, str],
+    exclude: set[str],
+    df: pd.DataFrame,
+) -> str | None:
+    candidates: list[str] = []
+    if preferred and preferred in columns and preferred not in exclude:
+        candidates.append(preferred)
+    for col in columns:
+        if col in exclude:
+            continue
+        if role_by_name.get(col) in roles and col not in candidates:
+            candidates.append(col)
+    for col in columns:
+        if col in exclude:
+            continue
+        name = lower_names[col]
+        if any(pattern in name for pattern in patterns) and col not in candidates:
+            candidates.append(col)
+    if not candidates:
+        return None
+    return choose_timestamp_column(df, candidates)
 
 
 class Plugin:
@@ -109,7 +139,7 @@ class Plugin:
         if host_col:
             used.add(host_col)
 
-        queue_col = _pick_column(
+        queue_col = _pick_timestamp_column(
             ctx.settings.get("queue_column"),
             columns,
             role_by_name,
@@ -117,11 +147,12 @@ class Plugin:
             ["queue", "queued", "enqueue"],
             lower_names,
             used,
+            df,
         )
         if queue_col:
             used.add(queue_col)
 
-        eligible_col = _pick_column(
+        eligible_col = _pick_timestamp_column(
             ctx.settings.get("eligible_column"),
             columns,
             role_by_name,
@@ -129,11 +160,12 @@ class Plugin:
             ["eligible", "ready", "available"],
             lower_names,
             used,
+            df,
         )
         if eligible_col:
             used.add(eligible_col)
 
-        start_col = _pick_column(
+        start_col = _pick_timestamp_column(
             ctx.settings.get("start_column"),
             columns,
             role_by_name,
@@ -141,6 +173,7 @@ class Plugin:
             ["start", "begin"],
             lower_names,
             used,
+            df,
         )
         if start_col:
             used.add(start_col)

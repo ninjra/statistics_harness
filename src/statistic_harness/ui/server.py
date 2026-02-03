@@ -1385,6 +1385,34 @@ def _build_known_issue_results(
             for item in candidates
             if eval_core._matches_expected(item, where, contains)
         ]
+        fallbacks = sorted(
+            {
+                str(item.get("baseline_match_fallback"))
+                for item in matches
+                if item.get("baseline_match_fallback")
+            }
+        )
+        baseline_modes = sorted(
+            {
+                str(item.get("baseline_match_mode"))
+                for item in matches
+                if item.get("baseline_match_mode")
+            }
+        )
+        baseline_sources = sorted(
+            {
+                str(item.get("baseline_host_source"))
+                for item in matches
+                if item.get("baseline_host_source")
+            }
+        )
+        baseline_hosts = sorted(
+            {
+                str(item.get("baseline_host_count"))
+                for item in matches
+                if item.get("baseline_host_count") is not None
+            }
+        )
         status = "pass"
         if len(matches) < min_count:
             status = "fail"
@@ -1400,6 +1428,10 @@ def _build_known_issue_results(
                 "max_count": max_count_val,
                 "matched": len(matches),
                 "status": status,
+                "baseline_match_fallbacks": fallbacks,
+                "baseline_match_modes": baseline_modes,
+                "baseline_host_sources": baseline_sources,
+                "baseline_host_counts": baseline_hosts,
             }
         )
         expected_matchers.append(

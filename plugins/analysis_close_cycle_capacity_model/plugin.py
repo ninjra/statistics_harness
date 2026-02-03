@@ -147,6 +147,8 @@ def _score_host_column(name: str, series: pd.Series) -> float:
     for token in ("host", "server", "node", "instance", "machine"):
         if token in lower_name:
             score += 2.0
+    if "process" in lower_name:
+        score -= 3.0
     sample = series.dropna()
     if sample.empty:
         return score - 5.0
@@ -164,10 +166,12 @@ def _score_host_column(name: str, series: pd.Series) -> float:
         score -= 1.5
 
     unique_ratio = sample.nunique(dropna=True) / max(1, sample.shape[0])
-    if 0.001 <= unique_ratio <= 0.5:
-        score += 2.0
-    elif unique_ratio > 0.9:
-        score -= 1.0
+    if unique_ratio < 0.01:
+        score += 3.0
+    elif unique_ratio < 0.1:
+        score += 1.0
+    elif unique_ratio > 0.5:
+        score -= 1.5
 
     return score
 
@@ -226,6 +230,29 @@ def _choose_best_datetime_column(
     if best_score <= 0:
         return None
     return best_col
+
+
+def _series_for_column(frame: pd.DataFrame, column: str) -> pd.Series:
+    data = frame[column]
+    if isinstance(data, pd.DataFrame):
+        return data.iloc[:, 0]
+    return data
+
+
+def _infer_baseline_host_count(values: pd.Series) -> int | None:
+    cleaned = values.dropna()
+    if cleaned.empty:
+        return None
+    try:
+        cleaned = cleaned.astype(int)
+    except (TypeError, ValueError):
+        cleaned = cleaned.astype(float).round().astype(int)
+    counts = cleaned.value_counts()
+    if counts.empty:
+        return None
+    max_count = int(counts.max())
+    candidates = sorted(int(v) for v in counts[counts == max_count].index.tolist())
+    return candidates[0] if candidates else None
 
 
 def _bucket_floor(ts: pd.Series, bucket_size: str) -> pd.Series:
@@ -572,8 +599,24 @@ class Plugin:
             lower_names,
             used,
         )
+        eligible_fallback = None
         if eligible_col:
             used.add(eligible_col)
+        elif queue_col:
+            # If no explicit eligible column is detected, reuse queue timestamp as eligible.
+            eligible_col = queue_col
+            eligible_fallback = "queue_column"
+
+        baseline_host_setting = ctx.settings.get("baseline_host_count", None)
+        try:
+            baseline_host_setting_val = (
+                int(baseline_host_setting) if baseline_host_setting is not None else None
+            )
+        except (TypeError, ValueError):
+            baseline_host_setting_val = None
+        if baseline_host_setting_val is not None and baseline_host_setting_val <= 0:
+            baseline_host_setting_val = None
+        added_hosts = int(ctx.settings.get("added_hosts", 1))
 
         summary: dict[str, Any] = {
             "process_column": process_col,
@@ -582,6 +625,9 @@ class Plugin:
             "end_column": end_col,
             "queue_column": queue_col,
             "eligible_column": eligible_col,
+            "eligible_column_fallback": eligible_fallback,
+            "baseline_host_setting": baseline_host_setting_val,
+            "added_hosts": added_hosts,
         }
 
         metric_types = ["ttc", "queue_to_end", "eligible_to_end"]
@@ -709,15 +755,18 @@ class Plugin:
         if not host_col:
             return _emit_not_applicable("missing_host_column")
 
-        selected_cols = [
-            col
-            for col in [process_col, host_col, start_col, end_col, queue_col, eligible_col]
-            if col
-        ]
+        selected_cols: list[str] = []
+        for col in [process_col, host_col, start_col, end_col, queue_col, eligible_col]:
+            if col and col not in selected_cols:
+                selected_cols.append(col)
         work = df.loc[:, selected_cols].copy()
 
-        work["__start_ts"] = pd.to_datetime(work[start_col], errors="coerce", utc=False)
-        work["__end_ts"] = pd.to_datetime(work[end_col], errors="coerce", utc=False)
+        work["__start_ts"] = pd.to_datetime(
+            _series_for_column(work, start_col), errors="coerce", utc=False
+        )
+        work["__end_ts"] = pd.to_datetime(
+            _series_for_column(work, end_col), errors="coerce", utc=False
+        )
         work = work.loc[work["__start_ts"].notna() & work["__end_ts"].notna()].copy()
         if work.empty:
             return _emit_not_applicable("no_valid_timestamps")
@@ -733,14 +782,16 @@ class Plugin:
         if work.empty:
             return _emit_not_applicable("no_positive_ttc")
 
-        work["__host"] = work[host_col].map(_normalize_text)
+        work["__host"] = _series_for_column(work, host_col).map(_normalize_text)
         work["__host_norm"] = work["__host"].str.lower()
         work = work.loc[~work["__host_norm"].isin(INVALID_STRINGS)].copy()
         if work.empty:
             return _emit_not_applicable("no_valid_host_values")
 
         if queue_col and queue_col in work.columns:
-            work["__queue_ts"] = pd.to_datetime(work[queue_col], errors="coerce", utc=False)
+            work["__queue_ts"] = pd.to_datetime(
+                _series_for_column(work, queue_col), errors="coerce", utc=False
+            )
             work["__queue_wait_sec"] = (
                 work["__start_ts"] - work["__queue_ts"]
             ).dt.total_seconds().clip(lower=0)
@@ -753,7 +804,7 @@ class Plugin:
 
         if eligible_col and eligible_col in work.columns:
             work["__eligible_ts"] = pd.to_datetime(
-                work[eligible_col], errors="coerce", utc=False
+                _series_for_column(work, eligible_col), errors="coerce", utc=False
             )
             work["__eligible_wait_sec"] = (
                 work["__start_ts"] - work["__eligible_ts"]
@@ -917,8 +968,6 @@ class Plugin:
         if close_buckets.empty:
             return _emit_not_applicable("no_close_buckets")
 
-        baseline_host_count = int(ctx.settings.get("baseline_host_count", 2))
-        added_hosts = int(ctx.settings.get("added_hosts", 1))
         baseline_match_mode = str(
             ctx.settings.get("baseline_match_mode", "exact") or "exact"
         ).lower()
@@ -928,16 +977,8 @@ class Plugin:
         tolerance = float(ctx.settings.get("tolerance", 0.05))
         max_examples = int(ctx.settings.get("max_examples", 25))
 
-        if baseline_host_count <= 0:
-            return _emit_not_applicable("invalid_baseline_host_count")
         if added_hosts <= 0:
             return _emit_not_applicable("invalid_added_hosts")
-
-        scale_factor = (baseline_host_count + added_hosts) / float(baseline_host_count)
-        assumption = (
-            "Queue/eligible waits scale inversely with capacity; service time unchanged; "
-            f"modeled factor {scale_factor:.3f}."
-        )
 
         findings = []
 
@@ -950,6 +991,54 @@ class Plugin:
 
         for metric in host_metrics:
             metric_col = "host_concurrent" if metric == "concurrent" else "host_unique"
+            baseline_host_count = baseline_host_setting_val
+            baseline_host_source = "config"
+            if baseline_host_count is None:
+                baseline_host_count = _infer_baseline_host_count(close_buckets[metric_col])
+                baseline_host_source = "inferred_mode"
+            if not baseline_host_count or baseline_host_count <= 0:
+                for metric_type in metric_types:
+                    findings.append(
+                        {
+                            "kind": "close_cycle_capacity_model",
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "decision": "not_applicable",
+                            "measurement_type": "not_applicable",
+                            "reason": "invalid_baseline_host_count",
+                            "close_window_mode": close_mode,
+                            "close_window_fallback": fallback_used,
+                            "close_window_source": close_window_source,
+                            "close_window_reason": fallback_reason,
+                            "baseline_host_count": baseline_host_count,
+                            "baseline_host_source": baseline_host_source,
+                            "added_hosts": added_hosts,
+                            "scale_factor": None,
+                            "target_reduction": target_reduction,
+                            "tolerance": tolerance,
+                            "columns": [
+                                col
+                                for col in [
+                                    process_col,
+                                    host_col,
+                                    start_col,
+                                    end_col,
+                                    queue_col,
+                                    eligible_col,
+                                ]
+                                if col
+                            ],
+                        }
+                    )
+                continue
+
+            scale_factor = (baseline_host_count + added_hosts) / float(baseline_host_count)
+            assumption = (
+                "Queue/eligible waits scale inversely with capacity; service time unchanged; "
+                f"modeled factor {scale_factor:.3f}."
+            )
+            baseline_mode_effective = baseline_match_mode
+            baseline_fallback = None
             if baseline_match_mode == "at_most":
                 baseline_mask = close_buckets[metric_col] <= baseline_host_count
             else:
@@ -963,6 +1052,30 @@ class Plugin:
             months = sorted(baseline["month"].unique().tolist())
             if len(months) < min_months:
                 reasons.append("insufficient_months")
+
+            if reasons and baseline_match_mode == "exact":
+                alt_mask = close_buckets[metric_col] <= baseline_host_count
+                alt_baseline = close_buckets.loc[alt_mask].copy()
+                alt_reasons = []
+                if alt_baseline.shape[0] < min_buckets_per_group:
+                    alt_reasons.append("insufficient_buckets")
+                alt_months = sorted(alt_baseline["month"].unique().tolist())
+                if len(alt_months) < min_months:
+                    alt_reasons.append("insufficient_months")
+                if not alt_reasons:
+                    baseline = alt_baseline
+                    reasons = []
+                    baseline_mode_effective = "at_most"
+                    baseline_fallback = "at_most"
+                    months = alt_months
+            if reasons and not close_buckets.empty:
+                # Final fallback: use all close-cycle buckets when baseline host count not observed.
+                baseline = close_buckets.copy()
+                months = sorted(baseline["month"].unique().tolist())
+                if len(months) >= min_months:
+                    reasons = []
+                    baseline_mode_effective = "all"
+                    baseline_fallback = "all_close_buckets"
 
             if reasons:
                 for metric_type in metric_types:
@@ -979,10 +1092,13 @@ class Plugin:
                             "close_window_source": close_window_source,
                             "close_window_reason": fallback_reason,
                             "baseline_host_count": baseline_host_count,
+                            "baseline_host_source": baseline_host_source,
                             "added_hosts": added_hosts,
                             "scale_factor": scale_factor,
                             "target_reduction": target_reduction,
                             "tolerance": tolerance,
+                            "baseline_match_mode": baseline_mode_effective,
+                            "baseline_match_fallback": baseline_fallback,
                             "columns": [
                                 col
                                 for col in [
@@ -1099,8 +1215,11 @@ class Plugin:
                         "effect": effect,
                         "target_reduction": target_reduction,
                         "tolerance": tolerance,
+                        "baseline_match_mode": baseline_mode_effective,
+                        "baseline_match_fallback": baseline_fallback,
                         "target_met": _within_tolerance(effect),
                         "baseline_host_count": baseline_host_count,
+                        "baseline_host_source": baseline_host_source,
                         "added_hosts": added_hosts,
                         "scale_factor": scale_factor,
                         "bucket_count": int(baseline.shape[0]),

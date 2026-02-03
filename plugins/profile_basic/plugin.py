@@ -6,6 +6,7 @@ from typing import Any
 
 import pandas as pd
 
+from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import DEFAULT_TENANT_ID, write_json
 
@@ -23,7 +24,13 @@ class Plugin:
                 return "parameter"
             if "meta" in lname or "config" in lname:
                 return "parameter"
-            if "time" in lname or "date" in lname or "timestamp" in lname:
+            ts_info = infer_timestamp_series(series, name_hint=col_name, sample_size=500)
+            if ts_info.valid and (
+                "time" in lname
+                or "date" in lname
+                or "timestamp" in lname
+                or ts_info.score >= 2.5
+            ):
                 return "timestamp"
             if lname.endswith("id") or " id" in lname:
                 return "id"
