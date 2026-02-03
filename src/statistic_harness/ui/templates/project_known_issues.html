@@ -33,6 +33,16 @@
 
     <section class="card">
       <div class="card-header">
+        <h2>Natural Language Issues</h2>
+        <div class="button-row">
+          <button type="button" class="ghost" id="add-nl-issue">Add NL Issue</button>
+        </div>
+      </div>
+      <div id="nl-issues"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
         <h2>Issues</h2>
         <div class="button-row">
           <button type="button" class="ghost" id="quick-qemail">Quick add: QEMAIL close-cycle</button>
@@ -57,6 +67,7 @@
     const strictFlag = document.getElementById("strict-flag");
     const notesEl = document.getElementById("notes");
     const saveResult = document.getElementById("save-result");
+    const nlContainer = document.getElementById("nl-issues");
 
     function kvToText(obj) {
       if (!obj) return "";
@@ -171,6 +182,48 @@
       issuesContainer.appendChild(row);
     }
 
+    function addNlRow(entry = {}) {
+      const row = document.createElement("div");
+      row.className = "issue-row";
+
+      const text = document.createElement("textarea");
+      text.rows = 2;
+      text.placeholder = "Describe the known issue in plain English.";
+      text.value = entry.text || "";
+
+      const process = document.createElement("input");
+      process.type = "text";
+      process.placeholder = "Process hint (optional)";
+      process.value = entry.process_hint || "";
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "ghost";
+      removeBtn.textContent = "Remove";
+      removeBtn.addEventListener("click", () => row.remove());
+
+      row.appendChild(text);
+      row.appendChild(process);
+      row.appendChild(removeBtn);
+      nlContainer.appendChild(row);
+    }
+
+    function collectNlIssues() {
+      const issues = [];
+      const rows = document.querySelectorAll("#nl-issues .issue-row");
+      rows.forEach((row) => {
+        const areas = row.getElementsByTagName("textarea");
+        const inputs = row.getElementsByTagName("input");
+        const text = areas[0]?.value || "";
+        if (!text.trim()) return;
+        const entry = { text: text.trim() };
+        const process = inputs[0]?.value || "";
+        if (process.trim()) entry.process_hint = process.trim();
+        issues.push(entry);
+      });
+      return issues;
+    }
+
     function collectIssues() {
       const issues = [];
       const rows = document.querySelectorAll(".issue-row");
@@ -199,7 +252,8 @@
       const payload = {
         strict: strictFlag.checked,
         notes: notesEl.value || "",
-        expected_findings: collectIssues()
+        expected_findings: collectIssues(),
+        natural_language: collectNlIssues()
       };
       saveResult.textContent = "Saving...";
       const resp = await fetch("/api/projects/{{ project_id }}/known-issues", {
@@ -212,10 +266,18 @@
         saveResult.textContent = data.detail || "Save failed.";
         return;
       }
-      saveResult.textContent = "Saved.";
+      let summary = "Saved.";
+      if (data.compile_warnings && data.compile_warnings.length) {
+        summary = `Saved with ${data.compile_warnings.length} compiler warning(s).`;
+      }
+      if (data.compiled_count !== undefined) {
+        summary += ` Compiled ${data.compiled_count} NL rule(s).`;
+      }
+      saveResult.textContent = summary;
     }
 
     document.getElementById("add-issue").addEventListener("click", () => addIssueRow({}));
+    document.getElementById("add-nl-issue").addEventListener("click", () => addNlRow({}));
     document.getElementById("save-issues").addEventListener("click", saveIssues);
     document.getElementById("quick-qemail").addEventListener("click", () => {
       addIssueRow({
@@ -233,6 +295,12 @@
       notesEl.value = known.notes || "";
       const existing = known.expected_findings || [];
       existing.forEach((issue) => addIssueRow(issue));
+      const nlIssues = known.natural_language || [];
+      if (nlIssues.length) {
+        nlIssues.forEach((entry) => addNlRow(entry));
+      } else {
+        addNlRow({});
+      }
     }
   </script>
 </body>

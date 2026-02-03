@@ -282,6 +282,12 @@
       "properties": {
         "count": {
           "type": "integer"
+        },
+        "rows_used": {
+          "type": "integer"
+        },
+        "sampled": {
+          "type": "boolean"
         }
       },
       "type": "object"

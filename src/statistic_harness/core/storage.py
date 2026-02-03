@@ -378,6 +378,8 @@ class Storage:
                     entry["title"] = row["title"]
                 if row.get("description"):
                     entry["description"] = row["description"]
+                if row.get("source_text"):
+                    entry["source_text"] = row["source_text"]
                 if row.get("where_json"):
                     try:
                         entry["where"] = json.loads(row["where_json"])
@@ -401,6 +403,9 @@ class Storage:
                 "upload_id": set_row.get("upload_id"),
                 "strict": bool(set_row.get("strict", 0)),
                 "notes": set_row.get("notes") or "",
+                "natural_language": json.loads(set_row["nl_json"])
+                if set_row.get("nl_json")
+                else [],
                 "expected_findings": issues,
             }
 
@@ -411,6 +416,7 @@ class Storage:
         upload_id: str | None,
         strict: bool,
         notes: str,
+        natural_language: list[dict[str, Any]] | None = None,
         conn: sqlite3.Connection | None = None,
     ) -> int:
         tenant_id = self._tenant_id()
@@ -418,15 +424,22 @@ class Storage:
         if conn is None:
             with self.connection() as temp:
                 return self.upsert_known_issue_set(
-                    scope_value, scope_type, upload_id, strict, notes, temp
+                    scope_value,
+                    scope_type,
+                    upload_id,
+                    strict,
+                    notes,
+                    natural_language,
+                    temp,
                 )
         created_at = now_iso()
         updated_at = created_at
+        nl_json = json_dumps(natural_language or []) if natural_language else None
         conn.execute(
             """
             INSERT INTO known_issue_sets
-            (sha256, tenant_id, upload_id, strict, notes, created_at, updated_at, scope_type, scope_value)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (sha256, tenant_id, upload_id, strict, notes, created_at, updated_at, scope_type, scope_value, nl_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(sha256) DO UPDATE SET
               tenant_id = excluded.tenant_id,
               upload_id = excluded.upload_id,
@@ -434,7 +447,8 @@ class Storage:
               notes = excluded.notes,
               updated_at = excluded.updated_at,
               scope_type = excluded.scope_type,
-              scope_value = excluded.scope_value
+              scope_value = excluded.scope_value,
+              nl_json = excluded.nl_json
             """,
             (
                 key,
@@ -446,6 +460,7 @@ class Storage:
                 updated_at,
                 scope_type,
                 scope_value,
+                nl_json,
             ),
         )
         cur = conn.execute(
@@ -484,6 +499,7 @@ class Storage:
                     json_dumps(issue.get("contains")) if issue.get("contains") else None,
                     issue.get("min_count"),
                     issue.get("max_count"),
+                    issue.get("source_text"),
                     created_at,
                     created_at,
                 )
@@ -491,8 +507,8 @@ class Storage:
         conn.executemany(
             """
             INSERT INTO known_issues
-            (set_id, title, description, plugin_id, kind, where_json, contains_json, min_count, max_count, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (set_id, title, description, plugin_id, kind, where_json, contains_json, min_count, max_count, source_text, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             rows,
         )

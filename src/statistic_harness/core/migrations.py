@@ -771,6 +771,13 @@ def migration_18(conn: sqlite3.Connection) -> None:
     )
 
 
+def migration_19(conn: sqlite3.Connection) -> None:
+    if not _column_exists(conn, "known_issue_sets", "nl_json"):
+        conn.execute("ALTER TABLE known_issue_sets ADD COLUMN nl_json TEXT")
+    if not _column_exists(conn, "known_issues", "source_text"):
+        conn.execute("ALTER TABLE known_issues ADD COLUMN source_text TEXT")
+
+
 MIGRATIONS: list[Migration] = [
     migration_1,
     migration_2,
@@ -790,6 +797,7 @@ MIGRATIONS: list[Migration] = [
     migration_16,
     migration_17,
     migration_18,
+    migration_19,
 ]
 
 

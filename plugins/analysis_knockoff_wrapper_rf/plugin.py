@@ -15,6 +15,11 @@ class Plugin:
             return PluginResult(
                 "skipped", "Not enough numeric columns", {}, [], [], None
             )
+        numeric = numeric.dropna(axis=0, how="any")
+        if numeric.empty:
+            return PluginResult(
+                "skipped", "No complete numeric rows", {}, [], [], None
+            )
         target_column = ctx.settings.get("target_column") or numeric.columns[-1]
         y = numeric[target_column].to_numpy()
         X = numeric.drop(columns=[target_column])

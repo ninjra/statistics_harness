@@ -282,6 +282,18 @@
       "properties": {
         "pairs": {
           "type": "integer"
+        },
+        "permutations_run": {
+          "type": "integer"
+        },
+        "rows_used": {
+          "type": "integer"
+        },
+        "sampled": {
+          "type": "boolean"
+        },
+        "time_limit_hit": {
+          "type": "boolean"
         }
       },
       "type": "object"

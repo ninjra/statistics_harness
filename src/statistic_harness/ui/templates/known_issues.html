@@ -41,6 +41,11 @@
     <label><input type="checkbox" id="autosave-flag" checked /> Auto-save</label>
     <p>Where/Contains format: one <code>key=value</code> per line. Use commas for lists.</p>
 
+    <h3>Natural Language Issues</h3>
+    <p>Describe issues in plain English. The compiler will map them to structured checks.</p>
+    <div id="nl-issues"></div>
+    <button type="button" id="add-nl-issue">Add NL Issue</button>
+
     <div id="issues"></div>
 
     <button type="button" id="add-issue">Add Issue</button>
@@ -73,6 +78,7 @@
     const saveResult = document.getElementById("save-result");
     const autosaveFlag = document.getElementById("autosave-flag");
     const erpTypeEl = document.getElementById("erp-type");
+    const nlContainer = document.getElementById("nl-issues");
 
     const knownIssues = JSON.parse(document.getElementById("known-issues-json").textContent || "{}");
     const pluginIds = JSON.parse(document.getElementById("plugin-ids-json").textContent || "[]");
@@ -186,6 +192,50 @@
       issuesContainer.appendChild(row);
     }
 
+    function addNlRow(entry = {}) {
+      const row = document.createElement("div");
+      row.className = "nl-row";
+      row.style.border = "1px solid #2a3140";
+      row.style.padding = "0.5rem";
+      row.style.marginBottom = "0.5rem";
+
+      const text = document.createElement("textarea");
+      text.rows = 2;
+      text.placeholder = "Describe the known issue...";
+      text.value = entry.text || "";
+
+      const process = document.createElement("input");
+      process.type = "text";
+      process.placeholder = "Process hint (optional)";
+      process.value = entry.process_hint || "";
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.addEventListener("click", () => row.remove());
+
+      row.appendChild(text);
+      row.appendChild(process);
+      row.appendChild(removeBtn);
+      nlContainer.appendChild(row);
+    }
+
+    function collectNlIssues() {
+      const issues = [];
+      const rows = document.querySelectorAll(".nl-row");
+      rows.forEach((row) => {
+        const areas = row.getElementsByTagName("textarea");
+        const inputs = row.getElementsByTagName("input");
+        const text = areas[0]?.value || "";
+        const process = inputs[0]?.value || "";
+        if (!text.trim()) return;
+        const entry = { text: text.trim() };
+        if (process.trim()) entry.process_hint = process.trim();
+        issues.push(entry);
+      });
+      return issues;
+    }
+
     function collectIssues() {
       const issues = [];
       const rows = document.querySelectorAll(".issue-row");
@@ -234,7 +284,8 @@
       const payload = {
         strict: strictFlag.checked,
         notes: notesEl.value || "",
-        expected_findings: collectIssues()
+        expected_findings: collectIssues(),
+        natural_language: collectNlIssues()
       };
       saveResult.textContent = isAuto ? "Auto-saving..." : "Saving...";
       const resp = await fetch("/api/known-issues", {
@@ -247,7 +298,13 @@
         })
       });
       const data = await resp.json();
-      saveResult.textContent = JSON.stringify(data, null, 2);
+      let summary = data.compile_warnings && data.compile_warnings.length
+        ? `Saved with ${data.compile_warnings.length} compiler warning(s).`
+        : "Saved.";
+      if (data.compiled_count !== undefined) {
+        summary += ` Compiled ${data.compiled_count} NL rule(s).`;
+      }
+      saveResult.textContent = summary;
       if (data.ground_truth_yaml) {
         refreshGroundTruth(data.ground_truth_yaml);
       }
@@ -275,6 +332,7 @@
     }
 
     document.getElementById("add-issue").addEventListener("click", () => addIssueRow({}));
+    document.getElementById("add-nl-issue").addEventListener("click", () => addNlRow({}));
     document.getElementById("quick-qemail").addEventListener("click", () => {
       addIssueRow({
         plugin_id: "analysis_close_cycle_contention",
@@ -297,6 +355,12 @@
         issues.forEach(addIssueRow);
       } else {
         addIssueRow({});
+      }
+      const nlIssues = knownIssues.natural_language || [];
+      if (nlIssues.length) {
+        nlIssues.forEach(addNlRow);
+      } else {
+        addNlRow({});
       }
       const yamlText = document.getElementById("known-issues-yaml").textContent || "";
       if (yamlText.trim()) {
