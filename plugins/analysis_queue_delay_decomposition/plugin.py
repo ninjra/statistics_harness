@@ -9,6 +9,9 @@ from statistic_harness.core.utils import write_json
 
 
 INVALID_STRINGS = {"", "nan", "none", "null"}
+MAX_SAMPLE_ROWS = 50000
+MIN_PROCESS_ALPHA_RATIO = 0.15
+MIN_DATETIME_RATIO = 0.15
 
 
 def _normalize_process(value: Any) -> str:
@@ -19,7 +22,7 @@ def _normalize_process(value: Any) -> str:
     return str(value).strip()
 
 
-def _pick_column(
+def _candidate_columns(
     preferred: str | None,
     columns: list[str],
     role_by_name: dict[str, str],
@@ -27,21 +30,26 @@ def _pick_column(
     patterns: list[str],
     lower_names: dict[str, str],
     exclude: set[str],
-) -> str | None:
-    if preferred and preferred in columns:
-        return preferred
+) -> list[str]:
+    seen: set[str] = set()
+    candidates: list[str] = []
+    if preferred and preferred in columns and preferred not in exclude and preferred not in seen:
+        candidates.append(preferred)
+        seen.add(preferred)
     for col in columns:
-        if col in exclude:
+        if col in exclude or col in seen:
             continue
         if role_by_name.get(col) in roles:
-            return col
+            candidates.append(col)
+            seen.add(col)
     for col in columns:
-        if col in exclude:
+        if col in exclude or col in seen:
             continue
         name = lower_names[col]
         if any(pattern in name for pattern in patterns):
-            return col
-    return None
+            candidates.append(col)
+            seen.add(col)
+    return candidates
 
 
 def _parse_list(value: Any) -> list[str]:
@@ -52,6 +60,71 @@ def _parse_list(value: Any) -> list[str]:
     if isinstance(value, (list, tuple, set)):
         return [str(item).strip() for item in value if str(item).strip()]
     return []
+
+
+def _sample_series(series: pd.Series, max_rows: int = MAX_SAMPLE_ROWS) -> pd.Series:
+    if len(series) > max_rows:
+        return series.head(max_rows)
+    return series
+
+
+def _normalize_values(series: pd.Series) -> pd.Series:
+    sample = _sample_series(series)
+    values = sample.dropna().astype(str).str.strip()
+    if values.empty:
+        return values
+    values = values[~values.str.lower().isin(INVALID_STRINGS)]
+    return values
+
+
+def _score_process_column(series: pd.Series) -> tuple[float, float]:
+    values = _normalize_values(series)
+    if values.empty:
+        return -1.0, 0.0
+    alpha_ratio = float(values.str.contains(r"[A-Za-z]", regex=True).mean())
+    digit_ratio = float(values.str.match(r"^\\d+(\\.0+)?$").mean())
+    unique_ratio = float(values.nunique() / max(len(values), 1))
+    score = alpha_ratio * 3.0 - digit_ratio * 2.0 + min(unique_ratio, 1.0) * 0.2
+    return score, alpha_ratio
+
+
+def _best_process_column(candidates: list[str], df: pd.DataFrame) -> str | None:
+    best_col = None
+    best_score = -1.0
+    best_alpha = 0.0
+    for col in candidates:
+        score, alpha = _score_process_column(df[col])
+        if score > best_score:
+            best_col = col
+            best_score = score
+            best_alpha = alpha
+    if best_col is None or best_alpha < MIN_PROCESS_ALPHA_RATIO:
+        return None
+    return best_col
+
+
+def _best_datetime_column(
+    candidates: list[str], df: pd.DataFrame, min_ratio: float = MIN_DATETIME_RATIO
+) -> str | None:
+    best_col = None
+    best_score = 0.0
+    for col in candidates:
+        series = _sample_series(df[col])
+        if series.empty:
+            continue
+        parsed = pd.to_datetime(series, errors="coerce", utc=False)
+        valid_ratio = float(parsed.notna().mean())
+        if valid_ratio < min_ratio:
+            continue
+        years = parsed.dt.year
+        year_ratio = float(((years >= 1990) & (years <= 2100)).mean())
+        if year_ratio < 0.6:
+            continue
+        score = valid_ratio + year_ratio
+        if score > best_score:
+            best_score = score
+            best_col = col
+    return best_col
 
 
 class Plugin:
@@ -83,7 +156,7 @@ class Plugin:
         lower_names = {col: str(col).lower() for col in columns}
         used: set[str] = set()
 
-        process_col = _pick_column(
+        process_candidates = _candidate_columns(
             ctx.settings.get("process_column"),
             columns,
             role_by_name,
@@ -92,10 +165,11 @@ class Plugin:
             lower_names,
             used,
         )
+        process_col = _best_process_column(process_candidates, df)
         if process_col:
             used.add(process_col)
 
-        queue_col = _pick_column(
+        queue_candidates = _candidate_columns(
             ctx.settings.get("queue_column"),
             columns,
             role_by_name,
@@ -104,10 +178,11 @@ class Plugin:
             lower_names,
             used,
         )
+        queue_col = _best_datetime_column(queue_candidates, df)
         if queue_col:
             used.add(queue_col)
 
-        eligible_col = _pick_column(
+        eligible_candidates = _candidate_columns(
             ctx.settings.get("eligible_column"),
             columns,
             role_by_name,
@@ -116,10 +191,11 @@ class Plugin:
             lower_names,
             used,
         )
+        eligible_col = _best_datetime_column(eligible_candidates, df)
         if eligible_col:
             used.add(eligible_col)
 
-        start_col = _pick_column(
+        start_candidates = _candidate_columns(
             ctx.settings.get("start_column"),
             columns,
             role_by_name,
@@ -128,10 +204,11 @@ class Plugin:
             lower_names,
             used,
         )
+        start_col = _best_datetime_column(start_candidates, df)
         if start_col:
             used.add(start_col)
 
-        end_col = _pick_column(
+        end_candidates = _candidate_columns(
             ctx.settings.get("end_column"),
             columns,
             role_by_name,
@@ -140,6 +217,7 @@ class Plugin:
             lower_names,
             used,
         )
+        end_col = _best_datetime_column(end_candidates, df)
         if end_col:
             used.add(end_col)
 

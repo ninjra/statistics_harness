@@ -9,6 +9,10 @@ from statistic_harness.core.utils import write_json
 
 
 INVALID_STRINGS = {"", "nan", "none", "null"}
+MAX_SAMPLE_ROWS = 50000
+MIN_DATETIME_RATIO = 0.15
+MIN_OVERLAP_RATIO = 0.02
+MIN_OVERLAP_COUNT = 10
 
 
 def _normalize_text(value: Any) -> str:
@@ -19,24 +23,109 @@ def _normalize_text(value: Any) -> str:
     return str(value).strip()
 
 
-def _pick_column(
+def _candidate_columns(
     preferred: str | None,
     columns: list[str],
     role_by_name: dict[str, str],
     roles: set[str],
     patterns: list[str],
     lower_names: dict[str, str],
-) -> str | None:
-    if preferred and preferred in columns:
-        return preferred
+) -> list[str]:
+    seen: set[str] = set()
+    candidates: list[str] = []
+    if preferred and preferred in columns and preferred not in seen:
+        candidates.append(preferred)
+        seen.add(preferred)
     for col in columns:
-        if role_by_name.get(col) in roles:
-            return col
+        if role_by_name.get(col) in roles and col not in seen:
+            candidates.append(col)
+            seen.add(col)
     for col in columns:
+        if col in seen:
+            continue
         name = lower_names[col]
         if any(pattern in name for pattern in patterns):
-            return col
-    return None
+            candidates.append(col)
+            seen.add(col)
+    return candidates
+
+
+def _sample_series(series: pd.Series, max_rows: int = MAX_SAMPLE_ROWS) -> pd.Series:
+    if len(series) > max_rows:
+        return series.head(max_rows)
+    return series
+
+
+def _normalize_values(series: pd.Series) -> pd.Series:
+    sample = _sample_series(series)
+    values = sample.dropna().astype(str).str.strip()
+    if values.empty:
+        return values
+    values = values[~values.str.lower().isin(INVALID_STRINGS)]
+    return values
+
+
+def _best_datetime_column(
+    candidates: list[str], df: pd.DataFrame, min_ratio: float = MIN_DATETIME_RATIO
+) -> str | None:
+    best_col = None
+    best_ratio = 0.0
+    for col in candidates:
+        series = _sample_series(df[col])
+        if series.empty:
+            continue
+        parsed = pd.to_datetime(series, errors="coerce", utc=False)
+        ratio = float(parsed.notna().mean())
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_col = col
+    if best_ratio < min_ratio:
+        return None
+    return best_col
+
+
+def _best_dependency_pair(
+    dep_candidates: list[str],
+    id_candidates: list[str],
+    df: pd.DataFrame,
+) -> tuple[str | None, str | None]:
+    row_count = len(df)
+    min_overlap_count = 1 if row_count < 500 else MIN_OVERLAP_COUNT
+    min_overlap_ratio = 0.0 if row_count < 500 else MIN_OVERLAP_RATIO
+    id_values: dict[str, set[str]] = {}
+    for col in id_candidates:
+        values = _normalize_values(df[col])
+        if not values.empty:
+            id_values[col] = set(values.tolist())
+    if not id_values:
+        return None, None
+
+    best_dep = None
+    best_id = None
+    best_ratio = 0.0
+    for dep_col in dep_candidates:
+        dep_values = _normalize_values(df[dep_col])
+        if dep_values.empty:
+            continue
+        dep_set = set(dep_values.tolist())
+        if len(dep_set) < min_overlap_count:
+            continue
+        for id_col, id_set in id_values.items():
+            if id_col == dep_col:
+                continue
+            if not id_set:
+                continue
+            overlap = dep_set & id_set
+            if len(overlap) < min_overlap_count:
+                continue
+            ratio = len(overlap) / max(len(dep_set), 1)
+            if ratio > best_ratio:
+                best_ratio = ratio
+                best_dep = dep_col
+                best_id = id_col
+    if best_ratio < min_overlap_ratio:
+        return None, None
+    return best_dep, best_id
 
 
 class Plugin:
@@ -67,7 +156,7 @@ class Plugin:
         columns = list(df.columns)
         lower_names = {col: str(col).lower() for col in columns}
 
-        dep_col = _pick_column(
+        dep_candidates = _candidate_columns(
             ctx.settings.get("dependency_column"),
             columns,
             role_by_name,
@@ -75,15 +164,15 @@ class Plugin:
             ["dep", "dependency", "parent", "prereq", "preced"],
             lower_names,
         )
-        id_col = _pick_column(
+        id_candidates = _candidate_columns(
             ctx.settings.get("id_column"),
             columns,
             role_by_name,
             {"process_id", "id"},
-            ["process_id", "proc_id", "id"],
+            ["process_id", "proc_id", "queue_id", "job_id", "run_id", "id"],
             lower_names,
         )
-        start_col = _pick_column(
+        start_candidates = _candidate_columns(
             ctx.settings.get("start_column"),
             columns,
             role_by_name,
@@ -91,7 +180,7 @@ class Plugin:
             ["start", "begin"],
             lower_names,
         )
-        end_col = _pick_column(
+        end_candidates = _candidate_columns(
             ctx.settings.get("end_column"),
             columns,
             role_by_name,
@@ -99,6 +188,10 @@ class Plugin:
             ["end", "finish", "complete", "stop"],
             lower_names,
         )
+
+        dep_col, id_col = _best_dependency_pair(dep_candidates, id_candidates, df)
+        start_col = _best_datetime_column(start_candidates, df)
+        end_col = _best_datetime_column(end_candidates, df)
 
         if not dep_col or not id_col or not start_col or not end_col:
             return PluginResult(

@@ -14,6 +14,7 @@ settings:
     min_window: 5
     max_window: 20
     n_permutations: 100
+    max_rows: 5000
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

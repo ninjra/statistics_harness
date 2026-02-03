@@ -18,6 +18,13 @@ class Plugin:
             value_col = numeric.columns[0]
         series = df[value_col].to_numpy()
         n = len(series)
+        max_rows = int(ctx.settings.get("max_rows", 5000))
+        sampled = False
+        if n > max_rows > 0:
+            idx = np.linspace(0, n - 1, max_rows, dtype=int)
+            series = series[idx]
+            n = len(series)
+            sampled = True
         min_window = int(ctx.settings.get("min_window", 5))
         max_window = int(ctx.settings.get("max_window", 20))
         n_perm = int(ctx.settings.get("n_permutations", 100))
@@ -72,7 +79,7 @@ class Plugin:
         return PluginResult(
             "ok",
             "Computed scan statistics",
-            {"count": len(results)},
+            {"count": len(results), "sampled": sampled, "rows_used": n},
             results,
             artifacts,
             None,

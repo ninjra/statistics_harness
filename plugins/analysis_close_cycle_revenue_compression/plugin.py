@@ -911,6 +911,8 @@ class Plugin:
             return _emit_not_applicable("no_positive_ttc")
 
         close_mode = str(ctx.settings.get("close_window_mode", "infer_or_default") or "infer_or_default").lower()
+        if close_mode == "calendar":
+            close_mode = "override"
         close_start_day = int(ctx.settings.get("close_cycle_start_day", 20))
         close_end_day = int(ctx.settings.get("close_cycle_end_day", 5))
         min_close_days = int(ctx.settings.get("min_close_days", 5))

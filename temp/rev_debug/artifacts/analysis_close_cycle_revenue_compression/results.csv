@@ -1,2 +1,0 @@
-decision,reason,process_label,basis,anchor_basis,target_days,baseline_span_days,modeled_span_days,required_scale_factor,required_added_hosts,required_total_hosts,host_count,close_window_source
-modeled,already_within_target,revenue,queue_wait,queue,7.0,0.00799999999999946,0.00799999999999946,1.0,0,1,1,override

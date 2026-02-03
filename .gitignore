@@ -4,3 +4,8 @@ __pycache__/
 appdata/
 .dist/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pip-tmp/
+temp/
+*.egg-info/

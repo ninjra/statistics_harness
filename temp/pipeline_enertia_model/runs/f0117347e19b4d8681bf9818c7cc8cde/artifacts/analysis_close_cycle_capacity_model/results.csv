@@ -1,7 +1,0 @@
-host_metric,metric_type,decision,baseline_median_hours,modeled_median_hours,effect,target_reduction,tolerance,target_met,bucket_count,months,reason
-concurrent,ttc,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
-concurrent,queue_to_end,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
-concurrent,eligible_to_end,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
-unique,ttc,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
-unique,queue_to_end,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
-unique,eligible_to_end,not_applicable,None,None,None,None,None,None,None,None,close_window_not_inferred
