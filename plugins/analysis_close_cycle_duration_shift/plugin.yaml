@@ -1,0 +1,37 @@
+id: analysis_close_cycle_duration_shift
+name: Close Cycle Duration Shift Analysis
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Detect per-process duration shifts between close and open cycles.
+  defaults:
+    process_column: null
+    timestamp_column: null
+    start_column: null
+    end_column: null
+    duration_column: null
+    server_column: null
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    min_close_count: 200
+    min_open_count: 200
+    min_days: 20
+    min_slowdown_ratio: 1.2
+    min_effect_seconds: 1.0
+    max_samples: 5000
+    permutations: 500
+    p_value_threshold: 0.1
+    max_examples: 25
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

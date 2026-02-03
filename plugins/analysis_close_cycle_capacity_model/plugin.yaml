@@ -1,0 +1,44 @@
+id: analysis_close_cycle_capacity_model
+name: Close Cycle Capacity Model
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Model close-cycle completion-time impact from adding capacity (model-only findings).
+  defaults:
+    process_column: null
+    host_column: null
+    start_column: null
+    end_column: null
+    queue_column: null
+    eligible_column: null
+    close_window_mode: infer
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    min_close_days: 5
+    max_close_days: 20
+    lookahead_days: 7
+    min_close_confidence: 0.1
+    min_close_data_ratio: 0.5
+    bucket_size: day
+    min_bucket_rows: 50
+    min_buckets_per_group: 5
+    min_months: 1
+    baseline_host_count: 2
+    added_hosts: 1
+    baseline_match_mode: exact
+    target_reduction: 0.30
+    tolerance: 0.05
+    max_examples: 25
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

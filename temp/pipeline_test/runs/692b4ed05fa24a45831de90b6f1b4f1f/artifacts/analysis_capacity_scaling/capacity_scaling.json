@@ -1,0 +1,21 @@
+{
+  "metrics": {
+    "baseline_wait_hours": 0.75,
+    "host_count": 2,
+    "modeled_wait_hours": 0.5,
+    "reduction_hours": 0.25,
+    "rows": 45,
+    "scale_factor": 1.5
+  },
+  "summary": {
+    "assumption": "Eligible wait scales inversely with capacity by factor 1.500; prereq wait unchanged.",
+    "eligible_basis": "queue",
+    "eligible_column": null,
+    "host_column": "SERVER",
+    "module_column": null,
+    "process_column": "PROCESS_NAME",
+    "queue_column": "QUEUE_DT",
+    "scale_factor": 1.5,
+    "start_column": "START_DT"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "candidates": [],
+  "summary": {
+    "close_cycle_end_day": 5,
+    "close_cycle_start_day": 20,
+    "duration_column": "DURATION_SEC",
+    "param_column": "PARAMS",
+    "process_column": "PROCESS_CODE",
+    "server_column": "HOST_NAME",
+    "timestamp_column": "START_TIME"
+  }
+}

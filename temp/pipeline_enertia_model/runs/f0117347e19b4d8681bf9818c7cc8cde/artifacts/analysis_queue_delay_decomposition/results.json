@@ -1,0 +1,38 @@
+{
+  "process_stats": [
+    {
+      "eligible_wait_gt_hours_close": 0.0,
+      "eligible_wait_gt_hours_open": 0.0333333333,
+      "eligible_wait_gt_hours_total": 0.0333333333,
+      "eligible_wait_hours_close": 0.0,
+      "eligible_wait_hours_open": 0.05,
+      "eligible_wait_hours_total": 0.05,
+      "process": "alpha",
+      "process_norm": "alpha",
+      "runs_close": 0.0,
+      "runs_open": 2.0,
+      "runs_total": 2.0,
+      "wait_pre_hours_total": 0.0333333333
+    }
+  ],
+  "summary": {
+    "close_cycle_end_day": 5,
+    "close_cycle_start_day": 20,
+    "dependency_columns": [
+      "DEPENDENCY_ID"
+    ],
+    "eligible_basis": "eligible",
+    "eligible_column": "ELIGIBLE_AT",
+    "end_column": "END_TIME",
+    "process_column": "PROCESS_CODE",
+    "queue_column": "QUEUED_AT",
+    "start_column": "START_TIME",
+    "wait_threshold_seconds": 60.0
+  },
+  "totals": {
+    "eligible_wait_gt_hours_total": 0.0333333333,
+    "eligible_wait_hours_total": 0.05,
+    "sequence_runs": 14,
+    "standalone_runs": 2
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "findings": [
+    {
+      "anchor_basis": "queue",
+      "assumption": "Queue wait scales inversely with capacity; service time unchanged.",
+      "baseline_span_days": 0.008,
+      "basis": "queue_wait",
+      "close_window_fallback": false,
+      "close_window_mode": "override",
+      "close_window_reason": null,
+      "close_window_source": "override",
+      "columns": [
+        "PROCESS",
+        "START_DT",
+        "END_DT",
+        "QUEUE_DT",
+        "HOST"
+      ],
+      "decision": "modeled",
+      "host_count": 1,
+      "implied_scale_factor": 1.0,
+      "kind": "close_cycle_revenue_compression",
+      "measurement_type": "modeled",
+      "modeled_span_days": 0.008,
+      "process_label": "revenue",
+      "process_matches": [
+        "revenue"
+      ],
+      "reason": "already_within_target",
+      "required_added_hosts": 0,
+      "required_scale_factor": 1.0,
+      "required_total_hosts": 1,
+      "row_ids": [
+        0
+      ],
+      "target_days": 7.0
+    }
+  ],
+  "summary": {
+    "close_cycle_end_day": 27,
+    "close_cycle_start_day": 20,
+    "close_window_fallback": false,
+    "close_window_fallback_reason": null,
+    "close_window_mode": "override",
+    "close_windows": [
+      {
+        "end_day": 27,
+        "mode": "override",
+        "start_day": 20
+      }
+    ],
+    "duration_column": null,
+    "eligible_column": null,
+    "end_column": "END_DT",
+    "host_column": "HOST",
+    "lookahead_days": 7,
+    "max_close_days": 20,
+    "min_close_confidence": 0.1,
+    "min_close_data_ratio": 0.5,
+    "min_close_days": 5,
+    "process_column": "PROCESS",
+    "queue_column": "QUEUE_DT",
+    "start_column": "START_DT"
+  }
+}

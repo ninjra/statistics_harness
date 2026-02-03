@@ -22,6 +22,7 @@ def test_enertia_eventlog_evaluation(tmp_path, monkeypatch):
             "analysis_chain_makespan",
             "analysis_concurrency_reconstruction",
             "analysis_capacity_scaling",
+            "analysis_close_cycle_capacity_model",
             "analysis_determinism_discipline",
         ],
         {},

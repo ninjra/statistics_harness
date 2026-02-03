@@ -1,0 +1,44 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T02:12:49.624023+00:00",
+    "cpu_system": 0.000178,
+    "cpu_user": 0.004026,
+    "duration_ms": 66,
+    "max_rss": 83684,
+    "started_at": "2026-02-03T02:12:49.480217+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [
+      {
+        "description": "Determinism discipline checks",
+        "path": "artifacts/analysis_determinism_discipline/determinism_checks.json",
+        "type": "json"
+      }
+    ],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [
+      {
+        "checked_findings": 37,
+        "kind": "determinism_discipline_summary",
+        "measurement_type": "measured",
+        "missing_measurement_type": 0,
+        "modeled_missing_assumption": 0,
+        "violations": 0
+      }
+    ],
+    "metrics": {
+      "checked_findings": 37,
+      "missing_measurement_type": 0,
+      "modeled_missing_assumption": 0
+    },
+    "status": "ok",
+    "summary": "Checked measurement_type discipline"
+  }
+}

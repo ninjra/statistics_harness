@@ -1,0 +1,40 @@
+{
+  "columns": [
+    {
+      "dtype": "int64",
+      "name": "CASE_ID"
+    },
+    {
+      "dtype": "str",
+      "name": "PROCESS_NAME"
+    },
+    {
+      "dtype": "str",
+      "name": "QUEUE_DT"
+    },
+    {
+      "dtype": "str",
+      "name": "START_DT"
+    },
+    {
+      "dtype": "str",
+      "name": "END_DT"
+    },
+    {
+      "dtype": "int64",
+      "name": "DURATION_SEC"
+    },
+    {
+      "dtype": "str",
+      "name": "SERVER"
+    },
+    {
+      "dtype": "str",
+      "name": "USER_ID"
+    },
+    {
+      "dtype": "str",
+      "name": "PARAMS"
+    }
+  ]
+}

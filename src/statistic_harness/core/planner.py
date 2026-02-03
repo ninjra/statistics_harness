@@ -42,12 +42,20 @@ def _infer_dataset_features(
     has_activity = any("activity" in name or "event" in name or "step" in name for name in names)
     has_eventlog = has_id and has_activity
 
+    host_tokens = ("host", "server", "node", "instance", "machine")
+    has_host = any(
+        any(token in role for token in host_tokens) for role in role_values
+    )
+    if not has_host:
+        has_host = any(any(token in name for token in host_tokens) for name in names)
+
     return {
         "numeric_count": len(numeric_cols),
         "has_numeric": len(numeric_cols) > 0,
         "has_multi_numeric": len(numeric_cols) > 1,
         "has_timestamp": has_timestamp,
         "has_eventlog": has_eventlog,
+        "has_host": has_host,
     }
 
 
@@ -71,12 +79,20 @@ def select_plugins(
     dataset_template = storage.fetch_dataset_template(dataset_version_id)
     template_ready = bool(dataset_template and dataset_template.get("status") == "ready")
     selected = []
+    spec_ids = {spec.plugin_id for spec in specs}
     for spec in specs:
         if spec.type != "analysis":
             continue
         if not _capabilities_satisfied(spec.capabilities, features):
             continue
         selected.append(spec.plugin_id)
+    if (
+        "analysis_close_cycle_capacity_model" in spec_ids
+        and "analysis_close_cycle_capacity_model" not in selected
+        and features.get("has_timestamp")
+        and features.get("has_host")
+    ):
+        selected.append("analysis_close_cycle_capacity_model")
     if not template_ready:
         for spec in specs:
             if spec.plugin_id == "transform_normalize_mixed":

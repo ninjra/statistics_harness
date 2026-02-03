@@ -1,0 +1,80 @@
+{
+  "created_at": "2026-02-01T22:42:11.573561+00:00",
+  "input": {
+    "cols": 0,
+    "filename": "quorum_close_cycle.csv",
+    "inferred_types": {},
+    "rows": 0
+  },
+  "lineage": {
+    "dataset": {
+      "column_count": 0,
+      "data_hash": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+      "dataset_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+      "dataset_version_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+      "project_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+      "row_count": 0,
+      "table_name": "dataset_097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1"
+    },
+    "input": {
+      "canonical_path": "temp/quorum_appdata/runs/b5a493839ad949dd832507d127ef26ec/dataset/canonical.csv",
+      "filename": "quorum_close_cycle.csv",
+      "input_hash": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+      "sha256": "",
+      "size_bytes": 0,
+      "upload_id": "local"
+    },
+    "plugins": {
+      "analysis_close_cycle_contention": {
+        "code_hash": "9ad81c492f5de15082aa4605baf0d154f2f6680db6222ba457227212e99f4959",
+        "dataset_hash": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+        "executed_at": "2026-02-01T22:42:09.707698+00:00",
+        "plugin_version": "0.1.0",
+        "settings_hash": "d18ac3abd41ff114286ba0f5954c2b7e546f14be74d5ffada224a4613efbddc6",
+        "status": "skipped",
+        "summary": "Empty dataset"
+      },
+      "ingest_tabular": {
+        "code_hash": "0e37a2aa9c839e4b890e04dd8b01c91c7c022228c4c21e08ec9fa8fe5d4d90e7",
+        "dataset_hash": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+        "executed_at": "2026-02-01T22:42:09.988611+00:00",
+        "plugin_version": "0.1.0",
+        "settings_hash": "d678fe29711984399e1b56c7b6b5a6a062e516d5f851a3e56676eae338ca7038",
+        "status": "error",
+        "summary": "ingest_tabular failed"
+      }
+    },
+    "raw_format": null,
+    "run": {
+      "created_at": "2026-02-01T22:42:07.410651+00:00",
+      "run_id": "b5a493839ad949dd832507d127ef26ec",
+      "run_seed": 123,
+      "status": "running"
+    },
+    "template": null
+  },
+  "plugins": {
+    "analysis_close_cycle_contention": {
+      "artifacts": [],
+      "error": null,
+      "findings": [],
+      "metrics": {},
+      "status": "skipped",
+      "summary": "Empty dataset"
+    },
+    "ingest_tabular": {
+      "artifacts": [],
+      "error": {
+        "message": "File read denied: /etc/mime.types",
+        "traceback": "Traceback (most recent call last):\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/src/statistic_harness/core/plugin_runner.py\", line 267, in _run_request\n    plugin = _load_plugin(request[\"plugin_id\"], request[\"entrypoint\"])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/src/statistic_harness/core/plugin_runner.py\", line 124, in _load_plugin\n    module = __import__(module_name, fromlist=[class_name])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/plugins/ingest_tabular/plugin.py\", line 9, in <module>\n    from openpyxl import load_workbook\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/.venv/lib/python3.12/site-packages/openpyxl/__init__.py\", line 7, in <module>\n    from openpyxl.workbook import Workbook\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/.venv/lib/python3.12/site-packages/openpyxl/workbook/__init__.py\", line 4, in <module>\n    from .workbook import Workbook\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/.venv/lib/python3.12/site-packages/openpyxl/workbook/workbook.py\", line 17, in <module>\n    from openpyxl.writer.excel import save_workbook\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/.venv/lib/python3.12/site-packages/openpyxl/writer/excel.py\", line 24, in <module>\n    from openpyxl.packaging.manifest import Manifest\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/.venv/lib/python3.12/site-packages/openpyxl/packaging/manifest.py\", line 26, in <module>\n    mimetypes = MimeTypes()\n                ^^^^^^^^^^^\n  File \"/usr/lib/python3.12/mimetypes.py\", line 74, in __init__\n    init()\n  File \"/usr/lib/python3.12/mimetypes.py\", line 382, in init\n    db.read(file)\n  File \"/usr/lib/python3.12/mimetypes.py\", line 215, in read\n    with open(filename, encoding='utf-8') as fp:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/d/projects/statistics_harness/statistics_harness/src/statistic_harness/core/plugin_runner.py\", line 99, in _guarded_open\n    raise PermissionError(f\"File read denied: {path}\")\nPermissionError: File read denied: /etc/mime.types\n",
+        "type": "PermissionError"
+      },
+      "findings": [],
+      "metrics": {},
+      "status": "error",
+      "summary": "ingest_tabular failed"
+    }
+  },
+  "run_id": "b5a493839ad949dd832507d127ef26ec",
+  "status": "completed"
+}

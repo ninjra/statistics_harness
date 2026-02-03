@@ -1,0 +1,39 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T01:59:33.343232+00:00",
+    "cpu_system": 0.001446,
+    "cpu_user": 0.008275,
+    "duration_ms": 124,
+    "max_rss": 81376,
+    "started_at": "2026-02-03T01:59:33.130202+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [
+      {
+        "columns": [
+          "CASE_ID",
+          "START_DT",
+          "END_DT"
+        ],
+        "kind": "dependency_lag_summary",
+        "measurement_type": "not_applicable",
+        "reason": "Missing dependency/id/start/end columns."
+      }
+    ],
+    "metrics": {
+      "dependency_rows": 0,
+      "near_zero_ratio": 0.0
+    },
+    "status": "ok",
+    "summary": "Dependency join not applicable"
+  }
+}

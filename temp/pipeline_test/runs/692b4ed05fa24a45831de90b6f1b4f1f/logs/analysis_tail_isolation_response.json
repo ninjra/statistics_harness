@@ -1,0 +1,40 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T01:59:33.367221+00:00",
+    "cpu_system": 0.001841,
+    "cpu_user": 0.012741,
+    "duration_ms": 151,
+    "max_rss": 81368,
+    "started_at": "2026-02-03T01:59:33.130886+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [
+      {
+        "columns": [
+          "PROCESS_NAME",
+          "USER_ID",
+          "CASE_ID"
+        ],
+        "kind": "tail_isolation",
+        "measurement_type": "not_applicable",
+        "reason": "No rows exceed the tail threshold.",
+        "threshold_seconds": 60.0
+      }
+    ],
+    "metrics": {
+      "tail_hours_total": 0.0,
+      "tail_rows": 0
+    },
+    "status": "ok",
+    "summary": "No tail rows above threshold"
+  }
+}

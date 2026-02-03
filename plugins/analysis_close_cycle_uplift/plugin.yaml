@@ -1,0 +1,41 @@
+id: analysis_close_cycle_uplift
+name: Close Cycle Uplift Analysis
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Detect close-cycle slowdowns using share-shift statistics.
+  defaults:
+    process_column: null
+    timestamp_column: null
+    start_column: null
+    end_column: null
+    duration_column: null
+    server_column: null
+    param_column: null
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    min_close_count: 200
+    min_days: 20
+    min_share_delta: 0.002
+    min_slowdown_ratio: 1.05
+    p_value_threshold: 0.1
+    max_examples: 25
+    min_open_count: 200
+    min_open_days: 10
+    min_open_share: 0.002
+    min_open_ratio: 0.02
+    suppress_processes: []
+    suppress_process_regex: null
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

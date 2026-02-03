@@ -1,0 +1,36 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T02:13:20.491569+00:00",
+    "cpu_system": 0.0,
+    "cpu_user": 0.027045,
+    "duration_ms": 277,
+    "max_rss": 83924,
+    "started_at": "2026-02-03T02:13:20.127523+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [
+      {
+        "description": "Report JSON",
+        "path": "report.json",
+        "type": "json"
+      },
+      {
+        "description": "Report Markdown",
+        "path": "report.md",
+        "type": "markdown"
+      }
+    ],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [],
+    "metrics": {},
+    "status": "ok",
+    "summary": "Report generated"
+  }
+}

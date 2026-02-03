@@ -1,0 +1,56 @@
+{
+  "columns": [
+    {
+      "dtype": "str",
+      "name": "CASE_ID"
+    },
+    {
+      "dtype": "str",
+      "name": "PROCESS_CODE"
+    },
+    {
+      "dtype": "str",
+      "name": "MODULE_CODE"
+    },
+    {
+      "dtype": "str",
+      "name": "USER_NAME"
+    },
+    {
+      "dtype": "str",
+      "name": "HOST_NAME"
+    },
+    {
+      "dtype": "str",
+      "name": "QUEUED_AT"
+    },
+    {
+      "dtype": "str",
+      "name": "ELIGIBLE_AT"
+    },
+    {
+      "dtype": "str",
+      "name": "START_TIME"
+    },
+    {
+      "dtype": "str",
+      "name": "END_TIME"
+    },
+    {
+      "dtype": "int64",
+      "name": "DURATION_SEC"
+    },
+    {
+      "dtype": "str",
+      "name": "DEPENDENCY_ID"
+    },
+    {
+      "dtype": "str",
+      "name": "CHAIN_ID"
+    },
+    {
+      "dtype": "str",
+      "name": "PARAMS"
+    }
+  ]
+}

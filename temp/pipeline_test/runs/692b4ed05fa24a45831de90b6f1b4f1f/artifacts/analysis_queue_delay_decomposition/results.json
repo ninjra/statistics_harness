@@ -1,0 +1,50 @@
+{
+  "process_stats": [
+    {
+      "eligible_wait_gt_hours_close": 0.0,
+      "eligible_wait_gt_hours_open": 0.0,
+      "eligible_wait_gt_hours_total": 0.0,
+      "eligible_wait_hours_close": 0.4166666667,
+      "eligible_wait_hours_open": 0.1666666667,
+      "eligible_wait_hours_total": 0.5833333333,
+      "process": "qemail",
+      "process_norm": "qemail",
+      "runs_close": 25.0,
+      "runs_open": 10.0,
+      "runs_total": 35.0,
+      "wait_pre_hours_total": 0.0
+    },
+    {
+      "eligible_wait_gt_hours_close": 0.0,
+      "eligible_wait_gt_hours_open": 0.0,
+      "eligible_wait_gt_hours_total": 0.0,
+      "eligible_wait_hours_close": 0.0833333333,
+      "eligible_wait_hours_open": 0.0833333333,
+      "eligible_wait_hours_total": 0.1666666667,
+      "process": "qpec",
+      "process_norm": "qpec",
+      "runs_close": 5.0,
+      "runs_open": 5.0,
+      "runs_total": 10.0,
+      "wait_pre_hours_total": 0.0
+    }
+  ],
+  "summary": {
+    "close_cycle_end_day": 5,
+    "close_cycle_start_day": 20,
+    "dependency_columns": [],
+    "eligible_basis": "queue",
+    "eligible_column": null,
+    "end_column": "END_DT",
+    "process_column": "PROCESS_NAME",
+    "queue_column": "QUEUE_DT",
+    "start_column": "START_DT",
+    "wait_threshold_seconds": 60.0
+  },
+  "totals": {
+    "eligible_wait_gt_hours_total": 0.0,
+    "eligible_wait_hours_total": 0.75,
+    "sequence_runs": 0,
+    "standalone_runs": 45
+  }
+}

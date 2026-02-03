@@ -1,0 +1,56 @@
+{
+  "allow_paths": [
+    "temp/pipeline_test",
+    "plugins",
+    "temp/pipeline_test/runs/692b4ed05fa24a45831de90b6f1b4f1f",
+    "src",
+    "temp/pipeline_test/runs/692b4ed05fa24a45831de90b6f1b4f1f",
+    "temp/pipeline_test/state.sqlite"
+  ],
+  "appdata_dir": "temp/pipeline_test",
+  "budget": {
+    "cpu_limit_ms": null,
+    "row_limit": null,
+    "sampled": false,
+    "time_limit_ms": null
+  },
+  "dataset_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+  "dataset_version_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+  "entrypoint": "plugin.py:Plugin",
+  "input_hash": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+  "plugin_id": "analysis_close_cycle_contention",
+  "project_id": "097388ebeb8229a23149924daa9d76d740a6ca1f3ea3b5c109fcdcd168b097d1",
+  "root_dir": "/mnt/d/projects/statistics_harness/statistics_harness",
+  "run_dir": "temp/pipeline_test/runs/692b4ed05fa24a45831de90b6f1b4f1f",
+  "run_id": "692b4ed05fa24a45831de90b6f1b4f1f",
+  "run_seed": 123,
+  "sandbox": {
+    "fs_allowlist": [
+      "appdata",
+      "plugins",
+      "run_dir"
+    ],
+    "no_network": true
+  },
+  "settings": {
+    "close_cycle_end_day": 5,
+    "close_cycle_start_day": 20,
+    "correlation_threshold": 0.7,
+    "duration_column": null,
+    "end_column": null,
+    "max_examples": 25,
+    "max_unique_ratio": 0.05,
+    "min_close_count": 20,
+    "min_days": 5,
+    "min_open_count": 10,
+    "min_recommendation_pct": 0.1,
+    "param_column": null,
+    "process_column": null,
+    "server_column": null,
+    "slowdown_ratio_threshold": 2.0,
+    "start_column": null,
+    "timestamp_column": null,
+    "user_column": null
+  },
+  "tenant_id": "default"
+}

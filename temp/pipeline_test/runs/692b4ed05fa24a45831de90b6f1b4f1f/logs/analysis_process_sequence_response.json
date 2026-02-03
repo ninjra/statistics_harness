@@ -1,0 +1,71 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T01:59:33.654158+00:00",
+    "cpu_system": 0.018422,
+    "cpu_user": 0.0,
+    "duration_ms": 233,
+    "max_rss": 81828,
+    "started_at": "2026-02-03T01:59:33.328543+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [
+      {
+        "description": "Sequence mining results",
+        "path": "artifacts/analysis_process_sequence/sequences.json",
+        "type": "json"
+      }
+    ],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [
+      {
+        "columns": [
+          "CASE_ID",
+          "PROCESS_NAME"
+        ],
+        "count": 35,
+        "evidence": {
+          "query": "variant=('qemail',)",
+          "row_ids": [
+            0
+          ]
+        },
+        "fraction": 0.7777777778,
+        "kind": "process_variant",
+        "variant": [
+          "qemail"
+        ]
+      },
+      {
+        "columns": [
+          "CASE_ID",
+          "PROCESS_NAME"
+        ],
+        "count": 10,
+        "evidence": {
+          "query": "variant=('qpec',)",
+          "row_ids": [
+            3
+          ]
+        },
+        "fraction": 0.2222222222,
+        "kind": "process_variant",
+        "variant": [
+          "qpec"
+        ]
+      }
+    ],
+    "metrics": {
+      "transitions": 0,
+      "variants": 2
+    },
+    "status": "ok",
+    "summary": "Computed process sequence variants"
+  }
+}

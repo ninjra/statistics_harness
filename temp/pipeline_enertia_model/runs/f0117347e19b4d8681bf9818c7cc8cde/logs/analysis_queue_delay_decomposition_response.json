@@ -1,0 +1,38 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T02:13:14.419109+00:00",
+    "cpu_system": 0.000309,
+    "cpu_user": 0.01832,
+    "duration_ms": 145,
+    "max_rss": 82712,
+    "started_at": "2026-02-03T02:13:14.186320+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [
+      {
+        "description": "Queue delay decomposition results",
+        "path": "artifacts/analysis_queue_delay_decomposition/results.json",
+        "type": "json"
+      }
+    ],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [],
+    "metrics": {
+      "eligible_basis": "eligible",
+      "eligible_wait_gt_hours_total": 0.0333333333,
+      "eligible_wait_hours_total": 0.05,
+      "process_column": "PROCESS_CODE",
+      "sequence_runs": 14,
+      "standalone_runs": 2
+    },
+    "status": "ok",
+    "summary": "Computed queue delay decomposition"
+  }
+}

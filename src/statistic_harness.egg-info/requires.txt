@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+jinja2
+python-multipart
+pydantic
+pyyaml
+numpy
+pandas
+openpyxl
+scikit-learn
+jsonschema
+
+[dev]
+pytest
+ruff
+mypy
+playwright

@@ -1,0 +1,21 @@
+{
+  "metrics": {
+    "baseline_wait_hours": 0.3666666667,
+    "host_count": 2,
+    "modeled_wait_hours": 0.2444444444,
+    "reduction_hours": 0.1222222222,
+    "rows": 16,
+    "scale_factor": 1.5
+  },
+  "summary": {
+    "assumption": "Eligible wait scales inversely with capacity by factor 1.500; prereq wait unchanged.",
+    "eligible_basis": "eligible",
+    "eligible_column": "ELIGIBLE_AT",
+    "host_column": "HOST_NAME",
+    "module_column": "MODULE_CODE",
+    "process_column": "PROCESS_CODE",
+    "queue_column": "QUEUED_AT",
+    "scale_factor": 1.5,
+    "start_column": "START_TIME"
+  }
+}

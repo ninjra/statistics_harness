@@ -1,0 +1,54 @@
+id: analysis_close_cycle_revenue_compression
+name: Close Cycle Revenue Compression
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Model capacity needed to compress revenue process close-window span to target days.
+  defaults:
+    process_column: null
+    start_column: null
+    end_column: null
+    duration_column: null
+    queue_column: null
+    eligible_column: null
+    host_column: null
+    revenue_selector_strategy: auto
+    revenue_process_names: null
+    revenue_process_patterns: null
+    selector_min_coverage: 0.2
+    selector_min_cardinality: 2
+    selector_max_cardinality: 200
+    selector_top_columns: 3
+    selector_max_composite: 5000
+    selector_min_close_rows: 100
+    selector_min_close_share: 0.8
+    selector_lift_threshold: 1.2
+    selector_late_threshold: 0.7
+    selector_min_late_fraction: 0.2
+    selector_top_keys: 10
+    close_window_mode: infer_or_default
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    min_close_days: 5
+    max_close_days: 20
+    lookahead_days: 7
+    min_close_confidence: 0.1
+    min_close_data_ratio: 0.5
+    target_days: 7
+    max_scale: 10
+    min_month_rows: 10
+    max_months_output: 24
+    max_wait_days: 30
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

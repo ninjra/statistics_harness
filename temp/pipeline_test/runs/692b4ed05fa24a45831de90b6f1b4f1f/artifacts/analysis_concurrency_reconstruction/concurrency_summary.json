@@ -1,0 +1,27 @@
+{
+  "hosts": [
+    {
+      "avg_concurrency": 0.0008677758,
+      "cap_limit": null,
+      "host": "qpec1",
+      "peak_concurrency": 1
+    },
+    {
+      "avg_concurrency": 0.0007852667,
+      "cap_limit": null,
+      "host": "qpec2",
+      "peak_concurrency": 1
+    }
+  ],
+  "metrics": {
+    "avg_concurrency": 0.0016482883,
+    "hosts": 2,
+    "peak_concurrency": 1
+  },
+  "summary": {
+    "capacity_column": null,
+    "end_column": "END_DT",
+    "host_column": "SERVER",
+    "start_column": "START_DT"
+  }
+}

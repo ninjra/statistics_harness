@@ -11,6 +11,14 @@ from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
 
+def _spearman_corr(left: pd.Series, right: pd.Series) -> float:
+    if left.empty or right.empty:
+        return float("nan")
+    left_rank = left.rank(method="average")
+    right_rank = right.rank(method="average")
+    return float(left_rank.corr(right_rank, method="pearson"))
+
+
 def _normalize_param(value: Any) -> str | None:
     if value is None:
         return None
@@ -351,7 +359,7 @@ class Plugin:
             ).dropna()
             if len(aligned) < min_days:
                 continue
-            correlation = float(aligned["count"].corr(aligned["median"], method="spearman"))
+            correlation = _spearman_corr(aligned["count"], aligned["median"])
             if pd.isna(correlation) or correlation < correlation_threshold:
                 continue
 

@@ -1,0 +1,12 @@
+{
+  "groups": 2,
+  "summary": {
+    "eligible_basis": "queue",
+    "eligible_column": null,
+    "end_column": "END_DT",
+    "module_column": null,
+    "process_column": "PROCESS_NAME",
+    "queue_column": "QUEUE_DT",
+    "start_column": "START_DT"
+  }
+}

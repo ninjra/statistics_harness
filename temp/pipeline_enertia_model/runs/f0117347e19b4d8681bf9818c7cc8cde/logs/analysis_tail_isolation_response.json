@@ -1,0 +1,292 @@
+{
+  "execution": {
+    "completed_at": "2026-02-03T02:13:13.277248+00:00",
+    "cpu_system": 0.027064,
+    "cpu_user": 0.012298,
+    "duration_ms": 311,
+    "max_rss": 81324,
+    "started_at": "2026-02-03T02:13:12.849168+00:00",
+    "warnings_count": 0
+  },
+  "result": {
+    "artifacts": [
+      {
+        "description": "Tail isolation summary",
+        "path": "artifacts/analysis_tail_isolation/tail_isolation.json",
+        "type": "json"
+      }
+    ],
+    "budget": {
+      "cpu_limit_ms": null,
+      "row_limit": null,
+      "sampled": false,
+      "time_limit_ms": null
+    },
+    "error": null,
+    "findings": [
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "process",
+        "eligible_basis": "eligible",
+        "key": "alpha",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          0,
+          6,
+          12
+        ],
+        "tail_rows": 3,
+        "tail_wait_hours": 0.1,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "process",
+        "eligible_basis": "eligible",
+        "key": "beta",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          3,
+          9,
+          15
+        ],
+        "tail_rows": 3,
+        "tail_wait_hours": 0.1,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "module",
+        "eligible_basis": "eligible",
+        "key": "m1",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          0,
+          6,
+          12
+        ],
+        "tail_rows": 3,
+        "tail_wait_hours": 0.1,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "module",
+        "eligible_basis": "eligible",
+        "key": "m2",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          3,
+          9,
+          15
+        ],
+        "tail_rows": 3,
+        "tail_wait_hours": 0.1,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "user",
+        "eligible_basis": "eligible",
+        "key": "user0",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          0,
+          12
+        ],
+        "tail_rows": 2,
+        "tail_wait_hours": 0.0666666667,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "user",
+        "eligible_basis": "eligible",
+        "key": "user3",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          3,
+          15
+        ],
+        "tail_rows": 2,
+        "tail_wait_hours": 0.0666666667,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "user",
+        "eligible_basis": "eligible",
+        "key": "user1",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          9
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "user",
+        "eligible_basis": "eligible",
+        "key": "user2",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          6
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "sequence",
+        "eligible_basis": "eligible",
+        "key": "C3000",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          0
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "sequence",
+        "eligible_basis": "eligible",
+        "key": "C3003",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          3
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "sequence",
+        "eligible_basis": "eligible",
+        "key": "C3006",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          6
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "sequence",
+        "eligible_basis": "eligible",
+        "key": "C3009",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          9
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      },
+      {
+        "columns": [
+          "PROCESS_CODE",
+          "MODULE_CODE",
+          "USER_NAME",
+          "CASE_ID"
+        ],
+        "dimension": "sequence",
+        "eligible_basis": "eligible",
+        "key": "C3012",
+        "kind": "tail_isolation",
+        "measurement_type": "measured",
+        "row_ids": [
+          12
+        ],
+        "tail_rows": 1,
+        "tail_wait_hours": 0.0333333333,
+        "threshold_seconds": 60.0
+      }
+    ],
+    "metrics": {
+      "tail_hours_total": 0.2,
+      "tail_rows": 6
+    },
+    "status": "ok",
+    "summary": "Isolated tail-eligible wait segments"
+  }
+}
