@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 import numpy as np
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
@@ -17,7 +19,20 @@ class Plugin:
             )
         values = numeric.to_numpy()
         n = values.shape[0]
+        max_rows = ctx.settings.get("max_rows")
+        row_limit = ctx.budget.get("row_limit") or max_rows
+        sampled = False
+        if row_limit and n > int(row_limit):
+            rng = np.random.default_rng(ctx.run_seed)
+            idx = rng.choice(n, size=int(row_limit), replace=False)
+            values = values[idx]
+            n = values.shape[0]
+            sampled = True
         split = n // 2
+        if split == 0:
+            return PluginResult(
+                "skipped", "Not enough rows for split", {}, [], [], None
+            )
         first = values[:split]
         second = values[split:]
 
@@ -100,10 +115,19 @@ class Plugin:
 
         rng = np.random.default_rng(ctx.run_seed)
         findings = []
+        time_limit_ms = ctx.budget.get("time_limit_ms")
+        start_time = time.perf_counter()
+        time_limit_hit = False
+        perms_run = 0
         for i, j, (a, b), score in selected:
             p_value = 1.0
             perm_scores = []
             for _ in range(int(ctx.settings.get("n_permutations", 100))):
+                if time_limit_ms and (time.perf_counter() - start_time) * 1000 > int(
+                    time_limit_ms
+                ):
+                    time_limit_hit = True
+                    break
                 perm = rng.permutation(values)
                 perm_first = perm[:split]
                 perm_second = perm[split:]
@@ -113,6 +137,9 @@ class Plugin:
                     np.corrcoef(z1p, rowvar=False) - np.corrcoef(z2p, rowvar=False)
                 )
                 perm_scores.append(delta_p[i, j])
+                perms_run += 1
+            if time_limit_hit:
+                break
             if perm_scores:
                 p_value = float((np.array(perm_scores) >= score).mean())
             findings.append(
@@ -123,6 +150,8 @@ class Plugin:
                     "p_value": p_value,
                 }
             )
+        if time_limit_hit:
+            ctx.logger("analysis_gaussian_copula_shift hit time limit")
         if findings:
             q_values = benjamini_hochberg([f["p_value"] for f in findings])
             for finding, q_value in zip(findings, q_values):
@@ -139,10 +168,19 @@ class Plugin:
                 description="Dependence shift",
             )
         ]
+        summary = "Computed copula shift"
+        if time_limit_hit:
+            summary = "Computed copula shift (time limit hit)"
         return PluginResult(
             "ok",
-            "Computed copula shift",
-            {"pairs": len(findings)},
+            summary,
+            {
+                "pairs": len(findings),
+                "rows_used": n,
+                "sampled": sampled,
+                "permutations_run": perms_run,
+                "time_limit_hit": time_limit_hit,
+            },
             findings,
             artifacts,
             None,

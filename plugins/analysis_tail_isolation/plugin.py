@@ -39,6 +39,15 @@ def _normalize_text(value: Any) -> str:
     return str(value).strip()
 
 
+def _series_from_frame(frame: pd.DataFrame, column: str | None) -> pd.Series | None:
+    if not column:
+        return None
+    data = frame[column]
+    if isinstance(data, pd.DataFrame):
+        return data.iloc[:, 0]
+    return data
+
+
 class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
@@ -158,19 +167,23 @@ class Plugin:
             ]
             if col
         ]
+        selected = list(dict.fromkeys(selected))
         work = df.loc[:, selected].copy()
 
+        eligible_series = _series_from_frame(work, eligible_col)
         eligible_ts = (
-            pd.to_datetime(work[eligible_col], errors="coerce", utc=False)
-            if eligible_col
+            pd.to_datetime(eligible_series, errors="coerce", utc=False)
+            if eligible_series is not None
             else None
         )
         if eligible_ts is None:
-            eligible_ts = pd.to_datetime(work[queue_col], errors="coerce", utc=False)
+            queue_series = _series_from_frame(work, queue_col)
+            eligible_ts = pd.to_datetime(queue_series, errors="coerce", utc=False)
             eligible_basis = "queue"
         else:
             eligible_basis = "eligible"
-        start_ts = pd.to_datetime(work[start_col], errors="coerce", utc=False)
+        start_series = _series_from_frame(work, start_col)
+        start_ts = pd.to_datetime(start_series, errors="coerce", utc=False)
         work["__eligible_ts"] = eligible_ts
         work["__start_ts"] = start_ts
         work = work.loc[work["__eligible_ts"].notna() & work["__start_ts"].notna()].copy()

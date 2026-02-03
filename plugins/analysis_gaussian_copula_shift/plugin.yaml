@@ -13,6 +13,9 @@ settings:
     segment: halves
     max_pairs: 5
     n_permutations: 100
+    max_rows: 20000
+    budget:
+      time_limit_ms: 60000
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

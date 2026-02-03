@@ -32,6 +32,7 @@ from fastapi.templating import Jinja2Templates
 
 from statistic_harness.core import evaluation as eval_core
 from statistic_harness.core.evaluation import evaluate_report
+from statistic_harness.core.known_issue_compiler import compile_known_issues
 from statistic_harness.core.auth import (
     AuthUser,
     generate_api_key,
@@ -968,6 +969,7 @@ def _load_known_issues(scope_type: str, scope_value: str) -> dict[str, object] |
             "strict": bool(stored.get("strict", False)),
             "notes": stored.get("notes") or "",
             "expected_findings": stored.get("expected_findings") or [],
+            "natural_language": stored.get("natural_language") or [],
         }
     json_path, _ = _known_issues_paths(key)
     if not json_path.exists():
@@ -984,6 +986,7 @@ def _load_known_issues(scope_type: str, scope_value: str) -> dict[str, object] |
             upload_id=None,
             strict=bool(normalized.get("strict", False)),
             notes=str(normalized.get("notes") or ""),
+            natural_language=normalized.get("natural_language") or [],
         )
         pipeline.storage.replace_known_issues(
             set_id, normalized.get("expected_findings") or []
@@ -996,7 +999,9 @@ def _normalize_known_issues(payload: dict[str, object]) -> dict[str, object]:
     strict = bool(payload.get("strict", False))
     notes = str(payload.get("notes") or "").strip()
     expected = payload.get("expected_findings") or []
+    natural = payload.get("natural_language") or payload.get("nl_issues") or []
     cleaned: list[dict[str, object]] = []
+    cleaned_nl: list[dict[str, object]] = []
 
     def clean_kv(data: object) -> dict[str, object]:
         if not isinstance(data, dict):
@@ -1046,10 +1051,32 @@ def _normalize_known_issues(payload: dict[str, object]) -> dict[str, object]:
                     pass
             cleaned.append(item)
 
+    if isinstance(natural, list):
+        for entry in natural:
+            if isinstance(entry, str):
+                text = entry.strip()
+                if text:
+                    cleaned_nl.append({"text": text})
+                continue
+            if not isinstance(entry, dict):
+                continue
+            text = str(entry.get("text") or "").strip()
+            if not text:
+                continue
+            item = {"text": text}
+            title = str(entry.get("title") or "").strip()
+            if title:
+                item["title"] = title
+            process_hint = str(entry.get("process_hint") or "").strip()
+            if process_hint:
+                item["process_hint"] = process_hint
+            cleaned_nl.append(item)
+
     return {
         "strict": strict,
         "notes": notes,
         "expected_findings": cleaned,
+        "natural_language": cleaned_nl,
     }
 
 
@@ -1063,20 +1090,55 @@ def _save_known_issues(
     if not key:
         raise ValueError("Invalid known-issues scope")
     normalized = _normalize_known_issues(payload)
+    compiled, warnings = compile_known_issues(
+        normalized.get("natural_language") or []
+    )
+    combined = list(normalized.get("expected_findings") or [])
+    combined.extend(compiled)
+
+    def _dedupe(items: list[dict[str, object]]) -> list[dict[str, object]]:
+        seen = set()
+        out = []
+        for item in items:
+            key = (
+                item.get("plugin_id"),
+                item.get("kind"),
+                json_dumps(item.get("where")),
+                json_dumps(item.get("contains")),
+                item.get("title"),
+                item.get("description"),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(item)
+        return out
+
+    combined = _dedupe(combined)
     set_id = pipeline.storage.upsert_known_issue_set(
         scope_value=scope_value,
         scope_type=scope_type,
         upload_id=upload_id,
         strict=bool(normalized.get("strict", False)),
         notes=str(normalized.get("notes") or ""),
+        natural_language=normalized.get("natural_language") or [],
     )
     pipeline.storage.replace_known_issues(
-        set_id, normalized.get("expected_findings") or []
+        set_id, combined
     )
     json_path, yaml_path = _known_issues_paths(key)
-    json_path.write_text(json_dumps(normalized), encoding="utf-8")
-    yaml_path.write_text(yaml.safe_dump(normalized, sort_keys=False), encoding="utf-8")
-    return normalized
+    payload_out = dict(normalized)
+    payload_out["expected_findings"] = combined
+    payload_out["compiled_count"] = len(compiled)
+    payload_out["compile_warnings"] = warnings
+    json_path.write_text(json_dumps(payload_out), encoding="utf-8")
+    yaml_payload = {
+        "strict": payload_out.get("strict", False),
+        "notes": payload_out.get("notes", ""),
+        "expected_findings": payload_out.get("expected_findings") or [],
+    }
+    yaml_path.write_text(yaml.safe_dump(yaml_payload, sort_keys=False), encoding="utf-8")
+    return payload_out
 
 
 def _known_issues_yaml(scope_type: str, scope_value: str) -> str | None:
@@ -1539,7 +1601,12 @@ async def known_issues(
         known_payload = _load_known_issues(scope_type, scope_value)
         known_yaml = _known_issues_yaml(scope_type, scope_value)
     if known_payload is None:
-        known_payload = {"strict": True, "notes": "", "expected_findings": []}
+        known_payload = {
+            "strict": True,
+            "notes": "",
+            "expected_findings": [],
+            "natural_language": [],
+        }
         known_yaml = ""
     specs = pipeline.manager.discover()
     plugin_ids = [spec.plugin_id for spec in specs if spec.type == "analysis"]
@@ -1618,7 +1685,12 @@ async def create_project(
             "known_issues": _load_known_issues(
                 "erp_type", (erp_type or "unknown").strip() or "unknown"
             )
-            or {"strict": True, "notes": "", "expected_findings": []},
+            or {
+                "strict": True,
+                "notes": "",
+                "expected_findings": [],
+                "natural_language": [],
+            },
             "message": "Project created.",
         },
     )
@@ -1629,7 +1701,12 @@ async def project_detail(request: Request, project_id: str) -> HTMLResponse:
     datasets = pipeline.storage.list_dataset_versions_by_project(project_id)
     project = pipeline.storage.fetch_project(project_id)
     runs = _annotate_runs(pipeline.storage.list_runs_by_project(project_id), project)
-    known = {"strict": True, "notes": "", "expected_findings": []}
+    known = {
+        "strict": True,
+        "notes": "",
+        "expected_findings": [],
+        "natural_language": [],
+    }
     if project and project.get("erp_type"):
         known = (
             _load_known_issues("erp_type", project.get("erp_type") or "unknown")
@@ -1663,6 +1740,7 @@ async def update_project_erp(
         "strict": True,
         "notes": "",
         "expected_findings": [],
+        "natural_language": [],
     }
     return TEMPLATES.TemplateResponse(
         "project.html",
@@ -1788,7 +1866,12 @@ async def project_known_issues(request: Request, project_id: str) -> HTMLRespons
     erp_type = (project.get("erp_type") or "unknown").strip() or "unknown"
     known_payload = _load_known_issues("erp_type", erp_type)
     if known_payload is None:
-        known_payload = {"strict": True, "notes": "", "expected_findings": []}
+        known_payload = {
+            "strict": True,
+            "notes": "",
+            "expected_findings": [],
+            "natural_language": [],
+        }
     specs = pipeline.manager.discover()
     plugin_ids = [spec.plugin_id for spec in specs if spec.type == "analysis"]
     return TEMPLATES.TemplateResponse(
@@ -2242,7 +2325,12 @@ async def get_known_issues(
         raise HTTPException(status_code=400, detail="Invalid known-issues scope")
     known_payload = _load_known_issues(scope_type, scope_value)
     if known_payload is None:
-        known_payload = {"strict": True, "notes": "", "expected_findings": []}
+        known_payload = {
+            "strict": True,
+            "notes": "",
+            "expected_findings": [],
+            "natural_language": [],
+        }
     return JSONResponse(
         {
             "sha256": key,
@@ -2301,7 +2389,12 @@ async def get_project_known_issues(project_id: str) -> JSONResponse:
     erp_type = (project.get("erp_type") or "unknown").strip() or "unknown"
     known_payload = _load_known_issues("erp_type", erp_type)
     if known_payload is None:
-        known_payload = {"strict": True, "notes": "", "expected_findings": []}
+        known_payload = {
+            "strict": True,
+            "notes": "",
+            "expected_findings": [],
+            "natural_language": [],
+        }
     return JSONResponse(
         {
             "project_id": project_id,

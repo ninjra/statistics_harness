@@ -14,6 +14,11 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.empty:
             return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+        numeric = numeric.dropna(axis=0, how="any")
+        if numeric.empty:
+            return PluginResult(
+                "skipped", "No complete numeric rows", {"count": 0}, [], [], None
+            )
 
         max_cols = int(ctx.settings.get("max_target_cols", 5))
         alpha = float(ctx.settings.get("alpha", 0.1))
