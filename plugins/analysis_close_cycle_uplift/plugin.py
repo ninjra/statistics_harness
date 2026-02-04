@@ -7,6 +7,7 @@ from typing import Iterable
 
 import pandas as pd
 
+from statistic_harness.core.close_cycle import resolve_close_cycle_masks
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
@@ -373,15 +374,30 @@ class Plugin:
 
         work["__day"] = work["__timestamp"].dt.day
         work["__date"] = work["__timestamp"].dt.date
-        if close_start <= close_end:
-            work["__close"] = (work["__day"] >= close_start) & (
-                work["__day"] <= close_end
+        default_mask, dynamic_mask, dynamic_available, dynamic_windows = (
+            resolve_close_cycle_masks(
+                work["__timestamp"], ctx.run_dir, close_start, close_end
             )
-        else:
-            work["__close"] = (work["__day"] >= close_start) | (
-                work["__day"] <= close_end
-            )
+        )
+        if default_mask is None or dynamic_mask is None:
+            if close_start <= close_end:
+                default_mask = (work["__day"] >= close_start) & (
+                    work["__day"] <= close_end
+                )
+            else:
+                default_mask = (work["__day"] >= close_start) | (
+                    work["__day"] <= close_end
+                )
+            dynamic_mask = default_mask
+            dynamic_available = False
+            dynamic_windows = []
 
+        work["__close_default"] = default_mask
+        work["__close_dynamic"] = dynamic_mask
+        work["__close"] = dynamic_mask if dynamic_available else default_mask
+
+        close_rows_default = int(work["__close_default"].sum())
+        close_rows_dynamic = int(work["__close_dynamic"].sum())
         close_rows = int(work["__close"].sum())
         open_rows = int(len(work) - close_rows)
         if close_mode != "fixed" and (close_rows < min_close_count or open_rows < min_open_count):
@@ -389,13 +405,20 @@ class Plugin:
             close_end = int(ctx.settings.get("close_cycle_end_day", close_end))
             close_source = "inferred_fallback"
             if close_start <= close_end:
-                work["__close"] = (work["__day"] >= close_start) & (
+                work["__close_default"] = (work["__day"] >= close_start) & (
                     work["__day"] <= close_end
                 )
             else:
-                work["__close"] = (work["__day"] >= close_start) | (
+                work["__close_default"] = (work["__day"] >= close_start) | (
                     work["__day"] <= close_end
                 )
+            work["__close"] = work["__close_default"]
+            dynamic_available = False
+            close_rows_default = int(work["__close_default"].sum())
+            close_rows_dynamic = int(work["__close_dynamic"].sum())
+            close_rows = int(work["__close"].sum())
+        if dynamic_available:
+            close_source = "dynamic_resolver"
 
         close = work.loc[work["__close"]].copy()
         open_rows = work.loc[~work["__close"]].copy()
@@ -632,6 +655,10 @@ class Plugin:
             "close_cycle_mode": close_mode,
             "close_cycle_window_days": window_days,
             "close_cycle_source": close_source,
+            "close_cycle_dynamic_available": dynamic_available,
+            "close_cycle_dynamic_months": len(dynamic_windows),
+            "close_cycle_rows_default": close_rows_default,
+            "close_cycle_rows_dynamic": close_rows_dynamic,
             "inferred_close_cycle_start_day": inferred_start,
             "inferred_close_cycle_end_day": inferred_end,
             "min_close_count": min_close_count,

@@ -1971,6 +1971,51 @@ class Storage:
                 raise ValueError("Raw format not found")
             return int(row[0])
 
+    def fetch_raw_format_by_fingerprint(self, fingerprint: str) -> dict[str, Any] | None:
+        tenant_id = self._tenant_id()
+        scoped_fingerprint = self._scoped_value(fingerprint)
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT format_id, fingerprint, name, created_at
+                FROM raw_formats
+                WHERE fingerprint = ? AND tenant_id = ?
+                """,
+                (scoped_fingerprint, tenant_id),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+
+    def find_project_for_raw_format(self, format_id: int) -> dict[str, Any] | None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT p.project_id,
+                       p.name,
+                       p.erp_type,
+                       COUNT(*) AS dataset_count,
+                       MAX(dv.created_at) AS latest_seen
+                FROM dataset_versions dv
+                JOIN datasets d
+                  ON d.dataset_id = dv.dataset_id
+                 AND d.tenant_id = dv.tenant_id
+                JOIN projects p
+                  ON p.project_id = d.project_id
+                 AND p.tenant_id = dv.tenant_id
+                WHERE dv.raw_format_id = ?
+                  AND dv.tenant_id = ?
+                GROUP BY p.project_id
+                ORDER BY (p.erp_type = 'quorum') DESC,
+                         dataset_count DESC,
+                         latest_seen DESC
+                LIMIT 1
+                """,
+                (int(format_id), tenant_id),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+
     def list_raw_formats(self) -> list[dict[str, Any]]:
         tenant_id = self._tenant_id()
         with self.connection() as conn:

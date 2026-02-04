@@ -1,0 +1,27 @@
+id: analysis_upload_linkage
+name: Upload to Revenue Linkage Analysis
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Link XLSX upload events to downstream BKRVNU rows using time and user signals.
+  defaults:
+    process_column: null
+    params_column: null
+    start_column: null
+    queue_column: null
+    user_column: null
+    upload_window_hours: 48
+    max_examples: 10
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

@@ -3,7 +3,8 @@ name: Queue Delay Decomposition
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-depends_on: []
+depends_on:
+  - analysis_close_cycle_window_resolver
 settings:
   description: Decompose queue delay into eligible vs capacity waiting and summarize by process.
   defaults:

@@ -6,8 +6,27 @@ from typing import Any, Iterable
 import numpy as np
 import pandas as pd
 
+from statistic_harness.core.close_cycle import load_close_cycle_windows
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
+
+
+def _dates_from_windows(
+    windows: list[Any], start_attr: str, end_attr: str
+) -> set[date]:
+    dates: set[date] = set()
+    if not windows:
+        return dates
+    for window in windows:
+        start = getattr(window, start_attr, None)
+        end = getattr(window, end_attr, None)
+        if start is None or end is None:
+            continue
+        start_ts = pd.Timestamp(start).normalize()
+        end_ts = pd.Timestamp(end).normalize()
+        for day in pd.date_range(start_ts, end_ts, freq="D"):
+            dates.add(day.date())
+    return dates
 
 
 INVALID_STRINGS = {"", "nan", "none", "null"}
@@ -870,6 +889,17 @@ class Plugin:
                 min_close_data_ratio,
             )
 
+        close_dates_default = close_dates
+        dynamic_windows = load_close_cycle_windows(ctx.run_dir)
+        close_dates_dynamic = _dates_from_windows(
+            dynamic_windows, "dynamic_start", "dynamic_end"
+        )
+        dynamic_available = bool(close_dates_dynamic)
+        close_rows_default = int(work["__date"].isin(close_dates_default).sum())
+        close_rows_dynamic = int(work["__date"].isin(close_dates_dynamic).sum())
+        if dynamic_available:
+            close_dates = close_dates_dynamic
+
         summary.update(
             {
                 "close_window_mode": close_mode,
@@ -883,6 +913,10 @@ class Plugin:
                 "close_windows": close_windows,
                 "close_window_fallback": fallback_used,
                 "close_window_fallback_reason": fallback_reason,
+                "close_cycle_dynamic_available": dynamic_available,
+                "close_cycle_dynamic_months": len(dynamic_windows),
+                "close_cycle_rows_default": close_rows_default,
+                "close_cycle_rows_dynamic": close_rows_dynamic,
             }
         )
 
@@ -894,6 +928,8 @@ class Plugin:
             if fallback_used
             else ("override" if close_mode == "override" else "infer")
         )
+        if dynamic_available:
+            close_window_source = "dynamic_resolver"
 
         bucket_size = str(ctx.settings.get("bucket_size", "day") or "day").lower()
         min_bucket_rows = int(ctx.settings.get("min_bucket_rows", 50))
@@ -1403,6 +1439,14 @@ class Plugin:
         metrics = {
             "findings": len(findings),
             "modeled_findings": len(modeled_rows),
+            "close_window_mode": close_mode,
+            "close_window_source": close_window_source,
+            "close_cycle_start_day": close_start_day,
+            "close_cycle_end_day": close_end_day,
+            "close_cycle_dynamic_available": dynamic_available,
+            "close_cycle_dynamic_months": len(dynamic_windows),
+            "close_cycle_rows_default": close_rows_default,
+            "close_cycle_rows_dynamic": close_rows_dynamic,
         }
         return PluginResult(
             "ok",

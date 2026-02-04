@@ -1183,6 +1183,127 @@ def _unique_project_id(name: str) -> str:
     return f"{base}-{uuid.uuid4().hex[:4]}"
 
 
+def _raw_format_fingerprint_for_file(
+    path: Path,
+    *,
+    encoding: str = "utf-8",
+    delimiter: str | None = None,
+    sheet_name: str | None = None,
+    chunk_size: int = 1000,
+) -> str | None:
+    try:
+        import pandas as pd
+    except ImportError:
+        return None
+    suffix = path.suffix.lower()
+    columns: list[str] = []
+    dtypes: list[object] = []
+
+    try:
+        if suffix == ".xlsx":
+            import mimetypes
+
+            mimetypes.knownfiles = []
+            from openpyxl import load_workbook
+
+            wb = load_workbook(path, read_only=True, data_only=True)
+            ws = wb[sheet_name] if sheet_name else wb.active
+            rows = ws.iter_rows(values_only=True)
+            headers = next(rows, None)
+            if headers is None:
+                return None
+            headers = [
+                (str(h) if h is not None else f"column_{idx+1}")
+                for idx, h in enumerate(headers)
+            ]
+            sample = []
+            for _ in range(int(chunk_size)):
+                row = next(rows, None)
+                if row is None:
+                    break
+                sample.append(list(row))
+            sample_df = pd.DataFrame(sample, columns=headers)
+            columns = list(sample_df.columns)
+            dtypes = list(sample_df.dtypes)
+        elif suffix == ".json":
+            try:
+                chunk = next(
+                    pd.read_json(path, lines=True, chunksize=int(chunk_size)), None
+                )
+                if chunk is None:
+                    return None
+                columns = list(chunk.columns)
+                dtypes = list(chunk.dtypes)
+            except ValueError:
+                df = pd.read_json(path)
+                columns = list(df.columns)
+                dtypes = list(df.dtypes)
+        else:
+            chunk = next(
+                pd.read_csv(
+                    path,
+                    delimiter=delimiter,
+                    encoding=encoding,
+                    chunksize=int(chunk_size),
+                ),
+                None,
+            )
+            if chunk is None:
+                return None
+            columns = list(chunk.columns)
+            dtypes = list(chunk.dtypes)
+    except Exception:
+        return None
+
+    if not columns:
+        return None
+
+    fingerprint_payload = [
+        {"name": str(col).lower().strip(), "dtype": str(dtype)}
+        for col, dtype in zip(columns, dtypes)
+    ]
+    fingerprint_payload = sorted(fingerprint_payload, key=lambda item: item["name"])
+    digest = hashlib.sha256(json_dumps(fingerprint_payload).encode("utf-8")).hexdigest()
+    return digest
+
+
+def _auto_project_for_upload(
+    input_file: Path, settings: dict[str, object]
+) -> str | None:
+    ingest_settings = settings.get("ingest_tabular")
+    ingest_settings = ingest_settings if isinstance(ingest_settings, dict) else {}
+    encoding = str(ingest_settings.get("encoding") or "utf-8")
+    delimiter = ingest_settings.get("delimiter")
+    sheet_name = ingest_settings.get("sheet_name")
+    try:
+        chunk_size = int(ingest_settings.get("chunk_size") or 1000)
+    except (TypeError, ValueError):
+        chunk_size = 1000
+
+    fingerprint = _raw_format_fingerprint_for_file(
+        input_file,
+        encoding=encoding,
+        delimiter=str(delimiter) if delimiter else None,
+        sheet_name=str(sheet_name) if sheet_name else None,
+        chunk_size=chunk_size,
+    )
+    if not fingerprint:
+        return None
+
+    raw_format = pipeline.storage.fetch_raw_format_by_fingerprint(fingerprint)
+    if raw_format and raw_format.get("format_id") is not None:
+        project = pipeline.storage.find_project_for_raw_format(int(raw_format["format_id"]))
+        if project and project.get("project_id"):
+            return str(project["project_id"])
+
+    name = f"Format {fingerprint[:8]}"
+    project_id = _unique_project_id(name)
+    pipeline.storage.ensure_project(project_id, project_id, now_iso())
+    pipeline.storage.update_project_name(project_id, name)
+    pipeline.storage.update_project_erp_type(project_id, "unknown")
+    return project_id
+
+
 def _bool_from_form(value: str | None, default: bool = False) -> bool:
     if value is None:
         return default
@@ -2112,6 +2233,10 @@ async def create_run(
     if not isinstance(settings, dict):
         raise HTTPException(status_code=400, detail="settings_json must be an object")
 
+    project_id = project_id.strip()
+    if not project_id:
+        project_id = _auto_project_for_upload(input_file, settings) or ""
+
     project_settings = {}
     if project_id:
         project_settings = pipeline.storage.fetch_project_plugin_settings(project_id)
@@ -2147,7 +2272,7 @@ async def create_run(
             int(run_seed or 0),
             run_id=run_id,
             upload_id=upload_id,
-            project_id=project_id.strip() or None,
+            project_id=project_id or None,
         )
         run_dir = APPDATA_DIR / "runs" / run_id
         report = build_report(
@@ -2155,8 +2280,8 @@ async def create_run(
         )
         write_report(report, run_dir)
         project_row = (
-            pipeline.storage.fetch_project(project_id.strip())
-            if project_id.strip()
+            pipeline.storage.fetch_project(project_id)
+            if project_id
             else None
         )
         ground_truth, _source = _resolve_ground_truth(
@@ -2204,6 +2329,9 @@ async def run_auto_evaluate(
         run_seed = _auto_seed(upload_row.get("sha256") or upload_id, 0)
 
     settings: dict[str, object] = {}
+    project_id = project_id.strip()
+    if not project_id:
+        project_id = _auto_project_for_upload(input_file, settings) or ""
     project_settings = {}
     if project_id:
         project_settings = pipeline.storage.fetch_project_plugin_settings(project_id)
@@ -2233,7 +2361,7 @@ async def run_auto_evaluate(
             int(run_seed or 0),
             run_id=run_id,
             upload_id=upload_id,
-            project_id=project_id.strip() or None,
+            project_id=project_id or None,
         )
         run_dir = APPDATA_DIR / "runs" / run_id
         report = build_report(
@@ -2282,6 +2410,9 @@ async def api_auto_evaluate(
         run_seed = _auto_seed(upload_row.get("sha256") or upload_id, 0)
 
     settings: dict[str, object] = {}
+    project_id = project_id.strip()
+    if not project_id:
+        project_id = _auto_project_for_upload(input_file, settings) or ""
     project_settings = {}
     if project_id:
         project_settings = pipeline.storage.fetch_project_plugin_settings(project_id)
@@ -2311,7 +2442,7 @@ async def api_auto_evaluate(
             int(run_seed or 0),
             run_id=run_id,
             upload_id=upload_id,
-            project_id=project_id.strip() or None,
+            project_id=project_id or None,
         )
         run_dir = APPDATA_DIR / "runs" / run_id
         report = build_report(

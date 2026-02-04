@@ -4,6 +4,7 @@ import csv
 import json
 import re
 import os
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -154,12 +155,323 @@ def _dedupe_recommendations(items: list[dict[str, Any]]) -> list[dict[str, Any]]
     return list(merged.values()) + passthrough
 
 
-def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
+def _known_issue_processes(known: dict[str, Any] | None) -> set[str]:
+    processes: set[str] = set()
+    if not isinstance(known, dict):
+        return processes
+    expected = known.get("expected_findings") or []
+    if not isinstance(expected, list):
+        return processes
+    keys = {"process", "process_norm", "process_name", "process_id", "activity", "process_matches"}
+    for issue in expected:
+        if not isinstance(issue, dict):
+            continue
+        for bucket in (issue.get("where"), issue.get("contains")):
+            if not isinstance(bucket, dict):
+                continue
+            for key in keys:
+                value = bucket.get(key)
+                if isinstance(value, str) and value.strip():
+                    processes.add(value.strip().lower())
+                elif isinstance(value, (list, tuple, set)):
+                    for entry in value:
+                        if isinstance(entry, str) and entry.strip():
+                            processes.add(entry.strip().lower())
+    return processes
+
+
+def _explicit_excluded_processes(report: dict[str, Any]) -> set[str]:
+    excluded: set[str] = set()
+    env_value = os.environ.get("STAT_HARNESS_EXCLUDE_PROCESSES", "").strip()
+    if env_value:
+        for entry in re.split(r"[;,\s]+", env_value):
+            if entry.strip():
+                excluded.add(entry.strip().lower())
+    known = report.get("known_issues") if isinstance(report.get("known_issues"), dict) else None
+    if isinstance(known, dict):
+        for key in ("exclude_processes", "excluded_processes"):
+            values = known.get(key)
+            if isinstance(values, (list, tuple, set)):
+                for entry in values:
+                    if isinstance(entry, str) and entry.strip():
+                        excluded.add(entry.strip().lower())
+        exclusions = known.get("recommendation_exclusions")
+        if isinstance(exclusions, dict):
+            values = exclusions.get("processes")
+            if isinstance(values, (list, tuple, set)):
+                for entry in values:
+                    if isinstance(entry, str) and entry.strip():
+                        excluded.add(entry.strip().lower())
+    return excluded
+
+
+def _recommendation_has_excluded_process(
+    item: dict[str, Any], excluded: set[str]
+) -> bool:
+    if not excluded:
+        return False
+    for bucket in (item.get("where"), item.get("contains")):
+        if not isinstance(bucket, dict):
+            continue
+        for key in ("process", "process_norm", "process_name", "process_id", "activity"):
+            value = bucket.get(key)
+            if isinstance(value, str) and value.strip():
+                if value.strip().lower() in excluded:
+                    return True
+            elif isinstance(value, (list, tuple, set)):
+                for entry in value:
+                    if isinstance(entry, str) and entry.strip():
+                        if entry.strip().lower() in excluded:
+                            return True
+    return False
+
+
+def _filter_recommendations_by_process(
+    items: list[dict[str, Any]], excluded: set[str]
+) -> list[dict[str, Any]]:
+    if not excluded:
+        return items
+    return [item for item in items if not _recommendation_has_excluded_process(item, excluded)]
+
+
+def _close_cycle_bounds(report: dict[str, Any]) -> tuple[int | None, int | None]:
+    plugin = report.get("plugins", {}).get("analysis_queue_delay_decomposition")
+    if not isinstance(plugin, dict):
+        return None, None
+    summary = plugin.get("summary") or {}
+    start = summary.get("close_cycle_start_day") if isinstance(summary, dict) else None
+    end = summary.get("close_cycle_end_day") if isinstance(summary, dict) else None
+    if not (isinstance(start, (int, float)) and isinstance(end, (int, float))):
+        for item in plugin.get("findings") or []:
+            if not isinstance(item, dict):
+                continue
+            if "close_cycle_start_day" in item and "close_cycle_end_day" in item:
+                start = item.get("close_cycle_start_day")
+                end = item.get("close_cycle_end_day")
+                break
+    if isinstance(start, (int, float)) and isinstance(end, (int, float)):
+        return int(start), int(end)
+    return None, None
+
+
+def _dataset_context(
+    report: dict[str, Any], storage: Storage
+) -> tuple[str | None, str | None, dict[str, str]]:
+    lineage = report.get("lineage", {}) or {}
+    dataset_version_id = (
+        lineage.get("input", {}) or {}
+    ).get("dataset_version_id") or (lineage.get("dataset", {}) or {}).get(
+        "dataset_version_id"
+    )
+    if not isinstance(dataset_version_id, str) or not dataset_version_id:
+        return None, None, {}
+    ctx_row = storage.get_dataset_version_context(dataset_version_id)
+    if not ctx_row or not ctx_row.get("table_name"):
+        return dataset_version_id, None, {}
+    columns = storage.fetch_dataset_columns(dataset_version_id)
+    mapping = {col.get("original_name"): col.get("safe_name") for col in columns if col.get("original_name") and col.get("safe_name")}
+    return dataset_version_id, ctx_row.get("table_name"), mapping
+
+
+def _parse_params(params: str) -> dict[str, str]:
+    if not params:
+        return {}
+    pattern = re.compile(r"\s*([^;=]+?)\s*\([^\)]*\)\s*=\s*([^;]+)")
+    out: dict[str, str] = {}
+    for match in pattern.finditer(params):
+        key = match.group(1).strip().lower()
+        value = match.group(2).strip()
+        if key:
+            out[key] = value
+    return out
+
+
+def _param_overlap_summary(
+    storage: Storage,
+    report: dict[str, Any],
+    process_a: str,
+    process_b: str,
+) -> dict[str, Any] | None:
+    dataset_version_id, table_name, mapping = _dataset_context(report, storage)
+    if not table_name or not mapping:
+        return None
+    proc_col = mapping.get("PROCESS_ID")
+    param_col = mapping.get("PARAM_DESCR_LIST")
+    start_col = mapping.get("START_DT")
+    queue_col = mapping.get("QUEUE_DT")
+    if not proc_col or not param_col or (not start_col and not queue_col):
+        return None
+    start_day, end_day = _close_cycle_bounds(report)
+    if not isinstance(start_day, int) or not isinstance(end_day, int):
+        start_day = 1
+        end_day = 31
+
+    start_day_text = f"{start_day:02d}"
+    end_day_text = f"{end_day:02d}"
+    placeholders = ",".join(["?"] * 2)
+    query = f"""
+    SELECT {proc_col} AS process,
+           {param_col} AS params,
+           {start_col} AS start_dt,
+           {queue_col} AS queue_dt
+    FROM {table_name}
+    WHERE LOWER({proc_col}) IN ({placeholders})
+      AND (
+            (LENGTH({start_col}) >= 10 AND SUBSTR({start_col}, 9, 2) BETWEEN ? AND ?)
+         OR (LENGTH({queue_col}) >= 10 AND SUBSTR({queue_col}, 9, 2) BETWEEN ? AND ?)
+      )
+    """
+    rows: list[dict[str, Any]] = []
+    with storage.connection() as conn:
+        cur = conn.execute(
+            query,
+            [
+                process_a.lower(),
+                process_b.lower(),
+                start_day_text,
+                end_day_text,
+                start_day_text,
+                end_day_text,
+            ],
+        )
+        rows = [dict(row) for row in cur.fetchall()]
+
+    if not rows:
+        return None
+
+    parsed: list[dict[str, Any]] = []
+    for row in rows:
+        process = str(row.get("process") or "").strip().lower()
+        params = _parse_params(row.get("params") or "")
+        start_dt = row.get("start_dt") or row.get("queue_dt")
+        dt = None
+        if isinstance(start_dt, str):
+            try:
+                dt = datetime.fromisoformat(start_dt.replace("Z", ""))
+            except ValueError:
+                try:
+                    dt = datetime.strptime(start_dt.split(".")[0], "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    dt = None
+        parsed.append(
+            {
+                "process": process,
+                "params": params,
+                "dt": dt,
+            }
+        )
+
+    rows_a = [p for p in parsed if p["process"] == process_a.lower() and p["dt"]]
+    rows_b = [p for p in parsed if p["process"] == process_b.lower() and p["dt"]]
+    if not rows_a or not rows_b:
+        return None
+
+    excluded_keys = {
+        "business segment",
+        "business unit",
+        "accounting month",
+    }
+    keys_a: set[str] = set()
+    keys_b: set[str] = set()
+    for entry in rows_a:
+        keys_a.update(entry.get("params", {}).keys())
+    for entry in rows_b:
+        keys_b.update(entry.get("params", {}).keys())
+    candidate_keys = sorted((keys_a & keys_b) - excluded_keys)
+    if not candidate_keys:
+        return None
+
+    from collections import Counter
+
+    count_a = len(rows_a)
+    count_b = len(rows_b)
+
+    best_summary = None
+    best_score = 0.0
+    for key in candidate_keys:
+        values_a = [p["params"].get(key) for p in rows_a if p["params"].get(key)]
+        values_b = [p["params"].get(key) for p in rows_b if p["params"].get(key)]
+        if len(set(values_a)) < 2 or len(set(values_b)) < 2:
+            continue
+        counts_a = Counter(values_a)
+        counts_b = Counter(values_b)
+        overlap_values = [val for val in counts_a if val in counts_b]
+        if not overlap_values:
+            continue
+        overlap_a = sum(counts_a[val] for val in overlap_values)
+        overlap_b = sum(counts_b[val] for val in overlap_values)
+
+        by_value_b: dict[str, list[datetime]] = {}
+        for entry in rows_b:
+            val = entry.get("params", {}).get(key)
+            if not val:
+                continue
+            by_value_b.setdefault(val, []).append(entry["dt"])
+        for val in by_value_b:
+            by_value_b[val].sort()
+
+        within_24h = 0
+        for entry in rows_a:
+            val = entry.get("params", {}).get(key)
+            if not val:
+                continue
+            times = by_value_b.get(val)
+            if not times:
+                continue
+            t = entry["dt"]
+            if any(abs((t - other).total_seconds()) <= 86400 for other in times):
+                within_24h += 1
+
+        overlap_pct = overlap_a / len(values_a) if values_a else 0.0
+        within_pct = within_24h / len(values_a) if values_a else 0.0
+        score = overlap_pct * within_pct
+        if score > best_score:
+            best_score = score
+            best_summary = {
+                "overlap_key": key,
+                "overlap_values": sorted({val for val in overlap_values}),
+                "process_a_overlap_rows": overlap_a,
+                "process_b_overlap_rows": overlap_b,
+                "process_a_overlap_pct": overlap_pct,
+                "process_b_overlap_pct": overlap_b / len(values_b) if values_b else 0.0,
+                "process_a_within_24h": within_24h,
+                "process_a_within_24h_pct": within_pct,
+            }
+
+    if not best_summary:
+        return None
+
+    return {
+        "process_a": process_a,
+        "process_b": process_b,
+        **best_summary,
+        "process_a_rows": count_a,
+        "process_b_rows": count_b,
+    }
+
+
+def _metric_context_from_item(
+    kind: str | None, item: dict[str, Any], report: dict[str, Any]
+) -> dict[str, Any]:
+    spec = _metric_spec(kind)
+    metric_name = spec.get("name", "Metric")
+    return {
+        "metric_name": metric_name,
+        "definition": spec.get("definition", ""),
+        "unit": _metric_unit(metric_name, item),
+        "denominator": _denominator_text(item, report, spec),
+        "baseline": item.get(spec.get("baseline_field")) if spec.get("baseline_field") else None,
+        "observed": item.get(spec.get("observed_field")) if spec.get("observed_field") else None,
+        "target_threshold": item.get(spec.get("target_field")) if spec.get("target_field") else None,
+    }
+
+
+def _build_known_issue_recommendations(report: dict[str, Any]) -> dict[str, Any]:
     known = report.get("known_issues")
     if not isinstance(known, dict):
         return {
             "status": "no_known_issues",
-            "summary": "No known issues attached; recommendations not generated.",
+            "summary": "No known issues attached; pass-gate checks skipped.",
             "items": [],
         }
     expected = known.get("expected_findings") or []
@@ -228,6 +540,7 @@ def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
             {
                 "title": label,
                 "status": status,
+                "category": "known",
                 "recommendation": recommendation,
                 "plugin_id": plugin_id,
                 "kind": kind,
@@ -245,6 +558,342 @@ def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
         "status": "ok",
         "summary": f"Generated {len(deduped)} recommendation(s) from known issues.",
         "items": deduped,
+    }
+
+
+def _build_discovery_recommendations(
+    report: dict[str, Any], storage: Storage | None = None
+) -> dict[str, Any]:
+    items: list[dict[str, Any]] = []
+    known = report.get("known_issues") if isinstance(report.get("known_issues"), dict) else None
+    excluded_processes = _known_issue_processes(known)
+    excluded_processes |= _explicit_excluded_processes(report)
+    plugins = report.get("plugins", {}) or {}
+
+    queue_plugin = plugins.get("analysis_queue_delay_decomposition")
+    related_processes: set[str] = set()
+    shift_processes: set[str] = set()
+    overlap_cache: dict[tuple[str, str], dict[str, Any] | None] = {}
+    if isinstance(queue_plugin, dict):
+        findings = queue_plugin.get("findings") or []
+        impact = next(
+            (f for f in findings if isinstance(f, dict) and f.get("kind") == "eligible_wait_impact"),
+            None,
+        )
+        total_gt = (
+            float(impact.get("eligible_wait_gt_hours_total"))
+            if isinstance(impact, dict)
+            and isinstance(impact.get("eligible_wait_gt_hours_total"), (int, float))
+            else None
+        )
+        process_stats = [
+            f for f in findings if isinstance(f, dict) and f.get("kind") == "eligible_wait_process_stats"
+        ]
+        process_stats = sorted(
+            process_stats,
+            key=lambda row: float(row.get("eligible_wait_gt_hours_total") or 0.0),
+            reverse=True,
+        )
+        for idx, item in enumerate(process_stats):
+            process = item.get("process_norm") or item.get("process")
+            if not isinstance(process, str) or not process.strip():
+                continue
+            if idx < 10:
+                related_processes.add(process.strip().lower())
+            process_key = process.strip().lower()
+            if process_key in excluded_processes:
+                continue
+            value = item.get("eligible_wait_gt_hours_total")
+            if not isinstance(value, (int, float)) or float(value) < 1.0:
+                continue
+            runs_total = item.get("runs_total")
+            if isinstance(runs_total, (int, float)) and float(runs_total) < 500:
+                continue
+            share = None
+            if isinstance(total_gt, (int, float)) and total_gt > 0:
+                share = (float(value) / float(total_gt)) * 100.0
+            context = _metric_context_from_item("eligible_wait_process_stats", item, report)
+            evidence = {
+                "process": process,
+                "eligible_wait_gt_hours_total": float(value),
+                "share_percent": float(share) if share is not None else None,
+                "runs_total": runs_total,
+            }
+            rec_text = (
+                f"Reduce >threshold eligible wait for {process}: {float(value):.2f}h"
+                + (f" ({share:.1f}% of total)" if share is not None else "")
+                + (f" across {int(runs_total):,} runs." if isinstance(runs_total, (int, float)) else ".")
+            )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight(
+                "eligible_wait_process_stats", {}
+            )
+            impact_hours = float(value)
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            items.append(
+                {
+                    "title": f"Reduce over-threshold wait for {process}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_queue_delay_decomposition",
+                    "kind": "eligible_wait_process_stats",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": item.get("runs_total"),
+                    "evidence": [evidence],
+                    "action": "reduce_process_wait",
+                    "modeled_delta": None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                    **context,
+                }
+            )
+            break
+
+    shift_plugin = plugins.get("analysis_close_cycle_duration_shift")
+    if isinstance(shift_plugin, dict):
+        findings = [
+            f
+            for f in shift_plugin.get("findings") or []
+            if isinstance(f, dict) and f.get("kind") == "close_cycle_duration_shift"
+        ]
+        candidates: list[dict[str, Any]] = []
+        for item in findings:
+            process = item.get("process_norm") or item.get("process")
+            if not isinstance(process, str) or not process.strip():
+                continue
+            shift_processes.add(process.strip().lower())
+            related_processes.add(process.strip().lower())
+            process_key = process.strip().lower()
+            if process_key in excluded_processes:
+                continue
+            p_value = item.get("p_value")
+            slowdown = item.get("slowdown_ratio")
+            effect = item.get("effect_seconds")
+            close_count = item.get("close_count")
+            if not (isinstance(p_value, (int, float)) and p_value <= 0.05):
+                continue
+            if not (isinstance(slowdown, (int, float)) and slowdown >= 1.2):
+                continue
+            if not (isinstance(effect, (int, float)) and effect >= 5.0):
+                continue
+            if not (isinstance(close_count, (int, float)) and close_count >= 200):
+                continue
+            candidates.append(item)
+        candidates = sorted(
+            candidates,
+            key=lambda row: float(row.get("effect_seconds") or 0.0)
+            * float(row.get("close_count") or 0.0),
+            reverse=True,
+        )
+        for item in candidates[:2]:
+            process = item.get("process_norm") or item.get("process")
+            median_close = item.get("median_close")
+            median_open = item.get("median_open")
+            effect = float(item.get("effect_seconds") or 0.0)
+            slowdown = float(item.get("slowdown_ratio") or 0.0)
+            p_value = item.get("p_value")
+            close_count = float(item.get("close_count") or 0.0)
+            impact_hours = (effect * close_count) / 3600.0
+            context = _metric_context_from_item("close_cycle_duration_shift", item, report)
+            rec_text = (
+                f"Reduce close-cycle slowdown for {process}: median {median_close}s vs "
+                f"{median_open}s (Δ {effect:.1f}s, {slowdown:.2f}x; p={p_value:.4g}). "
+                "Reschedule or add dedicated capacity during close cycle."
+            )
+            overlap_detail = None
+            if storage and related_processes:
+                best = None
+                candidate_pool = sorted(shift_processes - {process.strip().lower()})
+                if not candidate_pool:
+                    candidate_pool = sorted(related_processes - {process.strip().lower()})
+                candidate_pool = candidate_pool[:5]
+                for other in candidate_pool:
+                    if other == process.strip().lower():
+                        continue
+                    key = tuple(sorted([process.strip().lower(), other]))
+                    if key in overlap_cache:
+                        summary = overlap_cache[key]
+                    else:
+                        summary = _param_overlap_summary(storage, report, process, other)
+                        overlap_cache[key] = summary
+                    if not summary:
+                        continue
+                    score = (
+                        float(summary.get("process_a_overlap_pct") or 0.0)
+                        * float(summary.get("process_a_within_24h_pct") or 0.0)
+                    )
+                    if not best or score > best[0]:
+                        best = (score, summary)
+                    if (
+                        summary.get("process_a_overlap_pct", 0.0) >= 0.9
+                        and summary.get("process_a_within_24h_pct", 0.0) >= 0.8
+                    ):
+                        break
+                if best and best[1]:
+                    overlap_detail = best[1]
+                    if (
+                        overlap_detail.get("process_a_overlap_pct", 0.0) >= 0.7
+                        and overlap_detail.get("process_a_within_24h_pct", 0.0) >= 0.7
+                    ):
+                        overlap_key = overlap_detail.get("overlap_key") or "parameters"
+                        overlap_values = ", ".join(
+                            overlap_detail.get("overlap_values") or []
+                        )
+                        rec_text = (
+                            rec_text
+                            + " Observed overlapping parameters with "
+                            + f"{overlap_detail.get('process_b')} on {overlap_key} {overlap_values}; "
+                            + f"{overlap_detail.get('process_a_within_24h_pct', 0.0)*100:.1f}% run within 24h. "
+                            + "Add a dependency so this process runs after the matching parameter set completes."
+                        )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight(
+                "close_cycle_duration_shift", {}
+            )
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            evidence = {
+                "process": process,
+                "median_close": median_close,
+                "median_open": median_open,
+                "effect_seconds": effect,
+                "slowdown_ratio": slowdown,
+                "p_value": p_value,
+                "close_count": close_count,
+                "open_count": item.get("open_count"),
+            }
+            if overlap_detail:
+                evidence.update(
+                    {
+                        "related_process": overlap_detail.get("process_b"),
+                        "overlap_key": overlap_detail.get("overlap_key"),
+                        "overlap_values": overlap_detail.get("overlap_values"),
+                        "overlap_pct": overlap_detail.get("process_a_overlap_pct"),
+                        "within_24h_pct": overlap_detail.get("process_a_within_24h_pct"),
+                    }
+                )
+            items.append(
+                {
+                    "title": f"Reduce close-cycle slowdown for {process}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_close_cycle_duration_shift",
+                    "kind": "close_cycle_duration_shift",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": item.get("close_count"),
+                    "evidence": [evidence],
+                    "action": "reduce_close_cycle_slowdown",
+                    "modeled_delta": None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                    **context,
+                }
+            )
+
+    linkage_plugin = plugins.get("analysis_upload_linkage")
+    if isinstance(linkage_plugin, dict):
+        findings = [
+            f
+            for f in linkage_plugin.get("findings") or []
+            if isinstance(f, dict) and f.get("kind") == "upload_bkrvnu_linkage"
+        ]
+        for item in findings:
+            matched_user_pct = item.get("matched_user_pct")
+            matched_any_pct = item.get("matched_any_pct")
+            bkrvnu_rows = item.get("bkrvnu_rows")
+            upload_rows = item.get("upload_rows")
+            window_hours = item.get("window_hours")
+            upload_process = item.get("upload_process") or "upload"
+            if not isinstance(matched_user_pct, (int, float)):
+                continue
+            if matched_user_pct >= 0.5:
+                continue
+            unmatched = None
+            if isinstance(bkrvnu_rows, (int, float)) and isinstance(
+                item.get("matched_user_count"), (int, float)
+            ):
+                unmatched = float(bkrvnu_rows) - float(item.get("matched_user_count"))
+            context = _metric_context_from_item("upload_bkrvnu_linkage", item, report)
+            rec_text = (
+                f"Add explicit linkage from XLSX uploads to downstream revenue booking: "
+                f"only {matched_user_pct*100:.1f}% of BKRVNU rows match an upload by user "
+                f"+{int(window_hours) if isinstance(window_hours, (int, float)) else 'n/a'}h window."
+            )
+            if isinstance(matched_any_pct, (int, float)):
+                rec_text += f" Even relaxed matching is only {matched_any_pct*100:.1f}%."
+            rec_text += " Capture the upload batch/filename and propagate it into revenue booking metadata."
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight(
+                "upload_bkrvnu_linkage", {}
+            )
+            impact_hours = float(unmatched) if unmatched is not None else float(bkrvnu_rows or 0.0)
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            evidence = {
+                "upload_process": upload_process,
+                "upload_rows": upload_rows,
+                "bkrvnu_rows": bkrvnu_rows,
+                "matched_user_pct": matched_user_pct,
+                "matched_any_pct": matched_any_pct,
+                "window_hours": window_hours,
+            }
+            items.append(
+                {
+                    "title": "Add deterministic XLSX-to-revenue linkage",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_upload_linkage",
+                    "kind": "upload_bkrvnu_linkage",
+                    "where": {"process_norm": upload_process},
+                    "contains": None,
+                    "observed_count": bkrvnu_rows,
+                    "evidence": [evidence],
+                    "action": "add_upload_linkage",
+                    "modeled_delta": None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                    **context,
+                }
+            )
+
+    deduped = _dedupe_recommendations_text(items)
+    status = "ok" if deduped else "none"
+    summary = (
+        f"Generated {len(deduped)} discovery recommendation(s) from plugin findings."
+        if deduped
+        else "No discovery recommendations generated from plugin findings."
+    )
+    return {"status": status, "summary": summary, "items": deduped}
+
+
+def _build_recommendations(report: dict[str, Any], storage: Storage | None = None) -> dict[str, Any]:
+    known = _build_known_issue_recommendations(report)
+    discovery = _build_discovery_recommendations(report, storage)
+    combined = _dedupe_recommendations_text(
+        [
+            item
+            for item in (known.get("items") or []) + (discovery.get("items") or [])
+            if isinstance(item, dict)
+        ]
+    )
+    return {
+        "status": "ok",
+        "summary": "Combined known-issue pass gate and discovery recommendations.",
+        "known": known,
+        "discovery": discovery,
+        "items": combined,
     }
 
 
@@ -435,6 +1084,20 @@ def _metric_spec(kind: str | None) -> dict[str, Any]:
             "observed_field": "baseline_span_days_median",
             "denominator_field": "months",
         },
+        "close_cycle_duration_shift": {
+            "name": "Close-cycle median duration (seconds)",
+            "definition": "Median close-cycle duration vs open-window duration for the process.",
+            "baseline_field": "median_open",
+            "observed_field": "median_close",
+            "denominator_field": "close_count",
+        },
+        "upload_bkrvnu_linkage": {
+            "name": "BKRVNU upload linkage coverage (%)",
+            "definition": "Share of BKRVNU rows that can be matched to an XLSX upload by user + time window.",
+            "baseline_field": "matched_user_pct",
+            "observed_field": "matched_user_pct",
+            "denominator_field": "bkrvnu_rows",
+        },
     }.get(kind or "", {"name": "Finding count", "definition": "Count of matching findings."})
 
 
@@ -502,6 +1165,8 @@ def _controllability_weight(kind: str | None, issue: dict[str, Any]) -> float:
         "eligible_wait_process_stats": 0.7,
         "eligible_wait_impact": 0.7,
         "close_cycle_revenue_compression": 0.6,
+        "close_cycle_duration_shift": 0.7,
+        "upload_bkrvnu_linkage": 0.6,
     }
     return mapping.get(kind or "", 0.5)
 
@@ -694,6 +1359,36 @@ def _dedupe_recommendations_text(items: list[dict[str, Any]]) -> list[dict[str, 
         current = merged[key]
         current["merged_titles"].append(item.get("title") or "")
     return list(merged.values())
+
+
+def _split_recommendations(
+    recommendations: dict[str, Any] | None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str, str]:
+    known_items: list[dict[str, Any]] = []
+    discovery_items: list[dict[str, Any]] = []
+    known_summary = ""
+    discovery_summary = ""
+    if not isinstance(recommendations, dict):
+        return known_items, discovery_items, known_summary, discovery_summary
+    if "known" in recommendations or "discovery" in recommendations:
+        known_block = recommendations.get("known") or {}
+        discovery_block = recommendations.get("discovery") or {}
+        known_items = [
+            item for item in (known_block.get("items") or []) if isinstance(item, dict)
+        ]
+        discovery_items = [
+            item
+            for item in (discovery_block.get("items") or [])
+            if isinstance(item, dict)
+        ]
+        known_summary = known_block.get("summary") or ""
+        discovery_summary = discovery_block.get("summary") or ""
+        return known_items, discovery_items, known_summary, discovery_summary
+    known_items = [
+        item for item in (recommendations.get("items") or []) if isinstance(item, dict)
+    ]
+    known_summary = recommendations.get("summary") or ""
+    return known_items, discovery_items, known_summary, discovery_summary
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]], headers: list[str]) -> None:
@@ -973,6 +1668,26 @@ def build_report(
             "natural_language": known_block.get("natural_language") or [],
             "expected_findings": known_block.get("expected_findings") or [],
         }
+    if project_row and str(project_row.get("erp_type") or "").strip().lower() == "quorum":
+        if not known_payload:
+            known_payload = {
+                "scope_type": "erp_type",
+                "scope_value": "quorum",
+                "strict": False,
+                "notes": "",
+                "natural_language": [],
+                "expected_findings": [],
+            }
+        exclusions = known_payload.get("recommendation_exclusions")
+        if not isinstance(exclusions, dict):
+            exclusions = {}
+        processes = exclusions.get("processes")
+        if not isinstance(processes, list):
+            processes = []
+        quorum_exclusions = {"postwkfl", "bkrvnu", "cwowfndrls"}
+        merged = sorted({*(str(p).strip() for p in processes if str(p).strip()), *quorum_exclusions})
+        exclusions["processes"] = merged
+        known_payload["recommendation_exclusions"] = exclusions
 
     report = {
         "run_id": run_id,
@@ -1010,7 +1725,7 @@ def build_report(
         known_payload = _load_known_issues_fallback(run_dir)
     if known_payload:
         report["known_issues"] = known_payload
-    report["recommendations"] = _build_recommendations(report)
+    report["recommendations"] = _build_recommendations(report, storage)
     evaluation_path = run_dir / "evaluation.json"
     if evaluation_path.exists():
         try:
@@ -1098,33 +1813,58 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
 
     recommendations = report.get("recommendations")
     lines.append("### Recommendations")
-    if isinstance(recommendations, dict):
-        summary = recommendations.get("summary") or ""
-        if summary:
-            lines.append(summary)
-        items = recommendations.get("items") or []
-        if items:
-            items = _dedupe_recommendations_text(
-                [item for item in items if isinstance(item, dict)]
-            )
-            lines.append("| Status | Recommendation |")
-            lines.append("|---|---|")
-            for item in items:
-                status = item.get("status") or "unknown"
-                rec = item.get("recommendation") or "Recommendation"
-                merged_titles = [
-                    title
-                    for title in (item.get("merged_titles") or [])
-                    if isinstance(title, str) and title
-                ]
-                if len(merged_titles) > 1:
-                    merged_text = "; ".join(dict.fromkeys(merged_titles))
-                    rec = f"{rec} (covers: {merged_text})"
-                lines.append(f"| {status} | {rec} |")
-        else:
-            lines.append("No recommendations available.")
+    known_items, discovery_items, known_summary, discovery_summary = _split_recommendations(
+        recommendations if isinstance(recommendations, dict) else None
+    )
+    excluded_processes = _explicit_excluded_processes(report)
+
+    lines.append("#### Discovery Recommendations")
+    if discovery_summary:
+        lines.append(discovery_summary)
+    if discovery_items:
+        discovery_items = _dedupe_recommendations_text(discovery_items)
+        discovery_items = _filter_recommendations_by_process(
+            discovery_items, excluded_processes
+        )
+        lines.append("| Status | Recommendation |")
+        lines.append("|---|---|")
+        for item in discovery_items:
+            status = item.get("status") or "unknown"
+            rec = item.get("recommendation") or "Recommendation"
+            merged_titles = [
+                title
+                for title in (item.get("merged_titles") or [])
+                if isinstance(title, str) and title
+            ]
+            if len(merged_titles) > 1:
+                merged_text = "; ".join(dict.fromkeys(merged_titles))
+                rec = f"{rec} (covers: {merged_text})"
+            lines.append(f"| {status} | {rec} |")
     else:
-        lines.append("No recommendations available.")
+        lines.append("No discovery recommendations available.")
+    lines.append("")
+
+    lines.append("#### Known-Issue Recommendations (Pass Gate)")
+    if known_summary:
+        lines.append(known_summary)
+    if known_items:
+        known_items = _dedupe_recommendations_text(known_items)
+        lines.append("| Status | Recommendation |")
+        lines.append("|---|---|")
+        for item in known_items:
+            status = item.get("status") or "unknown"
+            rec = item.get("recommendation") or "Recommendation"
+            merged_titles = [
+                title
+                for title in (item.get("merged_titles") or [])
+                if isinstance(title, str) and title
+            ]
+            if len(merged_titles) > 1:
+                merged_text = "; ".join(dict.fromkeys(merged_titles))
+                rec = f"{rec} (covers: {merged_text})"
+            lines.append(f"| {status} | {rec} |")
+    else:
+        lines.append("No known-issue recommendations available.")
     lines.append("")
 
     if decision_cards:
@@ -1333,6 +2073,8 @@ def _format_known_issue_checks(
 
 def _metric_unit(metric_name: str, item: dict[str, Any] | None = None) -> str:
     name = metric_name.lower()
+    if "%" in name or "percent" in name or "pct" in name:
+        return "percent"
     if "hours" in name:
         return "hours"
     if "seconds" in name or "sec" in name:
@@ -1347,6 +2089,8 @@ def _metric_unit(metric_name: str, item: dict[str, Any] | None = None) -> str:
                 return "seconds"
             if key.endswith("_days"):
                 return "days"
+            if key.endswith("_pct"):
+                return "percent"
     return "count"
 
 
@@ -1530,22 +2274,28 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
         lines.append("No busy period data available.")
     lines.append("")
 
-    cards = _issue_cards(report)
-    card_by_title = {card.get("title"): card for card in cards}
-    evaluations = _evaluate_known_issues(report)
-    eval_by_title = {entry.get("label"): entry for entry in evaluations}
-    recommendations = report.get("recommendations", {}).get("items") or []
-    recs = [item for item in recommendations if isinstance(item, dict)]
-    recs = _dedupe_recommendations_text(recs)
-    recs_sorted = sorted(
-        recs,
-        key=lambda item: card_by_title.get(item.get("title"), {}).get("relevance_score", 0.0),
-        reverse=True,
+    known_items, discovery_items, known_summary, discovery_summary = _split_recommendations(
+        report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
-    recs_sorted = recs_sorted[:3]
+    excluded_processes = _explicit_excluded_processes(report)
+    excluded_processes = _explicit_excluded_processes(report)
+    discovery_items = _dedupe_recommendations_text(discovery_items)
+    discovery_items = _filter_recommendations_by_process(
+        discovery_items, excluded_processes
+    )
+    discovery_items = _filter_recommendations_by_process(
+        discovery_items, excluded_processes
+    )
+    recs_sorted = sorted(
+        discovery_items,
+        key=lambda item: float(item.get("relevance_score") or item.get("impact_hours") or 0.0),
+        reverse=True,
+    )[:3]
 
     if recs_sorted:
-        lines.append("## Top Recommendations")
+        lines.append("## Top Recommendations (Discovery)")
+        if discovery_summary:
+            lines.append(discovery_summary)
     for idx, rec in enumerate(recs_sorted, start=1):
         title = rec.get("title") or f"Recommendation {idx}"
         merged_titles = [
@@ -1553,23 +2303,17 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
             for text in (rec.get("merged_titles") or [])
             if isinstance(text, str) and text
         ]
-        card = card_by_title.get(title) or {}
-        evaluation = eval_by_title.get(title) or {}
-        matched = evaluation.get("matched") or []
-        item = matched[0] if matched else {}
-        metric_name = card.get("metric_name") or "Metric"
-        unit = _metric_unit(metric_name, item if isinstance(item, dict) else None)
-        denominator = card.get("denominator") or "n/a"
+        metric_name = rec.get("metric_name") or "Metric"
+        unit = rec.get("unit") or _metric_unit(metric_name, rec)
+        denominator = rec.get("denominator") or "n/a"
         filter_text = ""
-        if evaluation.get("where"):
-            filter_text = f"where={evaluation.get('where')}"
-        if evaluation.get("contains"):
-            filter_text = f"{filter_text} contains={evaluation.get('contains')}".strip()
+        if rec.get("where"):
+            filter_text = f"where={rec.get('where')}"
+        if rec.get("contains"):
+            filter_text = f"{filter_text} contains={rec.get('contains')}".strip()
         if not filter_text:
             filter_text = f"threshold={threshold_text}"
-        measurement_type = (
-            item.get("measurement_type") if isinstance(item, dict) else None
-        ) or "measured"
+        measurement_type = rec.get("measurement_type") or "measured"
         confidence_tag = "Modeled" if measurement_type == "modeled" else "Measured"
 
         lines.append(f"### {title}")
@@ -1577,30 +2321,66 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
         if len(merged_titles) > 1:
             merged_text = "; ".join(dict.fromkeys(merged_titles))
             lines.append(f"Also covers: {merged_text}")
-        lines.append(
-            "Evidence: "
-            f"baseline={card.get('baseline')}, observed={card.get('observed')}, "
-            f"target={card.get('target_threshold')}."
-        )
+        baseline = rec.get("baseline")
+        observed = rec.get("observed")
+        target = rec.get("target_threshold")
+        if baseline is not None or observed is not None or target is not None:
+            lines.append(
+                "Evidence: "
+                f"baseline={_format_issue_value(baseline)}, observed={_format_issue_value(observed)}, "
+                f"target={_format_issue_value(target)}."
+            )
+        else:
+            evidence = rec.get("evidence") or []
+            numbers = evidence[0] if evidence else {}
+            if isinstance(numbers, dict) and numbers:
+                detail = ", ".join(
+                    f"{key}={_format_issue_value(numbers.get(key))}"
+                    for key in list(numbers.keys())[:4]
+                )
+                lines.append(f"Evidence: {detail}.")
         lines.append(f"Action: {rec.get('recommendation')}")
         lines.append(
             f"Metric context: unit={unit}; population={denominator}; threshold/filters={filter_text}."
         )
-        scenario_rows = _scenario_rows_from_item(item) if isinstance(item, dict) else []
-        if not scenario_rows:
-            scenario_rows = [
+        scenario_rows = []
+        if rec.get("kind") == "upload_bkrvnu_linkage":
+            current_val = rec.get("observed")
+            if not isinstance(current_val, (int, float)):
+                current_val = rec.get("baseline")
+            if isinstance(current_val, (int, float)):
+                scenario_rows.append(
+                    {
+                        "scenario": "current",
+                        "value": float(current_val) * 100.0,
+                        "delta": 0.0,
+                        "unit": "percent",
+                    }
+                )
+                target_val = 1.0
+                scenario_rows.append(
+                    {
+                        "scenario": "target_linked",
+                        "value": float(target_val) * 100.0,
+                        "delta": (float(target_val) - float(current_val)) * 100.0,
+                        "unit": "percent",
+                    }
+                )
+        else:
+            impact_hours = rec.get("impact_hours")
+            scenario_rows.append(
                 {
                     "scenario": "current",
                     "value": float(total_busy_hours),
                     "delta": 0.0,
                     "unit": "hours",
                 }
-            ]
-            if isinstance(rec.get("modeled_delta"), (int, float)):
-                modeled_value = float(total_busy_hours) - float(rec["modeled_delta"])
+            )
+            if isinstance(impact_hours, (int, float)) and float(total_busy_hours):
+                modeled_value = max(0.0, float(total_busy_hours) - float(impact_hours))
                 scenario_rows.append(
                     {
-                        "scenario": "modeled",
+                        "scenario": "upper_bound_if_eliminated",
                         "value": modeled_value,
                         "delta": modeled_value - float(total_busy_hours),
                         "unit": "hours",
@@ -1622,15 +2402,28 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
                 )
             )
         lines.append(f"Confidence: {confidence_tag}")
-        artifact_paths = card.get("artifact_paths") or []
+        artifact_paths = _artifact_paths(report, rec.get("plugin_id"))
         artifact_text = ", ".join(artifact_paths) if artifact_paths else "n/a"
-        query = item.get("query") if isinstance(item, dict) else None
-        filters = query or filter_text
-        plugin_id = rec.get("plugin_id") or card.get("plugin_id") or "n/a"
+        filters = rec.get("query") or filter_text
+        plugin_id = rec.get("plugin_id") or "n/a"
         lines.append(
             f"How to validate: re-run `{plugin_id}` and confirm `{metric_name}` in {artifact_text}; "
             f"filters: {filters}."
         )
+        lines.append("")
+
+    if known_items:
+        lines.append("## Known-Issue Checks (Pass Gate)")
+        if known_summary:
+            lines.append(known_summary)
+        known_items = _dedupe_recommendations_text(known_items)
+        lines.append("| Status | Issue | Recommendation |")
+        lines.append("|---|---|---|")
+        for item in known_items[:10]:
+            status = item.get("status") or "unknown"
+            title = item.get("title") or "Known issue"
+            rec_text = item.get("recommendation") or "Recommendation"
+            lines.append(f"| {status} | {title} | {rec_text} |")
         lines.append("")
 
     (run_dir / "business_summary.md").write_text("\n".join(lines), encoding="utf-8")
@@ -1648,17 +2441,16 @@ def _write_engineering_summary(report: dict[str, Any], run_dir: Path) -> None:
     lines.append("- close cycle window: day-of-month window used to tag close-cycle activity.")
     lines.append("")
 
+    evaluations = _evaluate_known_issues(report)
     cards = _issue_cards(report)
     card_by_title = {card.get("title"): card for card in cards}
-    evaluations = _evaluate_known_issues(report)
-    eval_by_title = {entry.get("label"): entry for entry in evaluations}
-    recommendations = report.get("recommendations", {}).get("items") or []
-    recs = _dedupe_recommendations_text(
-        [item for item in recommendations if isinstance(item, dict)]
+    known_items, discovery_items, _, _ = _split_recommendations(
+        report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
+    discovery_items = _dedupe_recommendations_text(discovery_items)
     recs = sorted(
-        recs,
-        key=lambda item: card_by_title.get(item.get("title"), {}).get("relevance_score", 0.0),
+        discovery_items,
+        key=lambda item: float(item.get("relevance_score") or item.get("impact_hours") or 0.0),
         reverse=True,
     )[:3]
     merged_notes: list[str] = []
@@ -1679,20 +2471,15 @@ def _write_engineering_summary(report: dict[str, Any], run_dir: Path) -> None:
                 claim_text = f"{title} (+{len(merged_titles) - 1} merged)"
                 merged_text = "; ".join(dict.fromkeys(merged_titles))
                 merged_notes.append(f"{title}: {merged_text}")
-            evaluation = eval_by_title.get(title) or {}
-            matched = evaluation.get("matched") or []
-            item = matched[0] if matched else {}
-            plugin_id = rec.get("plugin_id") or evaluation.get("plugin_id") or "n/a"
-            kind = evaluation.get("kind") or rec.get("kind") or "n/a"
-            measurement = item.get("measurement_type") if isinstance(item, dict) else "n/a"
-            card = card_by_title.get(title) or {}
-            artifact_paths = card.get("artifact_paths") or []
+            plugin_id = rec.get("plugin_id") or "n/a"
+            kind = rec.get("kind") or "n/a"
+            measurement = rec.get("measurement_type") or "n/a"
+            artifact_paths = _artifact_paths(report, rec.get("plugin_id"))
             artifact_text = ", ".join(artifact_paths) if artifact_paths else "n/a"
-            query = item.get("query") if isinstance(item, dict) else None
-            filters = query or evaluation.get("where") or evaluation.get("contains") or "n/a"
-            metric_name = card.get("metric_name") or "Metric"
-            unit = _metric_unit(metric_name, item if isinstance(item, dict) else None)
-            denominator = card.get("denominator") or "n/a"
+            filters = rec.get("query") or rec.get("where") or rec.get("contains") or "n/a"
+            metric_name = rec.get("metric_name") or "Metric"
+            unit = rec.get("unit") or _metric_unit(metric_name, rec)
+            denominator = rec.get("denominator") or "n/a"
             lines.append(
                 f"| {claim_text} | `{plugin_id}` | {kind} | {measurement} | {artifact_text} | {filters} | "
                 f"unit={unit}; population={denominator}; threshold/filters={filters} |"

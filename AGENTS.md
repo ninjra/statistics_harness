@@ -1,4 +1,4 @@
-# Statistic Harness — Codex / Agent Instructions
+# Statistic Harness â€” Codex / Agent Instructions
 
 ## Non-negotiables (do not ship if violated)
 - Do not ship unless: `python -m pytest -q` passes.
@@ -40,3 +40,4 @@
 - Fail closed:
   - plugin errors do not crash the pipeline
   - pipeline still generates a report that includes error summaries.
+Always provide a single short one-line command with no line breaks and keep it under terminal width; create any needed script/cmd to implement the command and provide a short full-path command to run that script.

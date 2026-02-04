@@ -3,7 +3,8 @@ name: Close Cycle Capacity Model
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-depends_on: []
+depends_on:
+  - analysis_close_cycle_window_resolver
 settings:
   description: Model close-cycle completion-time impact from adding capacity (model-only findings).
   defaults:
