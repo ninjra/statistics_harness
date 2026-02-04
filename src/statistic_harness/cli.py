@@ -83,6 +83,7 @@ def cmd_run(
     file_path: str, plugins: str, settings_path: str | None, run_seed: int
 ) -> None:
     _require_cli_api_key()
+    os.environ.setdefault("STAT_HARNESS_CLI_PROGRESS", "1")
     tenant_ctx = get_tenant_context()
     pipeline = Pipeline(
         tenant_ctx.appdata_root, Path("plugins"), tenant_id=tenant_ctx.tenant_id

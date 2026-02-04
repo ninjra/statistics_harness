@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import hashlib
+import sys
+import threading
+import time
 import traceback
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
@@ -93,6 +96,12 @@ class Pipeline:
         run_dir = self.base_dir / "runs" / run_id
         ensure_dir(run_dir / "dataset")
         ensure_dir(run_dir / "logs")
+        progress_enabled = os.environ.get("STAT_HARNESS_CLI_PROGRESS", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        progress_tty = progress_enabled and sys.stdout.isatty()
 
         canonical_path = run_dir / "dataset" / "canonical.csv"
         if input_file is None:
@@ -309,7 +318,9 @@ class Pipeline:
             with log_path.open("a", encoding="utf-8") as handle:
                 handle.write(msg + "\n")
 
-        def run_spec(spec: PluginSpec, include_input: bool = False) -> PluginResult:
+        def run_spec(
+            spec: PluginSpec, include_input: bool = False, progress: bool = True
+        ) -> PluginResult:
             plugin_settings = dict(spec.settings.get("defaults", {}))
             plugin_settings.update(settings.get(spec.plugin_id, {}))
             if include_input and input_file is not None:
@@ -353,6 +364,35 @@ class Pipeline:
                 dataset_version_id=dataset_version_id,
                 input_hash=input_hash,
             )
+            heartbeat_stop = threading.Event()
+            heartbeat_thread: threading.Thread | None = None
+            start_wall = time.perf_counter()
+            if progress and progress_enabled:
+                if progress_tty:
+                    sys.stdout.write(f"[RUN] {spec.plugin_id}\n")
+                    sys.stdout.flush()
+                else:
+                    print(f"[RUN] {spec.plugin_id}")
+
+                def heartbeat() -> None:
+                    spinner = "|/-\\"
+                    idx = 0
+                    while not heartbeat_stop.wait(5.0):
+                        elapsed = int(time.perf_counter() - start_wall)
+                        if progress_tty:
+                            sys.stdout.write(
+                                f"\r[RUN] {spec.plugin_id} {spinner[idx % 4]} {elapsed}s"
+                            )
+                            sys.stdout.flush()
+                        else:
+                            print(f"[RUN] {spec.plugin_id} {elapsed}s")
+                        idx += 1
+                    if progress_tty:
+                        sys.stdout.write("\r")
+                        sys.stdout.flush()
+
+                heartbeat_thread = threading.Thread(target=heartbeat, daemon=True)
+                heartbeat_thread.start()
             try:
                 self.manager.validate_config(spec, plugin_settings)
                 allow_paths: list[str] = []
@@ -406,6 +446,10 @@ class Pipeline:
                         type=type(exc).__name__, message=str(exc), traceback=tb
                     ),
                 )
+            finally:
+                heartbeat_stop.set()
+                if heartbeat_thread:
+                    heartbeat_thread.join(timeout=1.0)
             result.findings = attach_evidence(result.findings)
             try:
                 payload = self.manager.result_payload(result)
@@ -456,6 +500,15 @@ class Pipeline:
                     stdout=None,
                     stderr=None,
                 )
+            if progress and progress_enabled:
+                duration_ms = 0
+                if "runner" in locals():
+                    duration_ms = int(exec_info.get("duration_ms") or 0)
+                else:
+                    duration_ms = int((time.perf_counter() - start_wall) * 1000)
+                duration_s = duration_ms / 1000.0
+                status_tag = "OK" if result.status == "ok" else "ERR"
+                print(f"[{status_tag}] {spec.plugin_id} ({duration_s:.1f}s)")
             module_path, _ = spec.entrypoint.split(":", 1)
             if module_path.endswith(".py"):
                 module_file = spec.path / module_path
@@ -530,7 +583,9 @@ class Pipeline:
                 continue
             max_workers = min(len(layer), (os.cpu_count() or 1))
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = [executor.submit(run_spec, spec) for spec in layer]
+                futures = [
+                    executor.submit(run_spec, spec, False, False) for spec in layer
+                ]
                 for future in futures:
                     future.result()
 
