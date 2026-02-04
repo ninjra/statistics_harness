@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import write_json
+from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
 
 def _pick_column(
@@ -323,8 +323,19 @@ class Plugin:
         if work.empty:
             return PluginResult("skipped", "No valid process values", {}, [], [], None)
 
-        close_start = int(ctx.settings.get("close_cycle_start_day", 20))
-        close_end = int(ctx.settings.get("close_cycle_end_day", 5))
+        close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
+        window_days = int(ctx.settings.get("close_cycle_window_days", 17))
+        inferred_start, inferred_end = infer_close_cycle_window(
+            work["__timestamp"], window_days
+        )
+        if close_mode == "fixed":
+            close_start = int(ctx.settings.get("close_cycle_start_day", inferred_start))
+            close_end = int(ctx.settings.get("close_cycle_end_day", inferred_end))
+            close_source = "fixed"
+        else:
+            close_start = inferred_start
+            close_end = inferred_end
+            close_source = "inferred"
         min_close_count = int(ctx.settings.get("min_close_count", 200))
         min_open_count = int(ctx.settings.get("min_open_count", 200))
         min_days = int(ctx.settings.get("min_days", 20))
@@ -346,6 +357,21 @@ class Plugin:
                 work["__day"] <= close_end
             )
 
+        close_rows = int(work["__close"].sum())
+        open_rows = int(len(work) - close_rows)
+        if close_mode != "fixed" and (close_rows < min_close_count or open_rows < min_open_count):
+            close_start = int(ctx.settings.get("close_cycle_start_day", close_start))
+            close_end = int(ctx.settings.get("close_cycle_end_day", close_end))
+            close_source = "inferred_fallback"
+            if close_start <= close_end:
+                work["__close"] = (work["__day"] >= close_start) & (
+                    work["__day"] <= close_end
+                )
+            else:
+                work["__close"] = (work["__day"] >= close_start) | (
+                    work["__day"] <= close_end
+                )
+
         close = work.loc[work["__close"]].copy()
         open_rows = work.loc[~work["__close"]].copy()
 
@@ -356,6 +382,11 @@ class Plugin:
             "server_column": server_col,
             "close_cycle_start_day": close_start,
             "close_cycle_end_day": close_end,
+            "close_cycle_mode": close_mode,
+            "close_cycle_window_days": window_days,
+            "close_cycle_source": close_source,
+            "inferred_close_cycle_start_day": inferred_start,
+            "inferred_close_cycle_end_day": inferred_end,
             "min_close_count": min_close_count,
             "min_open_count": min_open_count,
             "min_days": min_days,

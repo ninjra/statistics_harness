@@ -3,7 +3,7 @@
   "additionalProperties": false,
   "properties": {
     "max_points": {
-      "minimum": 1,
+      "minimum": 0,
       "type": "integer"
     },
     "n_thresholds": {

@@ -11,7 +11,7 @@ settings:
   description: Conformal anomaly detection
   defaults:
     alpha: 0.1
-    max_target_cols: 5
+    max_target_cols: 0
     model: ridge
 config_schema: config.schema.json
 output_schema: output.schema.json

@@ -20,13 +20,16 @@ class Plugin:
                 "skipped", "No complete numeric rows", {"count": 0}, [], [], None
             )
 
-        max_cols = int(ctx.settings.get("max_target_cols", 5))
+        max_cols = ctx.settings.get("max_target_cols")
         alpha = float(ctx.settings.get("alpha", 0.1))
         findings = []
         artifacts = []
         artifacts_dir = ctx.artifacts_dir("analysis_conformal_feature_prediction")
 
-        for target in list(numeric.columns)[:max_cols]:
+        targets = list(numeric.columns)
+        if isinstance(max_cols, int) and max_cols > 0:
+            targets = targets[:max_cols]
+        for target in targets:
             y = numeric[target].to_numpy()
             X = numeric.drop(columns=[target]).to_numpy()
             if X.size == 0:

@@ -12,6 +12,11 @@
       "items": { "type": "string" },
       "default": []
     },
+    "close_cycle_mode": {
+      "type": "string",
+      "enum": ["infer", "fixed"]
+    },
+    "close_cycle_window_days": { "type": "integer", "minimum": 1, "maximum": 31 },
     "close_cycle_start_day": { "type": "integer", "minimum": 1, "maximum": 31 },
     "close_cycle_end_day": { "type": "integer", "minimum": 1, "maximum": 31 },
     "wait_threshold_seconds": { "type": "number", "minimum": 0 },

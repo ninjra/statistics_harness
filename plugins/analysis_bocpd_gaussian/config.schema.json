@@ -22,6 +22,10 @@
         "string",
         "null"
       ]
+    },
+    "value_columns": {
+      "type": ["array", "null"],
+      "items": { "type": "string" }
     }
   },
   "title": "BOCPD Gaussian Config",

@@ -6,7 +6,7 @@ import pandas as pd
 
 from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import write_json
+from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
 
 INVALID_STRINGS = {"", "nan", "none", "null"}
@@ -280,8 +280,19 @@ class Plugin:
         work["__wait_to_start_sec"] = wait_to_start
         work["__wait_to_start_gt_sec"] = wait_to_start.where(wait_to_start > threshold, 0.0)
 
-        close_start = int(ctx.settings.get("close_cycle_start_day", 20))
-        close_end = int(ctx.settings.get("close_cycle_end_day", 5))
+        close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
+        window_days = int(ctx.settings.get("close_cycle_window_days", 17))
+        inferred_start, inferred_end = infer_close_cycle_window(
+            work["__start_ts"], window_days
+        )
+        if close_mode == "fixed":
+            close_start = int(ctx.settings.get("close_cycle_start_day", inferred_start))
+            close_end = int(ctx.settings.get("close_cycle_end_day", inferred_end))
+            close_source = "fixed"
+        else:
+            close_start = inferred_start
+            close_end = inferred_end
+            close_source = "inferred"
         work["__day"] = work["__start_ts"].dt.day
         if close_start <= close_end:
             work["__close"] = (work["__day"] >= close_start) & (work["__day"] <= close_end)
@@ -553,6 +564,11 @@ class Plugin:
                     "metric": "eligible_wait_gt_hours",
                     "close_cycle_start_day": close_start,
                     "close_cycle_end_day": close_end,
+                    "close_cycle_mode": close_mode,
+                    "close_cycle_window_days": window_days,
+                    "close_cycle_source": close_source,
+                    "inferred_close_cycle_start_day": inferred_start,
+                    "inferred_close_cycle_end_day": inferred_end,
                     "eligible_basis": eligible_basis,
                 }
                 findings.append(
@@ -590,6 +606,11 @@ class Plugin:
                     "eligible_basis": eligible_basis,
                     "close_cycle_start_day": close_start,
                     "close_cycle_end_day": close_end,
+                    "close_cycle_mode": close_mode,
+                    "close_cycle_window_days": window_days,
+                    "close_cycle_source": close_source,
+                    "inferred_close_cycle_start_day": inferred_start,
+                    "inferred_close_cycle_end_day": inferred_end,
                     "wait_threshold_seconds": threshold,
                     "busy_period_bucket": "hour",
                     "busy_period_basis": "queue_to_start",
@@ -623,6 +644,13 @@ class Plugin:
                 "eligible_wait_gt_hours_total": total_eligible_wait_gt_hours,
                 "eligible_basis": eligible_basis,
                 "process_column": process_col,
+                "close_cycle_start_day": close_start,
+                "close_cycle_end_day": close_end,
+                "close_cycle_mode": close_mode,
+                "close_cycle_window_days": window_days,
+                "close_cycle_source": close_source,
+                "inferred_close_cycle_start_day": inferred_start,
+                "inferred_close_cycle_end_day": inferred_end,
             },
             findings,
             artifacts,

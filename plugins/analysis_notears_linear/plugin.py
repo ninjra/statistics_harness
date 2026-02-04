@@ -13,8 +13,9 @@ class Plugin:
             return PluginResult(
                 "skipped", "Not enough numeric columns", {}, [], [], None
             )
-        max_cols = int(ctx.settings.get("max_cols", 20))
-        numeric = numeric.iloc[:, :max_cols]
+        max_cols = ctx.settings.get("max_cols")
+        if isinstance(max_cols, int) and max_cols > 0:
+            numeric = numeric.iloc[:, :max_cols]
         corr = numeric.corr().fillna(0.0).to_numpy()
         nodes = list(numeric.columns)
         edges = []

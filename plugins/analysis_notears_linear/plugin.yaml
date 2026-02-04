@@ -10,7 +10,7 @@ depends_on:
 settings:
   description: Simplified NOTEARS
   defaults:
-    max_cols: 20
+    max_cols: 0
     lambda_l1: 0.1
     max_iter: 100
     lr: 0.01

@@ -8,7 +8,7 @@ from typing import Any
 import pandas as pd
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import write_json
+from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
 
 def _spearman_corr(left: pd.Series, right: pd.Series) -> float:
@@ -278,8 +278,19 @@ class Plugin:
                 "skipped", "No valid process values", {}, [], [], None
             )
 
-        close_start = int(ctx.settings.get("close_cycle_start_day", 20))
-        close_end = int(ctx.settings.get("close_cycle_end_day", 5))
+        close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
+        window_days = int(ctx.settings.get("close_cycle_window_days", 17))
+        inferred_start, inferred_end = infer_close_cycle_window(
+            work["__timestamp"], window_days
+        )
+        if close_mode == "fixed":
+            close_start = int(ctx.settings.get("close_cycle_start_day", inferred_start))
+            close_end = int(ctx.settings.get("close_cycle_end_day", inferred_end))
+            close_source = "fixed"
+        else:
+            close_start = inferred_start
+            close_end = inferred_end
+            close_source = "inferred"
         min_close_count = int(ctx.settings.get("min_close_count", 20))
         min_open_count = int(ctx.settings.get("min_open_count", 10))
         slowdown_ratio_threshold = float(ctx.settings.get("slowdown_ratio_threshold", 2.0))
@@ -295,6 +306,21 @@ class Plugin:
             work["__close"] = (work["__day"] >= close_start) & (work["__day"] <= close_end)
         else:
             work["__close"] = (work["__day"] >= close_start) | (work["__day"] <= close_end)
+
+        close_rows = int(work["__close"].sum())
+        open_rows = int(len(work) - close_rows)
+        if close_mode != "fixed" and (close_rows < min_close_count or open_rows < min_open_count):
+            close_start = int(ctx.settings.get("close_cycle_start_day", close_start))
+            close_end = int(ctx.settings.get("close_cycle_end_day", close_end))
+            close_source = "inferred_fallback"
+            if close_start <= close_end:
+                work["__close"] = (work["__day"] >= close_start) & (
+                    work["__day"] <= close_end
+                )
+            else:
+                work["__close"] = (work["__day"] >= close_start) | (
+                    work["__day"] <= close_end
+                )
 
         counts = (
             work.groupby(["__process_norm", "__close"]).size().unstack(fill_value=0)
@@ -460,6 +486,11 @@ class Plugin:
                     "param_column": param_col,
                     "close_cycle_start_day": close_start,
                     "close_cycle_end_day": close_end,
+                    "close_cycle_mode": close_mode,
+                    "close_cycle_window_days": window_days,
+                    "close_cycle_source": close_source,
+                    "inferred_close_cycle_start_day": inferred_start,
+                    "inferred_close_cycle_end_day": inferred_end,
                 },
                 "candidates": candidate_stats,
             },
@@ -481,6 +512,13 @@ class Plugin:
                     "process_column": process_col,
                     "timestamp_column": base_timestamp_col,
                     "duration_column": duration_label,
+                    "close_cycle_start_day": close_start,
+                    "close_cycle_end_day": close_end,
+                    "close_cycle_mode": close_mode,
+                    "close_cycle_window_days": window_days,
+                    "close_cycle_source": close_source,
+                    "inferred_close_cycle_start_day": inferred_start,
+                    "inferred_close_cycle_end_day": inferred_end,
                 },
                 [],
                 artifacts,
@@ -497,6 +535,13 @@ class Plugin:
                 "duration_column": duration_label,
                 "server_column": server_col,
                 "param_column": param_col,
+                "close_cycle_start_day": close_start,
+                "close_cycle_end_day": close_end,
+                "close_cycle_mode": close_mode,
+                "close_cycle_window_days": window_days,
+                "close_cycle_source": close_source,
+                "inferred_close_cycle_start_day": inferred_start,
+                "inferred_close_cycle_end_day": inferred_end,
             },
             findings,
             artifacts,

@@ -13,6 +13,8 @@ settings:
     start_column: null
     end_column: null
     dependency_columns: []
+    close_cycle_mode: infer
+    close_cycle_window_days: 17
     close_cycle_start_day: 20
     close_cycle_end_day: 5
     wait_threshold_seconds: 60

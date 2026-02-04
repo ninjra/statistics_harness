@@ -18,11 +18,20 @@
       "minimum": 1,
       "type": "integer"
     },
+    "max_p_value": {
+      "minimum": 0,
+      "maximum": 1,
+      "type": "number"
+    },
     "value_column": {
       "type": [
         "string",
         "null"
       ]
+    },
+    "value_columns": {
+      "type": ["array", "null"],
+      "items": { "type": "string" }
     }
   },
   "title": "Scan Statistics Config",

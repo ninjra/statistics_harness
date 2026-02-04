@@ -10,7 +10,7 @@ depends_on:
 settings:
   description: Approximate topology curves
   defaults:
-    max_points: 100
+    max_points: 0
     n_thresholds: 10
 config_schema: config.schema.json
 output_schema: output.schema.json

@@ -39,7 +39,9 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.empty:
             return PluginResult("skipped", "No numeric columns", {}, [], [], None)
-        max_points = int(ctx.settings.get("max_points", 100))
+        max_points = ctx.settings.get("max_points")
+        if not isinstance(max_points, int) or max_points <= 0:
+            max_points = int(len(numeric))
         n_thresholds = int(ctx.settings.get("n_thresholds", 10))
         sample = numeric.head(max_points).to_numpy()
         n = sample.shape[0]

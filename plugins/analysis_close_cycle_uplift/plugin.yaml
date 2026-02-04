@@ -14,6 +14,8 @@ settings:
     duration_column: null
     server_column: null
     param_column: null
+    close_cycle_mode: infer
+    close_cycle_window_days: 17
     close_cycle_start_day: 20
     close_cycle_end_day: 5
     min_close_count: 200

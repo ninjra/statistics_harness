@@ -20,37 +20,44 @@ class Plugin:
             return PluginResult(
                 "skipped", "No complete numeric rows", {}, [], [], None
             )
-        target_column = ctx.settings.get("target_column") or numeric.columns[-1]
-        y = numeric[target_column].to_numpy()
-        X = numeric.drop(columns=[target_column])
+        target_column = ctx.settings.get("target_column")
+        target_columns = [target_column] if target_column else list(numeric.columns)
         rng = np.random.default_rng(ctx.run_seed)
-        rf = RandomForestRegressor(
-            n_estimators=int(ctx.settings.get("n_estimators", 50)),
-            random_state=ctx.run_seed,
-        )
-        rf.fit(X, y)
-        importances = rf.feature_importances_
-        knockoff = X.apply(lambda col: rng.permutation(col.to_numpy()))
-        rf_knock = RandomForestRegressor(
-            n_estimators=int(ctx.settings.get("n_estimators", 50)),
-            random_state=ctx.run_seed,
-        )
-        rf_knock.fit(knockoff, y)
-        knock_imp = rf_knock.feature_importances_
-
-        scores = importances - knock_imp
-        threshold = np.quantile(scores, 1 - float(ctx.settings.get("fdr_q", 0.1)))
         findings = []
-        for feature, score in zip(X.columns, scores):
-            selected = bool(score >= threshold)
-            findings.append(
-                {
-                    "kind": "feature_discovery",
-                    "feature": feature,
-                    "score": float(score),
-                    "selected": selected,
-                }
+        for target in target_columns:
+            if target not in numeric.columns:
+                continue
+            y = numeric[target].to_numpy()
+            X = numeric.drop(columns=[target])
+            if X.empty:
+                continue
+            rf = RandomForestRegressor(
+                n_estimators=int(ctx.settings.get("n_estimators", 50)),
+                random_state=ctx.run_seed,
             )
+            rf.fit(X, y)
+            importances = rf.feature_importances_
+            knockoff = X.apply(lambda col: rng.permutation(col.to_numpy()))
+            rf_knock = RandomForestRegressor(
+                n_estimators=int(ctx.settings.get("n_estimators", 50)),
+                random_state=ctx.run_seed,
+            )
+            rf_knock.fit(knockoff, y)
+            knock_imp = rf_knock.feature_importances_
+
+            scores = importances - knock_imp
+            threshold = np.quantile(scores, 1 - float(ctx.settings.get("fdr_q", 0.1)))
+            for feature, score in zip(X.columns, scores):
+                selected = bool(score >= threshold)
+                findings.append(
+                    {
+                        "kind": "feature_discovery",
+                        "target": target,
+                        "feature": feature,
+                        "score": float(score),
+                        "selected": selected,
+                    }
+                )
 
         artifacts_dir = ctx.artifacts_dir("analysis_knockoff_wrapper_rf")
         selection_path = artifacts_dir / "selection.json"
@@ -66,7 +73,10 @@ class Plugin:
         return PluginResult(
             "ok",
             "Computed RF knockoff selection",
-            {"selected": selected_count},
+            {
+                "selected": selected_count,
+                "targets_scanned": len(target_columns),
+            },
             findings,
             artifacts,
             None,

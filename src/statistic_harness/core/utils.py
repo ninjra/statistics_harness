@@ -131,3 +131,40 @@ def vector_store_enabled() -> bool:
 
 def get_appdata_dir() -> Path:
     return Path(os.environ.get("STAT_HARNESS_APPDATA", "appdata"))
+
+
+def infer_close_cycle_window(
+    timestamps: Any,
+    window_days: int = 17,
+    fallback_start: int = 20,
+    fallback_end: int = 5,
+) -> tuple[int, int]:
+    try:
+        import pandas as pd  # type: ignore
+    except ImportError:
+        return fallback_start, fallback_end
+    if timestamps is None:
+        return fallback_start, fallback_end
+    series = pd.to_datetime(timestamps, errors="coerce", utc=False)
+    if hasattr(series, "dropna"):
+        series = series.dropna()
+    if series is None or len(series) == 0:
+        return fallback_start, fallback_end
+    days = series.dt.day
+    counts = days.value_counts().reindex(range(1, 32), fill_value=0)
+    total_days = 31
+    window = max(1, min(int(window_days), total_days))
+    if window >= total_days:
+        return 1, total_days
+    best_start = 1
+    best_sum = -1
+    for start in range(1, total_days + 1):
+        window_sum = 0
+        for offset in range(window):
+            day = ((start - 1 + offset) % total_days) + 1
+            window_sum += int(counts.get(day, 0))
+        if window_sum > best_sum:
+            best_sum = window_sum
+            best_start = start
+    end = ((best_start - 1 + window - 1) % total_days) + 1
+    return best_start, end
