@@ -13,7 +13,6 @@ _STOPWORDS = {
     "CYCLE",
     "SERVER",
     "SERVERS",
-    "QPEC",
     "QRA",
     "ERP",
     "HOST",

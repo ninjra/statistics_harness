@@ -1,10 +1,314 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
 from jsonschema import validate
+import yaml
+
+
+def _matches_expected(
+    item: dict[str, Any],
+    where: dict[str, Any] | None,
+    contains: dict[str, Any] | None,
+) -> bool:
+    if where:
+        for key, expected in where.items():
+            actual = item.get(key)
+            if actual != expected:
+                return False
+    if contains:
+        for key, expected in contains.items():
+            actual = item.get(key)
+            if isinstance(actual, str):
+                if str(expected) not in actual:
+                    return False
+            elif isinstance(actual, (list, tuple, set)):
+                if isinstance(expected, (list, tuple, set)):
+                    if not set(expected).issubset(set(actual)):
+                        return False
+                else:
+                    if expected not in actual:
+                        return False
+            else:
+                return False
+    return True
+
+
+def _collect_findings_for_plugin(
+    report: dict[str, Any], plugin_id: str | None, kind: str | None = None
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    plugins = report.get("plugins", {}) or {}
+    for pid, plugin in plugins.items():
+        if plugin_id and pid != plugin_id:
+            continue
+        for item in plugin.get("findings", []) or []:
+            if kind and item.get("kind") != kind:
+                continue
+            if isinstance(item, dict):
+                findings.append(item)
+    return findings
+
+
+def _process_hint(where: dict[str, Any] | None) -> str:
+    if not where:
+        return ""
+    for key in ("process", "process_norm", "process_name", "activity"):
+        value = where.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def _recommendation_text(status: str, label: str, process_hint: str) -> str:
+    suffix = f" (process {process_hint})" if process_hint else ""
+    if status == "confirmed":
+        return f"Act on {label}{suffix}."
+    if status == "over_limit":
+        return f"Investigate excess occurrences of {label}{suffix}."
+    if status in {"missing", "below_min"}:
+        return f"Missing evidence for {label}{suffix}; check inputs and re-run."
+    return f"Review {label}{suffix}."
+
+
+def _capacity_scale_recommendation(
+    kind: str | None, matched: list[dict[str, Any]], label: str, process_hint: str
+) -> str | None:
+    if not kind or not matched:
+        return None
+    suffix = f" (process {process_hint})" if process_hint else ""
+    item = matched[0]
+    if kind == "capacity_scale_model":
+        base = item.get("eligible_wait_gt_hours_without_target")
+        modeled = item.get("eligible_wait_gt_hours_modeled")
+        scale = item.get("scale_factor")
+        if isinstance(base, (int, float)) and isinstance(modeled, (int, float)):
+            delta = float(base) - float(modeled)
+            scale_text = f" scale_factor={scale:.3f}" if isinstance(scale, (int, float)) else ""
+            return (
+                f"Add one server{suffix}: modeled >threshold eligible-wait drops "
+                f"from {float(base):.3f}h to {float(modeled):.3f}h (Δ {delta:.3f}h){scale_text}."
+            )
+    if kind == "capacity_scaling":
+        base = item.get("baseline_wait_hours")
+        modeled = item.get("modeled_wait_hours")
+        reduction = item.get("reduction_hours")
+        scale = item.get("scale_factor")
+        if isinstance(base, (int, float)) and isinstance(modeled, (int, float)):
+            reduction_val = reduction if isinstance(reduction, (int, float)) else float(base) - float(modeled)
+            scale_text = f" scale_factor={scale:.3f}" if isinstance(scale, (int, float)) else ""
+            return (
+                f"Add one server{suffix}: eligible-wait drops from "
+                f"{float(base):.3f}h to {float(modeled):.3f}h (Δ {float(reduction_val):.3f}h){scale_text}."
+            )
+    if kind == "close_cycle_capacity_impact":
+        effect = item.get("effect")
+        decision = str(item.get("decision") or "")
+        if isinstance(effect, (int, float)) and decision == "detected":
+            pct = abs(float(effect)) * 100.0
+            return f"Add one server{suffix}: median close-cycle improves by ~{pct:.1f}% (measured)."
+    return None
+
+
+def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
+    known = report.get("known_issues")
+    if not isinstance(known, dict):
+        return {
+            "status": "no_known_issues",
+            "summary": "No known issues attached; recommendations not generated.",
+            "items": [],
+        }
+    expected = known.get("expected_findings") or []
+    if not isinstance(expected, list) or not expected:
+        return {
+            "status": "no_expected_findings",
+            "summary": "Known issues attached but no expected findings provided.",
+            "items": [],
+        }
+
+    items: list[dict[str, Any]] = []
+    for issue in expected:
+        if not isinstance(issue, dict):
+            continue
+        plugin_id = issue.get("plugin_id")
+        kind = issue.get("kind")
+        where = issue.get("where") if isinstance(issue.get("where"), dict) else None
+        contains = (
+            issue.get("contains") if isinstance(issue.get("contains"), dict) else None
+        )
+        min_count = issue.get("min_count")
+        max_count = issue.get("max_count")
+        title = issue.get("title") or issue.get("description") or ""
+        if not title:
+            label = f"{plugin_id or 'any'}:{kind or 'finding'}"
+        else:
+            label = title
+
+        findings = _collect_findings_for_plugin(report, plugin_id, kind)
+        matched = [f for f in findings if _matches_expected(f, where, contains)]
+        count = len(matched)
+
+        status = "confirmed"
+        if count == 0:
+            status = "missing"
+        if min_count is not None:
+            try:
+                if count < int(min_count):
+                    status = "below_min"
+            except (TypeError, ValueError):
+                pass
+        if max_count is not None:
+            try:
+                if count > int(max_count):
+                    status = "over_limit"
+            except (TypeError, ValueError):
+                pass
+
+        process_hint = _process_hint(where)
+        recommendation = _capacity_scale_recommendation(kind, matched, label, process_hint)
+        if not recommendation:
+            recommendation = _recommendation_text(status, label, process_hint)
+
+        evidence: list[dict[str, Any]] = []
+        for item in matched[:3]:
+            snippet: dict[str, Any] = {"kind": item.get("kind")}
+            for key in ("feature", "pair", "row_index", "index", "score", "metric"):
+                if key in item:
+                    snippet[key] = item.get(key)
+            evidence.append(snippet)
+
+        items.append(
+            {
+                "title": label,
+                "status": status,
+                "recommendation": recommendation,
+                "plugin_id": plugin_id,
+                "kind": kind,
+                "where": where,
+                "contains": contains,
+                "expected": {"min_count": min_count, "max_count": max_count},
+                "observed_count": count,
+                "evidence": evidence,
+            }
+        )
+
+    return {
+        "status": "ok",
+        "summary": f"Generated {len(items)} recommendation(s) from known issues.",
+        "items": items,
+    }
+
+
+def _build_executive_summary(report: dict[str, Any]) -> list[str]:
+    plugins = report.get("plugins", {}) or {}
+    queue_plugin = plugins.get("analysis_queue_delay_decomposition")
+    if not isinstance(queue_plugin, dict):
+        return []
+    findings = queue_plugin.get("findings") or []
+    qemail_stats = None
+    impact = None
+    scale = None
+    for item in findings:
+        if not isinstance(item, dict):
+            continue
+        kind = item.get("kind")
+        if kind == "eligible_wait_process_stats" and item.get("process_norm") == "qemail":
+            qemail_stats = item
+        elif kind == "eligible_wait_impact":
+            impact = item
+        elif kind == "capacity_scale_model":
+            scale = item
+
+    lines: list[str] = []
+    if qemail_stats and impact:
+        q_gt = qemail_stats.get("eligible_wait_gt_hours_total")
+        total_gt = impact.get("eligible_wait_gt_hours_total")
+        runs_total = qemail_stats.get("runs_total")
+        if isinstance(q_gt, (int, float)) and isinstance(total_gt, (int, float)) and total_gt:
+            share = (float(q_gt) / float(total_gt)) * 100.0
+            runs_text = f" across {int(runs_total):,} runs" if isinstance(runs_total, (int, float)) else ""
+            lines.append(
+                "QEMAIL is a major close-cycle drag: "
+                f"{float(q_gt):.2f}h of >threshold eligible wait out of "
+                f"{float(total_gt):.2f}h total ({share:.1f}%).{runs_text}"
+            )
+
+    if scale:
+        base = scale.get("eligible_wait_gt_hours_without_target")
+        modeled = scale.get("eligible_wait_gt_hours_modeled")
+        if isinstance(base, (int, float)) and isinstance(modeled, (int, float)) and base:
+            delta = float(base) - float(modeled)
+            pct = (delta / float(base)) * 100.0 if base else 0.0
+            lines.append(
+                "QPEC+1 recommended (modeled): "
+                f">threshold eligible wait drops from {float(base):.2f}h to "
+                f"{float(modeled):.2f}h (Δ {delta:.2f}h, {pct:.1f}%)."
+            )
+
+    return lines
+
+
+def _plugin_summary_rows(report: dict[str, Any]) -> tuple[list[tuple[str, int, str]], list[tuple[str, int, str]]]:
+    rows: list[tuple[str, int, str]] = []
+    plugins = report.get("plugins", {}) or {}
+    for plugin_id, data in plugins.items():
+        if not isinstance(data, dict):
+            continue
+        findings = data.get("findings") or []
+        summary = (data.get("summary") or "").strip()
+        rows.append((plugin_id, len(findings), summary))
+    rows.sort()
+    yes_rows = [row for row in rows if row[1] > 0]
+    no_rows = [row for row in rows if row[1] == 0]
+    return yes_rows, no_rows
+
+
+def _format_plugin_table(rows: list[tuple[str, int, str]]) -> list[str]:
+    lines = ["| Plugin | Findings | One-line summary |", "|---|---:|---|"]
+    for plugin_id, count, summary in rows:
+        lines.append(f"| `{plugin_id}` | {count} | {summary} |")
+    return lines
+
+
+def _load_known_issues_fallback(run_dir: Path) -> dict[str, Any] | None:
+    known_dir = run_dir.parent.parent / "known_issues"
+    if not known_dir.exists():
+        return None
+    payloads: list[dict[str, Any]] = []
+    for path in sorted(known_dir.glob("*.yaml")):
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(data, dict):
+            continue
+        if data.get("expected_findings"):
+            payloads.append(data)
+    if not payloads:
+        return None
+    expected: list[dict[str, Any]] = []
+    strict_values: list[bool] = []
+    notes: list[str] = []
+    for data in payloads:
+        strict_values.append(bool(data.get("strict", False)))
+        note = str(data.get("notes") or "").strip()
+        if note:
+            notes.append(note)
+        expected.extend(data.get("expected_findings") or [])
+    note_text = "Fallback merged from appdata/known_issues"
+    if notes:
+        note_text = f"{note_text} | " + " | ".join(notes)
+    return {
+        "scope_type": "fallback",
+        "scope_value": "appdata/known_issues",
+        "strict": all(strict_values) if strict_values else False,
+        "notes": note_text,
+        "natural_language": [],
+        "expected_findings": expected,
+    }
 
 from .storage import Storage
 from .utils import json_dumps, now_iso, read_json, write_json
@@ -176,6 +480,12 @@ def build_report(
         known_scope_value = str(upload_row.get("sha256") or "")
         if known_scope_value:
             known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+    if not known_block and dataset_block.get("data_hash"):
+        data_hash = str(dataset_block.get("data_hash") or "")
+        if re.fullmatch(r"[a-f0-9]{64}", data_hash):
+            known_scope_type = "sha256"
+            known_scope_value = data_hash
+            known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
 
     known_payload = None
     if known_block:
@@ -220,8 +530,11 @@ def build_report(
         },
         "plugins": plugins,
     }
+    if not known_payload:
+        known_payload = _load_known_issues_fallback(run_dir)
     if known_payload:
         report["known_issues"] = known_payload
+    report["recommendations"] = _build_recommendations(report)
     evaluation_path = run_dir / "evaluation.json"
     if evaluation_path.exists():
         try:
@@ -239,6 +552,14 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
     write_json(report_path, report)
 
     lines = ["# Statistic Harness Report", ""]
+    exec_summary = _build_executive_summary(report)
+    lines.append("## Executive Summary")
+    if exec_summary:
+        for entry in exec_summary:
+            lines.append(f"- {entry}")
+    else:
+        lines.append("No executive summary available.")
+    lines.append("")
     known = report.get("known_issues")
     if isinstance(known, dict):
         lines.append("## Known Issues")
@@ -261,6 +582,57 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
             for item in _format_known_issue_checks(report, expected):
                 lines.append(f"- {item}")
         lines.append("")
+
+    recommendations = report.get("recommendations")
+    if isinstance(recommendations, dict):
+        lines.append("## Recommendations")
+        summary = recommendations.get("summary") or ""
+        if summary:
+            lines.append(summary)
+        items = recommendations.get("items") or []
+        if items:
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                status = item.get("status") or "unknown"
+                title = item.get("title") or "Recommendation"
+                plugin_id = item.get("plugin_id") or ""
+                kind = item.get("kind") or ""
+                observed = item.get("observed_count")
+                expected = item.get("expected") or {}
+                min_count = expected.get("min_count")
+                max_count = expected.get("max_count")
+                rec = item.get("recommendation") or ""
+                meta_parts = []
+                if plugin_id:
+                    meta_parts.append(f"plugin={plugin_id}")
+                if kind:
+                    meta_parts.append(f"kind={kind}")
+                if observed is not None:
+                    meta_parts.append(f"observed={observed}")
+                if min_count is not None:
+                    meta_parts.append(f"min={min_count}")
+                if max_count is not None:
+                    meta_parts.append(f"max={max_count}")
+                meta = ", ".join(meta_parts)
+                lines.append(f"- [{status}] {title}")
+                if meta:
+                    lines.append(f"  - {meta}")
+                if rec:
+                    lines.append(f"  - {rec}")
+        else:
+            lines.append("No recommendations available.")
+        lines.append("")
+
+    yes_rows, no_rows = _plugin_summary_rows(report)
+    lines.append("## Plugin Summary")
+    lines.append("")
+    lines.append("### YES")
+    lines.extend(_format_plugin_table(yes_rows))
+    lines.append("")
+    lines.append("### NO")
+    lines.extend(_format_plugin_table(no_rows))
+    lines.append("")
 
     lines.append("## Dataset")
     lines.append("")

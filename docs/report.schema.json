@@ -186,6 +186,40 @@
           }
         }
       }
+    },
+    "known_issues": {
+      "type": "object",
+      "properties": {
+        "scope_type": {"type": "string"},
+        "scope_value": {"type": "string"},
+        "strict": {"type": "boolean"},
+        "notes": {"type": "string"},
+        "natural_language": {"type": "array"},
+        "expected_findings": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "evaluation": {
+      "type": "object",
+      "properties": {
+        "evaluated_at": {"type": "string"},
+        "result": {"type": "string"},
+        "ok": {"type": "boolean"},
+        "messages": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "recommendations": {
+      "type": "object",
+      "properties": {
+        "status": {"type": "string"},
+        "summary": {"type": "string"},
+        "items": {
+          "type": "array",
+          "items": {"type": "object"}
+        }
+      },
+      "additionalProperties": true
     }
   }
 }
