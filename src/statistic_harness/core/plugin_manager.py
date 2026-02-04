@@ -27,39 +27,95 @@ class PluginSpec:
     sandbox: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class PluginDiscoveryError:
+    plugin_id: str
+    path: Path
+    message: str
+
+
 class PluginManager:
     def __init__(self, plugins_dir: Path) -> None:
         self.plugins_dir = plugins_dir
         self._manifest_schema: dict[str, Any] | None = None
         self._schema_cache: dict[Path, dict[str, Any]] = {}
+        self.discovery_errors: list[PluginDiscoveryError] = []
+
+    def _record_discovery_error(
+        self, plugin_id: str, manifest: Path, message: str
+    ) -> None:
+        self.discovery_errors.append(
+            PluginDiscoveryError(
+                plugin_id=plugin_id or manifest.parent.name,
+                path=manifest,
+                message=message,
+            )
+        )
 
     def discover(self) -> list[PluginSpec]:
         specs: list[PluginSpec] = []
+        self.discovery_errors = []
         manifest_schema = self._load_manifest_schema()
+        seen: set[str] = set()
         for manifest in sorted(self.plugins_dir.glob("*/plugin.yaml")):
-            data = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+            try:
+                data = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+            except Exception as exc:  # pragma: no cover - malformed YAML
+                self._record_discovery_error(
+                    manifest.parent.name,
+                    manifest,
+                    f"Invalid YAML: {exc}",
+                )
+                continue
+            if not isinstance(data, dict):
+                self._record_discovery_error(
+                    manifest.parent.name, manifest, "Invalid manifest payload"
+                )
+                continue
+            plugin_id = str(data.get("id") or manifest.parent.name)
             try:
                 validate(instance=data, schema=manifest_schema)
             except ValidationError as exc:
-                raise ValueError(
-                    f"Invalid manifest {manifest}: {exc.message}"
-                ) from exc
+                self._record_discovery_error(
+                    plugin_id, manifest, f"Invalid manifest: {exc.message}"
+                )
+                continue
+            if plugin_id in seen:
+                self._record_discovery_error(
+                    plugin_id, manifest, "Duplicate plugin id"
+                )
+                continue
             config_schema_path = manifest.parent / data["config_schema"]
             output_schema_path = manifest.parent / data["output_schema"]
             if not config_schema_path.exists():
-                raise ValueError(
-                    f"Missing config schema for {data['id']}: {config_schema_path}"
+                self._record_discovery_error(
+                    plugin_id,
+                    manifest,
+                    f"Missing config schema: {config_schema_path}",
                 )
+                continue
             if not output_schema_path.exists():
-                raise ValueError(
-                    f"Missing output schema for {data['id']}: {output_schema_path}"
+                self._record_discovery_error(
+                    plugin_id,
+                    manifest,
+                    f"Missing output schema: {output_schema_path}",
                 )
+                continue
             defaults = data.get("settings", {}).get("defaults", {})
             if defaults is not None:
-                self.validate_config_schema(config_schema_path, defaults)
+                try:
+                    self.validate_config_schema(config_schema_path, defaults)
+                except ValidationError as exc:
+                    self._record_discovery_error(
+                        plugin_id,
+                        manifest,
+                        f"Invalid config defaults: {exc.message}",
+                    )
+                    continue
+            seen.add(plugin_id)
             specs.append(
                 PluginSpec(
-                    plugin_id=data["id"],
+                    plugin_id=plugin_id,
                     name=data["name"],
                     version=data["version"],
                     type=data["type"],

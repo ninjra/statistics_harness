@@ -1209,7 +1209,13 @@ class Plugin:
                         "close_window_fallback": fallback_used,
                         "close_window_source": close_window_source,
                         "close_window_reason": fallback_reason,
-                        "assumption": assumption,
+                        "assumptions": [assumption],
+                        "scope": {
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "close_window_mode": close_mode,
+                            "close_window_source": close_window_source,
+                        },
                         "baseline_median_sec": baseline_val,
                         "modeled_median_sec": modeled_val,
                         "effect": effect,
@@ -1222,6 +1228,12 @@ class Plugin:
                         "baseline_host_source": baseline_host_source,
                         "added_hosts": added_hosts,
                         "scale_factor": scale_factor,
+                        "host_count_baseline": baseline_host_count,
+                        "host_count_modeled": (
+                            baseline_host_count + added_hosts
+                            if baseline_host_count is not None
+                            else None
+                        ),
                         "bucket_count": int(baseline.shape[0]),
                         "months": months,
                         "row_ids": [int(i) for i in row_ids],

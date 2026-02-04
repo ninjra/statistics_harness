@@ -15,7 +15,17 @@ class DatasetAccessor:
         self.dataset_version_id = dataset_version_id
         self._df: pd.DataFrame | None = None
 
-    def _load_df(self) -> pd.DataFrame:
+    def _load_df(
+        self,
+        columns: list[str] | None = None,
+        row_limit: int | None = None,
+    ) -> pd.DataFrame:
+        limit = None
+        if row_limit is not None:
+            limit = int(row_limit)
+            if limit <= 0:
+                raise ValueError("row_limit must be positive")
+        requested = columns
         with self.storage.connection() as conn:
             version = self.storage.get_dataset_version(self.dataset_version_id, conn)
             if not version:
@@ -25,25 +35,42 @@ class DatasetAccessor:
             )
             safe_cols = [col["safe_name"] for col in columns]
             original_cols = [col["original_name"] for col in columns]
+            selected_safe = safe_cols
+            selected_orig = original_cols
+            if requested is not None:
+                mapping = dict(zip(original_cols, safe_cols))
+                missing = [col for col in requested if col not in mapping]
+                if missing:
+                    raise ValueError(f"Unknown columns: {missing}")
+                selected_orig = list(requested)
+                selected_safe = [mapping[col] for col in selected_orig]
             if safe_cols:
-                quoted_cols = ", ".join(quote_identifier(col) for col in safe_cols)
+                quoted_cols = ", ".join(
+                    quote_identifier(col) for col in selected_safe
+                )
                 sql = (
                     f"SELECT row_index, {quoted_cols} FROM "
                     f"{quote_identifier(version['table_name'])} ORDER BY row_index"
                 )
+                if limit is not None:
+                    sql = f"{sql} LIMIT {limit}"
                 df = pd.read_sql_query(sql, conn)
             else:
                 df = pd.DataFrame()
-        df = df.rename(columns=dict(zip(safe_cols, original_cols)))
+        df = df.rename(columns=dict(zip(selected_safe, selected_orig)))
         if "row_index" in df.columns:
             df = df.set_index("row_index")
             df.index.name = None
         return df
 
-    def load(self) -> pd.DataFrame:
-        if self._df is None:
-            self._df = self._load_df()
-        return self._df.copy()
+    def load(
+        self, columns: list[str] | None = None, row_limit: int | None = None
+    ) -> pd.DataFrame:
+        if columns is None and row_limit is None:
+            if self._df is None:
+                self._df = self._load_df()
+            return self._df.copy()
+        return self._load_df(columns=columns, row_limit=row_limit)
 
     def info(self) -> dict[str, Any]:
         with self.storage.connection() as conn:
@@ -127,13 +154,33 @@ class TemplateAccessor:
         cur = conn.execute(query, params)
         return [row[0] for row in cur.fetchall()]
 
-    def _load_df(self) -> pd.DataFrame:
+    def _load_df(
+        self,
+        columns: list[str] | None = None,
+        row_limit: int | None = None,
+    ) -> pd.DataFrame:
+        limit = None
+        if row_limit is not None:
+            limit = int(row_limit)
+            if limit <= 0:
+                raise ValueError("row_limit must be positive")
         fields = self.storage.fetch_template_fields(self.template_id)
         safe_cols = [field["safe_name"] for field in fields]
         names = [field["name"] for field in fields]
+        selected_safe = safe_cols
+        selected_names = names
+        if columns is not None:
+            mapping = dict(zip(names, safe_cols))
+            missing = [col for col in columns if col not in mapping]
+            if missing:
+                raise ValueError(f"Unknown columns: {missing}")
+            selected_names = list(columns)
+            selected_safe = [mapping[col] for col in selected_names]
         with self.storage.connection() as conn:
             if safe_cols:
-                quoted_cols = ", ".join(quote_identifier(col) for col in safe_cols)
+                quoted_cols = ", ".join(
+                    quote_identifier(col) for col in selected_safe
+                )
                 if self.scope == "all":
                     ids = self._filtered_dataset_versions(conn)
                     if ids is None:
@@ -141,6 +188,8 @@ class TemplateAccessor:
                             f"SELECT dataset_version_id, row_index, {quoted_cols} FROM "
                             f"{quote_identifier(self.table_name)} ORDER BY dataset_version_id, row_index"
                         )
+                        if limit is not None:
+                            sql = f"{sql} LIMIT {limit}"
                         df = pd.read_sql_query(sql, conn)
                     elif ids:
                         placeholders = ", ".join(["?"] * len(ids))
@@ -149,10 +198,12 @@ class TemplateAccessor:
                             f"{quote_identifier(self.table_name)} WHERE dataset_version_id IN ({placeholders}) "
                             f"ORDER BY dataset_version_id, row_index"
                         )
+                        if limit is not None:
+                            sql = f"{sql} LIMIT {limit}"
                         df = pd.read_sql_query(sql, conn, params=ids)
                     else:
                         df = pd.DataFrame(
-                            columns=["dataset_version_id", "row_index", *safe_cols]
+                            columns=["dataset_version_id", "row_index", *selected_safe]
                         )
                 else:
                     sql = (
@@ -160,10 +211,12 @@ class TemplateAccessor:
                         f"{quote_identifier(self.table_name)} WHERE dataset_version_id = ? "
                         f"ORDER BY row_index"
                     )
+                    if limit is not None:
+                        sql = f"{sql} LIMIT {limit}"
                     df = pd.read_sql_query(sql, conn, params=(self.dataset_version_id,))
             else:
                 df = pd.DataFrame()
-        df = df.rename(columns=dict(zip(safe_cols, names)))
+        df = df.rename(columns=dict(zip(selected_safe, selected_names)))
         if "row_index" in df.columns:
             if self.scope == "all":
                 df = df.reset_index(drop=True)
@@ -172,10 +225,14 @@ class TemplateAccessor:
                 df.index.name = None
         return df
 
-    def load(self) -> pd.DataFrame:
-        if self._df is None:
-            self._df = self._load_df()
-        return self._df.copy()
+    def load(
+        self, columns: list[str] | None = None, row_limit: int | None = None
+    ) -> pd.DataFrame:
+        if columns is None and row_limit is None:
+            if self._df is None:
+                self._df = self._load_df()
+            return self._df.copy()
+        return self._load_df(columns=columns, row_limit=row_limit)
 
     def info(self) -> dict[str, Any]:
         fields = self.storage.fetch_template_fields(self.template_id)

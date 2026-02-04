@@ -11,6 +11,7 @@ import traceback
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
+import math
 
 from .dataset_io import resolve_dataset_accessor
 from .plugin_manager import PluginSpec
@@ -131,6 +132,22 @@ def _install_shell_guard() -> None:
     subprocess.check_call = blocked  # type: ignore[assignment]
     subprocess.check_output = blocked  # type: ignore[assignment]
     subprocess.Popen = blocked  # type: ignore[assignment]
+
+
+def _apply_resource_limits(budget: dict[str, Any]) -> None:
+    cpu_limit_ms = budget.get("cpu_limit_ms")
+    if cpu_limit_ms is None:
+        return
+    try:
+        cpu_seconds = max(1, int(math.ceil(float(cpu_limit_ms) / 1000.0)))
+    except (TypeError, ValueError):
+        return
+    try:
+        import resource
+
+        resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+    except Exception:
+        pass
 
 
 class FileSandbox:
@@ -286,19 +303,58 @@ def run_plugin_subprocess(
     write_json(request_path, request)
     start = time.perf_counter()
     run_seed = int(request.get("run_seed", 0))
-    proc = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "statistic_harness.core.plugin_runner",
-            str(request_path),
-            str(response_path),
-        ],
-        capture_output=True,
-        text=True,
-        cwd=str(cwd),
-        env=_deterministic_env(run_seed),
-    )
+    budget = request.get("budget") or {}
+    timeout_ms = budget.get("time_limit_ms")
+    timeout = None
+    if isinstance(timeout_ms, (int, float)) and timeout_ms > 0:
+        timeout = float(timeout_ms) / 1000.0
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "statistic_harness.core.plugin_runner",
+                str(request_path),
+                str(response_path),
+            ],
+            capture_output=True,
+            text=True,
+            cwd=str(cwd),
+            env=_deterministic_env(run_seed),
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        duration_ms = int((time.perf_counter() - start) * 1000)
+        stdout = (exc.stdout or "")[:4000]
+        stderr = (exc.stderr or "")[:4000]
+        result = PluginResult(
+            status="error",
+            summary=f"{spec.plugin_id} timed out",
+            metrics={},
+            findings=[],
+            artifacts=[],
+            error=PluginError(
+                type="TimeoutError",
+                message=f"Plugin exceeded time limit of {timeout_ms}ms",
+                traceback="",
+            ),
+        )
+        execution = {
+            "started_at": request.get("started_at"),
+            "completed_at": now_iso(),
+            "duration_ms": duration_ms,
+            "cpu_user": None,
+            "cpu_system": None,
+            "max_rss": None,
+            "warnings_count": None,
+        }
+        return RunnerResponse(
+            result=result,
+            execution=execution,
+            stdout=stdout,
+            stderr=stderr,
+            exit_code=-1,
+        )
     duration_ms = int((time.perf_counter() - start) * 1000)
     stdout = (proc.stdout or "")[:4000]
     stderr = (proc.stderr or "")[:4000]
@@ -362,6 +418,16 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
             )
             dataset_version_id = request.get("dataset_version_id")
             accessor, _ = resolve_dataset_accessor(storage, dataset_version_id)
+            budget = request.get("budget") or {}
+
+            def dataset_loader(
+                columns: list[str] | None = None, row_limit: int | None = None
+            ):
+                limit = row_limit
+                if limit is None:
+                    limit = budget.get("row_limit")
+                return accessor.load(columns=columns, row_limit=limit)
+
             ctx = PluginContext(
                 run_id=request["run_id"],
                 run_dir=run_dir,
@@ -369,8 +435,8 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 run_seed=run_seed,
                 logger=lambda msg: _write_log(run_dir, request["plugin_id"], msg),
                 storage=storage,
-                dataset_loader=accessor.load,
-                budget=request.get("budget")
+                dataset_loader=dataset_loader,
+                budget=budget
                 or {
                     "row_limit": None,
                     "sampled": False,
@@ -395,10 +461,11 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 import warnings
 
                 with warnings.catch_warnings(record=True) as caught:
-                    plugin = _load_plugin(request["plugin_id"], request["entrypoint"])
                     _install_eval_guard(cwd)
                     _install_pickle_guard()
                     _install_shell_guard()
+                    _apply_resource_limits(budget)
+                    plugin = _load_plugin(request["plugin_id"], request["entrypoint"])
                     result = plugin.run(ctx)
                     warnings_count = len(caught)
             except Exception as exc:

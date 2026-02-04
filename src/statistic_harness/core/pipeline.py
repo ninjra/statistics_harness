@@ -143,6 +143,14 @@ class Pipeline:
 
         specs = self.manager.discover()
         spec_map = {spec.plugin_id: spec for spec in specs}
+        for err in self.manager.discovery_errors:
+            plugin_id = err.plugin_id
+            if plugin_id in spec_map:
+                plugin_id = f"{plugin_id}__discovery_error"
+            record_missing(
+                plugin_id,
+                f"Plugin discovery error in {err.path}: {err.message}",
+            )
 
         def record_missing(plugin_id: str, message: str) -> None:
             result = PluginResult(
@@ -278,6 +286,23 @@ class Pipeline:
                 enriched.append(entry)
             return enriched
 
+        def validate_modeled_findings(findings: list[dict[str, Any]]) -> list[str]:
+            errors: list[str] = []
+            for item in findings:
+                if item.get("measurement_type") != "modeled":
+                    continue
+                scope = item.get("scope")
+                assumptions = item.get("assumptions")
+                if not isinstance(scope, dict) or not scope:
+                    errors.append("modeled finding missing scope")
+                if (
+                    not isinstance(assumptions, list)
+                    or not assumptions
+                    or not all(isinstance(a, str) and a.strip() for a in assumptions)
+                ):
+                    errors.append("modeled finding missing assumptions")
+            return errors
+
         def logger(msg: str) -> None:
             log_path = run_dir / "logs" / "run.log"
             log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +330,14 @@ class Pipeline:
                 now_iso(),
                 status="running",
             )
+            def dataset_loader(
+                columns: list[str] | None = None, row_limit: int | None = None
+            ):
+                limit = row_limit
+                if limit is None:
+                    limit = budget.get("row_limit")
+                return dataset_accessor.load(columns=columns, row_limit=limit)
+
             ctx = PluginContext(
                 run_id=run_id,
                 run_dir=run_dir,
@@ -312,7 +345,7 @@ class Pipeline:
                 run_seed=run_seed,
                 logger=logger,
                 storage=self.storage,
-                dataset_loader=dataset_accessor.load,
+                dataset_loader=dataset_loader,
                 budget=budget,
                 tenant_id=self.tenant_id,
                 project_id=project_id,
@@ -377,6 +410,9 @@ class Pipeline:
             try:
                 payload = self.manager.result_payload(result)
                 self.manager.validate_output(spec, payload)
+                modeled_errors = validate_modeled_findings(result.findings)
+                if modeled_errors:
+                    raise ValueError("; ".join(sorted(set(modeled_errors))))
             except Exception as exc:  # pragma: no cover - error flow
                 tb = traceback.format_exc()
                 result = PluginResult(

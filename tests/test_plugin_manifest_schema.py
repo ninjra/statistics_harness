@@ -28,8 +28,12 @@ entrypoint: plugin.py:Plugin
     )
 
     manager = PluginManager(plugins_dir)
-    with pytest.raises(ValueError, match="Invalid manifest"):
-        manager.discover()
+    specs = manager.discover()
+    assert specs == []
+    assert manager.discovery_errors
+    assert any(
+        "Invalid manifest" in err.message for err in manager.discovery_errors
+    )
 
 
 def test_plugin_config_and_output_validation() -> None:

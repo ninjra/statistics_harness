@@ -1234,7 +1234,13 @@ class Plugin:
             "process_matches": sorted(revenue_rows["__process_norm"].unique().tolist())[:10],
             "basis": basis,
             "anchor_basis": anchor_basis,
-            "assumption": assumption,
+            "assumptions": [assumption],
+            "scope": {
+                "basis": basis,
+                "anchor_basis": anchor_basis,
+                "close_window_mode": close_mode,
+                "close_window_source": close_window_source,
+            },
             "target_days": target_days,
             "baseline_span_days_median": baseline_span_median,
             "required_scale_factor_median": scale_median,
@@ -1243,6 +1249,13 @@ class Plugin:
             "worst_month_required_scale": worst_month.get("required_scale_factor") if worst_month else None,
             "worst_month_baseline_days": worst_month.get("baseline_span_days") if worst_month else None,
             "host_count": host_count,
+            "scale_factor": scale_median,
+            "host_count_baseline": host_count,
+            "host_count_modeled": (
+                int(round(host_count * scale_median))
+                if host_count is not None and scale_median
+                else None
+            ),
             "close_window_mode": close_mode,
             "close_window_source": close_window_source,
             "close_window_fallback": fallback_used,

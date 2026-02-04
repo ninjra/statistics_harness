@@ -45,10 +45,12 @@ def json_dumps(data: Any) -> str:
 
 
 def safe_join(base: Path, *paths: str) -> Path:
-    joined = base.joinpath(*paths).resolve()
     base_resolved = base.resolve()
-    if not str(joined).startswith(str(base_resolved)):
-        raise ValueError("Path traversal detected")
+    joined = base_resolved.joinpath(*paths).resolve()
+    try:
+        joined.relative_to(base_resolved)
+    except ValueError as exc:
+        raise ValueError("Path traversal detected") from exc
     return joined
 
 

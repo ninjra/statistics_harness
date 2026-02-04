@@ -30,4 +30,4 @@ def test_capacity_scaling_models_wait(run_dir):
     assert result.metrics["scale_factor"] == 2.0
     assert result.findings
     assert result.findings[0]["measurement_type"] == "modeled"
-    assert "assumption" in result.findings[0]
+    assert "assumptions" in result.findings[0]

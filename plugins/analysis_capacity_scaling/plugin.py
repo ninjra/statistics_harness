@@ -247,11 +247,13 @@ class Plugin:
             work = work.loc[~work["__host_norm"].isin(INVALID_STRINGS)].copy()
             host_count = int(work["__host_norm"].nunique())
 
-        scale_factor = ctx.settings.get("scale_factor")
+        raw_scale_factor = ctx.settings.get("scale_factor")
+        scale_factor = raw_scale_factor
         try:
             scale_factor = float(scale_factor) if scale_factor is not None else None
         except (TypeError, ValueError):
             scale_factor = None
+        derived_scale = scale_factor is None
         if scale_factor is None:
             if host_count >= 1:
                 scale_factor = (host_count + 1) / float(host_count)
@@ -259,14 +261,18 @@ class Plugin:
                 scale_factor = 1.0
         if scale_factor <= 0:
             scale_factor = 1.0
+        host_count_modeled = None
+        if derived_scale and host_count > 0:
+            host_count_modeled = host_count + 1
 
         work["__scaled_wait_sec"] = work["__eligible_wait_sec"] / float(scale_factor)
         work["__reduction_sec"] = work["__eligible_wait_sec"] - work["__scaled_wait_sec"]
 
-        assumption = (
-            "Eligible wait scales inversely with capacity by factor "
-            f"{scale_factor:.3f}; prereq wait unchanged."
-        )
+        assumptions = [
+            "Eligible wait scales inversely with capacity.",
+            "Prerequisite wait unchanged.",
+        ]
+        scope = {"metric": "eligible_wait_hours", "eligible_basis": eligible_basis}
 
         max_groups = int(ctx.settings.get("max_groups", 5))
         max_examples = int(ctx.settings.get("max_examples", 25))
@@ -307,8 +313,11 @@ class Plugin:
                         "modeled_wait_hours": float(row["modeled_sec"]) / 3600.0,
                         "reduction_hours": float(row["reduction_sec"]) / 3600.0,
                         "scale_factor": float(scale_factor),
+                        "host_count_baseline": host_count or None,
+                        "host_count_modeled": host_count_modeled,
                         "eligible_basis": eligible_basis,
-                        "assumption": assumption,
+                        "assumptions": assumptions,
+                        "scope": scope,
                         "measurement_type": "modeled",
                         "row_ids": [int(i) for i in row_ids],
                         "columns": [
@@ -337,8 +346,11 @@ class Plugin:
                 "modeled_wait_hours": total_modeled / 3600.0,
                 "reduction_hours": total_reduction / 3600.0,
                 "scale_factor": float(scale_factor),
+                "host_count_baseline": host_count or None,
+                "host_count_modeled": host_count_modeled,
                 "eligible_basis": eligible_basis,
-                "assumption": assumption,
+                "assumptions": assumptions,
+                "scope": scope,
                 "measurement_type": "modeled",
                 "row_ids": [int(i) for i in work.index.tolist()[:max_examples]],
                 "columns": [
@@ -370,10 +382,10 @@ class Plugin:
                     "queue_column": queue_col,
                     "eligible_column": eligible_col,
                     "start_column": start_col,
-                    "eligible_basis": eligible_basis,
-                    "scale_factor": float(scale_factor),
-                    "assumption": assumption,
-                },
+                "eligible_basis": eligible_basis,
+                "scale_factor": float(scale_factor),
+                "assumptions": assumptions,
+            },
                 "metrics": metrics,
             },
         )

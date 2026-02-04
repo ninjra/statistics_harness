@@ -275,6 +275,10 @@ class Plugin:
 
         threshold = float(ctx.settings.get("wait_threshold_seconds", 60))
         work["__eligible_wait_gt_sec"] = eligible_wait.where(eligible_wait > threshold, 0.0)
+        wait_to_start = (work["__start_ts"] - work["__queue_ts"]).dt.total_seconds()
+        wait_to_start = wait_to_start.clip(lower=0).fillna(0)
+        work["__wait_to_start_sec"] = wait_to_start
+        work["__wait_to_start_gt_sec"] = wait_to_start.where(wait_to_start > threshold, 0.0)
 
         close_start = int(ctx.settings.get("close_cycle_start_day", 20))
         close_end = int(ctx.settings.get("close_cycle_end_day", 5))
@@ -317,6 +321,49 @@ class Plugin:
                 [],
                 None,
             )
+
+        busy_periods: list[dict[str, Any]] = []
+        busy_frame = standalone.loc[standalone["__close"]].copy()
+        grouped = pd.DataFrame()
+        if not busy_frame.empty:
+            bucket_ts = busy_frame["__queue_ts"].dt.floor("h")
+            grouped = (
+                busy_frame.groupby(bucket_ts)
+                .agg(
+                    rows_total=("__queue_ts", "size"),
+                    rows_over_threshold=(
+                        "__wait_to_start_gt_sec",
+                        lambda series: int((series > 0).sum()),
+                    ),
+                    wait_to_start_hours_total=("__wait_to_start_gt_sec", "sum"),
+                )
+                .reset_index()
+                .rename(columns={"__queue_ts": "bucket_start"})
+            )
+        if not grouped.empty:
+            grouped["wait_to_start_hours_total"] = grouped["wait_to_start_hours_total"] / 3600.0
+            grouped["bucket_end"] = grouped["bucket_start"] + pd.Timedelta(hours=1)
+            grouped["weekday"] = grouped["bucket_start"].dt.day_name()
+            grouped["weekend"] = grouped["bucket_start"].dt.dayofweek >= 5
+            grouped["hour"] = grouped["bucket_start"].dt.hour
+            grouped["after_hours"] = (grouped["hour"] < 8) | (grouped["hour"] >= 18)
+            grouped = grouped.sort_values(
+                ["wait_to_start_hours_total", "bucket_start"],
+                ascending=[False, True],
+            )
+            for _, row in grouped.iterrows():
+                busy_periods.append(
+                    {
+                        "period_start": row["bucket_start"].isoformat(),
+                        "period_end": row["bucket_end"].isoformat(),
+                        "wait_to_start_hours_total": float(row["wait_to_start_hours_total"]),
+                        "rows_total": int(row["rows_total"]),
+                        "rows_over_threshold": int(row["rows_over_threshold"]),
+                        "weekday": row["weekday"],
+                        "weekend": bool(row["weekend"]),
+                        "after_hours": bool(row["after_hours"]),
+                    }
+                )
 
         agg = (
             standalone.groupby(["__process_norm", "__close"], dropna=False)
@@ -499,6 +546,15 @@ class Plugin:
                 modeled = remaining_gt_hours * scale_factor
                 modeled_close = remaining_close_gt_hours * scale_factor
                 modeled_open = remaining_open_gt_hours * scale_factor
+                assumptions = [
+                    "capacity-proportional scaling on >threshold eligible-wait",
+                ]
+                scope = {
+                    "metric": "eligible_wait_gt_hours",
+                    "close_cycle_start_day": close_start,
+                    "close_cycle_end_day": close_end,
+                    "eligible_basis": eligible_basis,
+                }
                 findings.append(
                     {
                         "kind": "capacity_scale_model",
@@ -510,8 +566,11 @@ class Plugin:
                         "eligible_wait_gt_hours_open_without_target": remaining_open_gt_hours,
                         "eligible_wait_gt_hours_open_modeled": modeled_open,
                         "scale_factor": scale_factor,
+                        "host_count_baseline": None,
+                        "host_count_modeled": None,
                         "measurement_type": "modeled",
-                        "assumption": "capacity-proportional scaling on >threshold eligible-wait",
+                        "assumptions": assumptions,
+                        "scope": scope,
                         "columns": columns_used,
                     }
                 )
@@ -532,6 +591,9 @@ class Plugin:
                     "close_cycle_start_day": close_start,
                     "close_cycle_end_day": close_end,
                     "wait_threshold_seconds": threshold,
+                    "busy_period_bucket": "hour",
+                    "busy_period_basis": "queue_to_start",
+                    "busy_period_scope": "close_cycle",
                 },
                 "process_stats": summaries,
                 "totals": {
@@ -540,6 +602,7 @@ class Plugin:
                     "eligible_wait_hours_total": total_eligible_wait_hours,
                     "eligible_wait_gt_hours_total": total_eligible_wait_gt_hours,
                 },
+                "busy_periods": busy_periods,
             },
         )
         artifacts = [

@@ -45,7 +45,7 @@ class PluginContext:
     run_seed: int
     logger: Callable[[str], None]
     storage: Any
-    dataset_loader: Callable[[], Any]
+    dataset_loader: Callable[..., Any]
     budget: dict[str, Any] = field(
         default_factory=lambda: {
             "row_limit": None,

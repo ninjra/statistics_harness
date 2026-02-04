@@ -3484,6 +3484,42 @@ async def get_report_md(run_id: str) -> FileResponse:
     return FileResponse(report_path)
 
 
+@app.get("/api/runs/{run_id}/business_summary.md")
+async def get_business_summary(run_id: str) -> FileResponse:
+    summary_path = APPDATA_DIR / "runs" / run_id / "business_summary.md"
+    if not summary_path.exists():
+        raise HTTPException(status_code=404, detail="Business summary not found")
+    return FileResponse(summary_path)
+
+
+@app.get("/api/runs/{run_id}/engineering_summary.md")
+async def get_engineering_summary(run_id: str) -> FileResponse:
+    summary_path = APPDATA_DIR / "runs" / run_id / "engineering_summary.md"
+    if not summary_path.exists():
+        raise HTTPException(status_code=404, detail="Engineering summary not found")
+    return FileResponse(summary_path)
+
+
+@app.get("/api/runs/{run_id}/appendix_raw.md")
+async def get_appendix_raw(run_id: str) -> FileResponse:
+    summary_path = APPDATA_DIR / "runs" / run_id / "appendix_raw.md"
+    if not summary_path.exists():
+        raise HTTPException(status_code=404, detail="Appendix not found")
+    return FileResponse(summary_path)
+
+
+@app.get("/api/runs/{run_id}/slide_kit/{artifact_path:path}")
+async def get_slide_kit(run_id: str, artifact_path: str) -> FileResponse:
+    base = APPDATA_DIR / "runs" / run_id / "slide_kit"
+    try:
+        resolved = safe_join(base, artifact_path)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if not resolved.exists():
+        raise HTTPException(status_code=404, detail="Slide kit file not found")
+    return FileResponse(resolved)
+
+
 @app.get("/api/runs/{run_id}")
 async def get_run_status(run_id: str) -> JSONResponse:
     run_row = pipeline.storage.fetch_run(run_id)

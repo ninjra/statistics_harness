@@ -43,6 +43,13 @@
         <li><a href="/vectors?collection=report_{{ run_id }}">Vector search</a></li>
         <li><a href="/api/runs/{{ run_id }}/report.json">report.json</a></li>
         <li><a href="/api/runs/{{ run_id }}/report.md">report.md</a></li>
+        <li><a href="/api/runs/{{ run_id }}/business_summary.md">business_summary.md</a></li>
+        <li><a href="/api/runs/{{ run_id }}/engineering_summary.md">engineering_summary.md</a></li>
+        <li><a href="/api/runs/{{ run_id }}/appendix_raw.md">appendix_raw.md</a></li>
+        <li><a href="/api/runs/{{ run_id }}/slide_kit/busy_periods.csv">slide_kit/busy_periods.csv</a></li>
+        <li><a href="/api/runs/{{ run_id }}/slide_kit/scenario_summary.csv">slide_kit/scenario_summary.csv</a></li>
+        <li><a href="/api/runs/{{ run_id }}/slide_kit/top_process_contributors.csv">slide_kit/top_process_contributors.csv</a></li>
+        <li><a href="/api/runs/{{ run_id }}/slide_kit/qemail_profile.csv">slide_kit/qemail_profile.csv</a></li>
       </ul>
       {% if project %}
         <p><a href="/projects/{{ project.project_id }}">Back to Project</a></p>

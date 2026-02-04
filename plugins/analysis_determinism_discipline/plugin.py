@@ -43,7 +43,12 @@ class Plugin:
                         }
                     )
                     continue
-                if measurement_type == "modeled" and not item.get("assumption"):
+                assumptions = item.get("assumptions")
+                if measurement_type == "modeled" and (
+                    not isinstance(assumptions, list)
+                    or not assumptions
+                    or not all(isinstance(a, str) and a.strip() for a in assumptions)
+                ):
                     modeled_missing_assumption += 1
                     violations.append(
                         {
