@@ -29,6 +29,7 @@ def test_profile_eventlog_role_inference(run_dir):
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
     assert result.status == "ok"
+    assert "time_to_completion" in result.metrics
     candidates = ctx.storage.fetch_dataset_role_candidates(ctx.dataset_version_id)
     assert any(c["role"] == "start_time" for c in candidates)
     columns = ctx.storage.fetch_dataset_columns(ctx.dataset_version_id)

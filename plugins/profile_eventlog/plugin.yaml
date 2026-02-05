@@ -10,6 +10,7 @@ settings:
   defaults:
     sample_rows: 500
     min_confidence: 2.0
+    duration_sample_rows: 5000
 capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json

@@ -205,7 +205,11 @@ class Pipeline:
         auto_plan = not selected or "auto" in selected
         selected.discard("auto")
         if "all" in selected:
-            selected = {spec.plugin_id for spec in specs if spec.type == "analysis"}
+            selected = {
+                spec.plugin_id
+                for spec in specs
+                if spec.type in {"analysis", "profile", "transform"}
+            }
             auto_plan = False
         llm_selected = "llm_prompt_builder" in selected
 
@@ -555,6 +559,18 @@ class Pipeline:
         missing_manual = sorted(pid for pid in selected if pid not in spec_map)
         for pid in missing_manual:
             record_missing(pid, f"Unknown plugin id: {pid}")
+
+        if not auto_plan:
+            profile_ids = {
+                pid
+                for pid in selected
+                if pid in spec_map and spec_map[pid].type == "profile"
+            }
+            if profile_ids:
+                layers = self._toposort_layers(specs, profile_ids)
+                for layer in layers:
+                    for spec in layer:
+                        run_spec(spec)
 
         transform_ids = {
             pid
