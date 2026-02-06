@@ -1,6 +1,15 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+ROOT_PATH = Path(__file__).resolve().parents[1]
+SRC_PATH = ROOT_PATH / "src"
+for path in (ROOT_PATH, SRC_PATH):
+    text = str(path)
+    if text in sys.path:
+        sys.path.remove(text)
+    sys.path.insert(0, text)
 
 import pandas as pd
 import pytest

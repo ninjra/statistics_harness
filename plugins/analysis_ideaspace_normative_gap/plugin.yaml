@@ -13,6 +13,7 @@ settings:
     start_column: null
     min_samples: 15
     max_processes: 50
+    max_rows: 150000
     exclude_processes: ["qemail", "qpec", "qlongjob", "*los*"]
 capabilities:
   - needs_eventlog

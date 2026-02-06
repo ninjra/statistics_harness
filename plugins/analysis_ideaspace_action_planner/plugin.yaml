@@ -10,6 +10,7 @@ settings:
   defaults:
     min_gap_sec: 180
     min_runs: 20
+    min_gap_pct: 0.1
     max_actions: 5
     exclude_processes: ["qemail", "qpec", "qlongjob", "*los*"]
 capabilities:

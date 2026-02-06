@@ -215,9 +215,9 @@ def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
     expected = known.get("expected_findings") or []
     if not isinstance(expected, list) or not expected:
         return {
-            "status": "no_expected_findings",
-            "summary": "Known issues attached but no expected findings provided.",
-            "items": [],
+            "status": "ok" if discovery_items else "no_expected_findings",
+            "summary": "Generated discovery recommendations." if discovery_items else "Known issues attached but no expected findings provided.",
+            "items": discovery_items,
         }
 
     items: list[dict[str, Any]] = []

@@ -35,12 +35,24 @@ def _seed_runtime(run_seed: int) -> None:
         pass
 
 
-def _deterministic_env(run_seed: int) -> dict[str, str]:
+def _deterministic_env(run_seed: int, cwd: Path | None = None) -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONHASHSEED"] = str(run_seed)
     env["TZ"] = "UTC"
     env["LC_ALL"] = "C"
     env["LANG"] = "C"
+
+    roots: list[str] = []
+    if cwd is not None:
+        roots.extend([str(cwd), str(cwd / "src")])
+    existing = env.get("PYTHONPATH", "")
+    parts = [part for part in existing.split(os.pathsep) if part]
+    for root in reversed(roots):
+        if root in parts:
+            parts.remove(root)
+        parts.insert(0, root)
+    if parts:
+        env["PYTHONPATH"] = os.pathsep.join(parts)
     return env
 
 
@@ -320,7 +332,7 @@ def run_plugin_subprocess(
             capture_output=True,
             text=True,
             cwd=str(cwd),
-            env=_deterministic_env(run_seed),
+            env=_deterministic_env(run_seed, cwd=cwd),
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
