@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "min_gap_sec": {"type": "number", "minimum": 1},
+    "min_runs": {"type": "integer", "minimum": 5},
+    "max_actions": {"type": "integer", "minimum": 1},
+    "exclude_processes": {"type": "array", "items": {"type": "string"}}
+  }
+}

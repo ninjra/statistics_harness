@@ -1,0 +1,25 @@
+id: analysis_ideaspace_action_planner
+name: Ideaspace Action Planner
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_ideaspace_normative_gap
+settings:
+  description: Turn normative gaps into operational, quantified, no-speculation recommendations.
+  defaults:
+    min_gap_sec: 180
+    min_runs: 20
+    max_actions: 5
+    exclude_processes: ["qemail", "qpec", "qlongjob", "*los*"]
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

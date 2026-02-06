@@ -11,6 +11,7 @@ from jsonschema import validate
 import yaml
 
 from .stat_controls import confidence_from_p
+from .process_filters import process_is_excluded
 
 
 def _matches_expected(
@@ -154,13 +155,62 @@ def _dedupe_recommendations(items: list[dict[str, Any]]) -> list[dict[str, Any]]
     return list(merged.values()) + passthrough
 
 
+
+
+def _excluded_process_tokens() -> list[str]:
+    default_tokens = ["qemail", "qpec", "qlongjob", "*los*"]
+    raw = os.environ.get("STAT_HARNESS_EXCLUDED_PROCESSES", "")
+    if not raw.strip():
+        return default_tokens
+    return [item.strip() for item in raw.split(",") if item.strip()] or default_tokens
+
+
+def _build_discovery_recommendations(report: dict[str, Any]) -> list[dict[str, Any]]:
+    tokens = _excluded_process_tokens()
+    plugin = report.get("plugins", {}).get("analysis_ideaspace_action_planner")
+    if not isinstance(plugin, dict):
+        return []
+    findings = plugin.get("findings") or []
+    recs: list[dict[str, Any]] = []
+    instrumentation_used = False
+    for item in findings:
+        if not isinstance(item, dict) or item.get("kind") != "ideaspace_action":
+            continue
+        process_id = item.get("process_id") or item.get("target")
+        if process_is_excluded(process_id, tokens):
+            continue
+        rec_text = str(item.get("recommendation") or "").strip()
+        if not rec_text:
+            continue
+        if "instrument" in rec_text.lower() or "trace" in rec_text.lower():
+            if instrumentation_used:
+                continue
+            instrumentation_used = True
+        delta_hours = item.get("estimated_delta_hours_total")
+        recs.append({
+            "title": f"Discovery: {process_id}",
+            "status": "discovery",
+            "kind": "ideaspace_action",
+            "plugin_id": "analysis_ideaspace_action_planner",
+            "process_id": process_id,
+            "recommendation": rec_text,
+            "relevance_score": float(item.get("estimated_delta_pct") or 0.0),
+            "impact_hours": float(delta_hours) if isinstance(delta_hours, (int, float)) else None,
+            "delta_seconds": item.get("estimated_delta_seconds"),
+            "evidence": item.get("evidence") or {},
+            "validation_steps": item.get("validation_steps") or [],
+            "action_type": item.get("action_type"),
+        })
+    return recs
+
 def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
+    discovery_items = _build_discovery_recommendations(report)
     known = report.get("known_issues")
     if not isinstance(known, dict):
         return {
-            "status": "no_known_issues",
-            "summary": "No known issues attached; recommendations not generated.",
-            "items": [],
+            "status": "ok" if discovery_items else "no_known_issues",
+            "summary": "Generated discovery recommendations." if discovery_items else "No known issues attached; recommendations not generated.",
+            "items": discovery_items,
         }
     expected = known.get("expected_findings") or []
     if not isinstance(expected, list) or not expected:
@@ -241,10 +291,11 @@ def _build_recommendations(report: dict[str, Any]) -> dict[str, Any]:
             }
         )
     deduped = _dedupe_recommendations(items)
+    combined = deduped + discovery_items
     return {
         "status": "ok",
-        "summary": f"Generated {len(deduped)} recommendation(s) from known issues.",
-        "items": deduped,
+        "summary": f"Generated {len(combined)} recommendation(s) including discovery actions.",
+        "items": combined,
     }
 
 
@@ -1098,6 +1149,23 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
 
     recommendations = report.get("recommendations")
     lines.append("### Recommendations")
+    discovery = [
+        item for item in (report.get("recommendations", {}).get("items") or [])
+        if isinstance(item, dict) and item.get("status") == "discovery"
+    ]
+    if discovery:
+        lines.append("### Top Discovery Actions")
+        lines.append("| Process ID | Recommended Action | Quantified Delta | Why/Evidence |")
+        lines.append("|---|---|---|---|")
+        for item in sorted(discovery, key=lambda r: float(r.get("impact_hours") or 0.0), reverse=True)[:5]:
+            proc = item.get("process_id") or "n/a"
+            rec = str(item.get("recommendation") or "").replace("|", "/")
+            delta = item.get("impact_hours")
+            delta_txt = f"{float(delta):.2f}h" if isinstance(delta, (int, float)) else "n/a"
+            ev = item.get("evidence") or {}
+            why = f"runs={ev.get('runs','n/a')}, gap_sec={ev.get('gap_sec','n/a')}"
+            lines.append(f"| {proc} | {rec} | {delta_txt} | {why} |")
+        lines.append("")
     if isinstance(recommendations, dict):
         summary = recommendations.get("summary") or ""
         if summary:
