@@ -1530,6 +1530,22 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/statistics_repo_update_recommendations.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_close_cycle_capacity_model",
+        "analysis_close_cycle_duration_shift",
+        "analysis_queue_delay_decomposition"
+      ],
+      "referenced_paths": [],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "kernel-plugin-stability-plan.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -1718,6 +1734,36 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "statistics-repo-update-recommendations-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_close_cycle_capacity_model",
+        "analysis_close_cycle_duration_shift",
+        "analysis_queue_delay_decomposition"
+      ],
+      "referenced_paths": [
+        "docs/plugins_functionality_matrix.md",
+        "docs/statistics_repo_update_recommendations.md",
+        "plugins/analysis_close_cycle_capacity_model/plugin.py",
+        "plugins/analysis_close_cycle_duration_shift/plugin.py",
+        "plugins/analysis_queue_delay_decomposition/plugin.py",
+        "scripts/show_actionable_results.py",
+        "scripts/update_docs_and_plugin_matrices.py",
+        "scripts/verify_docs_and_plugin_matrices.py",
+        "src/statistic_harness/core/close_cycle.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/sql_assist.py",
+        "src/statistic_harness/core/sql_intents.py",
+        "src/statistic_harness/core/stat_plugins/topo_tda_addon.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "topo-tda-addon-pack-plan.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -1825,12 +1871,14 @@
     "docs/stat_plugin_config.schema.json",
     "docs/stat_plugin_references.schema.json",
     "docs/stat_redteam2-6-26.md",
+    "docs/statistics_repo_update_recommendations.md",
     "kernel-plugin-stability-plan.md",
     "known-issue-gauntlet-recommendation-plan.md",
     "local-sqlcoder-sql-assist-plan.md",
     "parallel-plugin-orchestrator-plan.md",
     "queue-delay-plugins-evaluation-plan.md",
     "stat-redteam2-6-26-plan.md",
+    "statistics-repo-update-recommendations-plan.md",
     "topo-tda-addon-pack-plan.md",
     "two-million-rows-support-plan.md"
   ]
