@@ -142,16 +142,40 @@ def _install_shell_guard() -> None:
 
 def _apply_resource_limits(budget: dict[str, Any]) -> None:
     cpu_limit_ms = budget.get("cpu_limit_ms")
-    if cpu_limit_ms is None:
-        return
+    mem_limit_mb = budget.get("mem_limit_mb")
     try:
-        cpu_seconds = max(1, int(math.ceil(float(cpu_limit_ms) / 1000.0)))
+        cpu_seconds = (
+            max(1, int(math.ceil(float(cpu_limit_ms) / 1000.0)))
+            if cpu_limit_ms is not None
+            else None
+        )
     except (TypeError, ValueError):
-        return
+        cpu_seconds = None
     try:
         import resource
 
-        resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+        if cpu_seconds is not None:
+            resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+
+        # Optional hard cap for address space (best-effort, Linux/WSL).
+        # This is a safety valve to prevent a single plugin subprocess from consuming
+        # most of system RAM. If set too low, the plugin may error with MemoryError.
+        if mem_limit_mb is None:
+            raw = os.environ.get("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB", "").strip()
+            if raw:
+                try:
+                    mem_limit_mb = int(raw)
+                except ValueError:
+                    mem_limit_mb = None
+        if isinstance(mem_limit_mb, int) and mem_limit_mb > 0:
+            limit_bytes = int(mem_limit_mb) * 1024 * 1024
+            try:
+                soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+                new_soft = min(soft, limit_bytes) if soft not in (-1, resource.RLIM_INFINITY) else limit_bytes
+                new_hard = min(hard, limit_bytes) if hard not in (-1, resource.RLIM_INFINITY) else limit_bytes
+                resource.setrlimit(resource.RLIMIT_AS, (new_soft, new_hard))
+            except Exception:
+                pass
     except Exception:
         pass
 

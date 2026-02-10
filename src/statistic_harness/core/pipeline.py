@@ -209,6 +209,101 @@ class Pipeline:
         raw = os.environ.get(name, "").strip()
         if not raw:
             return None
+
+    @staticmethod
+    def _read_meminfo_kb() -> dict[str, int]:
+        """Parse /proc/meminfo into a {key: kB} dict (Linux/WSL best-effort)."""
+
+        info: dict[str, int] = {}
+        try:
+            path = Path("/proc/meminfo")
+            if not path.exists():
+                return info
+            for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+                if ":" not in line:
+                    continue
+                key, rest = line.split(":", 1)
+                key = key.strip()
+                val = rest.strip().split()
+                if not val:
+                    continue
+                try:
+                    n = int(val[0])
+                except ValueError:
+                    continue
+                # /proc/meminfo values are in kB.
+                info[key] = n
+        except Exception:
+            return {}
+        return info
+
+    def _memory_governor_wait(self, *, plugin_id: str, plugin_type: str, logger: Any) -> None:
+        """Soft governor: block starting new work when system memory is under pressure.
+
+        This does not sample rows or reduce accuracy; it only throttles concurrency.
+        """
+
+        stages_raw = os.environ.get("STAT_HARNESS_MEM_GOVERNOR_STAGES", "").strip()
+        stages = {"analysis"} if not stages_raw else {s.strip().lower() for s in stages_raw.split(",") if s.strip()}
+        if plugin_type.strip().lower() not in stages:
+            return
+
+        max_used_pct_raw = os.environ.get("STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT", "").strip()
+        min_avail_mb_raw = os.environ.get("STAT_HARNESS_MEM_GOVERNOR_MIN_AVAILABLE_MB", "").strip()
+        if not max_used_pct_raw and not min_avail_mb_raw:
+            return
+
+        try:
+            poll_s = float(os.environ.get("STAT_HARNESS_MEM_GOVERNOR_POLL_SECONDS", "5").strip() or "5")
+        except ValueError:
+            poll_s = 5.0
+        poll_s = max(0.5, poll_s)
+        try:
+            log_s = float(os.environ.get("STAT_HARNESS_MEM_GOVERNOR_LOG_SECONDS", "30").strip() or "30")
+        except ValueError:
+            log_s = 30.0
+        log_s = max(5.0, log_s)
+
+        max_used_pct: float | None
+        min_avail_mb: int | None
+        try:
+            max_used_pct = float(max_used_pct_raw) if max_used_pct_raw else None
+        except ValueError:
+            max_used_pct = None
+        try:
+            min_avail_mb = int(min_avail_mb_raw) if min_avail_mb_raw else None
+        except ValueError:
+            min_avail_mb = None
+
+        last_log = 0.0
+        start = time.monotonic()
+        while True:
+            mem = self._read_meminfo_kb()
+            total_kb = int(mem.get("MemTotal") or 0)
+            avail_kb = int(mem.get("MemAvailable") or 0)
+            if total_kb <= 0 or avail_kb <= 0:
+                return
+            used_pct = 100.0 * (1.0 - (float(avail_kb) / float(total_kb)))
+            avail_mb = int(avail_kb // 1024)
+
+            over_used = (max_used_pct is not None) and (used_pct > float(max_used_pct))
+            under_avail = (min_avail_mb is not None) and (avail_mb < int(min_avail_mb))
+            if not over_used and not under_avail:
+                return
+
+            now = time.monotonic()
+            if (now - last_log) >= log_s:
+                try:
+                    logger(
+                        "[GOV] memory pressure: "
+                        f"plugin={plugin_id} used_pct={used_pct:.1f} avail_mb={avail_mb} "
+                        f"max_used_pct={max_used_pct} min_avail_mb={min_avail_mb} "
+                        f"waited_s={int(now - start)}"
+                    )
+                except Exception:
+                    pass
+                last_log = now
+            time.sleep(poll_s)
         try:
             return int(raw)
         except ValueError:
@@ -703,6 +798,13 @@ class Pipeline:
         def run_spec(
             spec: PluginSpec, include_input: bool = False, progress: bool = True
         ) -> PluginResult:
+            # Soft governor before marking a plugin "running" in the DB, to avoid runs that
+            # appear active without OS work due to throttling.
+            self._memory_governor_wait(
+                plugin_id=spec.plugin_id,
+                plugin_type=str(spec.type or ""),
+                logger=logger,
+            )
             plugin_settings = dict(spec.settings.get("defaults", {}))
             plugin_settings.update(settings.get(spec.plugin_id, {}))
             if include_input and input_file is not None:
@@ -790,6 +892,10 @@ class Pipeline:
                     "max_windows": budget.get("max_windows"),
                     "max_findings": budget.get("max_findings"),
                 }
+                # Optional: hard memory limit for plugin subprocess via RLIMIT_AS.
+                hard_mem_mb = self._parse_int_env("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB")
+                if hard_mem_mb is not None and hard_mem_mb > 0:
+                    budget["mem_limit_mb"] = int(hard_mem_mb)
                 settings_for_hash = dict(plugin_settings)
                 if "input_file" in settings_for_hash:
                     # File paths are machine-dependent; treat input identity as input_hash instead.
