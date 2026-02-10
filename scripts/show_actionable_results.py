@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 APPDATA = REPO_ROOT / "appdata"
+_SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
+_MAX_PER_ACTION_TYPE_ENV = "STAT_HARNESS_MAX_PER_ACTION_TYPE"
 
 
 def _read_json(path: Path) -> Any:
@@ -45,6 +48,60 @@ def _ranked_actionables(disc_items: list[dict[str, Any]]) -> list[dict[str, Any]
     if not disc_items:
         return []
 
+    def _suppressed() -> set[str]:
+        defaults = {"tune_threshold"}
+        raw = str(os.environ.get(_SUPPRESS_ACTION_TYPES_ENV, "")).strip()
+        if raw == "":
+            return defaults
+        out: set[str] = set()
+        for token in raw.replace(";", ",").split(","):
+            token = token.strip()
+            if token:
+                out.add(token)
+        return out
+
+    def _caps() -> dict[str, int]:
+        defaults = {
+            "batch_input": 8,
+            "batch_or_cache": 6,
+            "batch_input_refactor": 6,
+            "dedupe_or_cache": 4,
+            "unblock_dependency_chain": 6,
+            "reduce_transition_gap": 6,
+            "orchestrate_chain": 5,
+            "orchestrate_macro": 5,
+            "decouple_boundary": 4,
+            "shared_cache_endpoint": 4,
+            "batch_group_candidate": 4,
+            "cluster_with_constraints": 3,
+            "distribution_shift_target": 4,
+            "burst_trigger": 4,
+            "schedule_shift_target": 4,
+            "reschedule": 3,
+            "route_process": 3,
+            "reduce_process_wait": 2,
+            "review": 2,
+            "tune_threshold": 1,
+        }
+        raw = str(os.environ.get(_MAX_PER_ACTION_TYPE_ENV, "")).strip()
+        if not raw:
+            return defaults
+        out = dict(defaults)
+        for token in raw.replace(";", ",").split(","):
+            token = token.strip()
+            if not token or "=" not in token:
+                continue
+            k, v = token.split("=", 1)
+            k = k.strip()
+            v = v.strip()
+            if not k:
+                continue
+            try:
+                out[k] = int(v)
+            except ValueError:
+                continue
+        return out
+
     def _priority(item: dict[str, Any]) -> int:
         plugin_id = str(item.get("plugin_id") or "")
         kind = str(item.get("kind") or "")
@@ -73,9 +130,23 @@ def _ranked_actionables(disc_items: list[dict[str, Any]]) -> list[dict[str, Any]
                 continue
         return 0.0
 
-    # Sort highest priority and score first. Don't let a single plugin drown out all others;
-    # selection-time caps handle breadth.
-    return sorted(disc_items, key=lambda i: (_priority(i), _score(i)), reverse=True)
+    ranked = sorted(disc_items, key=lambda i: (_priority(i), _score(i)), reverse=True)
+    suppressed = _suppressed()
+    caps = _caps()
+    used: dict[str, int] = {}
+    kept: list[dict[str, Any]] = []
+    for item in ranked:
+        action_type = str(item.get("action_type") or item.get("action") or "").strip()
+        if action_type and action_type in suppressed:
+            continue
+        if action_type:
+            limit = caps.get(action_type)
+            if isinstance(limit, int) and limit > 0:
+                used[action_type] = int(used.get(action_type, 0)) + 1
+                if used[action_type] > limit:
+                    continue
+        kept.append(item)
+    return kept
 
 
 def main() -> int:

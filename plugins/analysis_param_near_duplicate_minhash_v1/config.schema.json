@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "exclude_processes": {
+      "default": null,
+      "items": {
+        "type": "string"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "ignore_param_keys_regex": {
+      "default": "(run id|queue id|seq|slice|timestamp)",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lsh_threshold": {
+      "default": 0.85,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "max_entities_per_process": {
+      "default": 1500,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_processes": {
+      "default": 60,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "min_cluster_size": {
+      "default": 5,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "num_perm": {
+      "default": 128,
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

@@ -8,7 +8,17 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 
-from statistic_harness.core.close_cycle import resolve_close_cycle_masks
+from statistic_harness.core.close_cycle import (
+    baseline_target_spillover_masks,
+    compute_close_month,
+    resolve_close_cycle_masks,
+)
+from statistic_harness.core.process_matcher import (
+    compile_patterns,
+    default_exclude_process_patterns,
+    merge_patterns,
+    parse_exclude_patterns_env,
+)
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
@@ -324,6 +334,83 @@ class Plugin:
         if work.empty:
             return PluginResult("skipped", "No valid process values", {}, [], [], None)
 
+        # ---- Baseline vs Target Close Window Spillover (20->5 baseline, 20->EOM target) ----
+        baseline_close_start_day = int(ctx.settings.get("baseline_close_start_day", 20))
+        baseline_close_end_day = int(ctx.settings.get("baseline_close_end_day", 5))
+        target_close_end_day = int(ctx.settings.get("target_close_end_day", 31))
+        spillover_finding: dict[str, object] | None = None
+        try:
+            exclude_list = ctx.settings.get("exclude_processes")
+            if not isinstance(exclude_list, (list, tuple, set)):
+                exclude_list = []
+            patterns = merge_patterns(
+                default_exclude_process_patterns(),
+                parse_exclude_patterns_env(),
+                [str(x) for x in exclude_list],
+            )
+            exclude_match = compile_patterns(patterns)
+
+            baseline_mask, target_mask, spillover_mask = baseline_target_spillover_masks(
+                work["__timestamp"],
+                baseline_close_start_day=baseline_close_start_day,
+                baseline_close_end_day=baseline_close_end_day,
+                target_close_end_day=target_close_end_day,
+            )
+            close_month = compute_close_month(
+                work["__timestamp"], baseline_close_end_day=baseline_close_end_day
+            )
+            if spillover_mask is not None and close_month is not None:
+                keep = ~work["__process_norm"].apply(exclude_match)
+                mask = spillover_mask & keep
+                spill = work.loc[mask].copy()
+                spill["__close_month"] = close_month.loc[spill.index]
+
+                by_proc = (
+                    spill.groupby("__process_norm", dropna=False)
+                    .agg(
+                        rows=("__process_norm", "size"),
+                        duration_hours_total=("__duration", lambda s: float(pd.to_numeric(s, errors="coerce").fillna(0).sum()) / 3600.0),
+                    )
+                    .reset_index()
+                    .sort_values(["duration_hours_total", "rows"], ascending=[False, False])
+                )
+                top_proc = [
+                    {
+                        "process_norm": str(r["__process_norm"]),
+                        "spillover_rows": int(r["rows"]),
+                        "spillover_duration_hours_total": float(r["duration_hours_total"]),
+                    }
+                    for _, r in by_proc.head(15).iterrows()
+                ]
+
+                spillover_payload = {
+                    "baseline_close_start_day": baseline_close_start_day,
+                    "baseline_close_end_day": baseline_close_end_day,
+                    "target_close_end_day": target_close_end_day,
+                    "spillover_rows_total": int(spill.shape[0]),
+                    "spillover_duration_hours_total": float(pd.to_numeric(spill["__duration"], errors="coerce").fillna(0).sum()) / 3600.0,
+                    "top_spillover_processes": top_proc,
+                }
+                artifacts_dir = ctx.artifacts_dir("analysis_close_cycle_duration_shift")
+                spill_path = artifacts_dir / "spillover_target_window.json"
+                write_json(spill_path, spillover_payload)
+
+                spillover_finding = {
+                    "kind": "spillover_past_eom",
+                    "measurement_type": "measured",
+                    "baseline_close_start_day": baseline_close_start_day,
+                    "baseline_close_end_day": baseline_close_end_day,
+                    "target_close_end_day": target_close_end_day,
+                    "spillover_rows_total": int(spill.shape[0]),
+                    "spillover_duration_hours_total": float(spillover_payload["spillover_duration_hours_total"]),
+                    "evidence": {
+                        "artifact": str(spill_path.relative_to(ctx.run_dir)),
+                        "top_spillover_processes": top_proc[:10],
+                    },
+                }
+        except Exception:
+            spillover_finding = None
+
         close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
         window_days = int(ctx.settings.get("close_cycle_window_days", 17))
         inferred_start, inferred_end = infer_close_cycle_window(
@@ -405,6 +492,9 @@ class Plugin:
             "server_column": server_col,
             "close_cycle_start_day": close_start,
             "close_cycle_end_day": close_end,
+            "baseline_close_start_day": baseline_close_start_day,
+            "baseline_close_end_day": baseline_close_end_day,
+            "target_close_end_day": target_close_end_day,
             "close_cycle_mode": close_mode,
             "close_cycle_window_days": window_days,
             "close_cycle_source": close_source,
@@ -427,6 +517,8 @@ class Plugin:
         evaluated: list[dict[str, object]] = []
         candidates: list[dict[str, object]] = []
         findings: list[dict[str, object]] = []
+        if isinstance(spillover_finding, dict):
+            findings.append(spillover_finding)
 
         if close.empty or open_rows.empty:
             return self._emit_results(ctx, summary, evaluated, candidates, findings, "No close-cycle rows found")

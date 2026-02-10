@@ -17,7 +17,13 @@ from statistic_harness.core.stat_plugins import (
     stable_id,
 )
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import write_json
+from statistic_harness.core.utils import quote_identifier, write_json
+from statistic_harness.core.process_matcher import (
+    compile_patterns,
+    default_exclude_process_patterns,
+    merge_patterns,
+    parse_exclude_patterns_env,
+)
 
 try:  # optional
     from scipy import stats as scipy_stats
@@ -1470,6 +1476,19 @@ def _actionable_ops_levers_v1(
         # Without a process key we cannot make specific recommendations.
         return PluginResult("skipped", "No process/activity column detected", {}, [], [], None)
 
+    # Process exclusions: interpret as patterns (glob/SQL-like/regex), with conservative defaults.
+    exclude_list = config.get("exclude_processes")
+    if isinstance(exclude_list, str):
+        exclude_list = [s.strip() for s in exclude_list.split(",") if s.strip()]
+    if not isinstance(exclude_list, (list, tuple, set)):
+        exclude_list = []
+    exclude_patterns = merge_patterns(
+        default_exclude_process_patterns(),
+        parse_exclude_patterns_env(),
+        [str(x) for x in exclude_list],
+    )
+    exclude_match = compile_patterns(exclude_patterns)
+
     server_col = config.get("server_column")
     if not isinstance(server_col, str) or server_col not in df.columns:
         for candidate in ("ASSIGNED_MACHINE_ID", "LOCAL_MACHINE_ID", "HOST", "SERVER"):
@@ -1553,6 +1572,8 @@ def _actionable_ops_levers_v1(
     ) -> None:
         label = redactor(str(process_value))
         proc_norm = str(process_value).strip().lower()
+        if proc_norm and exclude_match(proc_norm):
+            return
         proc_id = stable_id([proc_norm], prefix="proc")
 
         impact_hours: float | None = None
@@ -1609,6 +1630,22 @@ def _actionable_ops_levers_v1(
                 f"Upper bound: {_fmt_hours(impact_hours)}{per_day_txt} of wait time above {thr:.0f}s associated with this process over the window. "
                 "Validate by measuring queue-delay distribution before/after batching and ensuring any SLAs still hold."
             )
+        elif action_type == "batch_input":
+            key = str((extra or {}).get("key") or "").strip() or "parameter"
+            cm = str((extra or {}).get("best_close_month") or "").strip()
+            runs = (extra or {}).get("runs_with_key")
+            uniq = (extra or {}).get("unique_values")
+            reducible = (extra or {}).get("estimated_calls_reduced")
+            cm_txt = f" in close month {cm}" if cm else ""
+            runs_txt = f"{int(runs):,}" if isinstance(runs, (int, float)) else "many"
+            uniq_txt = f"{int(uniq):,}" if isinstance(uniq, (int, float)) else "many"
+            reducible_txt = f"{int(reducible):,}" if isinstance(reducible, (int, float)) else ""
+            reducible_clause = f" (reducing job launches by ~{reducible_txt})" if reducible_txt else ""
+            recommendation = (
+                f"For {label}{cm_txt}, runs sweep across many distinct {key} values ({uniq_txt} unique across {runs_txt} runs). "
+                f"Consider changing {label} to accept a list of {key} values and process them in one run per close-month cohort{reducible_clause}. "
+                f"Upper bound: {_fmt_hours(impact_hours)} of over-threshold wait time above {thr:.0f}s associated with this process over the observation window (not guaranteed)."
+            )
         elif action_type == "throttle_or_dedupe":
             per_day = _fmt_hours(impact_hours_per_day) if impact_hours_per_day is not None else None
             per_day_txt = f" (~{per_day}/day)" if per_day and per_day != "unknown" else ""
@@ -1617,6 +1654,13 @@ def _actionable_ops_levers_v1(
                 "Apply throttling or deduplication at the arrival point to smooth bursts. "
                 f"Upper bound: {_fmt_hours(impact_hours)}{per_day_txt} of wait time above {thr:.0f}s. "
                 "Validate by re-running and checking the burst-correlation and queue-delay distribution."
+            )
+
+        if not isinstance(recommendation, str) or not recommendation.strip():
+            # Fail-closed for operator UX: do not emit empty recommendations.
+            recommendation = (
+                f"{title}. "
+                "Validate the supporting evidence artifact, make a targeted change, and re-run the harness to confirm the expected impact."
             )
         row = {
             "kind": "actionable_ops_lever",
@@ -1677,11 +1721,21 @@ def _actionable_ops_levers_v1(
             rows = sorted(rows, key=lambda r: float(r.get("delta_seconds") or 0.0), reverse=True)
             artifacts.append(_artifact(ctx, plugin_id, "routing_candidates.json", rows[:50], "json"))
             for row in rows[:5]:
+                total_over = None
+                try:
+                    total_over = float(_over_sum_by_proc.get(str(row["process"]), 0.0))
+                except Exception:
+                    total_over = None
+                # Volume-aware estimate: median delta times a conservative "swappable" count,
+                # capped by total over-threshold contribution for the process.
+                est_total = float(row["delta_seconds"]) * float(min(row["n_worst"], row["n_best"]))
+                if isinstance(total_over, (int, float)) and math.isfinite(float(total_over)):
+                    est_total = min(est_total, float(total_over))
                 emit(
                     title=f"Route {row['process']} from {row['server_worst']} to {row['server_best']}",
                     action_type="route_process",
                     process_value=row["process"],
-                    expected_delta_seconds=float(row["delta_seconds"]),
+                    expected_delta_seconds=float(est_total),
                     expected_delta_percent=float(row["delta_percent"]) if row.get("delta_percent") is not None else None,
                     confidence=min(1.0, 0.3 + 0.05 * min(row["n_worst"], row["n_best"])),
                     assumptions=[
@@ -1694,6 +1748,8 @@ def _actionable_ops_levers_v1(
                         "duration_column": duration_col,
                         "n_worst": row["n_worst"],
                         "n_best": row["n_best"],
+                        "median_delta_seconds": float(row["delta_seconds"]),
+                        "over_threshold_seconds_total_upper_bound": float(total_over) if isinstance(total_over, (int, float)) else None,
                         "routing_candidates_artifact": str(artifacts[-1].path),
                     },
                     extra={
@@ -1939,6 +1995,269 @@ def _actionable_ops_levers_v1(
                     },
                     extra={"key": row["param_column"]},
                 )
+
+    # ---- Batch input (parameter sweeps; multi-input candidates) ----
+    # Detect cases where a process runs many times while sweeping across mostly-unique values
+    # of a parameter key within a close-month cohort (classic "list-of-IDs" batch endpoint).
+    try:
+        baseline_start_day = int(config.get("close_cycle_start_day", 20))
+        baseline_end_day = int(config.get("close_cycle_end_day", 5))
+        min_runs_total = int(config.get("batch_input_min_runs_total", 50))
+        min_runs_with_key = int(config.get("batch_input_min_runs_with_key", 50))
+        min_coverage = float(config.get("batch_input_min_coverage", 0.9))
+        min_unique_ratio = float(config.get("batch_input_min_unique_ratio", 0.8))
+        max_batch_inputs = int(config.get("max_batch_input_findings", 8))
+    except Exception:
+        baseline_start_day = 20
+        baseline_end_day = 5
+        min_runs_total = 50
+        min_runs_with_key = 50
+        min_coverage = 0.9
+        min_unique_ratio = 0.8
+        max_batch_inputs = 8
+
+    def _key_blacklisted(key: str) -> bool:
+        k = key.strip().lower()
+        if not k or k in {"raw"}:
+            return True
+        # Reject obvious volatile/correlation identifiers; allow business IDs like "payout id".
+        for bad in ("request", "trace", "span", "session", "uuid", "guid", "timestamp"):
+            if bad in k:
+                return True
+        for bad in ("started", "ended", "created", "updated"):
+            if bad in k:
+                return True
+        return False
+
+    def _detect_batch_input_candidates() -> list[dict[str, Any]]:
+        if not getattr(ctx, "dataset_version_id", None):
+            return []
+        dataset_version_id = str(getattr(ctx, "dataset_version_id"))
+        tmpl = None
+        try:
+            tmpl = ctx.storage.fetch_dataset_template(dataset_version_id)
+        except Exception:
+            tmpl = None
+        if not isinstance(tmpl, dict) or tmpl.get("status") != "ready":
+            return []
+        table_name = str(tmpl.get("table_name") or "").strip()
+        template_id = tmpl.get("template_id")
+        if not table_name or not isinstance(template_id, (int, float)):
+            return []
+        fields = ctx.storage.fetch_template_fields(int(template_id))
+        name_to_safe = {f.get("name"): f.get("safe_name") for f in fields if f.get("name") and f.get("safe_name")}
+
+        proc_safe = name_to_safe.get(process_col)
+        # Prefer queue timestamp for close-month logic; else start; else inferred time.
+        ts_name = queue_col or start_col or time_col
+        ts_safe = name_to_safe.get(ts_name) if isinstance(ts_name, str) else None
+        if not proc_safe or not ts_safe:
+            return []
+
+        safe_table = quote_identifier(table_name)
+        proc_expr = f"LOWER(TRIM(COALESCE({quote_identifier(str(proc_safe))}, '')))"
+        ts_expr = quote_identifier(str(ts_safe))
+        day_expr = f"CAST(SUBSTR({ts_expr}, 9, 2) AS INTEGER)"
+        # Baseline close window mask (wrap-aware).
+        if baseline_start_day <= baseline_end_day:
+            day_pred = f"({day_expr} BETWEEN ? AND ?)"
+            day_params = [int(baseline_start_day), int(baseline_end_day)]
+        else:
+            day_pred = f"(({day_expr} >= ?) OR ({day_expr} <= ?))"
+            day_params = [int(baseline_start_day), int(baseline_end_day)]
+        # Close-month cohort label (YYYY-MM). Day <= end_day belongs to previous month.
+        close_month_expr = (
+            f"CASE WHEN {day_expr} <= ? "
+            f"THEN STRFTIME('%Y-%m', DATE(SUBSTR({ts_expr}, 1, 10), '-1 month')) "
+            f"ELSE STRFTIME('%Y-%m', DATE(SUBSTR({ts_expr}, 1, 10))) END"
+        )
+
+        sql = f"""
+        WITH base AS (
+          SELECT row_index,
+                 {proc_expr} AS process_norm,
+                 {close_month_expr} AS close_month
+          FROM {safe_table}
+          WHERE dataset_version_id = ?
+            AND LENGTH({ts_expr}) >= 10
+            AND {proc_expr} <> ''
+            AND {day_pred}
+        ),
+        totals AS (
+          SELECT process_norm, close_month, COUNT(*) AS runs_total
+          FROM base
+          GROUP BY process_norm, close_month
+        ),
+        agg AS (
+          SELECT b.process_norm,
+                 b.close_month,
+                 pk.key AS key,
+                 COUNT(DISTINCT b.row_index) AS runs_with_key,
+                 COUNT(DISTINCT pk.value) AS unique_values
+          FROM base b
+          JOIN row_parameter_link rpl
+            ON rpl.dataset_version_id = ? AND rpl.row_index = b.row_index
+          JOIN parameter_kv pk
+            ON pk.entity_id = rpl.entity_id
+          GROUP BY b.process_norm, b.close_month, pk.key
+        )
+        SELECT a.process_norm,
+               a.close_month,
+               a.key,
+               t.runs_total,
+               a.runs_with_key,
+               a.unique_values,
+               (a.runs_with_key * 1.0 / t.runs_total) AS coverage,
+               (a.unique_values * 1.0 / a.runs_with_key) AS unique_ratio
+        FROM agg a
+        JOIN totals t
+          ON t.process_norm = a.process_norm AND t.close_month = a.close_month
+        WHERE t.runs_total >= ?
+          AND a.runs_with_key >= ?
+        ORDER BY unique_ratio DESC, coverage DESC, runs_with_key DESC
+        """
+        params: list[Any] = []
+        params.append(int(baseline_end_day))  # for close_month_expr
+        params.append(dataset_version_id)
+        params.extend(day_params)
+        params.append(dataset_version_id)  # row_parameter_link join
+        params.append(int(min_runs_total))
+        params.append(int(min_runs_with_key))
+
+        rows: list[dict[str, Any]] = []
+        with ctx.storage.connection() as conn:
+            cur = conn.execute(sql, params)
+            rows = [dict(r) for r in cur.fetchall()]
+        if not rows:
+            return []
+
+        # Filter + pick best key per process by a simple score.
+        best: dict[str, dict[str, Any]] = {}
+        for r in rows:
+            proc_norm = str(r.get("process_norm") or "").strip().lower()
+            if not proc_norm or exclude_match(proc_norm):
+                continue
+            key = str(r.get("key") or "").strip()
+            if _key_blacklisted(key):
+                continue
+            try:
+                coverage = float(r.get("coverage") or 0.0)
+                uniq_ratio = float(r.get("unique_ratio") or 0.0)
+            except Exception:
+                continue
+            if coverage < min_coverage or uniq_ratio < min_unique_ratio:
+                continue
+            score = float(r.get("runs_with_key") or 0.0) * coverage * uniq_ratio
+            prev = best.get(proc_norm)
+            if prev is None or float(prev.get("_score") or 0.0) < score:
+                r["_score"] = score
+                best[proc_norm] = r
+        out = list(best.values())
+        out.sort(key=lambda rr: float(rr.get("_score") or 0.0), reverse=True)
+        return out[: max(1, max_batch_inputs * 3)]
+
+    candidates = _detect_batch_input_candidates()
+    if candidates:
+        # Persist evidence table for citation.
+        artifacts.append(_artifact(ctx, plugin_id, "batch_input_candidates.json", candidates[:200], "json"))
+
+        # Precompute close-window median target per process for a volume-aware estimate.
+        proc_norm_series = df[process_col].astype(str).str.strip().str.lower()
+        _over_sum_by_proc_norm = over.groupby(proc_norm_series, dropna=False).sum() if not over.empty else pd.Series(dtype=float)
+        median_close_by_proc: dict[str, float] = {}
+        if (queue_col or start_col or time_col) and (queue_col or start_col or time_col) in df.columns:
+            ts_local = pd.to_datetime(df[queue_col or start_col or time_col], errors="coerce", utc=False)
+            if ts_local.notna().any():
+                days = ts_local.dt.day
+                if baseline_start_day <= baseline_end_day:
+                    close_mask = (days >= baseline_start_day) & (days <= baseline_end_day)
+                else:
+                    close_mask = (days >= baseline_start_day) | (days <= baseline_end_day)
+                tmp_y = y.where(close_mask)
+                try:
+                    med = tmp_y.groupby(proc_norm_series, dropna=False).median()
+                    median_close_by_proc = {str(k): float(v) for k, v in med.items() if isinstance(v, (int, float)) and math.isfinite(float(v))}
+                except Exception:
+                    median_close_by_proc = {}
+
+        emitted = 0
+        for row in candidates:
+            if emitted >= max_batch_inputs:
+                break
+            proc_norm = str(row.get("process_norm") or "").strip().lower()
+            if not proc_norm or exclude_match(proc_norm):
+                continue
+            key = str(row.get("key") or "").strip()
+            if not key or _key_blacklisted(key):
+                continue
+            runs_with_key = row.get("runs_with_key")
+            unique_values = row.get("unique_values")
+            runs_total = row.get("runs_total")
+            close_month = str(row.get("close_month") or "").strip()
+
+            try:
+                n_runs = int(float(runs_with_key))
+            except Exception:
+                n_runs = 0
+            if n_runs <= 1:
+                continue
+            estimated_calls_reduced = max(0, n_runs - 1)
+
+            # Upper-bound delta: min(over-threshold sum, (calls_reduced * median_close_target)).
+            total_over = None
+            try:
+                total_over = float(_over_sum_by_proc_norm.get(proc_norm, 0.0))
+            except Exception:
+                total_over = None
+            median_close = median_close_by_proc.get(proc_norm)
+            est_total = None
+            if median_close is not None and math.isfinite(float(median_close)):
+                est_total = float(estimated_calls_reduced) * float(median_close)
+                if isinstance(total_over, (int, float)) and math.isfinite(float(total_over)):
+                    est_total = min(est_total, float(total_over))
+            elif isinstance(total_over, (int, float)) and math.isfinite(float(total_over)):
+                est_total = float(total_over)
+
+            emit(
+                title=f"Batch input: refactor {proc_norm} to accept list of {key}",
+                action_type="batch_input",
+                process_value=proc_norm,
+                expected_delta_seconds=float(est_total) if isinstance(est_total, (int, float)) else None,
+                expected_delta_percent=None,
+                confidence=0.75,
+                assumptions=[
+                    "Close-month cohorts are defined by day<=end_day belonging to previous month.",
+                    "High unique_ratio implies a sweep over single-item calls (list-of-IDs opportunity).",
+                    "Savings estimate is an upper bound; service work may still dominate.",
+                ],
+                evidence={
+                    "method": "parameter_sweep_batch_input",
+                    "baseline_close_start_day": baseline_start_day,
+                    "baseline_close_end_day": baseline_end_day,
+                    "close_month": close_month or None,
+                    "runs_total_in_cohort": int(runs_total) if isinstance(runs_total, (int, float)) else runs_total,
+                    "runs_with_key": int(runs_with_key) if isinstance(runs_with_key, (int, float)) else runs_with_key,
+                    "unique_values": int(unique_values) if isinstance(unique_values, (int, float)) else unique_values,
+                    "coverage": float(row.get("coverage")) if isinstance(row.get("coverage"), (int, float)) else row.get("coverage"),
+                    "unique_ratio": float(row.get("unique_ratio")) if isinstance(row.get("unique_ratio"), (int, float)) else row.get("unique_ratio"),
+                    "batch_input_candidates_artifact": str(artifacts[-1].path) if artifacts else None,
+                    "over_threshold_seconds_total_upper_bound": float(total_over) if isinstance(total_over, (int, float)) else None,
+                    "median_close_target_seconds": float(median_close) if isinstance(median_close, (int, float)) else None,
+                },
+                extra={
+                    "key": key,
+                    "best_close_month": close_month or None,
+                    "runs_with_key": int(runs_with_key) if isinstance(runs_with_key, (int, float)) else runs_with_key,
+                    "unique_values": int(unique_values) if isinstance(unique_values, (int, float)) else unique_values,
+                    "estimated_calls_reduced": int(estimated_calls_reduced),
+                    "validation_steps": [
+                        "Pick 5-10 sample values from the artifact and confirm they differ only by this key.",
+                        "Add/validate a multi-input endpoint that accepts a list of these values.",
+                        "Re-run the harness and confirm job launches and queue wait drop in the close-month cohort.",
+                    ],
+                },
+            )
+            emitted += 1
 
     # ---- Throttle/dedupe (bursts correlate with slowdown) ----
     if time_col and time_col in df.columns:

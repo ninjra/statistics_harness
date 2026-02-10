@@ -1,0 +1,25 @@
+id: analysis_daily_pattern_alignment_dtw_v1
+name: Daily Pattern Alignment (DTW)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Align daily patterns (close vs non-close) to detect shape anomalies
+    and close-cycle drivers.
+  defaults:
+    top_k: 20
+    bucket_minutes: 60
+capabilities:
+- needs_eventlog
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

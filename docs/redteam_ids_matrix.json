@@ -298,6 +298,9 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/plugins/test_action_search_annealing_v1.py",
+          "tests/plugins/test_action_search_mip_v1.py",
+          "tests/plugins/test_actionable_ops_lever_synthesis_from_top20.py",
           "tests/plugins/test_analysis_anova_auto.py",
           "tests/plugins/test_analysis_bayesian_point_displacement.py",
           "tests/plugins/test_analysis_burst_detection_kleinberg.py",
@@ -386,7 +389,9 @@
           "tests/plugins/test_analysis_two_sample_numeric_ks.py",
           "tests/plugins/test_analysis_two_sample_numeric_mann_whitney.py",
           "tests/plugins/test_analysis_variant_differential.py",
+          "tests/plugins/test_apriori_rules_v1.py",
           "tests/plugins/test_attribution.py",
+          "tests/plugins/test_biclustering_cheng_church_v1.py",
           "tests/plugins/test_bocpd_gaussian.py",
           "tests/plugins/test_busy_period_segmentation_v2.py",
           "tests/plugins/test_capacity_scaling.py",
@@ -399,36 +404,51 @@
           "tests/plugins/test_conformal_feature_prediction.py",
           "tests/plugins/test_conformance_checking.py",
           "tests/plugins/test_control_chart_suite.py",
+          "tests/plugins/test_cop_kmeans_v1.py",
           "tests/plugins/test_crosscutting_new_plugins.py",
+          "tests/plugins/test_dependency_communities_v1.py",
           "tests/plugins/test_dependency_resolution_join.py",
           "tests/plugins/test_determinism_discipline.py",
           "tests/plugins/test_distribution_drift_suite.py",
           "tests/plugins/test_dp_gmm.py",
+          "tests/plugins/test_dtw_alignment_v1.py",
+          "tests/plugins/test_empirical_bayes_shrinkage_v1.py",
           "tests/plugins/test_eventlog_fixture_smoke.py",
+          "tests/plugins/test_fpgrowth_itemsets_v1.py",
           "tests/plugins/test_gaussian_copula_shift.py",
           "tests/plugins/test_gaussian_knockoffs.py",
           "tests/plugins/test_graph_topology_curves.py",
+          "tests/plugins/test_hawkes_burst_v1.py",
+          "tests/plugins/test_hdbscan_v1.py",
           "tests/plugins/test_isolation_forest_anomaly.py",
           "tests/plugins/test_knockoff_wrapper_rf.py",
           "tests/plugins/test_log_template_mining_drain.py",
+          "tests/plugins/test_min_cut_partition_v1.py",
           "tests/plugins/test_multivariate_changepoint_pelt.py",
           "tests/plugins/test_multivariate_control_charts.py",
           "tests/plugins/test_notears_linear.py",
           "tests/plugins/test_online_conformal_changepoint.py",
+          "tests/plugins/test_param_near_duplicate_minhash_v1.py",
+          "tests/plugins/test_param_near_duplicate_simhash_v1.py",
           "tests/plugins/test_percentile_analysis.py",
+          "tests/plugins/test_prefixspan_v1.py",
           "tests/plugins/test_process_counterfactuals.py",
           "tests/plugins/test_process_sequence.py",
           "tests/plugins/test_process_sequence_bottlenecks.py",
           "tests/plugins/test_profile_eventlog.py",
           "tests/plugins/test_queue_delay_decomposition.py",
+          "tests/plugins/test_queue_simulator_v1.py",
           "tests/plugins/test_recommendation_dedupe_v2.py",
           "tests/plugins/test_robust_pca_sparse_outliers.py",
           "tests/plugins/test_scan_statistics.py",
           "tests/plugins/test_sequence_classification.py",
+          "tests/plugins/test_sequitur_v1.py",
+          "tests/plugins/test_spectral_clustering_v1.py",
           "tests/plugins/test_tail_isolation.py",
           "tests/plugins/test_traceability_manifest_v2.py",
           "tests/plugins/test_transform_normalize_mixed.py",
           "tests/plugins/test_user_host_savings.py",
+          "tests/plugins/test_wasserstein_shift_v1.py",
           "tests/plugins/test_waterfall_summary_v2.py",
           "tests/stat_plugins/test_contract.py",
           "tests/stat_plugins/test_utils.py",
@@ -465,7 +485,10 @@
           "tests/test_run_manifest.py",
           "tests/test_surface_builder.py",
           "tests/test_template_combined_run.py",
-          "tests/test_template_conversion.py"
+          "tests/test_template_conversion.py",
+          "tests/test_top20_methods_matrix.py",
+          "tests/test_top20_plugins_smoke.py",
+          "tests/test_top20_scaffold_integrity.py"
         ]
       },
       "id": "EXT-02",
@@ -766,6 +789,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/plugins/test_hdbscan_v1.py",
           "tests/test_atomic_writes.py",
           "tests/test_config_defaults.py",
           "tests/test_crash_recovery_aborts_plugin_executions.py",
@@ -843,7 +867,8 @@
       },
       "evidence": {
         "test_paths": [
-          "tests/test_plugin_manifest_schema.py"
+          "tests/test_plugin_manifest_schema.py",
+          "tests/test_top20_scaffold_integrity.py"
         ]
       },
       "id": "FND-06",
@@ -1608,7 +1633,8 @@
           "tests/test_row_trace.py",
           "tests/test_surface_builder.py",
           "tests/test_template_conversion.py",
-          "tests/test_template_filters.py"
+          "tests/test_template_filters.py",
+          "tests/test_top20_plugins_smoke.py"
         ]
       },
       "id": "PERF-01",

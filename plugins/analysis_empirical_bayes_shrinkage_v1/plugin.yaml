@@ -1,0 +1,24 @@
+id: analysis_empirical_bayes_shrinkage_v1
+name: Empirical Bayes Shrinkage Rankings
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: "Stable ranking of true worst drivers using shrinkage (James\u2013\
+    Stein style de-noising)."
+  defaults:
+    top_k: 25
+capabilities:
+- needs_eventlog
+- needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

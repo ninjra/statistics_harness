@@ -1,0 +1,463 @@
+{
+  "count": 20,
+  "generated_at": "top20_methods_matrix.py",
+  "plugins": [
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "plugin_results_v2:analysis_actionable_ops_levers_v1"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "name": "Action Search (MIP Batched Scheduler)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "in_memory_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "plugin_results_v2:analysis_actionable_ops_levers_v1"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "name": "Action Search (Simulated Annealing)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "in_memory_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Association Rules (Apriori)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Biclustering (Process\u00d7Param Coherence)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Burst Modeling (Hawkes-Style)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [
+        "analysis_hawkes_self_exciting",
+        "analysis_term_burst_kleinberg"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Constrained Clustering (COP-KMeans)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Daily Pattern Alignment (DTW)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Density Clustering (HDBSCAN)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Dependency Community Detection (Leiden)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "graph_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Dependency Community Detection (Louvain)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "graph_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "plugin_results_v2:analysis_actionable_ops_levers_v1"
+      ],
+      "depends_on": [
+        "analysis_action_search_mip_batched_scheduler_v1",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "name": "Discrete-Event Queue Simulator",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "in_memory_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Distribution Shift (Wasserstein/EMD)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Empirical Bayes Shrinkage Rankings",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Frequent Param Sets (FP-Growth)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Graph Minimum Cut Partition",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "graph_small"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Param Near-Duplicate Detection (MinHash/LSH)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Param Near-Duplicate Detection (SimHash)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Sequence Grammar Inference (SEQUITUR)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "data_sources": [
+        "normalized_template"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Sequential Patterns (PrefixSpan)",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [
+        "analysis_sequential_patterns_prefixspan"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    },
+    {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "data_sources": [
+        "normalized_template",
+        "parameter_entities",
+        "parameter_kv",
+        "row_parameter_link"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "name": "Similarity Graph Spectral Clustering",
+      "output_kinds": [
+        "actionable_ops_lever"
+      ],
+      "overlap_with_existing_plugins": [],
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "primary_artifacts": [],
+      "runtime_mode": "sql_first"
+    }
+  ]
+}

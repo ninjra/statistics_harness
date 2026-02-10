@@ -1,0 +1,28 @@
+id: analysis_density_clustering_hdbscan_v1
+name: Density Clustering (HDBSCAN)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_basic
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Cluster executions into variable-density groups to propose batchable
+    sets without choosing k.
+  defaults:
+    max_entities: 5000
+    min_cluster_size: 10
+    min_samples: 5
+    top_k: 20
+capabilities:
+- needs_eventlog
+- needs_text
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

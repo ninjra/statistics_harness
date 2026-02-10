@@ -220,6 +220,108 @@ REFERENCE_LIBRARY: dict[str, dict[str, Any]] = {
         "doi": "",
         "notes": "Classic statistical methods overview",
     },
+    "minhash": {
+        "title": "Broder (1997) On the resemblance and containment of documents",
+        "url": "https://www.cs.princeton.edu/courses/archive/spring13/cos598C/broder97resemblance.pdf",
+        "doi": "",
+        "notes": "MinHash / resemblance estimation",
+    },
+    "simhash": {
+        "title": "Charikar (2002) Similarity estimation techniques from rounding algorithms",
+        "url": "https://research.google.com/pubs/archive/33026.pdf",
+        "doi": "",
+        "notes": "SimHash-style fingerprinting / LSH",
+    },
+    "fpgrowth": {
+        "title": "Han et al. (2000) Mining frequent patterns without candidate generation (FP-Growth)",
+        "url": "https://www.cs.sfu.ca/~jpei/publications/sigmod00.pdf",
+        "doi": "",
+        "notes": "FP-Growth frequent itemsets",
+    },
+    "apriori": {
+        "title": "Agrawal & Srikant (1994) Fast Algorithms for Mining Association Rules",
+        "url": "https://www.vldb.org/conf/1994/P487.PDF",
+        "doi": "",
+        "notes": "Apriori association rules",
+    },
+    "sequitur": {
+        "title": "Nevill-Manning & Witten (1997) Identifying Hierarchical Structure in Sequences",
+        "url": "",
+        "doi": "",
+        "notes": "SEQUITUR grammar inference",
+    },
+    "biclustering": {
+        "title": "Cheng & Church (2000) Biclustering of expression data",
+        "url": "",
+        "doi": "",
+        "notes": "Biclustering (Cheng–Church style)",
+    },
+    "hdbscan": {
+        "title": "Campello et al. (2013/2015) HDBSCAN*: Hierarchical density-based clustering",
+        "url": "",
+        "doi": "",
+        "notes": "HDBSCAN density clustering",
+    },
+    "louvain": {
+        "title": "Blondel et al. (2008) Fast unfolding of communities in large networks",
+        "url": "",
+        "doi": "",
+        "notes": "Louvain community detection",
+    },
+    "leiden": {
+        "title": "Traag et al. (2019) From Louvain to Leiden: guaranteeing well-connected communities",
+        "url": "",
+        "doi": "",
+        "notes": "Leiden community detection",
+    },
+    "spectral_clustering": {
+        "title": "Ng, Jordan, Weiss (2002) On spectral clustering",
+        "url": "",
+        "doi": "",
+        "notes": "Spectral clustering",
+    },
+    "stoer_wagner": {
+        "title": "Stoer & Wagner (1997) A simple min-cut algorithm",
+        "url": "",
+        "doi": "",
+        "notes": "Minimum cut (Stoer–Wagner)",
+    },
+    "wasserstein": {
+        "title": "Villani (2008) Optimal Transport: Old and New",
+        "url": "",
+        "doi": "",
+        "notes": "Wasserstein / optimal transport distance",
+    },
+    "dtw": {
+        "title": "Sakoe & Chiba (1978) Dynamic programming algorithm optimization for spoken word recognition",
+        "url": "",
+        "doi": "",
+        "notes": "Dynamic Time Warping (DTW)",
+    },
+    "simulated_annealing": {
+        "title": "Kirkpatrick et al. (1983) Optimization by Simulated Annealing",
+        "url": "",
+        "doi": "",
+        "notes": "Simulated annealing",
+    },
+    "mip": {
+        "title": "OR-Tools CP-SAT documentation (constraint programming / MIP-style optimization)",
+        "url": "https://developers.google.com/optimization",
+        "doi": "",
+        "notes": "CP-SAT / MIP-style optimization",
+    },
+    "discrete_event": {
+        "title": "Law (2015) Simulation Modeling and Analysis (Discrete-Event Simulation)",
+        "url": "",
+        "doi": "",
+        "notes": "Discrete-event simulation",
+    },
+    "james_stein": {
+        "title": "James & Stein (1961) Estimation with quadratic loss",
+        "url": "",
+        "doi": "",
+        "notes": "Shrinkage / empirical Bayes (James–Stein)",
+    },
 }
 
 
@@ -309,4 +411,38 @@ def default_references_for_plugin(plugin_id: str) -> list[dict[str, Any]]:
         refs += _collect("oksanen2001")
     if "ttest" in pid or "anova" in pid or "regression" in pid or "chi_square" in pid:
         refs += _collect("ttest_nist", "bh_fdr")
+    if "minhash" in pid:
+        refs += _collect("minhash")
+    if "simhash" in pid:
+        refs += _collect("simhash")
+    if "fpgrowth" in pid:
+        refs += _collect("fpgrowth")
+    if "apriori" in pid:
+        refs += _collect("apriori")
+    if "sequitur" in pid:
+        refs += _collect("sequitur")
+    if "biclustering" in pid:
+        refs += _collect("biclustering")
+    if "hdbscan" in pid:
+        refs += _collect("hdbscan")
+    if "louvain" in pid:
+        refs += _collect("louvain")
+    if "leiden" in pid:
+        refs += _collect("leiden")
+    if "spectral" in pid:
+        refs += _collect("spectral_clustering")
+    if "min_cut" in pid:
+        refs += _collect("stoer_wagner")
+    if "wasserstein" in pid:
+        refs += _collect("wasserstein")
+    if "dtw" in pid:
+        refs += _collect("dtw")
+    if "simulated_annealing" in pid:
+        refs += _collect("simulated_annealing")
+    if "mip" in pid:
+        refs += _collect("mip")
+    if "discrete_event" in pid or "queue_simulator" in pid:
+        refs += _collect("discrete_event")
+    if "shrinkage" in pid or "empirical_bayes" in pid:
+        refs += _collect("james_stein")
     return refs

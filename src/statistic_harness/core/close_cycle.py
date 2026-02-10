@@ -67,6 +67,9 @@ def resolve_close_cycle_masks(
     if timestamps is None:
         return None, None, False, []
     series = pd.to_datetime(timestamps, errors="coerce")
+    if not hasattr(series, "dt"):
+        # Accept DatetimeIndex inputs as well as Series.
+        series = pd.Series(series)
     if hasattr(series, "dropna"):
         series = series
     if series is None or len(series) == 0:
@@ -116,3 +119,55 @@ def _safe_float(value: Any) -> float | None:
         return float(value)
     except (TypeError, ValueError):
         return None
+
+
+def compute_close_month(
+    timestamps: Any, *, baseline_close_end_day: int
+) -> Any:
+    """Compute a 'close_month' cohort label (YYYY-MM) using the wrap-end rule.
+
+    Rule: if day-of-month <= baseline_close_end_day, treat it as belonging to the
+    previous month (e.g. Jan 5 belongs to Dec close).
+    """
+
+    try:
+        import pandas as pd  # type: ignore
+    except ImportError:
+        return None
+    series = pd.to_datetime(timestamps, errors="coerce", utc=False)
+    if not hasattr(series, "dt"):
+        series = pd.Series(series)
+    if series is None or len(series) == 0:
+        return None
+    days = series.dt.day
+    shifted = series - pd.DateOffset(months=1)
+    cohort = series.dt.to_period("M").astype(str)
+    shifted_cohort = shifted.dt.to_period("M").astype(str)
+    out = cohort.where(~(days <= int(baseline_close_end_day)), shifted_cohort)
+    return out
+
+
+def baseline_target_spillover_masks(
+    timestamps: Any,
+    *,
+    baseline_close_start_day: int,
+    baseline_close_end_day: int,
+    target_close_end_day: int,
+) -> tuple[Any, Any, Any]:
+    """Return (baseline_mask, target_mask, spillover_mask) for the given timestamps."""
+
+    try:
+        import pandas as pd  # type: ignore
+    except ImportError:
+        return None, None, None
+    series = pd.to_datetime(timestamps, errors="coerce", utc=False)
+    if not hasattr(series, "dt"):
+        series = pd.Series(series)
+    if series is None or len(series) == 0:
+        return None, None, None
+    days = series.dt.day
+    baseline_mask = _mask_from_days(series, int(baseline_close_start_day), int(baseline_close_end_day))
+    # Target close window is defined as start_day -> EOM/target_end (no wrap).
+    target_mask = (days >= int(baseline_close_start_day)) & (days <= int(target_close_end_day))
+    spillover_mask = baseline_mask & (~target_mask)
+    return baseline_mask, target_mask, spillover_mask

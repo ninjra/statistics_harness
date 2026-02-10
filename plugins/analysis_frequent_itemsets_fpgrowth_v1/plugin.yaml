@@ -1,0 +1,27 @@
+id: analysis_frequent_itemsets_fpgrowth_v1
+name: Frequent Param Sets (FP-Growth)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_basic
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Mine frequent parameter itemsets to identify repeatable recipes and
+    consolidation opportunities.
+  defaults:
+    min_support: 0.02
+    max_itemset_size: 6
+    max_item_count: 200
+capabilities:
+- needs_eventlog
+- needs_text
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

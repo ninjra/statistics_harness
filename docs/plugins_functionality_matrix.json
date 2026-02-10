@@ -72,6 +72,9 @@
       "analysis_process_counterfactuals",
       "analysis_process_drift_conformance_over_time",
       "analysis_process_sequence_bottlenecks",
+      "analysis_action_search_mip_batched_scheduler_v1",
+      "analysis_action_search_simulated_annealing_v1",
+      "analysis_discrete_event_queue_simulator_v1",
       "analysis_proportional_hazards_duration",
       "analysis_quantile_regression_duration",
       "analysis_queue_delay_decomposition",
@@ -129,7 +132,24 @@
       "analysis_notears_linear",
       "analysis_online_conformal_changepoint",
       "analysis_process_sequence",
-      "analysis_scan_statistics"
+      "analysis_scan_statistics",
+      "analysis_association_rules_apriori_v1",
+      "analysis_biclustering_cheng_church_v1",
+      "analysis_burst_modeling_hawkes_v1",
+      "analysis_constrained_clustering_cop_kmeans_v1",
+      "analysis_daily_pattern_alignment_dtw_v1",
+      "analysis_density_clustering_hdbscan_v1",
+      "analysis_dependency_community_leiden_v1",
+      "analysis_dependency_community_louvain_v1",
+      "analysis_distribution_shift_wasserstein_v1",
+      "analysis_empirical_bayes_shrinkage_v1",
+      "analysis_frequent_itemsets_fpgrowth_v1",
+      "analysis_graph_min_cut_partition_v1",
+      "analysis_param_near_duplicate_minhash_v1",
+      "analysis_param_near_duplicate_simhash_v1",
+      "analysis_sequence_grammar_sequitur_v1",
+      "analysis_sequential_patterns_prefixspan_v1",
+      "analysis_similarity_graph_spectral_clustering_v1"
     ],
     "ingest": [
       "ingest_tabular"
@@ -230,6 +250,9 @@
     "analysis_process_counterfactuals",
     "analysis_process_drift_conformance_over_time",
     "analysis_process_sequence_bottlenecks",
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_discrete_event_queue_simulator_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_regression_duration",
     "analysis_queue_delay_decomposition",
@@ -298,17 +321,41 @@
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
     "transform_normalize_mixed",
+    "analysis_association_rules_apriori_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
     "transform_sql_intents_pack_v1",
     "llm_text2sql_local_generate_v1",
     "transform_sqlpack_materialize_v1",
     "transform_template"
   ],
   "groups": {
+    "analysis_action_search_*": [
+      "analysis_action_search_mip_batched_scheduler_v1",
+      "analysis_action_search_simulated_annealing_v1"
+    ],
     "analysis_actionable_ops_*": [
       "analysis_actionable_ops_levers_v1"
     ],
     "analysis_anova_auto_*": [
       "analysis_anova_auto"
+    ],
+    "analysis_association_rules_*": [
+      "analysis_association_rules_apriori_v1"
     ],
     "analysis_attribution": [
       "analysis_attribution"
@@ -316,11 +363,17 @@
     "analysis_bayesian_point_*": [
       "analysis_bayesian_point_displacement"
     ],
+    "analysis_biclustering_cheng_*": [
+      "analysis_biclustering_cheng_church_v1"
+    ],
     "analysis_bocpd_gaussian_*": [
       "analysis_bocpd_gaussian"
     ],
     "analysis_burst_detection_*": [
       "analysis_burst_detection_kleinberg"
+    ],
+    "analysis_burst_modeling_*": [
+      "analysis_burst_modeling_hawkes_v1"
     ],
     "analysis_busy_period_*": [
       "analysis_busy_period_segmentation_v2"
@@ -370,6 +423,9 @@
     "analysis_conformance_checking_*": [
       "analysis_conformance_checking"
     ],
+    "analysis_constrained_clustering_*": [
+      "analysis_constrained_clustering_cop_kmeans_v1"
+    ],
     "analysis_control_chart_*": [
       "analysis_control_chart_cusum",
       "analysis_control_chart_ewma",
@@ -378,6 +434,16 @@
     ],
     "analysis_copula_dependence_*": [
       "analysis_copula_dependence"
+    ],
+    "analysis_daily_pattern_*": [
+      "analysis_daily_pattern_alignment_dtw_v1"
+    ],
+    "analysis_density_clustering_*": [
+      "analysis_density_clustering_hdbscan_v1"
+    ],
+    "analysis_dependency_community_*": [
+      "analysis_dependency_community_leiden_v1",
+      "analysis_dependency_community_louvain_v1"
     ],
     "analysis_dependency_graph_*": [
       "analysis_dependency_graph_change_detection"
@@ -388,8 +454,14 @@
     "analysis_determinism_discipline_*": [
       "analysis_determinism_discipline"
     ],
+    "analysis_discrete_event_*": [
+      "analysis_discrete_event_queue_simulator_v1"
+    ],
     "analysis_distribution_drift_*": [
       "analysis_distribution_drift_suite"
+    ],
+    "analysis_distribution_shift_*": [
+      "analysis_distribution_shift_wasserstein_v1"
     ],
     "analysis_dp_gmm_*": [
       "analysis_dp_gmm"
@@ -403,6 +475,9 @@
     "analysis_effect_size_*": [
       "analysis_effect_size_report"
     ],
+    "analysis_empirical_bayes_*": [
+      "analysis_empirical_bayes_shrinkage_v1"
+    ],
     "analysis_event_count_*": [
       "analysis_event_count_bocpd_poisson"
     ],
@@ -415,11 +490,17 @@
     "analysis_factor_analysis_*": [
       "analysis_factor_analysis_auto"
     ],
+    "analysis_frequent_itemsets_*": [
+      "analysis_frequent_itemsets_fpgrowth_v1"
+    ],
     "analysis_gaussian_copula_*": [
       "analysis_gaussian_copula_shift"
     ],
     "analysis_gaussian_knockoffs_*": [
       "analysis_gaussian_knockoffs"
+    ],
+    "analysis_graph_min_*": [
+      "analysis_graph_min_cut_partition_v1"
     ],
     "analysis_graph_topology_*": [
       "analysis_graph_topology_curves"
@@ -510,6 +591,10 @@
     "analysis_online_conformal_*": [
       "analysis_online_conformal_changepoint"
     ],
+    "analysis_param_near_*": [
+      "analysis_param_near_duplicate_minhash_v1",
+      "analysis_param_near_duplicate_simhash_v1"
+    ],
     "analysis_pca_auto_*": [
       "analysis_pca_auto"
     ],
@@ -563,8 +648,15 @@
     "analysis_sequence_classification_*": [
       "analysis_sequence_classification"
     ],
+    "analysis_sequence_grammar_*": [
+      "analysis_sequence_grammar_sequitur_v1"
+    ],
     "analysis_sequential_patterns_*": [
-      "analysis_sequential_patterns_prefixspan"
+      "analysis_sequential_patterns_prefixspan",
+      "analysis_sequential_patterns_prefixspan_v1"
+    ],
+    "analysis_similarity_graph_*": [
+      "analysis_similarity_graph_spectral_clustering_v1"
     ],
     "analysis_state_space_*": [
       "analysis_state_space_kalman_residuals"
@@ -767,6 +859,9 @@
     "analysis_process_counterfactuals",
     "analysis_process_drift_conformance_over_time",
     "analysis_process_sequence_bottlenecks",
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_discrete_event_queue_simulator_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_regression_duration",
     "analysis_queue_delay_decomposition",
@@ -825,6 +920,23 @@
     "analysis_online_conformal_changepoint",
     "analysis_process_sequence",
     "analysis_scan_statistics",
+    "analysis_association_rules_apriori_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
     "report_plain_english_v1",
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
@@ -832,8 +944,40 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 143,
+  "plugin_count": 163,
   "plugins": {
+    "analysis_action_search_mip_batched_scheduler_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Solve a constrained selection of actions with MIP/CP-SAT to produce a concrete plan.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Action Search (MIP Batched Scheduler)",
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_action_search_simulated_annealing_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Search combinations of actions to hit target close window under constraints.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Action Search (Simulated Annealing)",
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_actionable_ops_levers_v1": {
       "capabilities": [
         "needs_eventlog",
@@ -856,6 +1000,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Anova Auto",
       "plugin_id": "analysis_anova_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_association_rules_apriori_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Generate actionable conditional rules over parameters to simplify variants and remove redundant runs.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Association Rules (Apriori)",
+      "plugin_id": "analysis_association_rules_apriori_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -885,6 +1046,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_biclustering_cheng_church_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find coherent process\u00d7param blocks that suggest shared batch endpoints or shared caches.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Biclustering (Process\u00d7Param Coherence)",
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_bocpd_gaussian": {
       "capabilities": [
         "needs_numeric"
@@ -906,6 +1084,22 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Burst Detection Kleinberg",
       "plugin_id": "analysis_burst_detection_kleinberg",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_burst_modeling_hawkes_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Model bursts as self-exciting patterns to identify trigger processes and dampening interventions.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Burst Modeling (Hawkes-Style)",
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1164,6 +1358,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_constrained_clustering_cop_kmeans_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Apply constraints-aware clustering to propose safe groupings that respect exclude lists and domain constraints.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Constrained Clustering (COP-KMeans)",
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_control_chart_cusum": {
       "capabilities": [],
       "depends_on": [],
@@ -1216,6 +1427,69 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_daily_pattern_alignment_dtw_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Align daily patterns (close vs non-close) to detect shape anomalies and close-cycle drivers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Daily Pattern Alignment (DTW)",
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_density_clustering_hdbscan_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Cluster executions into variable-density groups to propose batchable sets without choosing k.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Density Clustering (HDBSCAN)",
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_community_leiden_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Detect higher-quality dependency communities (Leiden) to identify stable module boundaries.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Community Detection (Leiden)",
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_community_louvain_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Detect dependency communities to identify decoupling boundaries and refactor modules.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Community Detection (Louvain)",
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_dependency_graph_change_detection": {
       "capabilities": [],
       "depends_on": [],
@@ -1249,6 +1523,21 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_discrete_event_queue_simulator_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_action_search_mip_batched_scheduler_v1",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Stress-test action plans via discrete-event simulation and estimate deltas to hit the close-window target.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Discrete-Event Queue Simulator",
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_distribution_drift_suite": {
       "capabilities": [
         "needs_timestamp"
@@ -1258,6 +1547,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Distribution Drift Suite",
       "plugin_id": "analysis_distribution_drift_suite",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_distribution_shift_wasserstein_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Quantify close vs open workload/latency distribution shift to target concrete levers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Distribution Shift (Wasserstein/EMD)",
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1308,6 +1614,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_empirical_bayes_shrinkage_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Stable ranking of true worst drivers using shrinkage (James\u2013Stein style de-noising).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Empirical Bayes Shrinkage Rankings",
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_event_count_bocpd_poisson": {
       "capabilities": [],
       "depends_on": [],
@@ -1350,6 +1672,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_frequent_itemsets_fpgrowth_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Mine frequent parameter itemsets to identify repeatable recipes and consolidation opportunities.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Frequent Param Sets (FP-Growth)",
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_gaussian_copula_shift": {
       "capabilities": [
         "needs_multi_numeric"
@@ -1375,6 +1714,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Gaussian Knockoffs",
       "plugin_id": "analysis_gaussian_knockoffs",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_min_cut_partition_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find minimal cut edges between subsystems to propose where to decouple or queue-separate.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Graph Minimum Cut Partition",
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1730,6 +2084,40 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_param_near_duplicate_minhash_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find near-duplicate executions by MinHash+LSH over tokenized params to propose batch/multi-input refactors.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Near-Duplicate Detection (MinHash/LSH)",
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_param_near_duplicate_simhash_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find near-duplicate executions using SimHash over tokenized params/text; propose batch, cache, or dedupe changes.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Near-Duplicate Detection (SimHash)",
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_pca_auto": {
       "capabilities": [
         "needs_multi_numeric"
@@ -1953,6 +2341,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_sequence_grammar_sequitur_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Discover repeated subsequences (\u201cmacros\u201d) via grammar inference and propose consolidation into fewer steps.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sequence Grammar Inference (SEQUITUR)",
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_sequential_patterns_prefixspan": {
       "capabilities": [],
       "depends_on": [],
@@ -1960,6 +2364,39 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Sequential Patterns Prefixspan",
       "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sequential_patterns_prefixspan_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Mine frequent process sequences (case/trace scoped) to propose orchestration macros.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sequential Patterns (PrefixSpan)",
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_similarity_graph_spectral_clustering_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Cluster a similarity graph of processes/params into coherent groups for batching and consolidation.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Similarity Graph Spectral Clustering",
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
       "type": "analysis",
       "version": "0.1.0"
     },

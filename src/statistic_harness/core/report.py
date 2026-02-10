@@ -12,8 +12,16 @@ from jsonschema import validate
 import yaml
 
 from .stat_controls import confidence_from_p
+from .process_matcher import (
+    compile_patterns,
+    default_exclude_process_patterns,
+    merge_patterns,
+    parse_exclude_patterns_env,
+)
 
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
+_SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
+_MAX_PER_ACTION_TYPE_ENV = "STAT_HARNESS_MAX_PER_ACTION_TYPE"
 
 
 def _include_known_recommendations() -> bool:
@@ -223,6 +231,155 @@ def _include_capacity_recommendations() -> bool:
     }
 
 
+def _suppressed_action_types() -> set[str]:
+    # Default: hide only the truly generic tuning knobs; keep structural levers visible.
+    defaults = {"tune_threshold"}
+    raw = os.environ.get(_SUPPRESS_ACTION_TYPES_ENV, "").strip()
+    if raw == "":
+        return defaults
+    out: set[str] = set()
+    for token in re.split(r"[;,\\s]+", raw):
+        token = token.strip()
+        if token:
+            out.add(token)
+    return out
+
+
+def _max_per_action_type() -> dict[str, int]:
+    # Breadth-first defaults: prevent one action type from drowning out the rest.
+    defaults: dict[str, int] = {
+        "batch_input": 8,
+        "batch_or_cache": 6,
+        "batch_input_refactor": 6,
+        "dedupe_or_cache": 4,
+        "unblock_dependency_chain": 6,
+        "reduce_transition_gap": 6,
+        "orchestrate_chain": 5,
+        "orchestrate_macro": 5,
+        "decouple_boundary": 4,
+        "shared_cache_endpoint": 4,
+        "batch_group_candidate": 4,
+        "cluster_with_constraints": 3,
+        "distribution_shift_target": 4,
+        "burst_trigger": 4,
+        "schedule_shift_target": 4,
+        "reschedule": 3,
+        "route_process": 3,
+        "reduce_process_wait": 2,
+        "review": 2,
+        "tune_threshold": 1,
+    }
+    raw = os.environ.get(_MAX_PER_ACTION_TYPE_ENV, "").strip()
+    if not raw:
+        return defaults
+    out = dict(defaults)
+    for token in re.split(r"[;,\\s]+", raw):
+        token = token.strip()
+        if not token or "=" not in token:
+            continue
+        k, v = token.split("=", 1)
+        k = k.strip()
+        v = v.strip()
+        if not k:
+            continue
+        try:
+            out[k] = int(v)
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+def _action_type_tier(action_type: str) -> int:
+    """Recommendation tiering to keep outputs non-generic and structurally actionable.
+
+    Tier 1: structural/interface changes (batch/multi-input, dedupe/caching, macro consolidation)
+    Tier 2: targeted operational adjustments (schedule/route) with clear evidence
+    Tier 3: generic tuning ("make it faster", thresholds) - usually suppressed/capped
+    """
+
+    at = (action_type or "").strip().lower()
+    if not at:
+        return 2
+    tier1 = {
+        "batch_input",
+        "batch_or_cache",
+        "batch_input_refactor",
+        "dedupe_or_cache",
+        "unblock_dependency_chain",
+        "reduce_transition_gap",
+        "orchestrate_chain",
+        "orchestrate_macro",
+        "decouple_boundary",
+        "shared_cache_endpoint",
+        "batch_group_candidate",
+        "cluster_with_constraints",
+        "reduce_spillover_past_eom",
+    }
+    tier2 = {
+        "schedule_shift_target",
+        "reschedule",
+        "route_process",
+        "rebalance_assignment",
+    }
+    tier3 = {
+        "reduce_process_wait",
+        "review",
+        "tune_threshold",
+    }
+    if at in tier1:
+        return 1
+    if at in tier2:
+        return 2
+    if at in tier3:
+        return 3
+    # Default to Tier 2 if unknown but actionable.
+    return 2
+
+
+def _tier_score_for_item(item: dict[str, Any]) -> int:
+    # Higher score sorts first (used under reverse=True).
+    at = str(item.get("action_type") or item.get("action") or "").strip()
+    tier = _action_type_tier(at)
+    if tier == 1:
+        return 3
+    if tier == 2:
+        return 2
+    if tier == 3:
+        return 1
+    return 1
+
+
+def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, float, float]:
+    # Keep existing coarse family ordering, but prefer Tier 1 structural actions within a family.
+    plugin_id = str(item.get("plugin_id") or "")
+    kind = str(item.get("kind") or "")
+    action_type = str(item.get("action_type") or item.get("action") or "")
+
+    priority = 0
+    if plugin_id == "analysis_actionable_ops_levers_v1" or kind == "actionable_ops_lever":
+        priority = 6
+    elif plugin_id.startswith("analysis_ideaspace_"):
+        priority = 5
+    elif "sequence" in plugin_id or "bottleneck" in plugin_id or "conformance" in plugin_id:
+        priority = 4
+    elif plugin_id == "analysis_upload_linkage":
+        priority = 3
+    elif action_type and action_type not in ("review", "tune_threshold"):
+        priority = 2
+    elif plugin_id in ("analysis_queue_delay_decomposition", "analysis_busy_period_segmentation_v2"):
+        priority = 1
+
+    try:
+        score = float(item.get("relevance_score") or 0.0)
+    except (TypeError, ValueError):
+        score = 0.0
+    try:
+        impact = float(item.get("impact_hours") or 0.0)
+    except (TypeError, ValueError):
+        impact = 0.0
+    return (priority, _tier_score_for_item(item), score, impact)
+
+
 def _capacity_scale_recommendation(
     kind: str | None, matched: list[dict[str, Any]], label: str, process_hint: str
 ) -> tuple[str | None, dict[str, Any]]:
@@ -328,11 +485,9 @@ def _known_issue_processes(known: dict[str, Any] | None) -> set[str]:
 
 def _explicit_excluded_processes(report: dict[str, Any]) -> set[str]:
     excluded: set[str] = set()
-    env_value = os.environ.get("STAT_HARNESS_EXCLUDE_PROCESSES", "").strip()
-    if env_value:
-        for entry in re.split(r"[;,\s]+", env_value):
-            if entry.strip():
-                excluded.add(entry.strip().lower())
+    for entry in parse_exclude_patterns_env():
+        if entry.strip():
+            excluded.add(entry.strip().lower())
     known = report.get("known_issues") if isinstance(report.get("known_issues"), dict) else None
     if isinstance(known, dict):
         for key in ("exclude_processes", "excluded_processes"):
@@ -348,13 +503,17 @@ def _explicit_excluded_processes(report: dict[str, Any]) -> set[str]:
                 for entry in values:
                     if isinstance(entry, str) and entry.strip():
                         excluded.add(entry.strip().lower())
+    # Defaults: keep obvious "already-accounted-for" families out of recommendation budget
+    # unless the operator explicitly provides their own list.
+    if not excluded:
+        excluded.update([p.strip().lower() for p in default_exclude_process_patterns() if p.strip()])
     return excluded
 
 
 def _recommendation_has_excluded_process(
-    item: dict[str, Any], excluded: set[str]
+    item: dict[str, Any], excluded_match
 ) -> bool:
-    if not excluded:
+    if excluded_match is None:
         return False
     for bucket in (item.get("where"), item.get("contains")):
         if not isinstance(bucket, dict):
@@ -362,22 +521,23 @@ def _recommendation_has_excluded_process(
         for key in ("process", "process_norm", "process_name", "process_id", "activity"):
             value = bucket.get(key)
             if isinstance(value, str) and value.strip():
-                if value.strip().lower() in excluded:
+                if excluded_match(value.strip()):
                     return True
             elif isinstance(value, (list, tuple, set)):
                 for entry in value:
                     if isinstance(entry, str) and entry.strip():
-                        if entry.strip().lower() in excluded:
+                        if excluded_match(entry.strip()):
                             return True
     return False
 
 
 def _filter_recommendations_by_process(
-    items: list[dict[str, Any]], excluded: set[str]
+    items: list[dict[str, Any]], excluded_patterns: set[str]
 ) -> list[dict[str, Any]]:
-    if not excluded:
+    if not excluded_patterns:
         return items
-    return [item for item in items if not _recommendation_has_excluded_process(item, excluded)]
+    excluded_match = compile_patterns(sorted(excluded_patterns))
+    return [item for item in items if not _recommendation_has_excluded_process(item, excluded_match)]
 
 
 def _close_cycle_bounds(report: dict[str, Any]) -> tuple[int | None, int | None]:
@@ -452,8 +612,15 @@ def _param_overlap_summary(
         start_day = 1
         end_day = 31
 
-    start_day_text = f"{start_day:02d}"
-    end_day_text = f"{end_day:02d}"
+    def _day_predicate(col: str, *, start: int, end: int) -> tuple[str, list[Any]]:
+        # Works for ISO-like timestamps where day-of-month is at positions 9-10.
+        day_expr = f"CAST(SUBSTR({col}, 9, 2) AS INTEGER)"
+        if start <= end:
+            return f"({day_expr} BETWEEN ? AND ?)", [int(start), int(end)]
+        return f"(({day_expr} >= ?) OR ({day_expr} <= ?))", [int(start), int(end)]
+
+    start_pred, start_params = _day_predicate(start_col, start=start_day, end=end_day)
+    queue_pred, queue_params = _day_predicate(queue_col, start=start_day, end=end_day)
     placeholders = ",".join(["?"] * 2)
     query = f"""
     SELECT {proc_col} AS process,
@@ -463,8 +630,8 @@ def _param_overlap_summary(
     FROM {table_name}
     WHERE LOWER({proc_col}) IN ({placeholders})
       AND (
-            (LENGTH({start_col}) >= 10 AND SUBSTR({start_col}, 9, 2) BETWEEN ? AND ?)
-         OR (LENGTH({queue_col}) >= 10 AND SUBSTR({queue_col}, 9, 2) BETWEEN ? AND ?)
+            (LENGTH({start_col}) >= 10 AND {start_pred})
+         OR (LENGTH({queue_col}) >= 10 AND {queue_pred})
       )
     """
     rows: list[dict[str, Any]] = []
@@ -474,10 +641,8 @@ def _param_overlap_summary(
             [
                 process_a.lower(),
                 process_b.lower(),
-                start_day_text,
-                end_day_text,
-                start_day_text,
-                end_day_text,
+                *start_params,
+                *queue_params,
             ],
         )
         rows = [dict(row) for row in cur.fetchall()]
@@ -716,6 +881,7 @@ def _build_discovery_recommendations(
     # referenced by known-issue gates; otherwise we hide the "why" behind a
     # generic pass/fail label. Only honor explicit exclusions.
     excluded_processes = _explicit_excluded_processes(report)
+    excluded_match = compile_patterns(sorted(excluded_processes)) if excluded_processes else None
     plugins = report.get("plugins", {}) or {}
 
     queue_plugin = plugins.get("analysis_queue_delay_decomposition")
@@ -766,7 +932,7 @@ def _build_discovery_recommendations(
             if idx < 10:
                 related_processes.add(process.strip().lower())
             process_key = process.strip().lower()
-            if process_key in excluded_processes:
+            if excluded_match and excluded_match(process_key):
                 continue
             value = item.get("eligible_wait_gt_hours_total")
             if not isinstance(value, (int, float)) or float(value) < 1.0:
@@ -795,7 +961,7 @@ def _build_discovery_recommendations(
                 delta_s = lever.get("expected_delta_seconds")
                 delta_txt = ""
                 if isinstance(delta_s, (int, float)) and float(delta_s) > 0:
-                    delta_txt = f" (expected improvement ~{float(delta_s)/60.0:.1f} min per run)"
+                    delta_txt = f" (upper bound ~{float(delta_s)/3600.0:.1f}h total over the observation window)"
                 lever_summaries.append(title + delta_txt)
                 vsteps = lever.get("validation_steps")
                 if isinstance(vsteps, list):
@@ -1039,7 +1205,7 @@ def _build_discovery_recommendations(
             ranked = sorted(process_totals.items(), key=lambda kv: kv[1], reverse=True)
             for proc, sec_total in ranked[:3]:
                 proc_key = proc.strip().lower()
-                if proc_key in excluded_processes:
+                if excluded_match and excluded_match(proc_key):
                     continue
                 hours = float(sec_total) / 3600.0
                 if hours < 1.0:
@@ -1170,7 +1336,7 @@ def _build_discovery_recommendations(
             if not isinstance(process, str) or not process.strip():
                 continue
             process_key = process.strip().lower()
-            if process_key in excluded_processes:
+            if excluded_match and excluded_match(process_key):
                 continue
             related_processes.add(process_key)
 
@@ -1256,7 +1422,7 @@ def _build_discovery_recommendations(
             shift_processes.add(process.strip().lower())
             related_processes.add(process.strip().lower())
             process_key = process.strip().lower()
-            if process_key in excluded_processes:
+            if excluded_match and excluded_match(process_key):
                 continue
             p_value = item.get("p_value")
             slowdown = item.get("slowdown_ratio")
@@ -1410,7 +1576,7 @@ def _build_discovery_recommendations(
             if not isinstance(process, str) or not process.strip() or process.strip().lower() in {"all"}:
                 continue
             process_key = process.strip().lower()
-            if process_key in excluded_processes:
+            if excluded_match and excluded_match(process_key):
                 continue
 
             delta = item.get("delta_median")
@@ -1482,8 +1648,8 @@ def _build_discovery_recommendations(
             process = item.get("process_norm") or item.get("process_id")
             if not isinstance(process, str) or not process.strip():
                 continue
-            if process.strip().lower() in excluded_processes:
-                continue
+                if excluded_match and excluded_match(process.strip()):
+                    continue
             delta_hours = item.get("delta_hours") or item.get("delta_value")
             if not isinstance(delta_hours, (int, float)) or float(delta_hours) <= 0:
                 continue
@@ -1740,19 +1906,22 @@ def _build_discovery_recommendations(
             )
 
     # Family F: CEO-grade operational levers (process-targeted actions).
-    ops_plugin = plugins.get("analysis_actionable_ops_levers_v1")
-    if isinstance(ops_plugin, dict):
-        findings = [
-            f
-            for f in ops_plugin.get("findings") or []
-            if isinstance(f, dict) and f.get("kind") == "actionable_ops_lever"
-        ]
-        for item in findings:
+    # Support levers emitted by any plugin (not just analysis_actionable_ops_levers_v1).
+    ops_findings: list[tuple[str, dict[str, Any]]] = []
+    for pid, plugin in plugins.items():
+        if not isinstance(plugin, dict):
+            continue
+        for f in plugin.get("findings") or []:
+            if isinstance(f, dict) and f.get("kind") == "actionable_ops_lever":
+                ops_findings.append((pid, f))
+
+    if ops_findings:
+        for src_plugin_id, item in ops_findings:
             process = item.get("process_norm") or item.get("process") or item.get("process_id")
             if not isinstance(process, str) or not process.strip():
                 continue
             process_key = process.strip().lower()
-            if process_key in excluded_processes:
+            if excluded_match and excluded_match(process_key):
                 continue
             action_type = item.get("action_type") or "actionable_ops"
             title = item.get("title") or f"Operational lever for {process}"
@@ -1772,14 +1941,18 @@ def _build_discovery_recommendations(
                     rec_text += f" Expected Δ {float(delta_s):.2f}s"
                 if isinstance(delta_pct, (int, float)):
                     rec_text += f" ({float(delta_pct):.1f}%)."
-            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {"source": "analysis_actionable_ops_levers_v1"}
+            evidence = (
+                item.get("evidence")
+                if isinstance(item.get("evidence"), dict)
+                else {"source": src_plugin_id}
+            )
             items.append(
                 {
                     "title": title,
                     "status": "discovered",
                     "category": "discovery",
                     "recommendation": rec_text,
-                    "plugin_id": "analysis_actionable_ops_levers_v1",
+                    "plugin_id": src_plugin_id,
                     "kind": "actionable_ops_lever",
                     "where": {"process_norm": process},
                     "contains": None,
@@ -1800,44 +1973,113 @@ def _build_discovery_recommendations(
                 }
             )
 
+    # Spillover past EOM: baseline close-window vs target close-window gap.
+    for pid in ("analysis_close_cycle_capacity_model", "analysis_close_cycle_duration_shift"):
+        plug = plugins.get(pid)
+        if not isinstance(plug, dict):
+            continue
+        spill = [
+            f
+            for f in (plug.get("findings") or [])
+            if isinstance(f, dict) and f.get("kind") == "spillover_past_eom"
+        ]
+        if not spill:
+            continue
+        item = spill[0]
+        detail = item.get("details") if isinstance(item.get("details"), dict) else {}
+        top_proc = detail.get("top_spillover_processes")
+        proc_rows: list[dict[str, Any]] = []
+        if isinstance(top_proc, list):
+            proc_rows = [r for r in top_proc if isinstance(r, dict)]
+
+        qh = item.get("spillover_queue_wait_hours_total")
+        sh = item.get("spillover_service_hours_total")
+        dh = item.get("spillover_duration_hours_total")
+        rows_total = item.get("spillover_rows_total")
+        parts = []
+        if isinstance(rows_total, (int, float)):
+            parts.append(f"{int(rows_total):,} runs")
+        if isinstance(qh, (int, float)):
+            parts.append(f"{float(qh):.2f}h queue-wait")
+        if isinstance(sh, (int, float)):
+            parts.append(f"{float(sh):.2f}h service")
+        if isinstance(dh, (int, float)):
+            parts.append(f"{float(dh):.2f}h duration")
+        metric_txt = ", ".join(parts) if parts else "measured spillover"
+        rec_text = (
+            "Close-cycle spillover past month-end exists under the current baseline close window "
+            "(e.g. 20th->5th) that is outside the target close window (20th->EOM/31). "
+            f"Observed spillover: {metric_txt}. "
+            "Action: focus on the top spillover processes and apply structural levers (batch/multi-input, dedupe/caching, macro consolidation) "
+            "so those runs complete by EOM instead of days 1-5."
+        )
+        if proc_rows:
+            proc_summ: list[str] = []
+            for r in proc_rows[:8]:
+                proc = r.get("process_norm") or r.get("process")
+                hrs = r.get("spillover_queue_wait_hours_total") or r.get("spillover_duration_hours_total") or r.get("spillover_service_hours_total")
+                if isinstance(proc, str) and proc.strip():
+                    if isinstance(hrs, (int, float)):
+                        proc_summ.append(f"{proc.strip()} (~{float(hrs):.1f}h)")
+                    else:
+                        proc_summ.append(proc.strip())
+            if proc_summ:
+                rec_text += " Top spillover processes: " + ", ".join(proc_summ) + "."
+
+        artifacts_paths = _artifact_paths(report, pid)
+        spill_path = next((p for p in artifacts_paths if p.endswith("spillover_target_window.json")), None)
+        evidence = {
+            "source_plugin": pid,
+            "spillover_artifact": spill_path,
+            "spillover_rows_total": rows_total,
+            "spillover_queue_wait_hours_total": qh,
+            "spillover_service_hours_total": sh,
+            "spillover_duration_hours_total": dh,
+        }
+        impact_hours = float(qh) if isinstance(qh, (int, float)) else (float(dh) if isinstance(dh, (int, float)) else 0.0)
+        items.append(
+            {
+                "title": "Reduce close-cycle spillover past EOM",
+                "status": "discovered",
+                "category": "discovery",
+                "recommendation": rec_text,
+                "plugin_id": pid,
+                "kind": "spillover_past_eom",
+                "where": None,
+                "contains": None,
+                "observed_count": rows_total,
+                "evidence": [evidence],
+                "action": "reduce_spillover_past_eom",
+                "action_type": "reduce_spillover_past_eom",
+                "modeled_delta": None,
+                "measurement_type": item.get("measurement_type") or "measured",
+                "impact_hours": impact_hours,
+                "confidence_weight": 0.7,
+                "controllability_weight": 0.8,
+                "relevance_score": impact_hours * 0.7 * 0.8,
+            }
+        )
+
     # Sort before dedupe so that higher-value items "win" when text merges occur.
-    def _discovery_priority(item: dict[str, Any]) -> int:
-        plugin_id = str(item.get("plugin_id") or "")
-        kind = str(item.get("kind") or "")
-        action_type = str(item.get("action_type") or item.get("action") or "")
-        if plugin_id == "analysis_actionable_ops_levers_v1" or kind == "actionable_ops_lever":
-            return 6
-        if plugin_id.startswith("analysis_ideaspace_"):
-            return 5
-        if "sequence" in plugin_id or "bottleneck" in plugin_id or "conformance" in plugin_id:
-            return 4
-        if plugin_id == "analysis_upload_linkage":
-            return 3
-        if action_type and action_type not in ("review", "tune_threshold"):
-            return 2
-        if plugin_id in ("analysis_queue_delay_decomposition", "analysis_busy_period_segmentation_v2"):
-            return 1
-        return 0
+    items = sorted(items, key=_discovery_recommendation_sort_key, reverse=True)
 
-    def _score(item: dict[str, Any]) -> float:
-        try:
-            return float(item.get("relevance_score") or 0.0)
-        except (TypeError, ValueError):
-            return 0.0
+    suppressed = _suppressed_action_types()
+    caps = _max_per_action_type()
+    kept: list[dict[str, Any]] = []
+    used_by_action: dict[str, int] = {}
+    for item in items:
+        action_type = str(item.get("action_type") or item.get("action") or "").strip()
+        if action_type and action_type in suppressed:
+            continue
+        if action_type:
+            limit = caps.get(action_type)
+            if isinstance(limit, int) and limit > 0:
+                used_by_action[action_type] = int(used_by_action.get(action_type, 0)) + 1
+                if used_by_action[action_type] > limit:
+                    continue
+        kept.append(item)
 
-    def _impact(item: dict[str, Any]) -> float:
-        try:
-            return float(item.get("impact_hours") or 0.0)
-        except (TypeError, ValueError):
-            return 0.0
-
-    items = sorted(
-        items,
-        key=lambda it: (_discovery_priority(it), _score(it), _impact(it)),
-        reverse=True,
-    )
-
-    deduped = _dedupe_recommendations_text(items)
+    deduped = _dedupe_recommendations_text(kept)
     status = "ok" if deduped else "none"
     summary = (
         f"Generated {len(deduped)} discovery recommendation(s) from plugin findings."
@@ -3636,11 +3878,7 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
     discovery_items = _filter_recommendations_by_process(
         discovery_items, excluded_processes
     )
-    recs_sorted = sorted(
-        discovery_items,
-        key=lambda item: float(item.get("relevance_score") or item.get("impact_hours") or 0.0),
-        reverse=True,
-    )[:3]
+    recs_sorted = sorted(discovery_items, key=_discovery_recommendation_sort_key, reverse=True)[:3]
 
     if recs_sorted:
         lines.append("## Top Recommendations (Discovery)")
@@ -3798,11 +4036,7 @@ def _write_engineering_summary(report: dict[str, Any], run_dir: Path) -> None:
         report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
     discovery_items = _dedupe_recommendations_text(discovery_items)
-    recs = sorted(
-        discovery_items,
-        key=lambda item: float(item.get("relevance_score") or item.get("impact_hours") or 0.0),
-        reverse=True,
-    )[:3]
+    recs = sorted(discovery_items, key=_discovery_recommendation_sort_key, reverse=True)[:3]
     merged_notes: list[str] = []
 
     lines.append("## Traceability")

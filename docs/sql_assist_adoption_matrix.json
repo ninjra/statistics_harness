@@ -1,6 +1,18 @@
 {
-  "plugin_count": 143,
+  "plugin_count": 163,
   "plugins": [
+    {
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
     {
       "plugin_id": "analysis_actionable_ops_levers_v1",
       "plugin_type": "analysis",
@@ -9,6 +21,12 @@
     },
     {
       "plugin_id": "analysis_anova_auto",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_association_rules_apriori_v1",
       "plugin_type": "analysis",
       "uses_sql": false,
       "uses_sql_exec": false
@@ -26,6 +44,12 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_bocpd_gaussian",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -33,6 +57,12 @@
     },
     {
       "plugin_id": "analysis_burst_detection_kleinberg",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
       "plugin_type": "analysis",
       "uses_sql": false,
       "uses_sql_exec": false
@@ -158,6 +188,12 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_control_chart_cusum",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -188,6 +224,30 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_dependency_graph_change_detection",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -206,7 +266,19 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_distribution_drift_suite",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
       "plugin_type": "analysis",
       "uses_sql": false,
       "uses_sql_exec": false
@@ -236,6 +308,12 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_event_count_bocpd_poisson",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -260,6 +338,12 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_gaussian_copula_shift",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -267,6 +351,12 @@
     },
     {
       "plugin_id": "analysis_gaussian_knockoffs",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
       "plugin_type": "analysis",
       "uses_sql": false,
       "uses_sql_exec": false
@@ -458,6 +548,18 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_pca_auto",
       "plugin_type": "analysis",
       "uses_sql": false,
@@ -572,7 +674,25 @@
       "uses_sql_exec": false
     },
     {
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
       "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "plugin_type": "analysis",
+      "uses_sql": false,
+      "uses_sql_exec": false
+    },
+    {
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
       "plugin_type": "analysis",
       "uses_sql": false,
       "uses_sql_exec": false

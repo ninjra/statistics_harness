@@ -21,7 +21,18 @@ dependencies = [
   "pandas",
   "openpyxl",
   "scikit-learn",
+  "networkx",
   "jsonschema",
+  "datasketch",
+  "mlxtend",
+  "prefixspan",
+  "hdbscan",
+  "python-igraph",
+  "leidenalg",
+  "ortools",
+  "simpy",
+  "dtaidistance",
+  "simhash",
 ]
 
 [project.optional-dependencies]
