@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "transform_sqlpack_materialize_v1 config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": { "type": "boolean", "default": false },
+    "source_relpath": {
+      "type": "string",
+      "default": "artifacts/llm_text2sql_local_generate_v1/sql_pack.json"
+    },
+    "table_prefix": {
+      "type": "string",
+      "default": "plg__transform_sqlpack_materialize_v1__"
+    }
+  }
+}
+

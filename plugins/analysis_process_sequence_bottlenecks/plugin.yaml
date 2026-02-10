@@ -1,0 +1,32 @@
+id: analysis_process_sequence_bottlenecks
+name: Process Sequence Bottlenecks
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Identify high-gap process transitions and model savings.
+  defaults:
+    case_column: null
+    process_column: null
+    start_column: null
+    end_column: null
+    wait_threshold_seconds: 60
+    baseline_quantile: 0.25
+    min_transition_count: 50
+    max_pairs: 20
+    max_case_columns: 2
+    max_process_columns: 2
+    max_start_columns: 2
+    max_end_columns: 2
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

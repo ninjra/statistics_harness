@@ -292,6 +292,12 @@
     },
     "summary": {
       "type": "string"
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
     }
   },
   "required": [
@@ -300,7 +306,9 @@
     "metrics",
     "findings",
     "artifacts",
-    "budget"
+    "budget",
+    "references",
+    "debug"
   ],
   "title": "Plugin Result",
   "type": "object"

@@ -251,6 +251,46 @@ def _choose_best_datetime_column(
     return best_col
 
 
+def _choose_best_relative_column(
+    candidates: Iterable[str],
+    df: pd.DataFrame,
+    start_col: str | None,
+    max_rows: int = 50000,
+) -> str | None:
+    if not start_col:
+        return None
+    candidates = list(candidates)
+    if not candidates:
+        return None
+    start_series = df[start_col]
+    if start_series.shape[0] > max_rows:
+        start_series = start_series.head(max_rows)
+    start_ts = pd.to_datetime(start_series, errors="coerce", utc=False)
+    best_col = None
+    best_score = -1.0
+    for col in candidates:
+        series = df[col]
+        if series.shape[0] > max_rows:
+            series = series.head(max_rows)
+        ts = pd.to_datetime(series, errors="coerce", utc=False)
+        delta = (start_ts - ts).dt.total_seconds()
+        valid = delta[delta.notna()]
+        if valid.empty:
+            continue
+        positive = valid[valid >= 0]
+        if positive.empty:
+            continue
+        parse_ratio = float(len(positive)) / float(max(len(start_ts), 1))
+        if parse_ratio < 0.15:
+            continue
+        median_val = float(positive.median())
+        score = median_val * parse_ratio
+        if score > best_score:
+            best_score = score
+            best_col = col
+    return best_col
+
+
 def _series_for_column(frame: pd.DataFrame, column: str) -> pd.Series:
     data = frame[column]
     if isinstance(data, pd.DataFrame):
@@ -597,8 +637,7 @@ class Plugin:
         if end_col:
             used.add(end_col)
 
-        queue_col = _pick_column(
-            ctx.settings.get("queue_column"),
+        queue_candidates = _candidate_columns(
             columns,
             role_by_name,
             {"queue", "queued", "enqueue"},
@@ -606,11 +645,21 @@ class Plugin:
             lower_names,
             used,
         )
+        preferred_queue = ctx.settings.get("queue_column")
+        if preferred_queue and preferred_queue in columns:
+            queue_col = preferred_queue
+        else:
+            queue_col = _choose_best_relative_column(queue_candidates, df, start_col)
+            if not queue_col:
+                queue_col = _choose_best_datetime_column(
+                    queue_candidates, df, ("queue", "queued", "enqueue")
+                )
+            if not queue_col and queue_candidates:
+                queue_col = queue_candidates[0]
         if queue_col:
             used.add(queue_col)
 
-        eligible_col = _pick_column(
-            ctx.settings.get("eligible_column"),
+        eligible_candidates = _candidate_columns(
             columns,
             role_by_name,
             {"eligible", "ready", "available"},
@@ -618,6 +667,19 @@ class Plugin:
             lower_names,
             used,
         )
+        preferred_eligible = ctx.settings.get("eligible_column")
+        if preferred_eligible and preferred_eligible in columns:
+            eligible_col = preferred_eligible
+        else:
+            eligible_col = _choose_best_relative_column(
+                eligible_candidates, df, start_col
+            )
+            if not eligible_col:
+                eligible_col = _choose_best_datetime_column(
+                    eligible_candidates, df, ("eligible", "ready", "available")
+                )
+            if not eligible_col and eligible_candidates:
+                eligible_col = eligible_candidates[0]
         eligible_fallback = None
         if eligible_col:
             used.add(eligible_col)
@@ -1252,8 +1314,19 @@ class Plugin:
                             "close_window_mode": close_mode,
                             "close_window_source": close_window_source,
                         },
+                        "modeled_assumptions": [assumption],
+                        "modeled_scope": {
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "close_window_mode": close_mode,
+                            "close_window_source": close_window_source,
+                        },
                         "baseline_median_sec": baseline_val,
                         "modeled_median_sec": modeled_val,
+                        "baseline_value": baseline_val,
+                        "modeled_value": modeled_val,
+                        "delta_value": (modeled_val - baseline_val) if modeled_val is not None else None,
+                        "unit": "seconds",
                         "effect": effect,
                         "target_reduction": target_reduction,
                         "tolerance": tolerance,
@@ -1264,8 +1337,16 @@ class Plugin:
                         "baseline_host_source": baseline_host_source,
                         "added_hosts": added_hosts,
                         "scale_factor": scale_factor,
+                        "scale_factor_standard": scale_factor,
+                        "scale_factor_original": scale_factor,
+                        "scale_factor_original_definition": "scale_factor_standard = new_host_count / baseline_host_count",
                         "host_count_baseline": baseline_host_count,
                         "host_count_modeled": (
+                            baseline_host_count + added_hosts
+                            if baseline_host_count is not None
+                            else None
+                        ),
+                        "modeled_host_count": (
                             baseline_host_count + added_hosts
                             if baseline_host_count is not None
                             else None

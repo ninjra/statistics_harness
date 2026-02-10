@@ -50,6 +50,7 @@ from statistic_harness.core.utils import (
     DEFAULT_TENANT_ID,
     auth_enabled,
     file_sha256,
+    atomic_write_text,
     json_dumps,
     max_upload_bytes,
     now_iso,
@@ -58,12 +59,45 @@ from statistic_harness.core.utils import (
     stable_hash,
     vector_store_enabled,
 )
+from statistic_harness.core.upload_cas import (
+    blob_path as upload_blob_path,
+    promote_quarantine_file,
+    quarantine_dir as upload_quarantine_dir,
+)
 from statistic_harness.core.vector_store import VectorStore, hash_embedding
 
 app = FastAPI()
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+
+_DEFAULT_CSP = (
+    "default-src 'self'; "
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "frame-ancestors 'none'; "
+    "img-src 'self' data:; "
+    "style-src 'self' 'unsafe-inline'; "
+    "script-src 'self' 'unsafe-inline'; "
+    "connect-src 'self'; "
+    "form-action 'self'"
+)
+
+
+def _apply_security_headers(headers) -> None:
+    # `headers` is a Starlette MutableHeaders at runtime; keep this duck-typed for unit testing.
+    def ensure(key: str, value: str) -> None:
+        if headers.get(key) is None:
+            headers[key] = value
+
+    ensure("X-Content-Type-Options", "nosniff")
+    ensure("Referrer-Policy", "no-referrer")
+    ensure("X-Frame-Options", "DENY")
+    ensure("Content-Security-Policy", _DEFAULT_CSP)
+    ensure("Cross-Origin-Opener-Policy", "same-origin")
+    ensure("Cross-Origin-Resource-Policy", "same-origin")
+    ensure("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+
 
 TENANT_CTX = get_tenant_context()
 APPDATA_DIR = TENANT_CTX.tenant_root
@@ -195,6 +229,13 @@ def _require_admin(request: Request) -> AuthUser:
     if membership and membership.get("role") == "admin":
         return user
     raise HTTPException(status_code=403, detail="admin required")
+
+
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next):
+    response = await call_next(request)
+    _apply_security_headers(response.headers)
+    return response
 
 
 @app.middleware("http")
@@ -2087,7 +2128,7 @@ async def raw_format_detail(request: Request, format_id: int) -> HTMLResponse:
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)) -> JSONResponse:
     upload_id = uuid.uuid4().hex
-    upload_dir = APPDATA_DIR / "uploads" / upload_id
+    upload_dir = upload_quarantine_dir(APPDATA_DIR, upload_id)
     upload_dir.mkdir(parents=True, exist_ok=True)
     filename = Path(file.filename).name
     if not filename:
@@ -2117,32 +2158,32 @@ async def upload(file: UploadFile = File(...)) -> JSONResponse:
             hasher.update(chunk)
             handle.write(chunk)
     sha256 = hasher.hexdigest()
-    existing = pipeline.storage.fetch_upload_by_sha256(sha256)
-    if existing:
-        try:
-            target.unlink()
-        except FileNotFoundError:
-            pass
-        shutil.rmtree(upload_dir, ignore_errors=True)
-        return JSONResponse(
-            {
-                "upload_id": existing.get("upload_id"),
-                "filename": existing.get("filename") or filename,
-                "uploaded_filename": filename,
-                "sha256": existing.get("sha256") or sha256,
-                "deduplicated": True,
-            }
+    deduplicated = upload_blob_path(APPDATA_DIR, sha256).exists()
+    try:
+        promote_quarantine_file(
+            APPDATA_DIR, upload_id, filename, sha256, verify_on_write=True
         )
-    pipeline.storage.create_upload(upload_id, filename, total, sha256, now_iso())
+    except Exception as exc:
+        shutil.rmtree(upload_dir, ignore_errors=True)
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    verified_at = now_iso()
+    pipeline.storage.create_upload(
+        upload_id, filename, total, sha256, verified_at, verified_at=verified_at
+    )
     return JSONResponse(
-        {"upload_id": upload_id, "filename": filename, "sha256": sha256, "deduplicated": False}
+        {
+            "upload_id": upload_id,
+            "filename": filename,
+            "sha256": sha256,
+            "deduplicated": bool(deduplicated),
+        }
     )
 
 
 @app.post("/api/upload/raw")
 async def upload_raw(request: Request, filename: str = Query(...)) -> JSONResponse:
     upload_id = uuid.uuid4().hex
-    upload_dir = APPDATA_DIR / "uploads" / upload_id
+    upload_dir = upload_quarantine_dir(APPDATA_DIR, upload_id)
     upload_dir.mkdir(parents=True, exist_ok=True)
     filename = Path(filename).name
     if not filename:
@@ -2173,25 +2214,25 @@ async def upload_raw(request: Request, filename: str = Query(...)) -> JSONRespon
             if total % (chunk_size * 16) == 0:
                 handle.flush()
     sha256 = hasher.hexdigest()
-    existing = pipeline.storage.fetch_upload_by_sha256(sha256)
-    if existing:
-        try:
-            target.unlink()
-        except FileNotFoundError:
-            pass
-        shutil.rmtree(upload_dir, ignore_errors=True)
-        return JSONResponse(
-            {
-                "upload_id": existing.get("upload_id"),
-                "filename": existing.get("filename") or filename,
-                "uploaded_filename": filename,
-                "sha256": existing.get("sha256") or sha256,
-                "deduplicated": True,
-            }
+    deduplicated = upload_blob_path(APPDATA_DIR, sha256).exists()
+    try:
+        promote_quarantine_file(
+            APPDATA_DIR, upload_id, filename, sha256, verify_on_write=True
         )
-    pipeline.storage.create_upload(upload_id, filename, total, sha256, now_iso())
+    except Exception as exc:
+        shutil.rmtree(upload_dir, ignore_errors=True)
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    verified_at = now_iso()
+    pipeline.storage.create_upload(
+        upload_id, filename, total, sha256, verified_at, verified_at=verified_at
+    )
     return JSONResponse(
-        {"upload_id": upload_id, "filename": filename, "sha256": sha256, "deduplicated": False}
+        {
+            "upload_id": upload_id,
+            "filename": filename,
+            "sha256": sha256,
+            "deduplicated": bool(deduplicated),
+        }
     )
 
 
@@ -2200,7 +2241,7 @@ async def create_run(
     background: BackgroundTasks,
     upload_id: str = Form(...),
     project_id: str = Form(""),
-    plugins: str = Form(""),
+    plugins: str = Form("all"),
     settings_json: str = Form(""),
     run_seed: int | None = Form(None),
     normalize_template_name: str = Form(""),
@@ -2213,16 +2254,20 @@ async def create_run(
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
 ) -> JSONResponse:
-    upload_dir = APPDATA_DIR / "uploads" / upload_id
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
         raise HTTPException(status_code=404, detail="Upload not found")
-    if not upload_dir.exists():
-        raise HTTPException(status_code=404, detail="Upload not found")
-    files = list(upload_dir.iterdir())
-    if not files:
-        raise HTTPException(status_code=400, detail="No uploaded file")
-    input_file = files[0]
+    sha256 = str(upload_row.get("sha256") or "")
+    input_file = upload_blob_path(APPDATA_DIR, sha256) if sha256 else None
+    if not input_file or not input_file.exists():
+        # Legacy path fallback.
+        upload_dir = APPDATA_DIR / "uploads" / upload_id
+        if not upload_dir.exists():
+            raise HTTPException(status_code=404, detail="Upload file not found")
+        files = list(upload_dir.iterdir())
+        if not files:
+            raise HTTPException(status_code=400, detail="No uploaded file")
+        input_file = files[0]
     plugin_ids = [p for p in plugins.split(",") if p]
     settings: dict[str, object] = {}
     if settings_json:
@@ -2314,16 +2359,20 @@ async def run_auto_evaluate(
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
 ) -> HTMLResponse:
-    upload_dir = APPDATA_DIR / "uploads" / upload_id
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
         raise HTTPException(status_code=404, detail="Upload not found")
-    if not upload_dir.exists():
-        raise HTTPException(status_code=404, detail="Upload not found")
-    files = list(upload_dir.iterdir())
-    if not files:
-        raise HTTPException(status_code=400, detail="No uploaded file")
-    input_file = files[0]
+    sha256 = str(upload_row.get("sha256") or "")
+    input_file = upload_blob_path(APPDATA_DIR, sha256) if sha256 else None
+    if not input_file or not input_file.exists():
+        # Legacy path fallback.
+        upload_dir = APPDATA_DIR / "uploads" / upload_id
+        if not upload_dir.exists():
+            raise HTTPException(status_code=404, detail="Upload file not found")
+        files = list(upload_dir.iterdir())
+        if not files:
+            raise HTTPException(status_code=400, detail="No uploaded file")
+        input_file = files[0]
 
     if run_seed in (None, 0):
         run_seed = _auto_seed(upload_row.get("sha256") or upload_id, 0)
@@ -2395,16 +2444,20 @@ async def api_auto_evaluate(
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
 ) -> JSONResponse:
-    upload_dir = APPDATA_DIR / "uploads" / upload_id
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
         raise HTTPException(status_code=404, detail="Upload not found")
-    if not upload_dir.exists():
-        raise HTTPException(status_code=404, detail="Upload not found")
-    files = list(upload_dir.iterdir())
-    if not files:
-        raise HTTPException(status_code=400, detail="No uploaded file")
-    input_file = files[0]
+    sha256 = str(upload_row.get("sha256") or "")
+    input_file = upload_blob_path(APPDATA_DIR, sha256) if sha256 else None
+    if not input_file or not input_file.exists():
+        # Legacy path fallback.
+        upload_dir = APPDATA_DIR / "uploads" / upload_id
+        if not upload_dir.exists():
+            raise HTTPException(status_code=404, detail="Upload file not found")
+        files = list(upload_dir.iterdir())
+        if not files:
+            raise HTTPException(status_code=400, detail="No uploaded file")
+        input_file = files[0]
 
     if run_seed in (None, 0):
         run_seed = _auto_seed(upload_row.get("sha256") or upload_id, 0)
@@ -2857,7 +2910,7 @@ def _write_evaluation(run_dir: Path, ok: bool, messages: list[str]) -> dict[str,
         "messages": messages,
     }
     eval_path = run_dir / "evaluation.json"
-    eval_path.write_text(json_dumps(payload), encoding="utf-8")
+    atomic_write_text(eval_path, json_dumps(payload) + "\n")
     log_path = run_dir / "logs" / "evaluate.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
     with log_path.open("a", encoding="utf-8") as handle:
@@ -2879,7 +2932,8 @@ def _write_evaluation(run_dir: Path, ok: bool, messages: list[str]) -> dict[str,
                 error={"type": "KnownIssuesFailed", "messages": messages},
             )
         else:
-            if run_row.get("status") != "running":
+            # Don't override partial/completed statuses written by the pipeline.
+            if run_row.get("status") in {"failed", "error", "aborted"}:
                 pipeline.storage.update_run_status(run_id, "completed", error=None)
     return payload
 

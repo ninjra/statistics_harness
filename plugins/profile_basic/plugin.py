@@ -16,7 +16,53 @@ class Plugin:
         df = ctx.dataset_loader()
         columns = []
         numeric = df.select_dtypes(include="number")
-        role_by_name: dict[str, str] = {}
+        role_by_safe: dict[str, str] = {}
+        role_by_field: dict[str, str] = {}
+
+        # Map template field names (df.columns) -> dataset_columns.safe_name so metadata updates are unambiguous,
+        # even when source data contains duplicate headers.
+        field_to_safe: dict[str, str] = {}
+        if ctx.dataset_version_id:
+            try:
+                dataset_columns = ctx.storage.fetch_dataset_columns(ctx.dataset_version_id)
+                orig_to_safes: dict[str, list[str]] = {}
+                safe_set = {str(c.get("safe_name") or "") for c in dataset_columns}
+                for c in dataset_columns:
+                    orig = str(c.get("original_name") or "")
+                    safe = str(c.get("safe_name") or "")
+                    if orig and safe:
+                        orig_to_safes.setdefault(orig, []).append(safe)
+
+                dataset_template = ctx.storage.fetch_dataset_template(ctx.dataset_version_id)
+                mapping_payload = {}
+                if dataset_template and dataset_template.get("mapping_json"):
+                    try:
+                        mapping_payload = json.loads(dataset_template["mapping_json"])
+                    except Exception:
+                        mapping_payload = {}
+                # transform_normalize_mixed stores {"mapping": {field: {...}}, ...}.
+                mapping = mapping_payload.get("mapping") if isinstance(mapping_payload, dict) else {}
+                if isinstance(mapping, dict):
+                    for field, src in mapping.items():
+                        if isinstance(src, dict):
+                            safe = str(src.get("safe_name") or "")
+                            if safe:
+                                field_to_safe[str(field)] = safe
+                        elif isinstance(src, str):
+                            # Back-compat: {field: original_name}
+                            safes = orig_to_safes.get(src) or []
+                            if len(safes) == 1:
+                                field_to_safe[str(field)] = safes[0]
+                # If df is already using safe_names, accept them directly.
+                for col in df.columns:
+                    if col in safe_set:
+                        field_to_safe.setdefault(str(col), str(col))
+                # Default raw accessor case: df columns are internal/original names.
+                for col in df.columns:
+                    if str(col) in orig_to_safes and len(orig_to_safes[str(col)]) == 1:
+                        field_to_safe.setdefault(str(col), orig_to_safes[str(col)][0])
+            except Exception:
+                field_to_safe = {}
 
         def infer_role(col_name: str, series: pd.Series) -> str | None:
             lname = col_name.lower()
@@ -42,7 +88,10 @@ class Plugin:
             series = df[col]
             role = infer_role(col, series)
             if role:
-                role_by_name[col] = role
+                role_by_field[str(col)] = role
+                safe = field_to_safe.get(str(col))
+                if safe:
+                    role_by_safe[safe] = role
             entry = {
                 "name": col,
                 "dtype": str(series.dtype),
@@ -72,7 +121,8 @@ class Plugin:
                 re.IGNORECASE,
             ),
         }
-        pii_tags_by_name: dict[str, list[str]] = {}
+        pii_tags_by_safe: dict[str, list[str]] = {}
+        pii_col_by_safe: dict[str, str] = {}
         sample_size = int(ctx.settings.get("pii_sample_size", 200))
         threshold = float(ctx.settings.get("pii_match_threshold", 0.6))
         for col in df.columns:
@@ -91,7 +141,10 @@ class Plugin:
                     if ratio >= threshold:
                         tags.append(tag)
             if tags:
-                pii_tags_by_name[col] = tags
+                safe = field_to_safe.get(str(col))
+                if safe:
+                    pii_tags_by_safe[safe] = tags
+                    pii_col_by_safe[safe] = str(col)
 
         artifacts = []
         artifacts_dir = ctx.artifacts_dir("profile_basic")
@@ -120,14 +173,17 @@ class Plugin:
 
         if ctx.dataset_version_id:
             ctx.storage.update_dataset_column_roles(
-                ctx.dataset_version_id, role_by_name
+                ctx.dataset_version_id, role_by_safe
             )
-            if pii_tags_by_name:
+            if pii_tags_by_safe:
                 ctx.storage.update_dataset_column_pii_tags(
-                    ctx.dataset_version_id, pii_tags_by_name
+                    ctx.dataset_version_id, pii_tags_by_safe
                 )
                 tenant_id = ctx.tenant_id or DEFAULT_TENANT_ID
-                for col, tags in pii_tags_by_name.items():
+                for safe, tags in pii_tags_by_safe.items():
+                    col = pii_col_by_safe.get(safe)
+                    if not col or col not in df.columns:
+                        continue
                     values = (
                         df[col]
                         .dropna()
@@ -193,7 +249,7 @@ class Plugin:
         parameter_columns = [
             col
             for col in df.columns
-            if role_by_name.get(col) == "parameter"
+            if role_by_field.get(str(col)) == "parameter"
             or (
                 df[col].dtype == object
                 and df[col]

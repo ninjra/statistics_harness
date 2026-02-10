@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from statistic_harness.core.stat_plugins.sampling import deterministic_sample
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -41,9 +42,11 @@ class Plugin:
             return PluginResult("skipped", "No numeric columns", {}, [], [], None)
         max_points = ctx.settings.get("max_points")
         if not isinstance(max_points, int) or max_points <= 0:
-            max_points = int(len(numeric))
+            # Safe default: this method is O(n^2) memory/time.
+            max_points = min(int(len(numeric)), 2000)
         n_thresholds = int(ctx.settings.get("n_thresholds", 10))
-        sample = numeric.head(max_points).to_numpy()
+        sampled, sample_meta = deterministic_sample(numeric, max_points, seed=ctx.run_seed)
+        sample = sampled.to_numpy()
         n = sample.shape[0]
         if n < 2:
             return PluginResult("skipped", "Not enough points", {}, [], [], None)
@@ -84,9 +87,11 @@ class Plugin:
         ]
         return PluginResult(
             "ok",
-            "Computed topology curves",
+            "Computed topology curves"
+            + (f" (sampled {int(sample_meta.get('rows_used', n))} of {int(sample_meta.get('rows_total', n))})" if sample_meta.get("sampled") else ""),
             {"beta1_peak": max(beta1)},
             findings,
             artifacts,
             None,
+            debug={"sampling": sample_meta},
         )

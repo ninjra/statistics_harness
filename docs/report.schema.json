@@ -108,11 +108,13 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["status", "summary", "metrics", "findings", "artifacts", "budget", "error"],
+        "required": ["status", "summary", "metrics", "findings", "artifacts", "budget", "error", "references", "debug"],
         "properties": {
           "status": {"type": "string"},
           "summary": {"type": "string"},
           "metrics": {"type": "object"},
+          "references": {"type": "array"},
+          "debug": {"type": "object"},
           "budget": {
             "type": "object",
             "required": ["row_limit", "sampled", "time_limit_ms", "cpu_limit_ms"],
@@ -186,6 +188,18 @@
           }
         }
       }
+    },
+    "hotspots": {
+      "type": "object",
+      "properties": {
+        "generated_at": {"type": "string"},
+        "notes": {"type": "string"},
+        "top_by_duration_ms": {"type": "array"},
+        "top_by_max_rss_kb": {"type": "array"},
+        "failures": {"type": "array"},
+        "totals": {"type": "object"}
+      },
+      "additionalProperties": true
     },
     "known_issues": {
       "type": "object",

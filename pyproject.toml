@@ -37,3 +37,6 @@ stat-harness = "statistic_harness.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+console_output_style = "progress"

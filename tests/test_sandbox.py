@@ -5,6 +5,7 @@ import pytest
 
 from statistic_harness.core.plugin_runner import (
     FileSandbox,
+    _install_sqlite_guard,
     _install_eval_guard,
     _install_network_guard,
     _install_pickle_guard,
@@ -23,13 +24,21 @@ def test_file_sandbox_blocks_disallowed_paths(tmp_path):
     blocked_file = blocked_dir / "no.txt"
     blocked_file.write_text("no", encoding="utf-8")
 
-    with FileSandbox([str(allowed_dir)], cwd=tmp_path):
+    with FileSandbox([str(allowed_dir)], [str(allowed_dir)], cwd=tmp_path):
         assert allowed_file.read_text(encoding="utf-8") == "ok"
         allowed_file.write_text("updated", encoding="utf-8")
         with pytest.raises(PermissionError):
             blocked_file.read_text(encoding="utf-8")
         with pytest.raises(PermissionError):
             blocked_file.write_text("nope", encoding="utf-8")
+
+        import os
+
+        fd = os.open(str(allowed_dir / "os_open.txt"), os.O_CREAT | os.O_WRONLY, 0o600)
+        os.write(fd, b"ok")
+        os.close(fd)
+        with pytest.raises(PermissionError):
+            os.open(str(blocked_dir / "nope.txt"), os.O_CREAT | os.O_WRONLY, 0o600)
 
 
 def test_network_guard_blocks_socket():
@@ -56,6 +65,26 @@ def test_eval_guard_blocks_eval():
             eval("1 + 1")  # noqa: S307 - intentional for guard test
     finally:
         builtins.eval = orig_eval
+
+
+def test_sqlite_guard_blocks_other_databases(tmp_path):
+    import sqlite3
+
+    allowed = tmp_path / "state.sqlite"
+    allowed.write_bytes(b"")  # file must exist for connect on some platforms
+
+    other = tmp_path / "other.sqlite"
+    other.write_bytes(b"")
+
+    orig_connect = sqlite3.connect
+    try:
+        _install_sqlite_guard(allowed)
+        with pytest.raises(RuntimeError):
+            sqlite3.connect(other)
+        conn = sqlite3.connect(allowed)
+        conn.close()
+    finally:
+        sqlite3.connect = orig_connect
 
 
 

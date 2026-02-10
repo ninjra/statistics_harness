@@ -1,0 +1,19 @@
+id: analysis_pca_auto
+name: Pca Auto
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Topo/TDA addon pack plugin.
+  defaults: {}
+capabilities:
+- needs_multi_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

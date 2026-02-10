@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 import traceback
+import shutil
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -13,19 +14,26 @@ from typing import Any
 from .dataset_io import resolve_dataset_accessor
 from .plugin_manager import PluginManager, PluginSpec
 from .plugin_runner import run_plugin_subprocess
+from .retention import apply_retention
 from .storage import Storage
 from .tenancy import get_tenant_context, scope_identifier, tenancy_enabled
-from .types import PluginContext, PluginError, PluginResult
+from .types import PluginArtifact, PluginError, PluginResult
 from .utils import (
+    atomic_dir,
     dataset_key,
     ensure_dir,
     file_sha256,
     json_dumps,
     make_run_id,
     now_iso,
+    read_json,
+    resolve_env_placeholders,
+    stable_hash,
+    write_json,
     DEFAULT_TENANT_ID,
 )
 from .report import build_report, write_report
+from .large_dataset_policy import caps_for as _large_caps_for, as_budget_dict as _large_caps_budget
 
 
 class Pipeline:
@@ -39,6 +47,215 @@ class Pipeline:
         self.plugins_dir = plugins_dir
         self.storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
         self.manager = PluginManager(plugins_dir)
+        # Cache keys must reflect stat-plugin handler code, not only tiny wrapper modules in plugins/*.
+        # Otherwise updates under src/statistic_harness/core/stat_plugins/* can be incorrectly reused.
+        self._stat_plugin_effective_hash_cache: dict[str, str] = {}
+        self._startup_integrity_check()
+        self._cleanup_upload_quarantine()
+        self._apply_retention_policy()
+        self._recover_incomplete_runs()
+
+    def _augment_code_hash_if_stat_wrapper(
+        self, plugin_id: str, module_file: Path, code_hash: str | None
+    ) -> str | None:
+        if not code_hash or not module_file.exists():
+            return code_hash
+        try:
+            text = module_file.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            return code_hash
+        # Heuristic: stat wrappers import run_plugin and immediately dispatch to it.
+        if "run_plugin(" not in text:
+            return code_hash
+        if not isinstance(plugin_id, str) or not plugin_id.strip():
+            return code_hash
+        cached = self._stat_plugin_effective_hash_cache.get(plugin_id)
+        if cached is None:
+            try:
+                from statistic_harness.core.stat_plugins.code_hash import (
+                    stat_plugin_effective_code_hash,
+                )
+
+                cached = stat_plugin_effective_code_hash(plugin_id)
+            except Exception:
+                cached = None
+            if isinstance(cached, str) and cached:
+                self._stat_plugin_effective_hash_cache[plugin_id] = cached
+        if not isinstance(cached, str) or not cached:
+            return code_hash
+        return hashlib.sha256(f"{code_hash}:{cached}".encode("utf-8")).hexdigest()
+
+    def _startup_integrity_check(self) -> None:
+        mode = os.environ.get("STAT_HARNESS_STARTUP_INTEGRITY", "").strip().lower()
+        if not mode:
+            mode = "quick"
+        if mode in {"0", "off", "false", "no"}:
+            return
+        full = mode in {"1", "full", "integrity_check", "integrity"}
+        ok, msg = self.storage.integrity_check(full=full)
+        if not ok:
+            raise RuntimeError(f"Integrity check failed: {msg}")
+
+    def _cleanup_upload_quarantine(self) -> None:
+        quarantine_root = self.appdata_root / "uploads" / "_quarantine"
+        if not quarantine_root.exists():
+            return
+        for entry in quarantine_root.iterdir():
+            if entry.is_dir():
+                shutil.rmtree(entry, ignore_errors=True)
+
+    def _apply_retention_policy(self) -> None:
+        enabled = os.environ.get("STAT_HARNESS_RETENTION_ENABLED", "").strip().lower()
+        if enabled in {"0", "false", "no", "off"}:
+            return
+        raw_days = os.environ.get("STAT_HARNESS_RETENTION_DAYS", "").strip()
+        days = 60
+        if raw_days:
+            try:
+                days = max(1, int(raw_days))
+            except ValueError:
+                days = 60
+        apply_retention(
+            self.appdata_root,
+            self.base_dir / "runs",
+            days=days,
+        )
+
+    def _recover_incomplete_runs(self) -> None:
+        runs_root = self.base_dir / "runs"
+        staging_root = runs_root / "_staging"
+        if staging_root.exists():
+            # Best-effort cleanup; staging dirs are never considered valid runs.
+            for entry in staging_root.iterdir():
+                if entry.is_dir():
+                    shutil.rmtree(entry, ignore_errors=True)
+
+        def _pid_is_same_process(pid: int, started_at: str | None) -> bool:
+            """Best-effort PID identity check to avoid false positives from PID reuse.
+
+            On Linux/WSL, we approximate the process start wall-clock time using /proc.
+            If we can compute it, we require it to be close to the run's journal started_at.
+            """
+
+            if pid <= 0:
+                return False
+            try:
+                os.kill(pid, 0)
+            except OSError:
+                return False
+            if not started_at:
+                return True
+            try:
+                from datetime import datetime, timezone, timedelta
+
+                # Parse the run start time.
+                run_started = datetime.fromisoformat(started_at.replace("Z", "+00:00"))
+                if run_started.tzinfo is None:
+                    run_started = run_started.replace(tzinfo=timezone.utc)
+                # Compute process start wall-clock time (Linux/WSL only).
+                stat_path = Path(f"/proc/{pid}/stat")
+                uptime_path = Path("/proc/uptime")
+                if not stat_path.exists() or not uptime_path.exists():
+                    return True
+                stat = stat_path.read_text(encoding="utf-8", errors="ignore")
+                parts = stat.split()
+                if len(parts) < 22:
+                    return True
+                start_ticks = int(parts[21])
+                hz = int(os.sysconf(os.sysconf_names["SC_CLK_TCK"]))
+                uptime_s = float(uptime_path.read_text(encoding="utf-8", errors="ignore").split()[0])
+                age_s = max(0.0, uptime_s - (float(start_ticks) / float(hz)))
+                proc_started = datetime.now(timezone.utc) - timedelta(seconds=age_s)
+                # Tolerance: within 3 minutes of journal started_at.
+                return abs((proc_started - run_started).total_seconds()) <= 180.0
+            except Exception:
+                return True
+
+        # Mark any stale "running" runs as aborted when the runner PID is not alive (or was reused).
+        for row in self.storage.list_runs_by_status("running", limit=1000):
+            run_id = str(row.get("run_id") or "")
+            if not run_id:
+                continue
+            run_dir = runs_root / run_id
+            journal = run_dir / "journal.json"
+            pid = None
+            started_at = None
+            if journal.exists():
+                try:
+                    payload = read_json(journal)
+                    if isinstance(payload, dict):
+                        pid = payload.get("pid")
+                        started_at = payload.get("started_at") or payload.get("created_at")
+                except Exception:
+                    pid = None
+            if isinstance(pid, int) and pid > 0:
+                if _pid_is_same_process(pid, str(started_at) if started_at else None):
+                    continue
+            # If we can't prove the run is active, fail closed and preserve artifacts/logs.
+            self.storage.update_run_status(
+                run_id,
+                "aborted",
+                {"type": "CrashRecovery", "message": "Marked aborted on startup recovery"},
+            )
+            # Keep the DB consistent: any still-running plugin executions are now stale.
+            self.storage.abort_plugin_executions_for_run(
+                run_id,
+                status="aborted",
+                note="Aborted by crash recovery (runner pid not alive).",
+            )
+
+    @staticmethod
+    def _parse_int_env(name: str) -> int | None:
+        raw = os.environ.get(name, "").strip()
+        if not raw:
+            return None
+        try:
+            return int(raw)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _max_workers_for_stage(stage: str, layer_size: int, dataset_row_count: int | None) -> int:
+        """Conservative parallelism cap to avoid OOM on large datasets.
+
+        Override with:
+        - STAT_HARNESS_MAX_WORKERS_ANALYSIS
+        - STAT_HARNESS_MAX_WORKERS_TRANSFORM
+        """
+
+        layer_size = max(1, int(layer_size))
+        row_count = int(dataset_row_count or 0)
+        stage_key = stage.strip().lower()
+
+        env_name = None
+        if stage_key == "analysis":
+            env_name = "STAT_HARNESS_MAX_WORKERS_ANALYSIS"
+        elif stage_key == "transform":
+            env_name = "STAT_HARNESS_MAX_WORKERS_TRANSFORM"
+        if env_name:
+            raw = os.environ.get(env_name, "").strip()
+            if raw:
+                try:
+                    cap = int(raw)
+                    cap = max(1, cap)
+                    return min(layer_size, cap)
+                except ValueError:
+                    pass
+
+        # Heuristic defaults: big datasets => low parallelism (each plugin may load a lot of data).
+        #
+        # User-facing default: allow 2-way parallelism even on >=1M rows; operators can still
+        # force lower via STAT_HARNESS_MAX_WORKERS_ANALYSIS=1 if memory is tight.
+        if row_count >= 1_000_000:
+            cap = 2
+        elif row_count >= 200_000:
+            cap = 2
+        elif row_count >= 100_000:
+            cap = 4
+        else:
+            cap = os.cpu_count() or 1
+        cap = max(1, int(cap))
+        return min(layer_size, cap)
 
     def _toposort_layers(
         self, specs: list[PluginSpec], selected: set[str]
@@ -59,7 +276,14 @@ class Pipeline:
         while remaining:
             ready = sorted(pid for pid in remaining if indegree.get(pid, 0) == 0)
             if not ready:
-                raise ValueError("Cycle detected in plugin dependencies")
+                cycle = _find_cycle_path(deps, remaining) or []
+                edges = _format_edges(deps, remaining)
+                detail = ""
+                if cycle:
+                    detail = f" cycle={' -> '.join(cycle)}"
+                raise ValueError(
+                    f"Cycle detected in plugin dependencies.{detail} edges={edges}"
+                )
             layer_specs = [spec_map[pid] for pid in ready]
             layers.append(layer_specs)
             for pid in ready:
@@ -68,6 +292,34 @@ class Pipeline:
                 if deps[pid].intersection(ready):
                     indegree[pid] -= len(deps[pid].intersection(ready))
         return layers
+
+    def _expand_selected_with_deps(
+        self, specs: dict[str, PluginSpec], selected: set[str]
+    ) -> tuple[set[str], list[str], list[str]]:
+        """Return (expanded, added, missing_deps).
+
+        - Unknown selected plugin ids are ignored here (handled separately elsewhere).
+        - Missing dependencies of known plugins are returned so the pipeline can fail closed.
+        """
+
+        expanded = set(selected)
+        added: list[str] = []
+        missing: list[str] = []
+        stack = list(sorted(selected))
+        while stack:
+            pid = stack.pop()
+            spec = specs.get(pid)
+            if not spec:
+                continue
+            for dep in spec.depends_on or []:
+                if dep not in specs:
+                    missing.append(f"{pid} -> {dep}")
+                    continue
+                if dep not in expanded:
+                    expanded.add(dep)
+                    added.append(dep)
+                    stack.append(dep)
+        return expanded, sorted(set(added)), sorted(set(missing))
 
     def run(
         self,
@@ -79,8 +331,12 @@ class Pipeline:
         run_id: str | None = None,
         dataset_version_id: str | None = None,
         project_id: str | None = None,
+        dataset_id: str | None = None,
+        reuse_cache: bool | None = None,
+        force: bool | None = None,
     ) -> str:
         run_id = run_id or make_run_id()
+        requested_run_seed = int(run_seed)
         tenant_id = self.tenant_id
 
         def _scope(value: str | None) -> str | None:
@@ -92,10 +348,29 @@ class Pipeline:
 
         dataset_version_id = _scope(dataset_version_id)
         project_id = _scope(project_id)
+        dataset_id = _scope(dataset_id)
 
-        run_dir = self.base_dir / "runs" / run_id
-        ensure_dir(run_dir / "dataset")
-        ensure_dir(run_dir / "logs")
+        runs_root = self.base_dir / "runs"
+        staging_root = runs_root / "_staging"
+        run_dir = runs_root / run_id
+        def _prepare_staging(dir_path: Path) -> None:
+            ensure_dir(dir_path / "dataset")
+            ensure_dir(dir_path / "logs")
+            write_json(
+                dir_path / "journal.json",
+                {
+                    "run_id": run_id,
+                    "status": "staging",
+                    "pid": os.getpid(),
+                    "created_at": now_iso(),
+                },
+            )
+
+        atomic_dir(run_dir, staging_root=staging_root, prepare=_prepare_staging)
+        write_json(
+            run_dir / "journal.json",
+            {"run_id": run_id, "status": "running", "pid": os.getpid(), "started_at": now_iso()},
+        )
         progress_enabled = os.environ.get("STAT_HARNESS_CLI_PROGRESS", "").lower() in {
             "1",
             "true",
@@ -104,6 +379,9 @@ class Pipeline:
         progress_tty = progress_enabled and sys.stdout.isatty()
 
         canonical_path = run_dir / "dataset" / "canonical.csv"
+        dataset_row_count: int | None = None
+        dataset_table_name: str | None = None
+        dataset_column_count: int | None = None
         if input_file is None:
             if not dataset_version_id:
                 raise ValueError("Dataset version is required for DB-only runs")
@@ -112,12 +390,21 @@ class Pipeline:
                 raise ValueError("Dataset version not found")
             project_id = ctx_row["project_id"]
             dataset_id = ctx_row["dataset_id"]
+            dataset_table_name = str(ctx_row.get("table_name") or "")
             input_hash = ctx_row.get("data_hash") or dataset_version_id
             input_filename = f"db://{dataset_version_id}"
+            try:
+                dataset_row_count = int(ctx_row.get("row_count") or 0)
+            except (TypeError, ValueError):
+                dataset_row_count = None
+            try:
+                dataset_column_count = int(ctx_row.get("column_count") or 0)
+            except (TypeError, ValueError):
+                dataset_column_count = None
         else:
             input_hash = file_sha256(input_file)
             project_id = project_id or input_hash
-            dataset_id = dataset_version_id or (
+            dataset_id = dataset_id or dataset_version_id or (
                 input_hash
                 if project_id == input_hash
                 else dataset_key(project_id, input_hash)
@@ -127,12 +414,49 @@ class Pipeline:
             dataset_id = _scope(dataset_id)
             dataset_version_id = _scope(dataset_version_id)
             table_name = f"dataset_{dataset_version_id}"
+            dataset_table_name = table_name
+            existing = self.storage.get_dataset_version(dataset_version_id)
+            if existing:
+                existing_hash = existing.get("data_hash")
+                same_media = False
+                if existing_hash and existing_hash == input_hash:
+                    same_media = True
+                elif not existing_hash and existing.get("dataset_id") == dataset_id:
+                    same_media = True
+                if same_media:
+                    self.storage.reset_dataset_version(
+                        dataset_version_id,
+                        table_name=existing.get("table_name") or table_name,
+                        data_hash=input_hash,
+                        created_at=now_iso(),
+                    )
             self.storage.ensure_project(project_id, project_id, now_iso())
             self.storage.ensure_dataset(dataset_id, project_id, dataset_id, now_iso())
             self.storage.ensure_dataset_version(
                 dataset_version_id, dataset_id, now_iso(), table_name, input_hash
             )
             input_filename = input_file.name
+            # Best-effort for worker cap heuristics; row_count is populated after ingest.
+            try:
+                latest_ctx = self.storage.get_dataset_version_context(dataset_version_id)
+                if latest_ctx:
+                    dataset_row_count = int(latest_ctx.get("row_count") or 0)
+                    dataset_column_count = int(latest_ctx.get("column_count") or 0)
+            except (TypeError, ValueError):
+                dataset_row_count = None
+                dataset_column_count = None
+
+        if requested_run_seed == 0:
+            # Deterministic auto seed for "run_seed=0" workflows.
+            # Use only stable run inputs (content hash + resolved settings payload).
+            run_seed = stable_hash(f"{input_hash}:{json_dumps(settings)}")
+        else:
+            run_seed = int(requested_run_seed)
+
+        # Cache key salt: plugins operate on the normalized/template layer (not raw).
+        # After normalization, we incorporate the mapping_hash so cache hits remain correct
+        # across mapping/template fixes without forcing users to "force rerun everything".
+        cache_dataset_hash = str(input_hash)
 
         self.storage.create_run(
             run_id=run_id,
@@ -144,22 +468,44 @@ class Pipeline:
             settings=settings,
             error=None,
             run_seed=run_seed,
+            requested_run_seed=requested_run_seed,
             project_id=project_id,
             dataset_id=dataset_id,
             dataset_version_id=dataset_version_id,
             input_hash=input_hash,
         )
+        self.storage.insert_event(
+            kind="run_started",
+            created_at=now_iso(),
+            run_id=run_id,
+            run_fingerprint=None,
+            payload={
+                "requested_run_seed": requested_run_seed,
+                "run_seed": run_seed,
+                "input_hash": input_hash,
+                "upload_id": upload_id,
+            },
+        )
+        reuse_cache = bool(
+            (os.environ.get("STAT_HARNESS_REUSE_CACHE", "").strip().lower() in {"1", "true", "yes"})
+            if reuse_cache is None
+            else reuse_cache
+        )
+        force = bool(
+            (os.environ.get("STAT_HARNESS_FORCE", "").strip().lower() in {"1", "true", "yes"})
+            if force is None
+            else force
+        )
 
-        specs = self.manager.discover()
+        specs_all = self.manager.discover()
+        disabled_plugins: set[str] = set()
+        specs: list[PluginSpec] = []
+        for spec in specs_all:
+            if not self.storage.plugin_enabled(spec.plugin_id):
+                disabled_plugins.add(spec.plugin_id)
+                continue
+            specs.append(spec)
         spec_map = {spec.plugin_id: spec for spec in specs}
-        for err in self.manager.discovery_errors:
-            plugin_id = err.plugin_id
-            if plugin_id in spec_map:
-                plugin_id = f"{plugin_id}__discovery_error"
-            record_missing(
-                plugin_id,
-                f"Plugin discovery error in {err.path}: {err.message}",
-            )
 
         def record_missing(plugin_id: str, message: str) -> None:
             result = PluginResult(
@@ -200,15 +546,27 @@ class Pipeline:
                 stdout=None,
                 stderr=None,
             )
+        for err in self.manager.discovery_errors:
+            plugin_id = err.plugin_id
+            if plugin_id in spec_map:
+                plugin_id = f"{plugin_id}__discovery_error"
+            record_missing(
+                plugin_id,
+                f"Plugin discovery error in {err.path}: {err.message}",
+            )
 
         selected = set(plugin_ids)
         auto_plan = not selected or "auto" in selected
         selected.discard("auto")
+        disabled_selected = sorted(pid for pid in selected if pid in disabled_plugins)
+        for pid in disabled_selected:
+            record_missing(pid, "Plugin disabled")
+            selected.discard(pid)
         if "all" in selected:
             selected = {
                 spec.plugin_id
                 for spec in specs
-                if spec.type in {"analysis", "profile", "transform"}
+                if spec.type in {"analysis", "profile", "transform", "report", "llm", "ingest"}
             }
             auto_plan = False
         llm_selected = "llm_prompt_builder" in selected
@@ -216,6 +574,14 @@ class Pipeline:
         dataset_accessor, dataset_template = resolve_dataset_accessor(
             self.storage, dataset_version_id
         )
+        # Backfill performance-critical index for already-ingested datasets.
+        # This is safe/idempotent, and dramatically reduces per-plugin dataset load time.
+        if dataset_table_name:
+            try:
+                self.storage.ensure_dataset_row_index_index(dataset_table_name)
+            except Exception:
+                # Fail closed for analysis correctness, but don't crash the pipeline due to an index backfill.
+                pass
 
         column_lookup: dict[str, int] | None = None
 
@@ -252,6 +618,7 @@ class Pipeline:
 
         def attach_evidence(findings: list[Any]) -> list[dict[str, Any]]:
             enriched: list[dict[str, Any]] = []
+            allowed_measurements = {"measured", "modeled", "not_applicable", "error"}
             for item in findings:
                 if isinstance(item, dict):
                     entry = dict(item)
@@ -295,6 +662,17 @@ class Pipeline:
                         pass
                 if "measurement_type" not in entry:
                     entry["measurement_type"] = "measured"
+                measurement = entry.get("measurement_type")
+                if isinstance(measurement, str):
+                    mnorm = measurement.strip().lower()
+                    if mnorm == "degraded":
+                        # Back-compat: some plugins emit "degraded" to signal an optional
+                        # dependency/fallback. Normalize to a schema-valid state.
+                        entry["measurement_type"] = "not_applicable"
+                    elif mnorm not in allowed_measurements:
+                        entry["measurement_type"] = "error"
+                else:
+                    entry["measurement_type"] = "error"
                 entry["evidence"] = evidence
                 enriched.append(entry)
             return enriched
@@ -329,15 +707,6 @@ class Pipeline:
             plugin_settings.update(settings.get(spec.plugin_id, {}))
             if include_input and input_file is not None:
                 plugin_settings["input_file"] = str(input_file)
-            budget = plugin_settings.get("budget")
-            if not isinstance(budget, dict):
-                budget = {}
-            budget = {
-                "row_limit": budget.get("row_limit"),
-                "sampled": bool(budget.get("sampled", False)),
-                "time_limit_ms": budget.get("time_limit_ms"),
-                "cpu_limit_ms": budget.get("cpu_limit_ms"),
-            }
             execution_id = self.storage.start_plugin_execution(
                 run_id,
                 spec.plugin_id,
@@ -345,29 +714,16 @@ class Pipeline:
                 now_iso(),
                 status="running",
             )
-            def dataset_loader(
-                columns: list[str] | None = None, row_limit: int | None = None
-            ):
-                limit = row_limit
-                if limit is None:
-                    limit = budget.get("row_limit")
-                return dataset_accessor.load(columns=columns, row_limit=limit)
-
-            ctx = PluginContext(
-                run_id=run_id,
-                run_dir=run_dir,
-                settings=plugin_settings,
-                run_seed=run_seed,
-                logger=logger,
-                storage=self.storage,
-                dataset_loader=dataset_loader,
-                budget=budget,
-                tenant_id=self.tenant_id,
-                project_id=project_id,
-                dataset_id=dataset_id,
-                dataset_version_id=dataset_version_id,
-                input_hash=input_hash,
-            )
+            module_path, _ = spec.entrypoint.split(":", 1)
+            if module_path.endswith(".py"):
+                module_file = spec.path / module_path
+            else:
+                module_file = spec.path / f"{module_path}.py"
+            code_hash = file_sha256(module_file) if module_file.exists() else None
+            code_hash = self._augment_code_hash_if_stat_wrapper(spec.plugin_id, module_file, code_hash)
+            plugin_seed = stable_hash(f"{run_seed}:{spec.plugin_id}")
+            settings_hash: str | None = None
+            execution_fingerprint: str | None = None
             heartbeat_stop = threading.Event()
             heartbeat_thread: threading.Thread | None = None
             start_wall = time.perf_counter()
@@ -398,31 +754,215 @@ class Pipeline:
                 heartbeat_thread = threading.Thread(target=heartbeat, daemon=True)
                 heartbeat_thread.start()
             try:
-                self.manager.validate_config(spec, plugin_settings)
-                allow_paths: list[str] = []
+                # Apply JSONSchema defaults deterministically before validation and execution.
+                plugin_settings = self.manager.resolve_config(spec, plugin_settings)
+                # Resolve secret/environment indirection at execution-time only.
+                plugin_settings_exec = resolve_env_placeholders(plugin_settings)
+                budget = plugin_settings.get("budget")
+                if not isinstance(budget, dict):
+                    budget = {}
+                # Large dataset policy: inject complexity caps (not row sampling).
+                policy_enabled = os.environ.get("STAT_HARNESS_LARGE_DATASET_POLICY", "").strip().lower()
+                if policy_enabled not in {"0", "false", "no", "off"}:
+                    try:
+                        caps = _large_caps_for(
+                            plugin_id=spec.plugin_id,
+                            plugin_type=spec.type,
+                            row_count=dataset_row_count,
+                            column_count=dataset_column_count,
+                        )
+                        if caps is not None:
+                            caps_budget = _large_caps_budget(caps)
+                            # Only fill missing keys; explicit plugin config overrides policy.
+                            for k, v in caps_budget.items():
+                                budget.setdefault(k, v)
+                    except Exception:
+                        pass
+                budget = {
+                    "row_limit": budget.get("row_limit"),
+                    "sampled": bool(budget.get("sampled", False)),
+                    "time_limit_ms": budget.get("time_limit_ms"),
+                    "cpu_limit_ms": budget.get("cpu_limit_ms"),
+                    "batch_size": budget.get("batch_size"),
+                    "max_cols": budget.get("max_cols"),
+                    "max_pairs": budget.get("max_pairs"),
+                    "max_groups": budget.get("max_groups"),
+                    "max_windows": budget.get("max_windows"),
+                    "max_findings": budget.get("max_findings"),
+                }
+                settings_for_hash = dict(plugin_settings)
+                if "input_file" in settings_for_hash:
+                    # File paths are machine-dependent; treat input identity as input_hash instead.
+                    settings_for_hash["input_file"] = None
+                settings_hash = hashlib.sha256(
+                    json_dumps(settings_for_hash).encode("utf-8")
+                ).hexdigest()
+                execution_fingerprint = hashlib.sha256(
+                    json_dumps(
+                        {
+                            "plugin_id": spec.plugin_id,
+                            "plugin_version": spec.version,
+                            "code_hash": code_hash,
+                            "settings_hash": settings_hash,
+                            "dataset_hash": cache_dataset_hash,
+                        }
+                    ).encode("utf-8")
+                ).hexdigest()
+                self.storage.insert_event(
+                    kind="plugin_started",
+                    created_at=now_iso(),
+                    run_id=run_id,
+                    plugin_id=spec.plugin_id,
+                    run_fingerprint=None,
+                    payload={
+                        "execution_id": execution_id,
+                        "execution_fingerprint": execution_fingerprint,
+                        "plugin_seed": plugin_seed,
+                    },
+                )
+                # Cache reuse is only safe for pure/read-only plugins.
+                # - ingest plugins materialize the raw dataset in SQLite (required side-effects)
+                # - transform plugins materialize normalized/template layers (required side-effects)
+                # - report plugins materialize run-scoped artifacts whose content depends on this run_id
+                #   (and the set of executed plugins), so reuse across runs is unsafe.
+                # Reusing their previous outputs without re-applying side-effects can make the
+                # run invalid, so fail closed and disallow reuse for these types.
+                if reuse_cache and not force and str(spec.type or "") not in {"ingest", "transform", "report"}:
+                    cached = self.storage.fetch_cached_plugin_result(execution_fingerprint)
+                else:
+                    cached = None
+                if cached:
+                    # Reuse cached ok result deterministically, copying artifacts into this run.
+                    old_run_id = str(cached.get("run_id") or "")
+                    artifacts_payload = cached.get("artifacts") or []
+                    if old_run_id:
+                        old_run_dir = self.base_dir / "runs" / old_run_id
+                        # Copy standard plugin artifacts directory (most plugins write here).
+                        src_dir = old_run_dir / "artifacts" / spec.plugin_id
+                        dst_dir = run_dir / "artifacts" / spec.plugin_id
+                        if src_dir.exists() and not dst_dir.exists():
+                            shutil.copytree(src_dir, dst_dir)
+                        # Also copy any explicitly declared artifacts that live outside artifacts/<plugin_id>
+                        # (e.g. report plugins writing into run root or slide_kit/).
+                        for item in artifacts_payload:
+                            if not isinstance(item, dict):
+                                continue
+                            rel = str(item.get("path") or "")
+                            if not rel:
+                                continue
+                            try:
+                                src = safe_join(old_run_dir, rel)
+                                dst = safe_join(run_dir, rel)
+                            except Exception:
+                                continue
+                            if not src.exists() or dst.exists():
+                                continue
+                            ensure_dir(dst.parent)
+                            if src.is_dir():
+                                shutil.copytree(src, dst)
+                            else:
+                                shutil.copy2(src, dst)
+                    artifacts = [
+                        PluginArtifact(
+                            path=str(item.get("path") or ""),
+                            type=str(item.get("type") or ""),
+                            description=str(item.get("description") or ""),
+                        )
+                        for item in artifacts_payload
+                        if isinstance(item, dict)
+                    ]
+                    result = PluginResult(
+                        status="ok",
+                        summary=f"REUSED from {cached.get('run_id')}",
+                        metrics=cached.get("metrics") or {},
+                        findings=cached.get("findings") or [],
+                        artifacts=artifacts,
+                        error=None,
+                        references=cached.get("references") or [],
+                        debug={"reused_from": cached.get("run_id")},
+                        budget=cached.get("budget")
+                        or {
+                            "row_limit": None,
+                            "sampled": False,
+                            "time_limit_ms": None,
+                            "cpu_limit_ms": None,
+                        },
+                    )
+                    exec_info = {
+                        "completed_at": now_iso(),
+                        "duration_ms": 0,
+                        "cpu_user": None,
+                        "cpu_system": None,
+                        "max_rss": None,
+                        "warnings_count": None,
+                    }
+                    self.storage.update_plugin_execution(
+                        execution_id=execution_id,
+                        completed_at=exec_info.get("completed_at"),
+                        duration_ms=0,
+                        status="ok",
+                        exit_code=0,
+                        cpu_user=None,
+                        cpu_system=None,
+                        max_rss=None,
+                        warnings_count=None,
+                        stdout="",
+                        stderr="",
+                    )
+                    self.storage.save_plugin_result(
+                        run_id,
+                        spec.plugin_id,
+                        spec.version,
+                        now_iso(),
+                        code_hash,
+                        settings_hash,
+                        cache_dataset_hash,
+                        result,
+                        execution_fingerprint=execution_fingerprint,
+                    )
+                    self.storage.insert_event(
+                        kind="plugin_reused",
+                        created_at=now_iso(),
+                        run_id=run_id,
+                        plugin_id=spec.plugin_id,
+                        run_fingerprint=None,
+                        payload={"reused_from": cached.get("run_id")},
+                    )
+                    return result
+                # File sandbox policy:
+                # - Read: plugin code + src + run dir + (optional) input file + any declared allowlist tokens.
+                # - Write: run dir only (artifacts/logs/tmp).
+                read_allow_paths: list[str] = []
                 for token in spec.sandbox.get("fs_allowlist", []):
                     if token == "appdata":
-                        allow_paths.append(str(self.base_dir))
+                        read_allow_paths.append(str(self.base_dir))
                     elif token == "plugins":
-                        allow_paths.append(str(self.plugins_dir))
+                        read_allow_paths.append(str(self.plugins_dir))
+                    elif token == "models":
+                        # Local model store (operator-managed). Plugins must still be no-network and
+                        # the sandbox will prevent writes unless explicitly allowlisted.
+                        read_allow_paths.append("/mnt/d/autocapture/models")
                     elif token == "run_dir":
-                        allow_paths.append(str(run_dir))
+                        read_allow_paths.append(str(run_dir))
                     else:
-                        allow_paths.append(
+                        read_allow_paths.append(
                             str((self.plugins_dir.parent / token).resolve())
                         )
-                allow_paths.append(str(self.plugins_dir.parent / "src"))
-                allow_paths.append(str(run_dir))
-                allow_paths.append(str(self.appdata_root / "state.sqlite"))
+                read_allow_paths.append(str(self.plugins_dir))
+                read_allow_paths.append(str(self.plugins_dir.parent / "src"))
+                read_allow_paths.append(str(run_dir))
                 if include_input and input_file is not None:
-                    allow_paths.append(str(input_file))
+                    read_allow_paths.append(str(input_file))
+                write_allow_paths = [str(run_dir)]
                 request = {
                     "plugin_id": spec.plugin_id,
+                    "plugin_type": spec.type,
                     "entrypoint": spec.entrypoint,
-                    "settings": plugin_settings,
+                    "settings": plugin_settings_exec,
                     "run_id": run_id,
                     "run_dir": str(run_dir),
                     "run_seed": run_seed,
+                    "plugin_seed": plugin_seed,
                     "dataset_version_id": dataset_version_id,
                     "project_id": project_id,
                     "dataset_id": dataset_id,
@@ -432,7 +972,10 @@ class Pipeline:
                     "appdata_dir": str(self.appdata_root),
                     "root_dir": str(self.plugins_dir.parent.resolve()),
                     "sandbox": spec.sandbox,
-                    "allow_paths": allow_paths,
+                    "read_allow_paths": read_allow_paths,
+                    "write_allow_paths": write_allow_paths,
+                    # Back-compat for older runner versions (and for tests calling directly).
+                    "allow_paths": read_allow_paths,
                 }
                 runner = run_plugin_subprocess(
                     spec, request, run_dir, self.plugins_dir.parent
@@ -511,17 +1054,20 @@ class Pipeline:
                 else:
                     duration_ms = int((time.perf_counter() - start_wall) * 1000)
                 duration_s = duration_ms / 1000.0
-                status_tag = "OK" if result.status == "ok" else "ERR"
+                if result.status == "ok":
+                    status_tag = "OK"
+                elif result.status == "skipped":
+                    status_tag = "SKIP"
+                elif result.status == "degraded":
+                    status_tag = "DEG"
+                else:
+                    status_tag = "ERR"
                 print(f"[{status_tag}] {spec.plugin_id} ({duration_s:.1f}s)")
             module_path, _ = spec.entrypoint.split(":", 1)
             if module_path.endswith(".py"):
                 module_file = spec.path / module_path
             else:
                 module_file = spec.path / f"{module_path}.py"
-            code_hash = file_sha256(module_file) if module_file.exists() else None
-            settings_hash = hashlib.sha256(
-                json_dumps(plugin_settings).encode("utf-8")
-            ).hexdigest()
             self.storage.save_plugin_result(
                 run_id,
                 spec.plugin_id,
@@ -531,7 +1077,34 @@ class Pipeline:
                 settings_hash,
                 input_hash,
                 result,
+                execution_fingerprint=execution_fingerprint,
             )
+            is_failure = str(result.status or "").lower() in {"error", "aborted"}
+            if not is_failure:
+                self.storage.insert_event(
+                    kind="plugin_completed",
+                    created_at=now_iso(),
+                    run_id=run_id,
+                    plugin_id=spec.plugin_id,
+                    run_fingerprint=None,
+                    payload={
+                        "status": result.status,
+                        "duration_ms": int(exec_info.get("duration_ms") or 0)
+                        if "runner" in locals()
+                        else None,
+                    },
+                )
+            else:
+                # Avoid leaving partial artifacts behind when output was invalid / failed.
+                shutil.rmtree(run_dir / "artifacts" / spec.plugin_id, ignore_errors=True)
+                self.storage.insert_event(
+                    kind="plugin_failed",
+                    created_at=now_iso(),
+                    run_id=run_id,
+                    plugin_id=spec.plugin_id,
+                    run_fingerprint=None,
+                    payload={"status": result.status, "summary": result.summary},
+                )
             return result
 
         if input_file is not None:
@@ -540,6 +1113,152 @@ class Pipeline:
                 run_spec(ingest_spec, include_input=True)
             else:
                 record_missing("ingest_tabular", "Missing ingest plugin")
+
+        # Normalization is required before any other plugin reads the dataset.
+        # This ensures all plugins operate on the normalized (template) layer, not raw.
+        pre_ran_transforms: set[str] = set()
+        normalize_spec = spec_map.get("transform_normalize_mixed")
+        if normalize_spec:
+            norm_result = run_spec(normalize_spec)
+            pre_ran_transforms.add("transform_normalize_mixed")
+            if norm_result.status != "ok":
+                self.storage.update_run_status(
+                    run_id,
+                    "error",
+                    {
+                        "type": "NormalizationFailed",
+                        "plugin_id": "transform_normalize_mixed",
+                        "status": norm_result.status,
+                        "summary": norm_result.summary,
+                    },
+                )
+                report = build_report(
+                    self.storage, run_id, run_dir, Path("docs/report.schema.json")
+                )
+                write_report(report, run_dir)
+                return run_id
+        else:
+            record_missing("transform_normalize_mixed", "Missing normalization transform plugin")
+            self.storage.update_run_status(
+                run_id,
+                "error",
+                {"type": "NormalizationMissing", "plugin_id": "transform_normalize_mixed"},
+            )
+            report = build_report(
+                self.storage, run_id, run_dir, Path("docs/report.schema.json")
+            )
+            write_report(report, run_dir)
+            return run_id
+
+        # Optional secondary transforms. If not configured, they should skip cleanly.
+        template_spec = spec_map.get("transform_template")
+        if template_spec:
+            run_spec(template_spec)
+            pre_ran_transforms.add("transform_template")
+
+        # Enforce that the normalized/template layer is now active for dataset access.
+        dataset_accessor, dataset_template = resolve_dataset_accessor(
+            self.storage, dataset_version_id
+        )
+        if not dataset_template or str(dataset_template.get("status") or "") != "ready":
+            self.storage.update_run_status(
+                run_id,
+                "error",
+                {"type": "NormalizationNotReady", "dataset_version_id": dataset_version_id},
+            )
+            report = build_report(
+                self.storage, run_id, run_dir, Path("docs/report.schema.json")
+            )
+            write_report(report, run_dir)
+            return run_id
+
+        # Once normalization is ready, salt the dataset hash with the mapping hash so
+        # all subsequent plugin cache keys reflect the normalized layer definition.
+        try:
+            mapping_hash = str(dataset_template.get("mapping_hash") or "").strip()
+            template_id = str(dataset_template.get("template_id") or "").strip()
+            if mapping_hash:
+                cache_dataset_hash = hashlib.sha256(
+                    f"{input_hash}:{mapping_hash}:{template_id}".encode("utf-8")
+                ).hexdigest()
+        except Exception:
+            cache_dataset_hash = str(input_hash)
+
+        # Critical stop: ensure the normalization/template mapping covers every raw dataset column.
+        # This fails closed for ambiguous duplicate headers (must be resolved by safe_name).
+        try:
+            cols = self.storage.fetch_dataset_columns(dataset_version_id)
+            expected_safes = [str(c.get("safe_name") or "") for c in cols if c.get("safe_name")]
+            expected_set = set(expected_safes)
+            mapping_payload = {}
+            raw_mapping = {}
+            try:
+                import json
+
+                mapping_payload = json.loads(str(dataset_template.get("mapping_json") or "{}"))
+            except Exception:
+                mapping_payload = {}
+            if isinstance(mapping_payload, dict):
+                raw_mapping = mapping_payload.get("mapping") if isinstance(mapping_payload.get("mapping"), dict) else {}
+            if not isinstance(raw_mapping, dict):
+                raw_mapping = {}
+
+            # Build observed safe_names from mapping_json.
+            observed: list[str] = []
+            # Back-compat: mapping may be {field: original_name}; resolve via dataset_columns.
+            orig_to_safes: dict[str, list[str]] = {}
+            for c in cols:
+                orig = str(c.get("original_name") or "")
+                safe = str(c.get("safe_name") or "")
+                if orig and safe:
+                    orig_to_safes.setdefault(orig, []).append(safe)
+            for _, src in raw_mapping.items():
+                if isinstance(src, dict):
+                    safe = str(src.get("safe_name") or "")
+                    if safe:
+                        observed.append(safe)
+                elif isinstance(src, str):
+                    safes = orig_to_safes.get(src) or []
+                    if len(safes) == 1:
+                        observed.append(safes[0])
+                    else:
+                        # Ambiguous or unknown original name; treat as missing mapping.
+                        pass
+
+            observed_set = set(observed)
+            missing = sorted(expected_set - observed_set)
+            extras = sorted(observed_set - expected_set)
+            if missing or extras:
+                self.storage.update_run_status(
+                    run_id,
+                    "error",
+                    {
+                        "type": "NormalizationMappingIncomplete",
+                        "dataset_version_id": dataset_version_id,
+                        "missing_safe_names": missing,
+                        "extra_safe_names": extras,
+                    },
+                )
+                report = build_report(
+                    self.storage, run_id, run_dir, Path("docs/report.schema.json")
+                )
+                write_report(report, run_dir)
+                return run_id
+        except Exception as exc:
+            self.storage.update_run_status(
+                run_id,
+                "error",
+                {
+                    "type": "NormalizationMappingValidationError",
+                    "dataset_version_id": dataset_version_id,
+                    "message": str(exc),
+                },
+            )
+            report = build_report(
+                self.storage, run_id, run_dir, Path("docs/report.schema.json")
+            )
+            write_report(report, run_dir)
+            return run_id
 
         if auto_plan:
             profile_specs = [spec for spec in specs if spec.type == "profile"]
@@ -556,9 +1275,106 @@ class Pipeline:
             else:
                 record_missing("planner_basic", "Missing planner plugin")
 
+        # Always include normalization-layer plugins in the run fingerprint / expected list,
+        # since they are required and executed for every run.
+        if "transform_normalize_mixed" in spec_map:
+            selected.add("transform_normalize_mixed")
+        if "transform_template" in spec_map:
+            selected.add("transform_template")
+
+        expanded, added_deps, missing_deps = self._expand_selected_with_deps(
+            spec_map, selected
+        )
+        if missing_deps:
+            for edge in missing_deps:
+                record_missing("pipeline_preflight", f"Missing dependency: {edge}")
+            self.storage.update_run_status(
+                run_id,
+                "error",
+                {"type": "MissingDependency", "missing": missing_deps},
+            )
+            report = build_report(
+                self.storage, run_id, run_dir, Path("docs/report.schema.json")
+            )
+            write_report(report, run_dir)
+            return run_id
+        selected = expanded
+
         missing_manual = sorted(pid for pid in selected if pid not in spec_map)
         for pid in missing_manual:
             record_missing(pid, f"Unknown plugin id: {pid}")
+
+        executed_ids = sorted(pid for pid in selected if pid in spec_map)
+        fingerprint_payload: dict[str, Any] = {
+            "input_hash": input_hash,
+            "requested_run_seed": requested_run_seed,
+            "run_seed": run_seed,
+            "plugins": [],
+            "settings": settings,
+            "features": {
+                "network_allowed": os.environ.get("STAT_HARNESS_ALLOW_NETWORK", "").lower()
+                in {"1", "true", "yes"},
+                "vector_store_enabled": os.environ.get("STAT_HARNESS_ENABLE_VECTOR_STORE", "").lower()
+                in {"1", "true", "yes", "on"},
+            },
+        }
+        for pid in executed_ids:
+            spec = spec_map[pid]
+            module_path, _ = spec.entrypoint.split(":", 1)
+            if module_path.endswith(".py"):
+                module_file = spec.path / module_path
+            else:
+                module_file = spec.path / f"{module_path}.py"
+            code_hash = file_sha256(module_file) if module_file.exists() else None
+            default_settings = dict(spec.settings.get("defaults", {}))
+            default_settings.update(settings.get(pid, {}))
+            try:
+                resolved = self.manager.resolve_config(spec, default_settings)
+            except Exception:
+                resolved = default_settings
+            if "input_file" in resolved:
+                resolved["input_file"] = None
+            settings_hash = hashlib.sha256(json_dumps(resolved).encode("utf-8")).hexdigest()
+            fingerprint_payload["plugins"].append(
+                {
+                    "plugin_id": pid,
+                    "plugin_version": spec.version,
+                    "code_hash": code_hash,
+                    "settings_hash": settings_hash,
+                }
+            )
+        run_fingerprint = hashlib.sha256(
+            json_dumps(fingerprint_payload).encode("utf-8")
+        ).hexdigest()
+        self.storage.update_run_fingerprint(run_id, run_fingerprint)
+        write_json(
+            run_dir / "journal.json",
+            {"run_id": run_id, "status": "running", "pid": os.getpid(), "run_fingerprint": run_fingerprint},
+        )
+        self.storage.insert_event(
+            kind="run_fingerprint",
+            created_at=now_iso(),
+            run_id=run_id,
+            run_fingerprint=run_fingerprint,
+            payload={"plugins": executed_ids},
+        )
+
+        transform_ids = {
+            pid
+            for pid in selected
+            if pid in spec_map and spec_map[pid].type == "transform"
+        }
+        if transform_ids:
+            layers = self._toposort_layers(specs, transform_ids)
+            for layer in layers:
+                for spec in layer:
+                    if spec.plugin_id in pre_ran_transforms:
+                        continue
+                    run_spec(spec)
+            dataset_accessor, dataset_template = resolve_dataset_accessor(
+                self.storage, dataset_version_id
+            )
+            column_lookup = None
 
         if not auto_plan:
             profile_ids = {
@@ -572,20 +1388,17 @@ class Pipeline:
                     for spec in layer:
                         run_spec(spec)
 
-        transform_ids = {
-            pid
-            for pid in selected
-            if pid in spec_map and spec_map[pid].type == "transform"
-        }
-        if transform_ids:
-            layers = self._toposort_layers(specs, transform_ids)
-            for layer in layers:
-                for spec in layer:
-                    run_spec(spec)
-            dataset_accessor, dataset_template = resolve_dataset_accessor(
-                self.storage, dataset_version_id
-            )
-            column_lookup = None
+        if not auto_plan:
+            planner_ids = {
+                pid
+                for pid in selected
+                if pid in spec_map and spec_map[pid].type == "planner"
+            }
+            if planner_ids:
+                layers = self._toposort_layers(specs, planner_ids)
+                for layer in layers:
+                    for spec in layer:
+                        run_spec(spec)
 
         analysis_ids = {
             pid
@@ -597,7 +1410,9 @@ class Pipeline:
             if len(layer) == 1:
                 run_spec(layer[0])
                 continue
-            max_workers = min(len(layer), (os.cpu_count() or 1))
+            max_workers = self._max_workers_for_stage(
+                "analysis", len(layer), dataset_row_count
+            )
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = [
                     executor.submit(run_spec, spec, False, False) for spec in layer
@@ -605,21 +1420,55 @@ class Pipeline:
                 for future in futures:
                     future.result()
 
+        # Report stage:
+        # - Always produce report.md/report.json (required by project policy).
+        # - Some report plugins need report.json as input (e.g. report_plain_english_v1).
+        #   Ensure report_bundle runs before those, while still running report_bundle late enough
+        #   to include pre-bundle report-plugin results in report.json.
+        report_ids = {
+            pid
+            for pid in selected
+            if pid in spec_map and spec_map[pid].type == "report" and pid != "report_bundle"
+        }
+
         report_spec = spec_map.get("report_bundle")
-        if report_spec:
-            run_spec(report_spec)
-            report_json = run_dir / "report.json"
-            report_md = run_dir / "report.md"
-            if not report_json.exists() or not report_md.exists():
-                report = build_report(
-                    self.storage, run_id, run_dir, Path("docs/report.schema.json")
-                )
-                write_report(report, run_dir)
-        else:
+        if not report_spec:
             record_missing("report_bundle", "Missing report plugin")
-            report = build_report(
-                self.storage, run_id, run_dir, Path("docs/report.schema.json")
-            )
+        else:
+            # Partition report plugins into:
+            # - pre_bundle: should run before report_bundle (their results should appear in report.json)
+            # - post_bundle: explicitly depend on report_bundle (they consume report.json)
+            pre_bundle: set[str] = set()
+            post_bundle: set[str] = set()
+            for pid in report_ids:
+                spec = spec_map.get(pid)
+                if not spec:
+                    continue
+                if "report_bundle" in (spec.depends_on or []):
+                    post_bundle.add(pid)
+                else:
+                    pre_bundle.add(pid)
+
+            if pre_bundle:
+                layers = self._toposort_layers(specs, pre_bundle)
+                for layer in layers:
+                    for spec in layer:
+                        run_spec(spec)
+
+            # Now generate the canonical report bundle from the DB state.
+            run_spec(report_spec)
+
+            if post_bundle:
+                layers = self._toposort_layers(specs, post_bundle)
+                for layer in layers:
+                    for spec in layer:
+                        run_spec(spec)
+
+        # Fail-closed: even if report_bundle didn't emit files, synthesize the report from DB.
+        report_json = run_dir / "report.json"
+        report_md = run_dir / "report.md"
+        if not report_json.exists() or not report_md.exists():
+            report = build_report(self.storage, run_id, run_dir, Path("docs/report.schema.json"))
             write_report(report, run_dir)
 
         if llm_selected:
@@ -629,5 +1478,168 @@ class Pipeline:
             else:
                 record_missing("llm_prompt_builder", "Missing llm plugin")
 
-        self.storage.update_run_status(run_id, "completed")
+        plugin_results = self.storage.fetch_plugin_results(run_id)
+        plugin_executions = self.storage.fetch_plugin_executions(run_id)
+        # A run can be "completed" even if some plugins are skipped or degraded under evidence gates.
+        # Treat only true failures as "partial".
+        any_failures = any(
+            str(row.get("status") or "").lower() in {"error", "aborted"} for row in plugin_results
+        )
+        final_status = "partial" if any_failures else "completed"
+
+        # Update run status before final report synthesis so report.json/report.md reflect completion.
+        self.storage.update_run_status(run_id, final_status)
+        try:
+            report = build_report(self.storage, run_id, run_dir, Path("docs/report.schema.json"))
+            write_report(report, run_dir)
+        except Exception:
+            pass
+
+        # Build and persist a canonical run manifest for portable provenance.
+        artifacts: list[dict[str, Any]] = []
+        def _register_artifact(rel_path: str, plugin_id: str | None = None) -> None:
+            path = run_dir / rel_path
+            if not path.exists() or not path.is_file():
+                return
+            sha = file_sha256(path)
+            size = path.stat().st_size
+            entry = {
+                "path": rel_path.replace("\\", "/"),
+                "sha256": sha,
+                "bytes": int(size),
+                "plugin_id": plugin_id,
+            }
+            artifacts.append(entry)
+            self.storage.upsert_artifact(
+                run_id=run_id,
+                path=entry["path"],
+                sha256=sha,
+                size_bytes=int(size),
+                mime=None,
+                created_at=now_iso(),
+                plugin_id=plugin_id,
+            )
+
+        _register_artifact("report.json", plugin_id="report")
+        _register_artifact("report.md", plugin_id="report")
+        if (run_dir / "evaluation.json").exists():
+            _register_artifact("evaluation.json", plugin_id="report")
+        logs_dir = run_dir / "logs"
+        if logs_dir.exists():
+            for item in sorted(logs_dir.rglob("*")):
+                if item.is_file():
+                    rel = str(item.relative_to(run_dir)).replace("\\", "/")
+                    _register_artifact(rel, plugin_id="logs")
+        artifacts_dir = run_dir / "artifacts"
+        if artifacts_dir.exists():
+            for item in sorted(artifacts_dir.rglob("*")):
+                if not item.is_file():
+                    continue
+                rel = str(item.relative_to(run_dir)).replace("\\", "/")
+                plugin_id = None
+                parts = rel.split("/")
+                if len(parts) >= 3 and parts[0] == "artifacts":
+                    plugin_id = parts[1]
+                _register_artifact(rel, plugin_id=plugin_id)
+
+        manifest = {
+            "schema_version": "run_manifest.v1",
+            "run_id": run_id,
+            "run_fingerprint": run_fingerprint,
+            "created_at": now_iso(),
+            "requested_run_seed": requested_run_seed,
+            "run_seed": run_seed,
+            "input": {
+                "upload_id": upload_id,
+                "input_hash": input_hash,
+                "original_filename": input_filename,
+            },
+            "config": {"settings": settings},
+            "plugins": [
+                {
+                    "plugin_id": row.get("plugin_id"),
+                    "status": row.get("status"),
+                    "plugin_version": row.get("plugin_version"),
+                    "code_hash": row.get("code_hash"),
+                    "settings_hash": row.get("settings_hash"),
+                    "execution_fingerprint": row.get("execution_fingerprint"),
+                }
+                for row in sorted(plugin_results, key=lambda r: str(r.get("plugin_id") or ""))
+            ],
+            "executions": plugin_executions,
+            "artifacts": sorted(artifacts, key=lambda a: (str(a.get("plugin_id") or ""), str(a.get("path") or ""))),
+            "summary": {"status": final_status},
+        }
+        manifest_path = run_dir / "run_manifest.json"
+        write_json(manifest_path, manifest)
+        manifest_sha = file_sha256(manifest_path)
+        self.storage.update_run_manifest_sha256(run_id, manifest_sha)
+
+        write_json(
+            run_dir / "journal.json",
+            {
+                "run_id": run_id,
+                "status": final_status,
+                "pid": os.getpid(),
+                "run_fingerprint": run_fingerprint,
+                "completed_at": now_iso(),
+            },
+        )
+        self.storage.insert_event(
+            kind="run_completed",
+            created_at=now_iso(),
+            run_id=run_id,
+            run_fingerprint=run_fingerprint,
+            payload={"status": final_status},
+        )
         return run_id
+
+
+def _format_edges(deps: dict[str, set[str]], nodes: set[str]) -> list[str]:
+    edges: list[str] = []
+    for src in sorted(nodes):
+        for dst in sorted(deps.get(src, set())):
+            if dst in nodes:
+                edges.append(f"{src}->{dst}")
+    return edges
+
+
+def _find_cycle_path(deps: dict[str, set[str]], nodes: set[str]) -> list[str] | None:
+    """Best-effort cycle path for actionable errors."""
+
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    parent: dict[str, str] = {}
+
+    def dfs(node: str) -> list[str] | None:
+        visiting.add(node)
+        for nxt in sorted(deps.get(node, set())):
+            if nxt not in nodes:
+                continue
+            if nxt in visited:
+                continue
+            if nxt in visiting:
+                # Reconstruct cycle node->...->nxt->nxt
+                path = [nxt]
+                cur = node
+                while cur != nxt and cur in parent:
+                    path.append(cur)
+                    cur = parent[cur]
+                path.append(nxt)
+                path.reverse()
+                return path
+            parent[nxt] = node
+            found = dfs(nxt)
+            if found:
+                return found
+        visiting.remove(node)
+        visited.add(node)
+        return None
+
+    for node in sorted(nodes):
+        if node in visited:
+            continue
+        found = dfs(node)
+        if found:
+            return found
+    return None

@@ -1,0 +1,520 @@
+## THREAD
+
+unknown
+
+## CHAT_ID
+
+unknown
+
+## TS
+
+2026-02-06
+
+## Assumptions (scoped to `repomix-output.md`)
+
+* Only local execution; no network calls are intended at runtime (UI is local web only). 
+* `./appdata/` is the sole state/artifact root (SQLite + per-run directories). 
+* Runs are orchestrated by `Pipeline.run()` and plugin execution is subprocess-based (`plugin_runner.py`).  
+* Plugin contracts are enforced via manifest + config/output JSON schemas.  
+* Reports are written as both `report.md` and schema-validated `report.json`.  
+* Uploads are hashed (sha256) and deduplicated in storage lookups.  
+* Determinism is partially enforced (per-run seed; JSON stable dumps; discipline plugin checks `measurement_type` + modeled assumptions).   
+* Multi-tenant support exists in schema (`tenant_id` columns), but operator experience is effectively “single-operator local” unless flags are enabled. 
+
+## Key claims (grounded)
+
+| Claim label | Claim                                                                                              | Evidence                                                                                                                 |
+| ----------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| CITE        | `run_id` is typically random/UUID-derived; `run_seed` defaults to a stable hash of `run_id`.       | `make_run_id()` uses `uuid.uuid4().hex`.  Pipeline derives `run_seed` via `stable_hash(run_id)` when seed not provided.  |
+| CITE        | JSON writing is non-atomic in core utilities (direct `write_text`).                                | `write_json()` uses `path.write_text(...)` directly.                                                                     |
+| CITE        | SQLite durability is WAL + `synchronous=NORMAL` by default.                                        | Connection PRAGMAs set WAL and synchronous NORMAL.                                                                       |
+| CITE        | Subprocess plugin runner enforces “no network” and a filesystem allowlist via guards.              | Sandbox network + FS guard setup is in `sandbox.py`.  Runner applies sandbox based on manifest.                          |
+| INFERENCE   | The current “plugin manager UI” is operator-hostile (no install/update/compat/sandbox visibility). | `/templates/plugins.html` lists plugins as plain `<li>` entries with no actions/metadata.                                |
+
+---
+
+# A) Red-team failure scenarios
+
+## A1) Red-team as a User (fatigue/misclick/low patience) — 10 scenarios
+
+|   # | Failure mode                                                                        | Likely detection signals (existing/needed)                                                                | Mitigation (defensive)                                                                                                                                                        |
+| --: | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  U1 | Upload wrong dataset (similar filename) → run “looks plausible”                     | UI shows only filename + bytes in some flows (no strong identity), while sha exists.                      | Require “dataset identity card” confirmation before run: sha256, row/col counts, inferred roles; make “Run” disabled until user acknowledges identity.                        |
+|  U2 | Dedup by sha causes user to think “new upload” happened but it reuses old upload_id | Server can return an existing upload by sha (ordered earliest).                                           | Make dedup explicit in UI: “Matched existing content; reusing upload_id=… created_at=…”. Store “upload_instance_id” for each attempt.                                         |
+|  U3 | Misunderstand modeled vs measured; treats modeled metrics as facts                  | “Determinism discipline” exists, but only if run includes that plugin.                                    | Make `measurement_type` mandatory at schema level for findings and add “modeled banner” UI grouping; always run discipline validation at harness-level (not optional plugin). |
+|  U4 | Runs are not provably reproducible (“what ran?”)                                    | Pipeline writes per-plugin request/response JSON files (good), but UX does not prominently link them.     | Add a “Proof” panel: settings hash, plugin code hash, request/response links, schema versions, dataset hash, seed.                                                            |
+|  U5 | Wrong plugin set selected (“all”) triggers expensive/irrelevant analyses            | Project flow encourages “Upload & Run All Plugins”.                                                       | Add planner-based recommended set and a “plan preview” step showing DAG and expected time/cost. Default to recommended, not all.                                              |
+|  U6 | Partial run errors are buried; user only sees “completed”                           | `/progress` endpoint returns plugin statuses + error summaries, but “completed” can still have errors.    | Introduce run outcome states: `completed_with_errors`, `failed`, `canceled`. Require a visible error badge + “re-run failed plugins” CTA.                                     |
+|  U7 | Editing JSON overrides introduces subtle schema-invalid settings                    | Settings UI is a raw `<textarea>` per plugin.                                                             | Add live JSON schema validation (client + server), show diffs vs defaults, and provide “reset to defaults” per plugin.                                                        |
+|  U8 | Known-issues editor encourages free-form entries → accidental false negatives       | Known issues editor supports “strict” and NL notes, with autosave.                                        | Add preview: “these are the exact checks that will run”; require explicit scope binding to ERP/project/dataset_version.                                                       |
+|  U9 | User can’t tell if run used sampling/row limits                                     | Budgets exist, but UX does not surface them in a single place. (Budget is part of plugin output schema.)  | Add “Sampling & budgets” summary with row_limit/sample strategy/time limits and whether results are complete vs sampled.                                                      |
+| U10 | LLM prompt artifact leaks PII because redaction is exact-match only                 | Prompt builder replaces exact detected values; misses variants/format changes.                            | Add deterministic structured redaction with canonicalization + context-aware masking; require a “PII scan report” artifact and user consent gate before prompt export.        |
+
+## A2) Red-team as a System Admin/Operator — 10 scenarios
+
+|   # | Failure mode                                                                     | Likely detection signals (existing/needed)                                | Mitigation (defensive)                                                                                                                           |
+| --: | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+|  O1 | Plugin dependency cycle blocks runs                                              | Toposort throws on cycles.                                                | Add a `stat-harness plugins doctor` command that precomputes DAG, highlights the cycle, and blocks enablement until resolved.                    |
+|  O2 | Schema drift: mix of draft-07 and 2020-12 behaves inconsistently                 | Some schemas use 2020-12.                                                 | Standardize schema dialect or select validator by `$schema` explicitly and test both; gate plugin install on schema validation pass.             |
+|  O3 | SQLite corruption or partial writes after crash/power loss                       | WAL + sync NORMAL trades durability for speed.                            | Add automatic backups + integrity checks (`PRAGMA integrity_check`), and crash recovery marking runs as “crashed” with salvage tooling.          |
+|  O4 | Run directory partially written (non-atomic) → “completed” but missing artifacts | `write_json()` is non-atomic.                                             | Use atomic write pattern (temp + fsync + rename) and run finalization step that checks required artifacts exist before marking completed.        |
+|  O5 | Sandbox allowlist too permissive by default (implicit `run_dir` + DB)            | Pipeline adds `run_dir` and `state.sqlite` to allow_paths.                | Make allowlist explicit per plugin; require “DB access” and “run_dir write” capabilities declared and approved in plugin manager.                |
+|  O6 | Hung plugin blocks worker threads; pipeline never completes                      | Runner supports timeout via budget time_limit_ms.                         | Add orchestrator watchdog + hard wall-time caps; classify as timeout and optionally retry with stricter budgets.                                 |
+|  O7 | Performance regression goes unnoticed (slow ingest, heavy plugins)               | `plugin_executions` captures durations & CPU.                             | Add regression gates: baseline fixture + threshold alerts; surface medians/p95 in UI.                                                            |
+|  O8 | Artifact serving path traversal                                                  | API uses `safe_join` for artifacts.                                       | Extend to block symlink/junction tricks and add tests covering symlinks and Windows path edge cases.                                             |
+|  O9 | “Auto-evaluate” path generates run_id separately (inconsistent ID policy)        | Server uses `uuid.uuid4().hex` directly.                                  | Centralize run_id policy in one function; add deterministic “run_fingerprint” alongside unique run_id.                                           |
+| O10 | PII tables drift / false positives poison prompt anonymization                   | `pii_entities` store hashes + values; prompt builder uses exact matches.  | Add PII confidence + provenance (which plugin/rules flagged it) and require review/approval for prompt export; add “redaction coverage” metrics. |
+
+---
+
+# B) Recommendations master tables (by bucket, in required order)
+
+**Legend:** Scores are **P1 Performant / P2 Security / P3 Accuracy / P4 Citeability = Total**.
+**Effort:** S/M/L. **Risk:** Low/Med/High.
+**Acceptance test includes:** *Improved*, *Risked*, *Enforcement location*, *Regression detection (ship gate: ANY_REGRESS ⇒ DO_NOT_SHIP)*, and a concrete verification.
+
+---
+
+## I. Foundation: Ingest + Run-core stability
+
+| ID     | Recommendation (one line)                                                                                                         | Rationale (why it matters)                                                                                                                      |    Scores | Effort | Risk | Dependencies                   | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                                                                           |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FND-01 | Make run directory creation **atomic** (temp dir → finalize/rename) and write a `run_manifest.json` first                         | Current run writes multiple files directly under `run_dir`  and JSON writes are non-atomic  → crashes yield partial/ambiguous state             | 1/1/2/3=7 |    M   |  Med | `utils.write_json` update      | Improved: P3,P4; Risked: P1 (extra fs ops); Enforce: `core/utils.py`, `core/pipeline.py`; Regress: deterministic fixture run must still pass + no missing artifacts ⇒ DO_NOT_SHIP; Acceptance: kill process mid-run then restart: run marked `crashed`, partial artifacts preserved, finalization never occurs. |
+| FND-02 | Add deterministic **`run_fingerprint`** (hash of dataset hash + settings + plugin set + harness version) for idempotency & replay | `run_id` is UUID-based ; seed often derived from run_id , so “same inputs” cannot be deduped/proved by ID alone                                 | 2/1/2/4=9 |    M   |  Low | stable hashing utility         | Improved: P1,P3,P4; Risked: none; Enforce: `core/pipeline.py`, `core/storage.py` schema; Regress: identical inputs must map to identical fingerprint; if not ⇒ DO_NOT_SHIP; Acceptance: rerun same dataset+settings yields same fingerprint and can optionally reuse cached outputs.                            |
+| FND-03 | Implement crash recovery: mark `runs.status=crashed` if `running` and no recent activity; add “resume/retry failed plugins”       | Runs table has `status` + `error_json`.  Pipeline writes plugin executions; progress endpoint relies on them.                                   | 1/1/3/3=8 |    M   |  Med | `plugin_executions` timestamps | Improved: P3,P4; Risked: P1 (startup scan); Enforce: `ui/server.py` startup hook + `storage.py`; Regress: no false “crashed” for slow runs; if observed ⇒ DO_NOT_SHIP; Acceptance: simulate hard kill; restart; run auto transitions to `crashed` with actionable “retry” plan.                                 |
+| FND-04 | Add SQLite “durability profiles” + periodic checkpoint + integrity check command                                                  | Default is WAL + sync NORMAL ; operators need an explicit “safe vs fast” knob and offline verification                                          | 1/1/2/2=6 |    S   |  Low | none                           | Improved: P3,P4; Risked: P1; Enforce: `core/storage.py`; Regress: performance profile tests must not exceed baseline thresholds; if exceeds ⇒ DO_NOT_SHIP; Acceptance: `stat-harness db doctor` runs `integrity_check`, prints WAL/checkpoint state, and can switch profiles.                                   |
+| FND-05 | Convert uploads to content-addressable storage + verify sha after write (atomic)                                                  | Upload path computes sha and dedupes  but integrity relies on in-memory hashing; strengthen by re-hashing on disk + CAS layout for auditability | 2/2/2/3=9 |    M   |  Med | `ui/server.py` upload code     | Improved: P1,P2,P3,P4; Risked: none; Enforce: `ui/server.py`; Regress: upload throughput must not regress >5% on fixture; else DO_NOT_SHIP; Acceptance: corrupt file write simulation causes upload rejection; stored file path is `uploads/by-sha/<sha>/raw`.                                                  |
+| FND-06 | Make dataset version hashing provable: compute `data_hash` from canonicalized content and store alongside row/col counts          | `dataset_versions` has `data_hash`, `row_count`, `column_count` ; ensure it is always set deterministically from ingested table writes          | 1/1/3/4=9 |    M   |  Med | ingest plugin update           | Improved: P3,P4; Risked: P1; Enforce: `plugins/ingest_tabular/plugin.py`, `storage.py`; Regress: `data_hash` stable across runs; if drift ⇒ DO_NOT_SHIP; Acceptance: ingest same file twice yields identical `data_hash`, row/col counts, and canonical column mapping.                                         |
+| FND-07 | Add run-dir GC + retention policy + “pin” runs for audits                                                                         | No evidence of cleanup/retention controls (gap).                                                                                                | 1/1/2/2=6 |    M   |  Med | new config + UI                | Improved: P1,P2,P4; Risked: P3 (accidental deletion); Enforce: `core/storage.py` + `ui/server.py`; Regress: pinned runs must never be deleted; if deletion occurs ⇒ DO_NOT_SHIP; Acceptance: configured retention deletes only unpinned runs older than threshold and logs actions.                             |
+| FND-08 | Expand path-safety to block symlink/junction tricks in artifact serving and sandboxed file access                                 | `safe_join` blocks traversal  and is used for artifacts ; extend to symlinks/junctions for Windows hardening                                    | 0/3/1/1=5 |    S   |  Med | new tests                      | Improved: P2; Risked: P1 (extra resolve calls); Enforce: `core/utils.py safe_join`, `core/sandbox.py`; Regress: legitimate artifact reads must still work; else DO_NOT_SHIP; Acceptance: tests create symlink escape attempt and verify denial.                                                                 |
+
+---
+
+## II. Metadata: Contracts + provenance + auditability
+
+| ID      | Recommendation                                                                                                         | Rationale                                                                                                                                          |    Scores | Effort | Risk | Dependencies        | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                                                                                                            |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| META-01 | Introduce a canonical `run_manifest.json` (schema-validated) and link it from `report.json`                            | Pipeline already writes `run_meta.json`  and report writer validates schema ; formalize provenance fields for proof                                | 1/1/2/4=8 |    M   |  Low | FND-01              | Improved: P4; Risked: none; Enforce: `docs/report.schema.json`, `core/report.py`; Regress: report schema validation must still pass; else DO_NOT_SHIP; Acceptance: report contains `provenance.run_manifest_path` and manifest validates + includes hashes/versions.                                                                             |
+| META-02 | Persist plugin identity tuple: `(plugin_id, plugin_version, code_hash, manifest_hash, schema_hash)`                    | Runner already returns `plugin_code_hash` and validates schemas ; DB stores `code_hash` in `plugin_results_v2` ; add remaining hashes for audit    | 1/1/2/4=8 |    S   |  Low | small DB migration  | Improved: P3,P4; Risked: none; Enforce: `plugin_runner.py`, `storage.py`, migrations; Regress: none; Acceptance: changing only a plugin file changes stored code_hash/manifest_hash; report shows it.                                                                                                                                            |
+| META-03 | Store per-plugin **config snapshot** (normalized JSON) in `plugin_executions` (or new table), not just `settings_hash` | `plugin_executions` currently lacks config/settings fields ; `plugin_results_v2` stores `settings_hash` only ; without snapshots, replay is weaker | 1/1/3/4=9 |    M   |  Med | migration + UI      | Improved: P3,P4; Risked: P2 (sensitive config); Enforce: `core/storage.py`, `core/pipeline.py`; Regress: configs must be redacted for secrets; leaks ⇒ DO_NOT_SHIP; Acceptance: rerun can be generated from stored config snapshot + schema validation passes.                                                                                   |
+| META-04 | Enforce “evidence discipline”: findings must include `measurement_type` and evidence for measured claims               | Dev guide requires measured vs modeled and evidence fields ; pipeline already adds violations when missing —make it a non-optional gate            | 0/0/3/4=7 |    M   |  Med | report schema tweak | Improved: P3,P4; Risked: P1 (more failures); Enforce: `core/pipeline.py validate_modeled_findings`, schema; Regress: false failures on legacy plugins must be triaged via explicit exemptions; if silent bypass ⇒ DO_NOT_SHIP; Acceptance: remove `measurement_type` from a plugin finding → run fails validation and surfaces actionable error. |
+| META-05 | Use/extend `lineage_edges` to record upload→dataset_version→run→plugin_result→artifact links                           | `lineage_edges` table exists  and trace UI renders edges ; populate edges systematically for provable provenance                                   | 1/1/2/4=8 |    M   |  Med | storage helpers     | Improved: P4; Risked: P1; Enforce: `core/pipeline.py` checkpoints; Regress: edge spam must be bounded; if DB grows unbounded ⇒ DO_NOT_SHIP; Acceptance: trace shows full chain for a run with clickable artifacts.                                                                                                                               |
+| META-06 | Add stable `finding_id` (content-addressed) to reduce diffs and enable referencing                                     | Report schema does not show a finding id field in provided snippets (gap; no evidence).                                                            | 0/0/2/3=5 |    S   |  Low | schema update       | Improved: P4; Risked: none; Enforce: `core/report.py` normalization; Regress: none; Acceptance: same finding across reruns has same `finding_id` even if ordering changes.                                                                                                                                                                       |
+| META-07 | Embed evaluation outputs and ground-truth source into report provenance                                                | Report schema already includes evaluation/known_issues sections.  Server writes `evaluation.json` and returns `ground_truth_source`.               | 0/0/2/3=5 |    S   |  Low | none                | Improved: P3,P4; Risked: none; Enforce: `ui/server.py` evaluation path, `report_bundle`; Regress: none; Acceptance: report.json references evaluation file + includes source and strictness flags.                                                                                                                                               |
+| META-08 | Surface “trust signals” per plugin: sandbox mode, violations, warnings, budgets used                                   | Pipeline records violations into executions  and progress endpoint uses executions ; make it explicit in report/UI                                 | 0/2/1/3=6 |    M   |  Low | META-03             | Improved: P2,P4; Risked: none; Enforce: `ui/templates/run.html`, report schema; Regress: none; Acceptance: run page shows per-plugin badges: `no_network`, `fs_allowlist`, violations count, timeout/row_limit used.                                                                                                                             |
+
+---
+
+## III. Execution pipeline: Correctness + replayability
+
+| ID      | Recommendation                                                                                          | Rationale                                                                                                                                    |    Scores | Effort | Risk | Dependencies  | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EXEC-01 | Canonicalize plugin ordering and result merges across sequential/parallel modes                         | Toposort already sorts within layers ; ensure report plugin section and any aggregates are also stable                                       | 0/0/3/3=6 |    S   |  Low | none          | Improved: P3,P4; Risked: none; Enforce: `core/pipeline.py`, `core/report.py`; Regress: determinism test must pass with orchestrator off/on; else DO_NOT_SHIP; Acceptance: run twice → byte-identical `report.json` excluding timestamps/run_id fields.                                            |
+| EXEC-02 | Make planner output a first-class “plan stage” (persisted plan + selectable execution)                  | Server expects `__run_meta.plugins` for progress and selection ; `core/planner.py` exists to infer roles/plugins                             | 1/0/2/3=6 |    M   |  Med | META-01       | Improved: P4; Risked: P3 (bad auto selection); Enforce: `core/planner.py`, UI flow; Regress: planner must not select incompatible plugins on numeric fixture; if does ⇒ DO_NOT_SHIP; Acceptance: “Plan” artifact shows why each plugin selected and required roles satisfied.                     |
+| EXEC-03 | Add deterministic caching/reuse via `analysis_jobs` uniqueness (skip identical work)                    | `analysis_jobs` table exists with uniqueness around plugin version/code/settings/dataset_version  but pipeline does not clearly use it (gap) | 3/0/1/2=6 |    M   |  Med | FND-02        | Improved: P1,P4; Risked: P3 (stale cache); Enforce: `core/pipeline.py`, `storage.py`; Regress: cache must be invalidated on code_hash/settings_hash change; if stale reuse occurs ⇒ DO_NOT_SHIP; Acceptance: rerun with unchanged fingerprint reuses prior results and marks as cached in report. |
+| EXEC-04 | Implement resource classes + worker pools (heavy/normal/light) for concurrency safety                   | Pipeline uses `ThreadPoolExecutor` per layer ; plan doc expects `resource_class` in manifest (not currently in schema).                      | 3/1/1/2=7 |    L   |  Med | schema update | Improved: P1,P2,P4; Risked: none; Enforce: manifest schema + orchestrator; Regress: parallel mode must not change output ordering; if changes ⇒ DO_NOT_SHIP; Acceptance: heavy plugins limited to N=1 while normal runs at N=K; outputs remain deterministic.                                     |
+| EXEC-05 | Tighten budget enforcement: fail-fast when plugin exceeds `time_limit_ms`/`row_limit` and record reason | Runner uses `timeout_seconds` from budget ; ensure pipeline/UI clearly classifies as `timeout` vs `schema_error`                             | 2/1/2/2=7 |    M   |  Low | none          | Improved: P1,P3,P4; Risked: none; Enforce: `core/plugin_runner.py`, `ui/server.py progress`; Regress: no false timeouts on baseline fixture; if observed ⇒ DO_NOT_SHIP; Acceptance: force small timeout → plugin marked `error(timeout)` with actionable remediation in UI.                       |
+| EXEC-06 | Freeze plugin runtime environment per execution (env normalization + deterministic locale/timezone)     | Runner seeds random/numpy  and sets env vars for determinism (TZ/LC_ALL/PYTHONHASHSEED).  Extend to capture and report versions              | 1/2/2/2=7 |    M   |  Low | META-01       | Improved: P3,P4; Risked: none; Enforce: `plugin_runner.py` env block; Regress: none; Acceptance: report includes python version + package freeze snapshot hash per run.                                                                                                                           |
+| EXEC-07 | Add “replay package” export (dataset hash refs + settings snapshot + plugin requests/responses)         | Pipeline already writes per-plugin request/response JSON ; package them + manifest for reproducible replay without DB                        | 2/0/2/4=8 |    M   |  Med | META-03       | Improved: P1,P4; Risked: P2 (PII export); Enforce: `ui/server.py` download endpoint + redaction; Regress: exported replay must reproduce report; if mismatch ⇒ DO_NOT_SHIP; Acceptance: export → import → re-run produces same fingerprint and same findings.                                     |
+| EXEC-08 | Standardize failure taxonomy and run outcome states                                                     | Progress endpoint derives “not_run” when run completed but no exec row ; formalize states (`skipped`, `cached`, `blocked`, etc.)             | 0/1/2/3=6 |    S   |  Low | schema/UI     | Improved: P3,P4; Risked: none; Enforce: `storage.py`, `ui/templates/run.html`; Regress: none; Acceptance: UI shows exact reason for each plugin status, consistent with stored taxonomy.                                                                                                          |
+
+---
+
+## IV. Plugin system & manager: Discovery + lifecycle + sandboxing + UX
+
+| ID      | Recommendation                                                                                           | Rationale                                                                                                                      |    Scores | Effort | Risk | Dependencies        | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                                                                                                          |
+| ------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------: | :----: | :--: | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PLUG-01 | Build a real plugin lifecycle: install (from zip/dir), enable/disable, update, rollback                  | Current discovery is directory glob of `*/plugin.yaml`.  No operator-grade lifecycle controls (gap)                            | 1/2/2/3=8 |    L   | High | storage tables + UI | Improved: P2,P4; Risked: P3 (compat breaks); Enforce: new `plugin_packages` tables + UI; Regress: rollback must restore previous behavior; if not ⇒ DO_NOT_SHIP; Acceptance: install v1→update v2→rollback v1; fingerprints and reports match expected versions.                                                                               |
+| PLUG-02 | Extend manifest schema with compatibility fields (min harness version, python, OS, deps)                 | Current manifest schema is minimal (id/name/version/type/entrypoint/depends_on/capabilities/sandbox).                          | 0/1/2/3=6 |    M   |  Med | schema update       | Improved: P3,P4; Risked: none; Enforce: `docs/plugin_manifest.schema.json`, `plugin_manager.py`; Regress: existing plugins must validate with defaults; if not ⇒ DO_NOT_SHIP; Acceptance: old manifests still pass; incompatible plugin is blocked with clear message.                                                                         |
+| PLUG-03 | Implement install/update/rollback **without pip**: content-addressed plugin bundles stored under appdata | Enterprise-friendly; avoids environment drift; local-only                                                                      | 1/2/1/2=6 |    L   | High | PLUG-01             | Improved: P2,P4; Risked: P1 (disk); Enforce: `ui/server.py`, new CLI; Regress: plugin discovery must remain fast; if slow ⇒ DO_NOT_SHIP; Acceptance: install bundle writes metadata + verifies hash; enable toggles plugin availability.                                                                                                       |
+| PLUG-04 | Add “health check” contract: import entrypoint, validate schemas, run `--self-test` on fixture           | Contract enforcement exists via schema validation tests.  Make it operator-visible + automatable                               | 1/1/2/2=6 |    M   |  Med | fixtures            | Improved: P3,P4; Risked: none; Enforce: `plugin_manager.py`, new CLI; Regress: must not run heavy compute by default; if does ⇒ DO_NOT_SHIP; Acceptance: `plugins doctor` returns pass/fail per plugin with actionable errors.                                                                                                                 |
+| PLUG-05 | Make sandbox permissions explicit & minimal (remove implicit allowances; introduce capability tokens)    | Pipeline adds `run_dir` + `state.sqlite` into allowed paths ; violates principle of least privilege vs declared `fs_allowlist` | 0/4/1/2=7 |    M   | High | sandbox refactor    | Improved: P2; Risked: P3 (break plugins expecting access); Enforce: `core/pipeline.py` allow_paths and `sandbox.py`; Regress: any plugin that needs DB/run_dir must declare capability; missing declaration must fail closed; if not ⇒ DO_NOT_SHIP; Acceptance: plugin without run_dir permission cannot write artifacts; with permission can. |
+| PLUG-06 | Normalize JSON Schema dialect handling (draft-07 vs 2020-12) and pin validator selection                 | Some plugins declare 2020-12  while many are draft-07 ; validate consistently                                                  | 0/0/2/2=4 |    S   |  Med | validator wrapper   | Improved: P3,P4; Risked: none; Enforce: `plugin_manager.py` schema loader; Regress: schema validation coverage must increase; if decreases ⇒ DO_NOT_SHIP; Acceptance: tests validate both dialects and reject unknown `$schema`.                                                                                                               |
+| PLUG-07 | Formalize capability negotiation between planner and plugins                                             | Planner selects based on inferred roles and required capabilities ; make this deterministic, explainable, and versioned        | 1/0/2/2=5 |    M   |  Med | EXEC-02             | Improved: P3,P4; Risked: none; Enforce: `core/planner.py`, manifests; Regress: planner selection must be stable; if unstable ⇒ DO_NOT_SHIP; Acceptance: planner emits “why selected” record per plugin with role evidence.                                                                                                                     |
+| PLUG-08 | Redesign plugin manager UI: inventory + compatibility + sandbox + actions                                | Current plugins screen is a bare list.                                                                                         | 0/1/1/2=4 |    M   |  Low | PLUG-01             | Improved: P2,P4; Risked: none; Enforce: templates + server endpoints; Regress: none; Acceptance: user can filter/sort by type/capabilities/sandbox; can view manifest/schema/health status.                                                                                                                                                    |
+
+---
+
+## V. UI/UX: Dataset-to-results workflow (accessibility-first)
+
+| ID    | Recommendation                                                                                                 | Rationale                                                                                             |    Scores | Effort | Risk | Dependencies | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                    |
+| ----- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UX-01 | Make “Upload → Ingest → Plan → Run” a single guided flow with one primary action                               | Current home suggests “create project”; project page has “Upload & Run All”.  Provide fewer footguns  | 1/0/1/1=3 |    M   |  Med | EXEC-02      | Improved: P3,P4; Risked: none; Enforce: templates + server routes; Regress: TTFR must not worsen; if worsens ⇒ DO_NOT_SHIP; Acceptance: user can complete first run in ≤3 steps with identity confirmation.                                              |
+| UX-02 | Add “Dataset identity card” everywhere (sha256, dataset_version_id, data_hash, row/col counts, inferred roles) | Known issues view already shows sha prefix ; dataset_versions store row/col/data_hash                 | 0/0/2/4=6 |    S   |  Low | FND-06       | Improved: P3,P4; Risked: none; Enforce: templates; Regress: none; Acceptance: every run/detail page shows the same identity tuple and copying it yields exact provenance.                                                                                |
+| UX-03 | Add plan preview + confirmation for “all plugins”                                                              | Prevent accidental long runs; show DAG and expected time                                              | 0/0/1/2=3 |    S   |  Low | EXEC-02      | Improved: P3,P4; Risked: none; Enforce: UI + server; Regress: none; Acceptance: user sees planned plugins, counts, and can deselect before execution starts.                                                                                             |
+| UX-04 | Redesign Run Detail: metadata + provenance + plugin statuses + artifacts + proof links                         | Current run page has links and a progress panel.  Add “proof” and per-plugin request/response links   | 0/0/1/3=4 |    M   |  Low | META-01      | Improved: P4; Risked: none; Enforce: `templates/run.html`; Regress: none; Acceptance: a reviewer can answer “what ran?” in <30 seconds from one screen.                                                                                                  |
+| UX-05 | Accessibility baseline: headings, labels, focus order, reduced motion, and error announcements                 | Templates rely on simple HTML; no explicit a11y patterns evidenced (gap).                             | 0/0/1/1=2 |    M   |  Low | UX-01        | Improved: P3,P4; Risked: none; Enforce: templates + CSS; Regress: none; Acceptance: keyboard-only run through upload/run is possible; screen reader announces run status changes.                                                                        |
+| UX-06 | Replace raw JSON textarea with structured editor + schema-driven forms per plugin                              | Settings UI is free-form JSON textarea per plugin.                                                    | 0/0/2/2=4 |    M   |  Med | PLUG-02      | Improved: P3,P4; Risked: none; Enforce: UI + server validation; Regress: none; Acceptance: invalid JSON cannot be saved; schema errors show precise path + fix hint.                                                                                     |
+| UX-07 | Known-issues workflow: add “preview checks” + explicit scoping + change history                                | Known issues editor auto-saves and supports NL issues.   Add diff/preview to prevent silent misconfig | 0/0/2/2=4 |    M   |  Med | META-07      | Improved: P3,P4; Risked: none; Enforce: known issues endpoints; Regress: none; Acceptance: preview shows exactly which findings would match on last report before saving.                                                                                |
+| UX-08 | Add “recommended plugin set” toggle using planner, default on                                                  | Reduce cognitive load; prevent irrelevant analyses                                                    | 1/0/1/1=3 |    M   |  Med | EXEC-02      | Improved: P1,P3; Risked: P3 (wrong suggestions); Enforce: `core/planner.py`, UI; Regress: planner must explain decisions; if not explainable ⇒ DO_NOT_SHIP; Acceptance: recommended set is stable for same dataset_version and recorded in run manifest. |
+
+---
+
+## VI. Observability / Ops: Logs + metrics + diagnostics bundles
+
+| ID     | Recommendation                                                                                            | Rationale                                                                                |    Scores | Effort | Risk | Dependencies | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                           |
+| ------ | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OBS-01 | Standardize structured logs per run/plugin and link them in UI                                            | Run progress UI exists; artifact serving exists.  Make logs first-class “evidence”       | 0/1/1/3=5 |    M   |  Low | FND-01       | Improved: P4; Risked: P2 (PII in logs); Enforce: `plugin_runner.py` log writer + UI; Regress: logs must be size-capped; if unlimited ⇒ DO_NOT_SHIP; Acceptance: per-plugin log view shows last N lines and download.            |
+| OBS-02 | Measure “frictionless ingest + run” with explicit metrics (TTFR, TTFReport, retry rate, correction loops) | Progress endpoint already computes percent and errors ; `plugin_executions` has timings  | 1/0/1/3=5 |    M   |  Low | META-03      | Improved: P1,P4; Risked: none; Enforce: new `events` table + UI; Regress: metric recording must not slow runs >1%; else DO_NOT_SHIP; Acceptance: dashboard shows TTFR/TTFReport distributions over last N runs.                 |
+| OBS-03 | Add “diagnostics bundle” export (manifest + report + logs + evaluation + minimal DB slice)                | Support bug reports without copying entire appdata                                       | 0/1/1/4=6 |    M   |  Med | FND-01       | Improved: P4; Risked: P2 (PII export); Enforce: `ui/server.py` download endpoint; Regress: bundle must redact secrets/PII; if leaks ⇒ DO_NOT_SHIP; Acceptance: generated zip passes redaction scanner and replays key metadata. |
+| OBS-04 | Add `/api/health` and `/api/version` + show local-only and sandbox status                                 | Operator clarity; quick diagnostics                                                      | 0/1/0/2=3 |    S   |  Low | none         | Improved: P2,P4; Risked: none; Enforce: `ui/server.py`; Regress: none; Acceptance: endpoint returns harness version, schema versions, DB migration version, and “network disabled” indicator.                                   |
+| OBS-05 | Run timeline visualization driven by `plugin_executions`                                                  | Server already lists plugin statuses with timestamps                                     | 0/0/1/3=4 |    M   |  Low | OBS-02       | Improved: P4; Risked: none; Enforce: templates + endpoint; Regress: none; Acceptance: Gantt-style (text) timeline shows start/end/duration and bottleneck plugin.                                                               |
+| OBS-06 | Enhance trace view: filters, search, edge-type legend, and deep links into artifacts                      | Trace UI renders edges in a basic list.                                                  | 0/0/1/3=4 |    M   |  Low | META-05      | Improved: P4; Risked: none; Enforce: `templates/trace.html`; Regress: none; Acceptance: can filter to a run_id and see full upstream/downstream chain.                                                                          |
+| OBS-07 | Surface evaluator parity and known issues in run dashboard and report                                     | Evaluation endpoint exists; run page already shows evaluation summary.                   | 0/0/2/2=4 |    S   |  Low | META-07      | Improved: P3,P4; Risked: none; Enforce: UI; Regress: none; Acceptance: dashboard shows evaluation ok/error with link to messages and ground truth source.                                                                       |
+| OBS-08 | Add regression gates for performance + determinism using stored metrics                                   | `plugin_executions` captures duration/cpu/rss.  Use for budgets and alarms               | 2/0/2/2=6 |    M   |  Med | OBS-02       | Improved: P1,P3,P4; Risked: none; Enforce: CI + evaluation harness; Regress: any regression beyond thresholds blocks merge ⇒ DO_NOT_SHIP; Acceptance: CI fails if p95 plugin duration regresses >X% on fixtures.                |
+
+---
+
+## VII. Security / Privacy: Local-first hardening + safe optional features
+
+| ID     | Recommendation                                                                                                      | Rationale                                                                                               |    Scores | Effort | Risk | Dependencies | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SEC-01 | Fail-closed sandbox: permissions are explicit; remove implicit `run_dir` + DB allowances                            | Pipeline currently expands allowlist beyond manifest defaults ; file/network guards exist               | 0/4/1/2=7 |    M   | High | PLUG-05      | Improved: P2; Risked: P3 (plugin breakage); Enforce: `pipeline.py`, `sandbox.py`; Regress: any plugin accessing unauthorized path must fail; if it succeeds ⇒ DO_NOT_SHIP; Acceptance: write outside allowlist triggers deterministic error and recorded violation.                                                |
+| SEC-02 | Harden filesystem guard against Windows junction/symlink edge cases                                                 | FileSandbox uses resolved paths (needs junction-specific tests; no direct evidence).                    | 0/3/0/1=4 |    M   |  Med | FND-08       | Improved: P2; Risked: none; Enforce: `core/sandbox.py`; Regress: none; Acceptance: tests cover junction escape attempt on Windows-equivalent paths (where possible) and must fail.                                                                                                                                 |
+| SEC-03 | Upgrade PII handling: deterministic normalization + confidence + provenance; prompt export requires coverage report | Prompt builder uses exact-match replacement ; profile plugin finds PII patterns on sample               | 0/2/1/1=4 |    M   |  Med | META-03      | Improved: P2,P4; Risked: P3 (over-redaction); Enforce: `plugins/profile_basic`, `plugins/llm_prompt_builder`; Regress: prompt must never include raw detected PII values; if found ⇒ DO_NOT_SHIP; Acceptance: fixture with PII variants shows redaction coverage ≥ configured threshold and emits `pii_scan.json`. |
+| SEC-04 | Add explicit “network disabled” guarantee artifacts and runtime checks                                              | Repo policy: “Phase 1 local-only: NO network calls.”  Runner supports a network allow env var.          | 0/3/0/2=5 |    S   |  Low | none         | Improved: P2,P4; Risked: none; Enforce: `plugin_runner.py`, run manifest; Regress: any network attempt must be blocked; if succeeds ⇒ DO_NOT_SHIP; Acceptance: simulated socket call raises and is logged as violation.                                                                                            |
+| SEC-05 | Make auth/tenancy flags non-footgun: defaults off; when enabled require CSRF + session hardening                    | Auth templates exist (login pages) ; operator needs safe defaults                                       | 0/3/0/2=5 |    M   |  Med | PLUG-01      | Improved: P2,P4; Risked: none; Enforce: `ui/server.py` auth middleware; Regress: local-only mode must not require auth; if it does ⇒ DO_NOT_SHIP; Acceptance: toggling flag enables auth with CSRF tokens and secure cookies.                                                                                      |
+| SEC-06 | Scope API keys/credentials: hashed-at-rest + per-feature scoping + audit                                            | Admin API key UI exists.  Strengthen for optional features                                              | 0/2/0/2=4 |    S   |  Med | auth layer   | Improved: P2,P4; Risked: none; Enforce: storage schema + UI; Regress: no plaintext secrets in DB; if present ⇒ DO_NOT_SHIP; Acceptance: DB contains only hashes; audit shows key creation/use events.                                                                                                              |
+| SEC-07 | Add explicit “data retention & deletion” controls per project/dataset                                               | Append-only triggers exist for datasets (prevents mutation).  Operators still need lifecycle management | 0/2/0/1=3 |    M   | High | FND-07       | Improved: P2,P4; Risked: P3 (deletion mistakes); Enforce: UI + storage; Regress: protected/pinned items cannot be deleted; if deleted ⇒ DO_NOT_SHIP; Acceptance: delete action requires typed confirmation of dataset hash and produces tombstone record.                                                          |
+| SEC-08 | Consent gating for offline prompt artifact + attach proof of anonymization                                          | Prompt builder writes artifacts; ensure consent and proof                                               | 0/2/0/3=5 |    M   |  Med | SEC-03       | Improved: P2,P4; Risked: none; Enforce: UI + prompt plugin; Regress: prompt cannot be generated without a PII scan record; if allowed ⇒ DO_NOT_SHIP; Acceptance: prompt export requires checkbox + stored consent artifact.                                                                                        |
+
+---
+
+## VIII. Performance (Windows 11 + WSL2 + large datasets)
+
+| ID      | Recommendation                                                                                                   | Rationale                                                                                                    |    Scores | Effort | Risk | Dependencies  | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                                               |
+| ------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------: | :----: | :--: | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PERF-01 | Stream ingest everywhere: chunk CSV/JSON (already) and add safer XLSX handling limits                            | Ingest chunks CSV via pandas chunksize ; XLSX path can be expensive (needs limits)                           | 3/0/1/1=5 |    M   |  Med | ingest plugin | Improved: P1,P3; Risked: P3 (partial reads); Enforce: `plugins/ingest_tabular`; Regress: row_count must match full file when not sampling; if mismatch ⇒ DO_NOT_SHIP; Acceptance: large XLSX hits row/col caps with explicit “truncated” status + provenance.       |
+| PERF-02 | Reduce SQLite bloat: avoid storing full `row_json` for wide tables (or compress)                                 | Dataset table includes `row_json` plus separate columns ; large datasets will balloon DB                     | 3/0/0/1=4 |    L   | High | schema change | Improved: P1; Risked: P4 (replay detail); Enforce: ingest/storage; Regress: plugins requiring raw row_json must still function via accessor; if break ⇒ DO_NOT_SHIP; Acceptance: DB size on fixture reduced by X% while plugin outputs unchanged.                   |
+| PERF-03 | Standardize sampling strategy (reservoir/stratified) and record sampling metadata in every plugin output         | Budget includes `row_limit` and whether sampled (schema expects).  Dataset accessor honors row_limit.        | 2/0/2/3=7 |    M   |  Med | META-01       | Improved: P1,P3,P4; Risked: none; Enforce: `core/dataset_io.py`, `plugin_runner.py`; Regress: sampled runs must be reproducible under seed; if not ⇒ DO_NOT_SHIP; Acceptance: same seed + sampling yields same sample rows and same summary metrics.                |
+| PERF-04 | Concurrency tuning: cap worker counts and add adaptive scheduling based on resource class                        | Parallel execution exists ; prevent oversubscription on Windows/WSL2                                         | 3/0/1/2=6 |    M   |  Med | EXEC-04       | Improved: P1,P4; Risked: none; Enforce: orchestrator; Regress: total runtime must not regress on baseline; else DO_NOT_SHIP; Acceptance: heavy pool caps keep UI responsive and reduce tail latency.                                                                |
+| PERF-05 | Vector store performance: cache embeddings and index incrementally (optional feature)                            | Vector endpoints exist (`/vectors`).  Treat as optional and budgeted                                         | 2/0/0/1=3 |    L   |  Med | vector module | Improved: P1; Risked: none; Enforce: vector store; Regress: must remain optional/off by default; if enabled by default ⇒ DO_NOT_SHIP; Acceptance: index build time decreases with caching across reruns.                                                            |
+| PERF-06 | Cache dataset access patterns in `DatasetAccessor` (query memoization for common slices)                         | Accessor exists and is used by runner; large repeated queries can be costly (no direct evidence of caching). | 2/0/0/1=3 |    M   |  Low | PERF-03       | Improved: P1; Risked: P3 (stale results); Enforce: `core/dataset_io.py`; Regress: cache must be keyed by dataset_version + query + sampling; if wrong reuse ⇒ DO_NOT_SHIP; Acceptance: repeated plugin reads reduce query time measurably without changing results. |
+| PERF-07 | Windows-friendly resource limits: rely on subprocess timeout + memory sampling metrics rather than POSIX rlimits | rlimits are POSIX-only; runner uses timeout already ; resource stats exist in executions table               | 1/1/1/1=4 |    L   |  Med | OBS-02        | Improved: P1,P2,P4; Risked: none; Enforce: runner; Regress: none; Acceptance: memory/cpu metrics recorded on Windows/WSL2 and used for alerts.                                                                                                                      |
+| PERF-08 | Add “fast path” for rerun: reuse ingest outputs and avoid re-parsing raw files when dataset_version exists       | Dataset versions and rerun action exist in UI scripts.                                                       | 2/0/1/2=5 |    M   |  Med | FND-06        | Improved: P1,P4; Risked: P3 (stale ingest); Enforce: server rerun endpoint; Regress: must detect raw_format/schema changes; if not ⇒ DO_NOT_SHIP; Acceptance: rerun uses existing dataset_version_id and records that reuse in run manifest.                        |
+
+---
+
+## IX. QA / Test strategy: Determinism + contracts + regressions
+
+| ID    | Recommendation                                                                                          | Rationale                                                                                                 |    Scores | Effort | Risk | Dependencies     | Acceptance test (incl. enforcement + regression gate)                                                                                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------: | :----: | :--: | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| QA-01 | Add byte-level determinism test for `report.json` (normalized fields)                                   | Current determinism test compares plugin sections, not full report bytes.                                 | 0/0/3/2=5 |    S   |  Low | EXEC-01          | Improved: P3,P4; Risked: none; Enforce: tests; Regress: any drift fails CI ⇒ DO_NOT_SHIP; Acceptance: two runs with fixed seed produce identical normalized report output.                        |
+| QA-02 | Add “malicious plugin” fixtures to validate sandbox (network/files/pickle/eval/shell)                   | Sandbox guards exist in `sandbox.py`.  Plan expects such tests.                                           | 0/3/1/1=5 |    M   |  Med | SEC-01           | Improved: P2,P3; Risked: none; Enforce: new tests; Regress: any bypass is a release blocker ⇒ DO_NOT_SHIP; Acceptance: fixtures attempt violations and must fail with recorded violation entries. |
+| QA-03 | Migration tests: create DB at older versions and upgrade; verify data preserved                         | Migrations are versioned; apply migrations updates `user_version`.                                        | 0/0/2/2=4 |    M   |  Med | none             | Improved: P3,P4; Risked: none; Enforce: tests; Regress: any migration failure blocks release ⇒ DO_NOT_SHIP; Acceptance: fixture DB migrates to head and key tables contain expected rows.         |
+| QA-04 | Contract tests for manifest/schema validation across all plugins                                        | Repo already has plugin discovery tests.  Expand to enforce dialect rules and new manifest fields         | 0/0/2/2=4 |    S   |  Low | PLUG-02, PLUG-06 | Improved: P3,P4; Risked: none; Enforce: tests; Regress: none; Acceptance: CI fails if any plugin manifest/schema violates updated rules.                                                          |
+| QA-05 | UI smoke tests (FastAPI TestClient) for core flows: upload, run, progress, artifacts                    | UI has core endpoints (upload/run/progress/artifacts).                                                    | 0/0/1/1=2 |    M   |  Low | none             | Improved: P3,P4; Risked: none; Enforce: tests; Regress: none; Acceptance: smoke suite runs headlessly and validates status codes and key JSON shapes.                                             |
+| QA-06 | Add perf regression tests based on `plugin_executions.duration_ms` thresholds                           | Timings exist ; use fixtures to gate                                                                      | 1/0/1/2=4 |    M   |  Med | OBS-08           | Improved: P1,P3,P4; Risked: none; Enforce: CI; Regress: any threshold breach blocks merge ⇒ DO_NOT_SHIP; Acceptance: CI prints deltas and fails on regressions.                                   |
+| QA-07 | Property-based tests for path safety (`safe_join`) and artifact routes                                  | `safe_join` tests exist for traversal.  Expand to fuzz Windows separators and encoded paths               | 0/2/0/1=3 |    M   |  Med | FND-08           | Improved: P2,P4; Risked: none; Enforce: tests; Regress: none; Acceptance: fuzzed inputs never escape base and always raise controlled errors.                                                     |
+| QA-08 | Schema drift tests: validate every `report.json` produced by fixtures against `docs/report.schema.json` | Report writer validates schema during write.  Ensure fixtures cover all plugin types and schema evolution | 0/0/2/3=5 |    M   |  Low | META-01          | Improved: P3,P4; Risked: none; Enforce: tests; Regress: any schema mismatch blocks release ⇒ DO_NOT_SHIP; Acceptance: fixture pipeline run asserts schema-valid report and stable ordering.       |
+
+---
+
+## X. Roadmap: Phased plan (Phase 0–3)
+
+| ID    | Recommendation                                                                                                  | Rationale                                                                     |     Scores | Effort | Risk | Dependencies | Acceptance test (incl. enforcement + regression gate)                                                                                                                                                                                            |
+| ----- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------: | :----: | :--: | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| RD-00 | **Phase 0 (0–2 weeks): Stabilize core** — FND-01/02/05/06 + SEC-01 + OBS-02                                     | Highest leverage: determinism + integrity + provability + sandbox correctness | 2/3/3/4=12 |    M   |  Med | none         | Improved: all pillars; Risked: none; Enforce: CI gates + schema; Regress: any determinism or sandbox regression ⇒ DO_NOT_SHIP; Acceptance: baseline fixture: stable fingerprint, schema-valid report, no sandbox bypass, TTFR metrics collected. |
+| RD-01 | **Phase 1 (2–6 weeks): Provenance + replay** — META-01/03/05 + EXEC-07 + diagnostics bundle                     | Make “what ran” and “replay it” trivially provable                            | 2/2/3/4=11 |    L   |  Med | RD-00        | Improved: P3,P4; Risked: P2 (export); Enforce: manifest + export; Regress: replay must reproduce fingerprint; mismatch ⇒ DO_NOT_SHIP; Acceptance: export/import replay produces identical normalized report on fixture.                          |
+| RD-02 | **Phase 2 (6–12 weeks): Plugin lifecycle + operator-grade manager** — PLUG-01/03/04/05 + UX-structured settings | Reduce plugin drift and admin pain; enforce compat and sandbox                |  1/3/2/3=9 |    L   | High | RD-01        | Improved: P2,P4; Risked: P3; Enforce: plugin registry + doctor; Regress: rollback must work; if not ⇒ DO_NOT_SHIP; Acceptance: install/update/rollback with health checks and explicit permissions works end-to-end.                             |
+| RD-03 | **Phase 3 (12+ weeks): Scale performance + optional GPU/vector enhancements** — PERF suite + regression gates   | Make large datasets practical on Win11/WSL2 while keeping determinism         |  3/1/1/2=7 |    L   |  Med | RD-02        | Improved: P1; Risked: none; Enforce: perf tests; Regress: perf improvements must not alter outputs; if they do ⇒ DO_NOT_SHIP; Acceptance: large fixture runtime reduced with unchanged report/fingerprint.                                       |
+
+---
+
+# C) Top-20 quick wins (highest total, Effort = S or M)
+
+| Rank | ID      | Effort | Score (P1/P2/P3/P4=Total) |
+| ---: | ------- | :----: | ------------------------: |
+|    1 | RD-00   |    M   |                2/3/3/4=12 |
+|    2 | FND-02  |    M   |                 2/1/2/4=9 |
+|    3 | FND-05  |    M   |                 2/2/2/3=9 |
+|    4 | FND-06  |    M   |                 1/1/3/4=9 |
+|    5 | META-03 |    M   |                 1/1/3/4=9 |
+|    6 | EXEC-07 |    M   |                 2/0/2/4=8 |
+|    7 | FND-03  |    M   |                 1/1/3/3=8 |
+|    8 | META-01 |    M   |                 1/1/2/4=8 |
+|    9 | META-02 |    S   |                 1/1/2/4=8 |
+|   10 | META-05 |    M   |                 1/1/2/4=8 |
+|   11 | EXEC-05 |    M   |                 2/1/2/2=7 |
+|   12 | EXEC-06 |    M   |                 1/2/2/2=7 |
+|   13 | FND-01  |    M   |                 1/1/2/3=7 |
+|   14 | META-04 |    M   |                 0/0/3/4=7 |
+|   15 | PERF-03 |    M   |                 2/0/2/3=7 |
+|   16 | PLUG-05 |    M   |                 0/4/1/2=7 |
+|   17 | SEC-01  |    M   |                 0/4/1/2=7 |
+|   18 | EXEC-02 |    M   |                 1/0/2/3=6 |
+|   19 | EXEC-03 |    M   |                 3/0/1/2=6 |
+|   20 | FND-07  |    M   |                 1/1/2/2=6 |
+
+---
+
+# D) Top-20 big bets (highest total regardless of effort)
+
+| Rank | ID      | Effort | Score (P1/P2/P3/P4=Total) |
+| ---: | ------- | :----: | ------------------------: |
+|    1 | RD-00   |    M   |                2/3/3/4=12 |
+|    2 | RD-01   |    L   |                2/2/3/4=11 |
+|    3 | FND-02  |    M   |                 2/1/2/4=9 |
+|    4 | FND-05  |    M   |                 2/2/2/3=9 |
+|    5 | FND-06  |    M   |                 1/1/3/4=9 |
+|    6 | META-03 |    M   |                 1/1/3/4=9 |
+|    7 | RD-02   |    L   |                 1/3/2/3=9 |
+|    8 | PLUG-01 |    L   |                 1/2/2/3=8 |
+|    9 | EXEC-07 |    M   |                 2/0/2/4=8 |
+|   10 | FND-03  |    M   |                 1/1/3/3=8 |
+|   11 | META-01 |    M   |                 1/1/2/4=8 |
+|   12 | META-02 |    S   |                 1/1/2/4=8 |
+|   13 | META-05 |    M   |                 1/1/2/4=8 |
+|   14 | EXEC-04 |    L   |                 3/1/1/2=7 |
+|   15 | EXEC-05 |    M   |                 2/1/2/2=7 |
+|   16 | EXEC-06 |    M   |                 1/2/2/2=7 |
+|   17 | FND-01  |    M   |                 1/1/2/3=7 |
+|   18 | META-04 |    M   |                 0/0/3/4=7 |
+|   19 | PERF-03 |    M   |                 2/0/2/3=7 |
+|   20 | PLUG-05 |    M   |                 0/4/1/2=7 |
+
+---
+
+# E) Minimal canonical metadata schema proposal (fields + types + examples)
+
+This is a **minimal** additive schema that aligns to what the repo already persists (`runs`, `plugin_results_v2`, `plugin_executions`, `dataset_versions`, `uploads`) and the report-writing path.   
+
+### `run_manifest.json` (new, schema-validated)
+
+```json
+{
+  "schema_version": "statistic_harness.run_manifest.v1",
+  "run_id": "3f1c... (uuid hex)",
+  "run_fingerprint": "sha256:ab12... (deterministic)",
+  "created_at": "2026-02-06T12:34:56Z",
+  "tenant_id": 1,
+  "project_id": "proj_123",
+  "upload": {
+    "upload_id": "upl_abc",
+    "filename": "quorum_close_cycle.csv",
+    "size_bytes": 123456,
+    "sha256": "f00d..."
+  },
+  "dataset": {
+    "dataset_id": "ds_001",
+    "dataset_version_id": "dsv_001",
+    "raw_format_id": 1,
+    "data_hash": "sha256:dead...",
+    "row_count": 999,
+    "column_count": 42,
+    "column_map_hash": "sha256:beef..."
+  },
+  "determinism": {
+    "run_seed": 12345,
+    "json_float_precision": 10,
+    "py_env": {
+      "PYTHONHASHSEED": "12345",
+      "TZ": "UTC",
+      "LC_ALL": "C",
+      "LANG": "C"
+    }
+  },
+  "selection": {
+    "plugins_requested": ["all"],
+    "plugins_expected": ["ingest_tabular", "profile_basic", "..."],
+    "planner": { "enabled": true, "explanation_path": "artifacts/plan.json" }
+  },
+  "settings": {
+    "settings_hash": "sha256:cafe...",
+    "settings_snapshot_path": "settings/settings.normalized.json"
+  },
+  "artifacts_index": {
+    "report_json": "report.json",
+    "report_md": "report.md",
+    "evaluation_json": "evaluation.json",
+    "requests_dir": "requests/",
+    "responses_dir": "responses/",
+    "logs_dir": "logs/"
+  }
+}
+```
+
+### Per-plugin execution record (augment existing `plugin_executions`)
+
+Existing fields already capture `duration_ms`, cpu, rss, stdout/stderr, etc. 
+Add:
+
+* `settings_snapshot_json` (string, normalized)
+* `settings_schema_hash` (string)
+* `sandbox_effective` (object: no_network, fs_allowlist resolved)
+* `violations_json` (array of strings/objects; pipeline already tracks violations) 
+
+### Proof fields embedded into `report.json` (additive)
+
+Report already supports evaluation/known issues sections. 
+Add:
+
+* `provenance.run_manifest_path`
+* `provenance.dataset_identity` (the tuple above)
+* `provenance.plugin_identities[]` (id/version/code_hash/manifest_hash)
+* `provenance.replay_package_path` (optional)
+
+---
+
+# F) Minimal processing lineage model (input → canonical → transforms → analyses → reports → prompt → vector)
+
+Use the existing `lineage_edges(from_id, to_id, edge_type, metadata_json)` table as the canonical graph. 
+
+### Entity IDs (suggested)
+
+| Entity type       | ID format                                        | Source in repo                               |
+| ----------------- | ------------------------------------------------ | -------------------------------------------- |
+| Upload            | `upload:<upload_id>`                             | `uploads` table, `fetch_upload*`.            |
+| Dataset version   | `dataset_version:<dataset_version_id>`           | `dataset_versions` table.                    |
+| Run               | `run:<run_id>`                                   | `runs` table.                                |
+| Plugin result     | `plugin_result:<run_id>:<plugin_id>:<result_id>` | `plugin_results_v2`.                         |
+| Artifact          | `artifact:<run_id>:<rel_path>`                   | `run_dir` artifacts served via `safe_join`.  |
+| Prompt artifact   | `prompt:<run_id>`                                | `llm_prompt_builder` artifacts.              |
+| Vector collection | `vector:<collection>`                            | `/vectors` route exists.                     |
+
+### Edge types (minimal)
+
+| Edge type       | Meaning                  | Created at        |
+| --------------- | ------------------------ | ----------------- |
+| `uploaded_as`   | upload → dataset_version | ingest completion |
+| `analyzed_in`   | dataset_version → run    | run start         |
+| `produced`      | run → plugin_result      | plugin completion |
+| `materialized`  | plugin_result → artifact | artifact write    |
+| `summarized_as` | run → report artifacts   | report bundle     |
+| `prompted_as`   | run → prompt artifact    | prompt plugin     |
+| `indexed_as`    | report/prompt → vector   | vector indexing   |
+
+---
+
+# Plugin manager redesign (minimal viable spec + stretch)
+
+## Information architecture (MVP)
+
+| Area        | Purpose                            | Key UI elements                                                          |
+| ----------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| Inventory   | list installed & available plugins | type filters; search; status badges                                      |
+| Details     | inspect a plugin’s contract        | manifest view; config/output schema view; capabilities; dependency DAG   |
+| Permissions | explicit sandbox permissions       | effective allowlist; “needs DB”/“needs run_dir” toggles; deny-by-default |
+| Lifecycle   | install/update/rollback            | “Install from file”; “Update”; “Rollback”; change log                    |
+| Health      | self-test & validation             | “Doctor” results; schema validation; import test; fixture run            |
+
+## Core flows (MVP)
+
+1. **Install from file** (zip/dir) → hash bundle → store under `appdata/plugins/` → validate manifest/schema → mark disabled until approved permissions.
+2. **Enable plugin** → enforce compatibility checks → require explicit permission review (sandbox capabilities).
+3. **Update** → install new version in parallel → run health check → canary run (optional) → switch active.
+4. **Rollback** → set active pointer back to prior version → record lineage/audit event.
+
+## Stretch goals
+
+* Signed plugin bundles (local trust model) with an allowlist of publisher keys.
+* Per-project plugin policies (allowed/blocked, resource class overrides).
+* “Compatibility simulator”: show which existing runs would change under an update (based on code_hash/settings_hash).
+
+---
+
+# UI/UX sketches (ASCII / wireframe)
+
+## Home / Runs Dashboard
+
+```text
++--------------------------------------------------------------+
+| Statistic Harness  [Projects] [Runs] [Plugins] [Trace] [Ops]  |
++--------------------------------------------------------------+
+| Recent Runs (filters: project, status, fingerprint, date)     |
+|  Run Label     Status      Dataset (sha.. / rows)   TTFR      |
+|  r-123         ok          deadbeef.. / 1.2M        00:12     |
+|  r-124         errors      deadbeef.. / 1.2M        00:15     |
+|  r-125         crashed     cafe...    / 900k        --        |
++--------------------------------------------------------------+
+| Quick action:  [Upload → Run (guided)]  [Replay package]      |
++--------------------------------------------------------------+
+```
+
+## Dataset upload + ingest status panel
+
+```text
+Upload Dataset
+[ Choose file ]  (accept: csv/tsv/txt/xlsx/json)  [Upload]
+
+Identity
+- sha256: f00d... (copy)
+- size: 123,456 bytes
+- detected format: csv (delimiter ,)
+- ingest: running | ok | failed
+- canonical: data_hash dead... | rows 999 | cols 42
+
+[View inferred roles]  [Proceed to Plan]
+```
+
+## Plugin manager main screen
+
+```text
+Plugins  (search: ________)  [Install plugin…]  [Doctor all]
+Filters: [ingest] [profile] [analysis] [report] [llm]  [enabled only]
+
+ID                              Type     Ver   Sandbox   Health   Actions
+analysis_concurrency_recon       analysis  0.1  no_net    ok       [Details] [Disable]
+llm_prompt_builder               llm       0.1  no_net    warn     [Details] [Permissions]
+...
+```
+
+## Run detail (metadata + provenance + execution + artifacts)
+
+```text
+Run r-123   Status: completed_with_errors   Fingerprint: sha256:ab12...
+Dataset: data_hash dead... | upload sha f00d... | rows 999 | cols 42 | seed 12345
+Proof: [run_manifest.json] [settings.normalized.json] [replay.zip]
+
+Execution timeline (by plugin)
+plugin_id                     status   dur   sandbox     warnings  violations
+ingest_tabular                 ok      3.2s  no_net      0         0
+profile_basic                  ok      1.1s  no_net      2         0
+analysis_x                     err     5.0s  no_net      0         1 (timeout)
+
+Artifacts
+- report.json  report.md  evaluation.json
+- artifacts/<plugin>/...
+- requests/<plugin>.json  responses/<plugin>.json  logs/<plugin>.log
+```
+
+---
+
+# Special focus: “frictionless ingest + run” metrics (definition + instrumentation)
+
+| Metric              | Definition                                                                                      | Instrumentation source                     |
+| ------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| TTFR                | time from upload accepted → first plugin completion (`plugin_executions.completed_at` earliest) | `plugin_executions` + upload timestamp     |
+| TTFReport           | time from run queued → `report.json` exists                                                     | run creation + report write step           |
+| Failure rate        | fraction of runs with any plugin status `error`                                                 | progress endpoint already collects errors  |
+| Misconfig loop rate | count of runs where user changes settings and reruns within N minutes                           | add `ui_events` table (new)                |
+| Retry rate          | number of plugins re-executed per run                                                           | add retry taxonomy to `plugin_executions`  |
+
+---
+
+# Open questions (non-blocking; max 12)
+
+|  # | Question                                                                                                                                                              |
+| -: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1 | Should `run_id` remain random-only, or should “idempotent run” be a first-class mode keyed by `run_fingerprint`?                  yes idempotent                                    |
+|  2 | Is `dataset_versions.data_hash` currently populated for all ingest paths (CSV/XLSX/JSON)? Evidence suggests the field exists, but population is not shown.  no, update it.          |
+|  3 | Which artifacts are considered “required” for marking a run completed (report.json/report.md/evaluation)?         all 3                                                    |
+|  4 | Are any plugins expected to read directly from SQLite beyond dataset tables (i.e., access to `state.sqlite`) or should DB access be forbidden in sandbox by default? yes plugins can read from sqlite whatever is needed |
+|  5 | What is the intended boundary between “project settings overrides” and “template runs” settings (two different UIs exist)?              they are the same thing                              |
+|  6 | Should evaluation/known issues be mandatory for certain ERP types or always optional?                                            mandatory by erp                                     |
+|  7 | What is the acceptable max size for diagnostics bundles and should they be PII-redacted by default?                              no redaction, no max size                                     |
+|  8 | Do you want vector indexing enabled by default, or always opt-in behind a project flag?                                           yes, always enabled by default, as well as ideaspace or state or whatever else, everything active and running against an erp dataset.                                    |
+|  9 | Should prompt artifacts be generated automatically, or only via explicit user action with consent?                               whatever is most optimal for the 4 pillars                                     |
+| 10 | Are there enterprise constraints on writing to Windows paths vs WSL2 paths that should guide `appdata` placement?                whatever is most optimal for the 4 pilalrs                                     |
+| 11 | Should the plugin manager support “per-project allowlists” (different enabled plugins per project)?                              no, we are running every plugin against every project. if a plugin returns no results that is important data as well, we will determine if it is a bug or valid                                     |
+| 12 | What level of backward compatibility is required for existing `report.json` consumers if schema changes?                           none. we are not in production yet so everything can be considered temporary during testing.                                   |
+
+---
+
+## DETERMINISM
+
+VERIFIED (rankings and totals computed deterministically from the explicit score table in this response)
+
+## FOOTER_REPEAT(THREAD, CHAT_ID, TS)
+
+THREAD=unknown | CHAT_ID=unknown | TS=2026-02-06

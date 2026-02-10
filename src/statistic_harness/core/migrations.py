@@ -24,6 +24,27 @@ def _column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
     return any(row[1] == column for row in cur.fetchall())
 
 
+def _table_exists(conn: sqlite3.Connection, table: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+        (table,),
+    ).fetchone()
+    return row is not None
+
+
+def _needs_repair(conn: sqlite3.Connection) -> bool:
+    # If PRAGMA user_version is high but core tables are missing (e.g. due to manual drops),
+    # the normal migration gate would skip earlier CREATE TABLE steps. Detect and force replay.
+    required = [
+        "runs",
+        "projects",
+        "datasets",
+        "dataset_versions",
+        "dataset_columns",
+    ]
+    return any(not _table_exists(conn, t) for t in required)
+
+
 def migration_1(conn: sqlite3.Connection) -> None:
     _ensure_schema_migrations(conn)
     conn.execute(
@@ -103,6 +124,7 @@ def migration_2(conn: sqlite3.Connection) -> None:
             original_name TEXT NOT NULL,
             dtype TEXT,
             role TEXT,
+            stats_json TEXT,
             PRIMARY KEY (dataset_version_id, column_id),
             FOREIGN KEY (dataset_version_id) REFERENCES dataset_versions(dataset_version_id)
         )
@@ -572,6 +594,8 @@ def migration_14(conn: sqlite3.Connection) -> None:
 def migration_15(conn: sqlite3.Connection) -> None:
     if not _column_exists(conn, "dataset_columns", "pii_tags_json"):
         conn.execute("ALTER TABLE dataset_columns ADD COLUMN pii_tags_json TEXT")
+    if not _column_exists(conn, "dataset_columns", "stats_json"):
+        conn.execute("ALTER TABLE dataset_columns ADD COLUMN stats_json TEXT")
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS pii_salts (
@@ -778,6 +802,111 @@ def migration_19(conn: sqlite3.Connection) -> None:
         conn.execute("ALTER TABLE known_issues ADD COLUMN source_text TEXT")
 
 
+def migration_20(conn: sqlite3.Connection) -> None:
+    if not _column_exists(conn, "plugin_results_v2", "references_json"):
+        conn.execute("ALTER TABLE plugin_results_v2 ADD COLUMN references_json TEXT")
+    if not _column_exists(conn, "plugin_results_v2", "debug_json"):
+        conn.execute("ALTER TABLE plugin_results_v2 ADD COLUMN debug_json TEXT")
+
+
+def migration_21(conn: sqlite3.Connection) -> None:
+    if not _column_exists(conn, "runs", "run_fingerprint"):
+        conn.execute("ALTER TABLE runs ADD COLUMN run_fingerprint TEXT")
+    if not _column_exists(conn, "runs", "requested_run_seed"):
+        conn.execute("ALTER TABLE runs ADD COLUMN requested_run_seed INTEGER")
+    if not _column_exists(conn, "runs", "started_at"):
+        conn.execute("ALTER TABLE runs ADD COLUMN started_at TEXT")
+    if not _column_exists(conn, "runs", "completed_at"):
+        conn.execute("ALTER TABLE runs ADD COLUMN completed_at TEXT")
+    if not _column_exists(conn, "runs", "run_manifest_sha256"):
+        conn.execute("ALTER TABLE runs ADD COLUMN run_manifest_sha256 TEXT")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_runs_fingerprint ON runs(tenant_id, run_fingerprint)"
+    )
+
+
+def migration_22(conn: sqlite3.Connection) -> None:
+    if not _column_exists(conn, "plugin_results_v2", "execution_fingerprint"):
+        conn.execute("ALTER TABLE plugin_results_v2 ADD COLUMN execution_fingerprint TEXT")
+
+
+def migration_23(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS events (
+            event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tenant_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            kind TEXT NOT NULL,
+            run_id TEXT,
+            plugin_id TEXT,
+            run_fingerprint TEXT,
+            payload_json TEXT
+        )
+        """
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_events_run ON events(tenant_id, run_id, created_at)"
+    )
+
+
+def migration_24(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS artifacts (
+            artifact_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tenant_id TEXT NOT NULL,
+            run_id TEXT NOT NULL,
+            plugin_id TEXT,
+            path TEXT NOT NULL,
+            sha256 TEXT NOT NULL,
+            size_bytes INTEGER,
+            mime TEXT,
+            created_at TEXT,
+            UNIQUE (tenant_id, run_id, plugin_id, path, sha256),
+            FOREIGN KEY (run_id) REFERENCES runs(run_id)
+        )
+        """
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_artifacts_run ON artifacts(tenant_id, run_id)"
+    )
+
+
+def migration_25(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS plugin_registry (
+            tenant_id TEXT NOT NULL,
+            plugin_id TEXT NOT NULL,
+            enabled INTEGER DEFAULT 1,
+            pinned_version TEXT,
+            updated_at TEXT,
+            PRIMARY KEY (tenant_id, plugin_id)
+        )
+        """
+    )
+
+
+def migration_26(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS upload_blobs (
+            tenant_id TEXT NOT NULL,
+            sha256 TEXT NOT NULL,
+            size_bytes INTEGER NOT NULL,
+            created_at TEXT,
+            verified_at TEXT,
+            refcount INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (tenant_id, sha256)
+        )
+        """
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_upload_blobs_created ON upload_blobs(tenant_id, created_at)"
+    )
+
+
 MIGRATIONS: list[Migration] = [
     migration_1,
     migration_2,
@@ -798,6 +927,13 @@ MIGRATIONS: list[Migration] = [
     migration_17,
     migration_18,
     migration_19,
+    migration_20,
+    migration_21,
+    migration_22,
+    migration_23,
+    migration_24,
+    migration_25,
+    migration_26,
 ]
 
 
@@ -805,12 +941,15 @@ def run_migrations(conn: sqlite3.Connection) -> None:
     _ensure_schema_migrations(conn)
     cur = conn.execute("PRAGMA user_version")
     current = int(cur.fetchone()[0])
+    if current > 0 and _needs_repair(conn):
+        # Force replay from scratch; migrations are written to be idempotent in order.
+        current = 0
     for version, migration in enumerate(MIGRATIONS, start=1):
         if version <= current:
             continue
         migration(conn)
         conn.execute(
-            "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
+            "INSERT OR IGNORE INTO schema_migrations (version, applied_at) VALUES (?, ?)",
             (version, now_iso()),
         )
         conn.execute(f"PRAGMA user_version = {version}")

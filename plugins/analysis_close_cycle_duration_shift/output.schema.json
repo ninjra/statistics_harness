@@ -10,20 +10,32 @@
       "properties": {
         "cpu_limit_ms": {
           "anyOf": [
-            { "type": "integer" },
-            { "type": "null" }
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "notes": {
           "anyOf": [
-            { "type": "string" },
-            { "type": "null" }
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "row_limit": {
           "anyOf": [
-            { "type": "integer" },
-            { "type": "null" }
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "sampled": {
@@ -31,8 +43,12 @@
         },
         "time_limit_ms": {
           "anyOf": [
-            { "type": "integer" },
-            { "type": "null" }
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
@@ -45,7 +61,10 @@
       "type": "object"
     },
     "error": {
-      "type": ["object", "null"]
+      "type": [
+        "object",
+        "null"
+      ]
     },
     "findings": {
       "type": "array"
@@ -58,6 +77,12 @@
     },
     "summary": {
       "type": "string"
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
     }
   },
   "required": [
@@ -67,7 +92,9 @@
     "findings",
     "artifacts",
     "budget",
-    "error"
+    "error",
+    "references",
+    "debug"
   ],
   "type": "object"
 }

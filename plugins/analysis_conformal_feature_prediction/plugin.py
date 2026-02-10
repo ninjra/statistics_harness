@@ -2,7 +2,6 @@ from __future__ import annotations
 
 
 import numpy as np
-from sklearn.linear_model import Ridge
 
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
@@ -10,6 +9,29 @@ from statistic_harness.core.utils import write_json
 
 class Plugin:
     def run(self, ctx) -> PluginResult:
+        try:
+            from sklearn.linear_model import Ridge  # type: ignore
+        except Exception as exc:
+            msg = str(exc)
+            if "Eval disabled by policy" in msg:
+                return PluginResult(
+                    "skipped",
+                    "Optional dependency blocked by policy (sklearn requires eval)",
+                    {},
+                    [],
+                    [],
+                    None,
+                    debug={"gating_reason": "policy_eval_disabled"},
+                )
+            return PluginResult(
+                "skipped",
+                f"Optional dependency unavailable: {type(exc).__name__}",
+                {},
+                [],
+                [],
+                None,
+                debug={"gating_reason": "missing_optional_dependency"},
+            )
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.empty:

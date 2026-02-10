@@ -4,10 +4,12 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 def now_iso() -> str:
@@ -95,9 +97,105 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def write_json(path: Path, data: Any) -> None:
+def is_windows_or_wsl() -> bool:
+    if os.name == "nt":
+        return True
+    if os.environ.get("WSL_INTEROP") or os.environ.get("WSL_DISTRO_NAME"):
+        return True
+    try:
+        txt = Path("/proc/version").read_text(encoding="utf-8", errors="ignore").lower()
+        return "microsoft" in txt or "wsl" in txt
+    except Exception:
+        return False
+
+
+def safe_rename_enabled() -> bool:
+    raw = os.environ.get("STAT_HARNESS_SAFE_RENAME", "").strip().lower()
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    return is_windows_or_wsl()
+
+
+def safe_replace(src: Path, dst: Path) -> None:
+    """os.replace with best-effort retries to tolerate Windows/WSL transient locks."""
+
+    attempts = 10 if safe_rename_enabled() else 1
+    for i in range(attempts):
+        try:
+            os.replace(src, dst)
+            return
+        except OSError:
+            if i + 1 >= attempts:
+                raise
+            # Small deterministic backoff.
+            time.sleep(0.02 * (i + 1))
+
+
+def atomic_dir(
+    final_dir: Path,
+    *,
+    staging_root: Path,
+    prepare: Callable[[Path], None],
+) -> None:
+    """Create a directory tree and commit it atomically via rename."""
+
+    staging_root.mkdir(parents=True, exist_ok=True)
+    staging_dir = staging_root / final_dir.name
+    if staging_dir.exists():
+        shutil.rmtree(staging_dir, ignore_errors=True)
+    prepare(staging_dir)
+    if final_dir.exists():
+        raise ValueError(f"Directory already exists: {final_dir}")
+    safe_replace(staging_dir, final_dir)
+
+
+def atomic_write_bytes(path: Path, data: bytes) -> None:
+    """Atomically write bytes to `path` (write temp file then os.replace).
+
+    Temp file is created in the same directory to keep the replace atomic across filesystems.
+    Best-effort fsync is used for durability; failures to fsync directories are ignored.
+    """
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json_dumps(data), encoding="utf-8")
+    tmp_path = path.with_name(f".{path.name}.tmp.{uuid.uuid4().hex}")
+    try:
+        with tmp_path.open("wb") as handle:
+            handle.write(data)
+            handle.flush()
+            try:
+                os.fsync(handle.fileno())
+            except OSError:
+                # Some platforms/filesystems do not support fsync; still keep replace atomic.
+                pass
+        safe_replace(tmp_path, path)
+        # Best-effort: fsync directory entry to reduce risk of rename loss on crash.
+        try:
+            dir_fd = os.open(str(path.parent), os.O_RDONLY)
+        except OSError:
+            dir_fd = None
+        if dir_fd is not None:
+            try:
+                os.fsync(dir_fd)
+            except OSError:
+                pass
+            finally:
+                os.close(dir_fd)
+    finally:
+        try:
+            if tmp_path.exists():
+                tmp_path.unlink()
+        except OSError:
+            pass
+
+
+def atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
+    atomic_write_bytes(path, text.encode(encoding))
+
+
+def write_json(path: Path, data: Any) -> None:
+    atomic_write_text(path, json_dumps(data), encoding="utf-8")
 
 
 def file_size_limit(path: Path, max_bytes: int) -> None:
@@ -126,7 +224,37 @@ def auth_enabled() -> bool:
 
 def vector_store_enabled() -> bool:
     raw = os.environ.get("STAT_HARNESS_ENABLE_VECTOR_STORE", "").strip().lower()
-    return raw in {"1", "true", "yes", "on"}
+    # Default ON (local-first), but allow explicit disable.
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    return True
+
+
+_ENV_PLACEHOLDER_RE = re.compile(r"^\$\{ENV:([A-Z0-9_]+)\}$")
+
+
+def resolve_env_placeholders(value: Any) -> Any:
+    """Resolve `${ENV:NAME}` strings to their environment variable values.
+
+    This keeps configs schema-friendly (placeholders are still strings) while allowing
+    secret indirection without persisting secret values to disk.
+    """
+
+    if isinstance(value, str):
+        match = _ENV_PLACEHOLDER_RE.match(value.strip())
+        if not match:
+            return value
+        name = match.group(1)
+        if name not in os.environ:
+            raise ValueError(f"Missing environment variable: {name}")
+        return os.environ[name]
+    if isinstance(value, list):
+        return [resolve_env_placeholders(item) for item in value]
+    if isinstance(value, dict):
+        return {k: resolve_env_placeholders(v) for k, v in value.items()}
+    return value
 
 
 def get_appdata_dir() -> Path:

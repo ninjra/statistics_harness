@@ -74,9 +74,9 @@ class Plugin:
             "Computed knockoff selection",
             {
                 "selected": selected_count,
-                "targets_scanned": len(target_columns),
             },
             findings,
             artifacts,
             None,
+            debug={"targets_scanned": len(target_columns)},
         )

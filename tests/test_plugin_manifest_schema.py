@@ -63,5 +63,7 @@ def test_plugin_config_and_output_validation() -> None:
                 "cpu_limit_ms": None,
             },
             "error": None,
+            "references": [],
+            "debug": {},
         },
     )

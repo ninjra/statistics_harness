@@ -188,19 +188,21 @@ class Plugin:
 
         ctx.storage.replace_dataset_role_candidates(ctx.dataset_version_id, candidates)
 
-        role_by_name: dict[str, str] = {}
+        role_by_safe: dict[str, str] = {}
         for col in columns:
             entry = best_by_column.get(col["column_id"])
             if not entry:
                 continue
             role, score = entry
             if score >= min_confidence:
-                role_by_name[col["original_name"]] = role
+                safe = str(col.get("safe_name") or "")
+                if safe:
+                    role_by_safe[safe] = role
             else:
                 low_confidence_roles.add(role)
 
-        if role_by_name:
-            ctx.storage.update_dataset_column_roles(ctx.dataset_version_id, role_by_name)
+        if role_by_safe:
+            ctx.storage.update_dataset_column_roles(ctx.dataset_version_id, role_by_safe)
 
         findings = []
         for col in columns:
@@ -232,7 +234,7 @@ class Plugin:
         metrics = {
             "columns_scanned": len(columns),
             "candidates": len(candidates),
-            "roles_assigned": len(role_by_name),
+            "roles_assigned": len(role_by_safe),
             "low_confidence_roles": len(low_confidence_roles),
         }
 
@@ -291,7 +293,7 @@ class Plugin:
                                 }
                             )
 
-        summary = f"Inferred roles for {len(role_by_name)} columns"
+        summary = f"Inferred roles for {len(role_by_safe)} columns"
         if duration_stats:
             summary += "; computed time-to-completion stats"
         return PluginResult("ok", summary, metrics, findings, [], None)

@@ -20,7 +20,11 @@ def run_dir(tmp_path: Path) -> Path:
 
 
 def make_context(
-    run_dir: Path, df: pd.DataFrame, settings: dict, populate: bool = True
+    run_dir: Path,
+    df: pd.DataFrame,
+    settings: dict,
+    populate: bool = True,
+    run_seed: int = 42,
 ) -> PluginContext:
     storage = Storage(run_dir / "state.sqlite")
     project_id = "test-project"
@@ -68,7 +72,7 @@ def make_context(
         run_id="test-run",
         run_dir=run_dir,
         settings=settings,
-        run_seed=42,
+        run_seed=run_seed,
         logger=logger,
         storage=storage,
         dataset_loader=accessor.load,

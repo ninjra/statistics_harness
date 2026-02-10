@@ -1,0 +1,18 @@
+id: analysis_multivariate_t2_control
+name: Multivariate T2 Control
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Auto-generated plugin skeleton.
+  defaults: {}
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

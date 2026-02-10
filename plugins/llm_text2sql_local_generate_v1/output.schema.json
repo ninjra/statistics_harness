@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "llm_text2sql_local_generate_v1 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["result"],
+  "properties": {
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "metrics", "findings", "artifacts", "budget", "error", "references", "debug"],
+      "properties": {
+        "status": { "type": "string" },
+        "summary": { "type": "string" },
+        "metrics": { "type": "object" },
+        "findings": { "type": "array" },
+        "artifacts": { "type": "array" },
+        "budget": { "type": "object" },
+        "error": {},
+        "references": { "type": "array" },
+        "debug": { "type": "object" }
+      }
+    },
+    "execution": { "type": "object" }
+  }
+}
+

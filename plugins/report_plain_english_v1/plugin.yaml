@@ -1,0 +1,19 @@
+id: report_plain_english_v1
+name: Plain-English Report (v1)
+version: 0.1.0
+type: report
+entrypoint: plugin.py:Plugin
+depends_on:
+  - report_bundle
+settings:
+  description: Render a separate plain-English report (plain_report.md).
+  defaults: {}
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

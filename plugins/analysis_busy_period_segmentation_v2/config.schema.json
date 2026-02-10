@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "process_column": {"type": ["string", "null"]},
+    "host_column": {"type": ["string", "null"]},
+    "queue_column": {"type": ["string", "null"]},
+    "eligible_column": {"type": ["string", "null"]},
+    "start_column": {"type": ["string", "null"]},
+    "wait_threshold_seconds": {"type": "number"},
+    "gap_tolerance_seconds": {"type": "number"},
+    "max_top_rows": {"type": "integer"},
+    "max_top_processes": {"type": "integer"},
+    "max_top_hosts": {"type": "integer"}
+  }
+}

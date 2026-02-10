@@ -27,6 +27,8 @@ class PluginResult:
     findings: list[dict[str, Any]]
     artifacts: list[PluginArtifact]
     error: PluginError | None = None
+    references: list[dict[str, Any]] = field(default_factory=list)
+    debug: dict[str, Any] = field(default_factory=dict)
     budget: dict[str, Any] = field(
         default_factory=lambda: {
             "row_limit": None,
@@ -46,12 +48,21 @@ class PluginContext:
     logger: Callable[[str], None]
     storage: Any
     dataset_loader: Callable[..., Any]
+    dataset_iter_batches: Callable[..., Any] | None = None
+    # Optional SQL helpers (wired by the harness). These are intentionally typed as Any
+    # to keep plugin APIs stable and avoid forcing a dependency on specific SQL classes.
+    sql: Any | None = None
+    sql_exec: Any | None = None
+    scratch_storage: Any | None = None
+    scratch_sql: Any | None = None
+    sql_schema_snapshot: dict[str, Any] | None = None
     budget: dict[str, Any] = field(
         default_factory=lambda: {
             "row_limit": None,
             "sampled": False,
             "time_limit_ms": None,
             "cpu_limit_ms": None,
+            "batch_size": None,
         }
     )
     tenant_id: str | None = None

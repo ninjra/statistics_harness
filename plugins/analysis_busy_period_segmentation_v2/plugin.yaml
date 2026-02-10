@@ -1,0 +1,30 @@
+id: analysis_busy_period_segmentation_v2
+name: Busy Period Segmentation v2
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Build busy-period intervals from over-threshold wait-to-start.
+  defaults:
+    process_column: null
+    host_column: null
+    queue_column: null
+    eligible_column: null
+    start_column: null
+    wait_threshold_seconds: 60
+    gap_tolerance_seconds: 60
+    max_top_rows: 50
+    max_top_processes: 10
+    max_top_hosts: 10
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

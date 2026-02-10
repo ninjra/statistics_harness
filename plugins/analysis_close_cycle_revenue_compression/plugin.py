@@ -1261,6 +1261,19 @@ class Plugin:
             if col and col not in columns_used:
                 columns_used.append(col)
 
+        baseline_value = baseline_span_median
+        modeled_value = target_days if decision == "modeled" else None
+        delta_value = (
+            (modeled_value - baseline_value)
+            if isinstance(modeled_value, (int, float))
+            and isinstance(baseline_value, (int, float))
+            else None
+        )
+        modeled_host_count = (
+            int(round(host_count * scale_median))
+            if host_count is not None and scale_median
+            else None
+        )
         finding = {
             "kind": "close_cycle_revenue_compression",
             "decision": decision,
@@ -1277,8 +1290,19 @@ class Plugin:
                 "close_window_mode": close_mode,
                 "close_window_source": close_window_source,
             },
+            "modeled_assumptions": [assumption],
+            "modeled_scope": {
+                "basis": basis,
+                "anchor_basis": anchor_basis,
+                "close_window_mode": close_mode,
+                "close_window_source": close_window_source,
+            },
             "target_days": target_days,
             "baseline_span_days_median": baseline_span_median,
+            "baseline_value": baseline_value,
+            "modeled_value": modeled_value,
+            "delta_value": delta_value,
+            "unit": "days",
             "required_scale_factor_median": scale_median,
             "required_scale_factor_p90": scale_p90,
             "worst_month": worst_month.get("month") if worst_month else None,
@@ -1286,12 +1310,13 @@ class Plugin:
             "worst_month_baseline_days": worst_month.get("baseline_span_days") if worst_month else None,
             "host_count": host_count,
             "scale_factor": scale_median,
+            "scale_factor_standard": scale_median,
+            "scale_factor_original": scale_median,
+            "scale_factor_original_definition": "scale_factor_standard = modeled_host_count / baseline_host_count",
             "host_count_baseline": host_count,
-            "host_count_modeled": (
-                int(round(host_count * scale_median))
-                if host_count is not None and scale_median
-                else None
-            ),
+            "host_count_modeled": modeled_host_count,
+            "baseline_host_count": host_count,
+            "modeled_host_count": modeled_host_count,
             "close_window_mode": close_mode,
             "close_window_source": close_window_source,
             "close_window_fallback": fallback_used,
