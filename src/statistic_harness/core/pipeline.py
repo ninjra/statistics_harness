@@ -85,6 +85,19 @@ class Pipeline:
             return code_hash
         return hashlib.sha256(f"{code_hash}:{cached}".encode("utf-8")).hexdigest()
 
+    def _module_file_for_spec(self, spec: PluginSpec) -> Path:
+        module_path, _ = spec.entrypoint.split(":", 1)
+        if module_path.endswith(".py"):
+            return spec.path / module_path
+        return spec.path / f"{module_path}.py"
+
+    def _spec_code_hash(self, spec: PluginSpec) -> str | None:
+        module_file = self._module_file_for_spec(spec)
+        code_hash = file_sha256(module_file) if module_file.exists() else None
+        return self._augment_code_hash_if_stat_wrapper(
+            spec.plugin_id, module_file, code_hash
+        )
+
     def _startup_integrity_check(self) -> None:
         mode = os.environ.get("STAT_HARNESS_STARTUP_INTEGRITY", "").strip().lower()
         if not mode:
@@ -581,11 +594,13 @@ class Pipeline:
                 "upload_id": upload_id,
             },
         )
-        reuse_cache = bool(
-            (os.environ.get("STAT_HARNESS_REUSE_CACHE", "").strip().lower() in {"1", "true", "yes"})
-            if reuse_cache is None
-            else reuse_cache
-        )
+        if reuse_cache is None:
+            # Default ON (opt-out via env), because cache keys are strict fingerprints
+            # and significantly improve repeat-run throughput on large datasets.
+            reuse_raw = os.environ.get("STAT_HARNESS_REUSE_CACHE", "").strip().lower()
+            reuse_cache = reuse_raw not in {"0", "false", "no", "off"}
+        else:
+            reuse_cache = bool(reuse_cache)
         force = bool(
             (os.environ.get("STAT_HARNESS_FORCE", "").strip().lower() in {"1", "true", "yes"})
             if force is None
@@ -816,13 +831,7 @@ class Pipeline:
                 now_iso(),
                 status="running",
             )
-            module_path, _ = spec.entrypoint.split(":", 1)
-            if module_path.endswith(".py"):
-                module_file = spec.path / module_path
-            else:
-                module_file = spec.path / f"{module_path}.py"
-            code_hash = file_sha256(module_file) if module_file.exists() else None
-            code_hash = self._augment_code_hash_if_stat_wrapper(spec.plugin_id, module_file, code_hash)
+            code_hash = self._spec_code_hash(spec)
             plugin_seed = stable_hash(f"{run_seed}:{spec.plugin_id}")
             settings_hash: str | None = None
             execution_fingerprint: str | None = None
@@ -926,14 +935,31 @@ class Pipeline:
                         "plugin_seed": plugin_seed,
                     },
                 )
-                # Cache reuse is only safe for pure/read-only plugins.
-                # - ingest plugins materialize the raw dataset in SQLite (required side-effects)
-                # - transform plugins materialize normalized/template layers (required side-effects)
-                # - report plugins materialize run-scoped artifacts whose content depends on this run_id
-                #   (and the set of executed plugins), so reuse across runs is unsafe.
-                # Reusing their previous outputs without re-applying side-effects can make the
-                # run invalid, so fail closed and disallow reuse for these types.
-                if reuse_cache and not force and str(spec.type or "") not in {"ingest", "transform", "report"}:
+                # Cache reuse policy:
+                # - Ingest: never reused (materializes raw SQLite content).
+                # - Report: never reused (run-scoped outputs must match this run_id).
+                # - Transforms: only normalization may be reused, and only when a ready
+                #   dataset_template already exists (side effects are already materialized).
+                # - Analysis/profile/planner/llm: safe to reuse via strict fingerprint.
+                allow_cache_reuse = (
+                    bool(reuse_cache)
+                    and not force
+                    and str(spec.type or "") not in {"ingest", "report"}
+                )
+                if str(spec.type or "") == "transform":
+                    if spec.plugin_id != "transform_normalize_mixed":
+                        allow_cache_reuse = False
+                    else:
+                        ready_template = self.storage.fetch_dataset_template(
+                            dataset_version_id
+                        )
+                        allow_cache_reuse = bool(
+                            ready_template
+                            and str(ready_template.get("status") or "").lower()
+                            == "ready"
+                        )
+
+                if allow_cache_reuse:
                     cached = self.storage.fetch_cached_plugin_result(execution_fingerprint)
                 else:
                     cached = None
@@ -1224,6 +1250,25 @@ class Pipeline:
         # This ensures all plugins operate on the normalized (template) layer, not raw.
         pre_ran_transforms: set[str] = set()
         normalize_spec = spec_map.get("transform_normalize_mixed")
+        normalize_code_hash = ""
+        normalize_settings_hash = ""
+        if normalize_spec:
+            try:
+                normalize_code_hash = str(self._spec_code_hash(normalize_spec) or "")
+            except Exception:
+                normalize_code_hash = ""
+            try:
+                norm_settings = dict(normalize_spec.settings.get("defaults", {}))
+                norm_settings.update(settings.get(normalize_spec.plugin_id, {}))
+                norm_settings = self.manager.resolve_config(normalize_spec, norm_settings)
+                norm_for_hash = dict(norm_settings)
+                if "input_file" in norm_for_hash:
+                    norm_for_hash["input_file"] = None
+                normalize_settings_hash = hashlib.sha256(
+                    json_dumps(norm_for_hash).encode("utf-8")
+                ).hexdigest()
+            except Exception:
+                normalize_settings_hash = ""
         if normalize_spec:
             norm_result = run_spec(normalize_spec)
             pre_ran_transforms.add("transform_normalize_mixed")
@@ -1278,14 +1323,22 @@ class Pipeline:
             write_report(report, run_dir)
             return run_id
 
-        # Once normalization is ready, salt the dataset hash with the mapping hash so
-        # all subsequent plugin cache keys reflect the normalized layer definition.
+        # Once normalization is ready, salt the dataset hash with the mapping hash and
+        # normalization implementation fingerprint so downstream cache keys reflect:
+        # - raw input identity
+        # - normalization mapping/template identity
+        # - normalization code/settings identity
         try:
             mapping_hash = str(dataset_template.get("mapping_hash") or "").strip()
             template_id = str(dataset_template.get("template_id") or "").strip()
             if mapping_hash:
+                salt_parts = [input_hash, mapping_hash, template_id]
+                if normalize_code_hash:
+                    salt_parts.append(normalize_code_hash)
+                if normalize_settings_hash:
+                    salt_parts.append(normalize_settings_hash)
                 cache_dataset_hash = hashlib.sha256(
-                    f"{input_hash}:{mapping_hash}:{template_id}".encode("utf-8")
+                    ":".join(salt_parts).encode("utf-8")
                 ).hexdigest()
         except Exception:
             cache_dataset_hash = str(input_hash)

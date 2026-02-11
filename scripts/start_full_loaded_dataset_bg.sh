@@ -14,6 +14,7 @@ RUN_SEED="${2:-123}"
 # Default: 2 analysis workers (user-requested). Override by exporting STAT_HARNESS_MAX_WORKERS_ANALYSIS.
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-2}"
 export STAT_HARNESS_CLI_PROGRESS="${STAT_HARNESS_CLI_PROGRESS:-1}"
+export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 export STAT_HARNESS_STARTUP_INTEGRITY="${STAT_HARNESS_STARTUP_INTEGRITY:-off}"
 # Soft memory governor defaults (operator override via env):
 # - if system RAM usage exceeds this, the pipeline will delay starting additional analysis plugins

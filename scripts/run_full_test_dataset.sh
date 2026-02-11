@@ -11,6 +11,7 @@ export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 # Enforce the operator decision: run at most 2 analysis plugins at a time on large datasets.
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="2"
 export STAT_HARNESS_CLI_PROGRESS="1"
+export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 # Integrity checks on a multi-GB SQLite file can dominate startup time; keep it off for the
 # "run everything" harness script. Enable manually when you want it.
 export STAT_HARNESS_STARTUP_INTEGRITY="off"

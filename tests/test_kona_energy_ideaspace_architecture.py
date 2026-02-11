@@ -129,6 +129,35 @@ def test_lever_qemail_frequency_detects_5_minute_schedule(run_dir: Path) -> None
     assert any(r.get("lever_id") == "tune_schedule_qemail_frequency_v1" for r in recos)
 
 
+def test_lever_qpec_plus_one_emits_qpec_label_when_hosts_match(run_dir: Path) -> None:
+    fixture = Path("tests/fixtures/quorum_close_cycle.csv")
+    df = pd.read_csv(fixture)
+    from tests.conftest import make_context
+
+    ctx = make_context(
+        run_dir,
+        df,
+        settings={
+            "qpec_min_samples": 5,
+            "qpec_eligible_wait_p95_trigger_s": 10.0,
+            "max_findings": 50,
+        },
+        run_seed=9,
+    )
+    res = run_plugin("analysis_ideaspace_action_planner", ctx)
+    assert res.status == "ok"
+    recos_path = run_dir / "artifacts" / "analysis_ideaspace_action_planner" / "recommendations.json"
+    assert recos_path.exists()
+    recos = json.loads(recos_path.read_text(encoding="utf-8"))
+    qpec = next((r for r in recos if r.get("lever_id") == "add_qpec_capacity_plus_one_v1"), None)
+    assert qpec is not None
+    assert "QPEC+1" in str(qpec.get("action") or "")
+    metrics = ((qpec.get("evidence") or {}).get("metrics") or {})
+    assert int(metrics.get("qpec_host_count") or 0) >= 1
+    keys = metrics.get("qpec_host_entity_keys")
+    assert isinstance(keys, list) and len(keys) >= 1
+
+
 def test_filter_excluded_processes_allows_add_server_and_tune_schedule() -> None:
     known_payload = {"recommendation_exclusions": {"processes": ["qemail"]}}
     items = [
