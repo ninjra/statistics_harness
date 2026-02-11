@@ -40,7 +40,9 @@ fi
 
 RUN_ID=""
 for _ in {1..60}; do
-  python scripts/repair_stale_running_runs.py >/dev/null 2>&1 || true
+  if [[ "${STAT_HARNESS_WATCH_REPAIR:-0}" == "1" ]]; then
+    python scripts/repair_stale_running_runs.py >/dev/null 2>&1 || true
+  fi
   RUN_ID="$(
   python -c "import sqlite3; from pathlib import Path; db=Path('appdata/state.sqlite'); con=sqlite3.connect(db); con.row_factory=sqlite3.Row; row=con.execute(\"select run_id from runs where status='running' and dataset_version_id=? order by created_at desc limit 1\", ('${DATASET_VERSION_ID}',)).fetchone(); print(row['run_id'] if row else ''); con.close()"
   )"

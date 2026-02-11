@@ -18,7 +18,9 @@ fi
 
 while true; do
   echo "----- $(date -Is) -----"
-  python scripts/repair_stale_running_runs.py >/dev/null 2>&1 || true
+  if [[ "${STAT_HARNESS_WATCH_REPAIR:-0}" == "1" ]]; then
+    python scripts/repair_stale_running_runs.py >/dev/null 2>&1 || true
+  fi
   OUT="$(python scripts/run_run_status.py --run-id "$RUN_ID" || true)"
   printf '%s\n' "$OUT"
 
@@ -41,4 +43,3 @@ while true; do
   fi
   sleep "$INTERVAL_SECONDS"
 done
-

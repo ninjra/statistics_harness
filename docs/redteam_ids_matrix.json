@@ -801,6 +801,7 @@
           "tests/test_plugin_dag_validation.py",
           "tests/test_plugin_discovery.py",
           "tests/test_redteam_requirements_full.py",
+          "tests/test_repair_stale_running_runs.py",
           "tests/test_sandbox.py",
           "tests/test_sql_assist_and_storage_guards.py",
           "tests/test_tenant_isolation.py",

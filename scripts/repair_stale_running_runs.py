@@ -72,7 +72,19 @@ def _read_journal(run_dir: Path) -> tuple[int | None, str | None]:
     return pid_i, started_s
 
 
-def repair_stale_runs(appdata: Path) -> RepairResult:
+def _parse_iso8601(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except Exception:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def repair_stale_runs(appdata: Path, startup_grace_seconds: int = 180) -> RepairResult:
     db_path = appdata / "state.sqlite"
     runs_root = appdata / "runs"
     con = _connect(db_path)
@@ -85,12 +97,20 @@ def repair_stale_runs(appdata: Path) -> RepairResult:
         now = datetime.now(timezone.utc).isoformat()
 
         rows = con.execute(
-            "select run_id from runs where status='running' order by created_at",
+            "select run_id, created_at from runs where status='running' order by created_at",
         ).fetchall()
         for r in rows:
             run_id = str(r["run_id"])
             scanned += 1
             pid, started_at = _read_journal(runs_root / run_id)
+            if not (isinstance(pid, int) and pid > 0):
+                # Fresh runs may be inserted before their run journal has pid metadata.
+                # Fail closed for genuinely stale runs, but avoid aborting active startup.
+                created_at = _parse_iso8601(str(r["created_at"]) if r["created_at"] is not None else None)
+                if created_at is not None:
+                    age_s = (datetime.now(timezone.utc) - created_at).total_seconds()
+                    if age_s <= float(max(0, int(startup_grace_seconds))):
+                        continue
             if isinstance(pid, int) and pid > 0 and _pid_is_same_process(pid, started_at):
                 continue
             # Stale: mark aborted and also abort any still-running plugin executions.
@@ -133,8 +153,9 @@ def repair_stale_runs(appdata: Path) -> RepairResult:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--appdata", type=Path, default=Path("appdata"))
+    ap.add_argument("--startup-grace-seconds", type=int, default=180)
     args = ap.parse_args()
-    res = repair_stale_runs(args.appdata)
+    res = repair_stale_runs(args.appdata, startup_grace_seconds=int(args.startup_grace_seconds))
     print(f"scanned={res.scanned} repaired={res.repaired}")
     for rid in res.repaired_run_ids:
         print(f"repaired_run_id={rid}")
@@ -143,4 +164,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
