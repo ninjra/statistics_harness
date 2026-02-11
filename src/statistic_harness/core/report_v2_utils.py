@@ -291,8 +291,18 @@ def filter_excluded_processes(
         return items
     filtered: list[dict[str, Any]] = []
     for item in items:
+        action_type = str(item.get("action_type") or item.get("action") or "").strip().lower()
         target = item.get("target")
         if isinstance(target, str) and target.strip().lower() in excluded:
+            # Fail-closed, but allow certain "system levers" even when the target process
+            # is excluded (e.g., QEMAIL/QPEC exclusions for Quorum should not suppress
+            # schedule/capacity levers that are explicitly called out as known issues).
+            allow = {"add_server", "tune_schedule"}
+            if action_type in allow:
+                filtered.append(item)
+                continue
+            # For excluded processes, only keep items that are not directly "about" that
+            # process. Most other action types are too noisy to surface when excluded.
             continue
         filtered.append(item)
     return filtered

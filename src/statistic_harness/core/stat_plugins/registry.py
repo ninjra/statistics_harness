@@ -33,6 +33,9 @@ from statistic_harness.core.stat_plugins.topo_tda_addon import (
 from statistic_harness.core.stat_plugins.ideaspace import (
     HANDLERS as IDEASPACE_HANDLERS,
 )
+from statistic_harness.core.stat_plugins.erp_next_wave import (
+    HANDLERS as ERP_NEXT_WAVE_HANDLERS,
+)
 
 try:  # optional
     from scipy import stats as scipy_stats
@@ -2824,3 +2827,4 @@ HANDLERS: dict[str, Callable[..., PluginResult]] = {
 # Topo/TDA add-on pack handlers live in a separate module to keep this file tractable.
 HANDLERS.update(TOPO_TDA_ADDON_HANDLERS)
 HANDLERS.update(IDEASPACE_HANDLERS)
+HANDLERS.update(ERP_NEXT_WAVE_HANDLERS)

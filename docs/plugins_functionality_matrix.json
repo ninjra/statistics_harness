@@ -136,17 +136,24 @@
       "analysis_association_rules_apriori_v1",
       "analysis_biclustering_cheng_church_v1",
       "analysis_burst_modeling_hawkes_v1",
+      "analysis_close_cycle_change_point_v1",
       "analysis_constrained_clustering_cop_kmeans_v1",
       "analysis_daily_pattern_alignment_dtw_v1",
       "analysis_density_clustering_hdbscan_v1",
       "analysis_dependency_community_leiden_v1",
       "analysis_dependency_community_louvain_v1",
+      "analysis_dependency_critical_path_v1",
       "analysis_distribution_shift_wasserstein_v1",
       "analysis_empirical_bayes_shrinkage_v1",
       "analysis_frequent_itemsets_fpgrowth_v1",
       "analysis_graph_min_cut_partition_v1",
+      "analysis_hold_time_attribution_v1",
+      "analysis_ideaspace_energy_ebm_v1",
+      "analysis_ebm_action_verifier_v1",
       "analysis_param_near_duplicate_minhash_v1",
       "analysis_param_near_duplicate_simhash_v1",
+      "analysis_param_variant_explosion_v1",
+      "analysis_retry_rate_hotspots_v1",
       "analysis_sequence_grammar_sequitur_v1",
       "analysis_sequential_patterns_prefixspan_v1",
       "analysis_similarity_graph_spectral_clustering_v1"
@@ -169,7 +176,8 @@
       "report_bundle",
       "report_plain_english_v1",
       "report_slide_kit_emitter_v2",
-      "report_decision_bundle_v2"
+      "report_decision_bundle_v2",
+      "report_payout_report_v1"
     ],
     "transform": [
       "transform_normalize_mixed",
@@ -324,20 +332,28 @@
     "analysis_association_rules_apriori_v1",
     "analysis_biclustering_cheng_church_v1",
     "analysis_burst_modeling_hawkes_v1",
+    "analysis_close_cycle_change_point_v1",
     "analysis_constrained_clustering_cop_kmeans_v1",
     "analysis_daily_pattern_alignment_dtw_v1",
     "analysis_density_clustering_hdbscan_v1",
     "analysis_dependency_community_leiden_v1",
     "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
     "analysis_distribution_shift_wasserstein_v1",
     "analysis_empirical_bayes_shrinkage_v1",
     "analysis_frequent_itemsets_fpgrowth_v1",
     "analysis_graph_min_cut_partition_v1",
+    "analysis_hold_time_attribution_v1",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ebm_action_verifier_v1",
     "analysis_param_near_duplicate_minhash_v1",
     "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_retry_rate_hotspots_v1",
     "analysis_sequence_grammar_sequitur_v1",
     "analysis_sequential_patterns_prefixspan_v1",
     "analysis_similarity_graph_spectral_clustering_v1",
+    "report_payout_report_v1",
     "transform_sql_intents_pack_v1",
     "llm_text2sql_local_generate_v1",
     "transform_sqlpack_materialize_v1",
@@ -406,7 +422,8 @@
       "analysis_close_cycle_contention",
       "analysis_close_cycle_duration_shift",
       "analysis_close_cycle_revenue_compression",
-      "analysis_close_cycle_uplift"
+      "analysis_close_cycle_uplift",
+      "analysis_close_cycle_change_point_v1"
     ],
     "analysis_cluster_analysis_*": [
       "analysis_cluster_analysis_auto"
@@ -445,6 +462,9 @@
       "analysis_dependency_community_leiden_v1",
       "analysis_dependency_community_louvain_v1"
     ],
+    "analysis_dependency_critical_*": [
+      "analysis_dependency_critical_path_v1"
+    ],
     "analysis_dependency_graph_*": [
       "analysis_dependency_graph_change_detection"
     ],
@@ -471,6 +491,9 @@
     ],
     "analysis_dynamic_close_*": [
       "analysis_dynamic_close_detection"
+    ],
+    "analysis_ebm_action_*": [
+      "analysis_ebm_action_verifier_v1"
     ],
     "analysis_effect_size_*": [
       "analysis_effect_size_report"
@@ -514,8 +537,14 @@
     "analysis_hmm_latent_*": [
       "analysis_hmm_latent_state_sequences"
     ],
+    "analysis_hold_time_*": [
+      "analysis_hold_time_attribution_v1"
+    ],
     "analysis_ideaspace_action_*": [
       "analysis_ideaspace_action_planner"
+    ],
+    "analysis_ideaspace_energy_*": [
+      "analysis_ideaspace_energy_ebm_v1"
     ],
     "analysis_ideaspace_normative_*": [
       "analysis_ideaspace_normative_gap"
@@ -595,6 +624,9 @@
       "analysis_param_near_duplicate_minhash_v1",
       "analysis_param_near_duplicate_simhash_v1"
     ],
+    "analysis_param_variant_*": [
+      "analysis_param_variant_explosion_v1"
+    ],
     "analysis_pca_auto_*": [
       "analysis_pca_auto"
     ],
@@ -634,6 +666,9 @@
     ],
     "analysis_regression_auto_*": [
       "analysis_regression_auto"
+    ],
+    "analysis_retry_rate_*": [
+      "analysis_retry_rate_hotspots_v1"
     ],
     "analysis_robust_covariance_*": [
       "analysis_robust_covariance_outliers"
@@ -769,7 +804,8 @@
       "report_bundle",
       "report_plain_english_v1",
       "report_slide_kit_emitter_v2",
-      "report_decision_bundle_v2"
+      "report_decision_bundle_v2",
+      "report_payout_report_v1"
     ],
     "transform": [
       "transform_normalize_mixed",
@@ -923,28 +959,36 @@
     "analysis_association_rules_apriori_v1",
     "analysis_biclustering_cheng_church_v1",
     "analysis_burst_modeling_hawkes_v1",
+    "analysis_close_cycle_change_point_v1",
     "analysis_constrained_clustering_cop_kmeans_v1",
     "analysis_daily_pattern_alignment_dtw_v1",
     "analysis_density_clustering_hdbscan_v1",
     "analysis_dependency_community_leiden_v1",
     "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
     "analysis_distribution_shift_wasserstein_v1",
     "analysis_empirical_bayes_shrinkage_v1",
     "analysis_frequent_itemsets_fpgrowth_v1",
     "analysis_graph_min_cut_partition_v1",
+    "analysis_hold_time_attribution_v1",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ebm_action_verifier_v1",
     "analysis_param_near_duplicate_minhash_v1",
     "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_retry_rate_hotspots_v1",
     "analysis_sequence_grammar_sequitur_v1",
     "analysis_sequential_patterns_prefixspan_v1",
     "analysis_similarity_graph_spectral_clustering_v1",
     "report_plain_english_v1",
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
+    "report_payout_report_v1",
     "report_bundle",
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 163,
+  "plugin_count": 171,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -1224,6 +1268,20 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_close_cycle_change_point_v1": {
+      "capabilities": [
+        "needs_time"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Heuristic change detection on queue delay/duration time series to flag close-cycle drift.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Change Point (Heuristic)",
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_close_cycle_contention": {
       "capabilities": [
         "needs_eventlog",
@@ -1490,6 +1548,20 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_dependency_critical_path_v1": {
+      "capabilities": [
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Computes a dependency-chain depth proxy from parent/dependency ID columns.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Critical Path (Proxy)",
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_dependency_graph_change_detection": {
       "capabilities": [],
       "depends_on": [],
@@ -1601,6 +1673,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Dynamic Close Window Detection",
       "plugin_id": "analysis_dynamic_close_detection",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ebm_action_verifier_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "analysis_ideaspace_action_planner",
+        "analysis_ideaspace_energy_ebm_v1"
+      ],
+      "description": "Re-rank deterministic lever candidates by modeled energy reduction.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "EBM Action Verifier (Kona Layer)",
+      "plugin_id": "analysis_ebm_action_verifier_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1776,6 +1863,21 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_hold_time_attribution_v1": {
+      "capabilities": [
+        "needs_time",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Attribute delay into pre-eligibility holds vs eligible-wait, per process.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Hold Time Attribution",
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_ideaspace_action_planner": {
       "capabilities": [
         "needs_numeric"
@@ -1788,6 +1890,20 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Ideaspace Action Planner",
       "plugin_id": "analysis_ideaspace_action_planner",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ideaspace_energy_ebm_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Deterministic energy-based model scoring ideaspace state vs ideal (baseline or frontier).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ideaspace Energy EBM (Kona Layer)",
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2118,6 +2234,21 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_param_variant_explosion_v1": {
+      "capabilities": [
+        "needs_text",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Detects high unique(parameter)/runs ratios per process (cache/batch opportunities).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Variant Explosion",
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_pca_auto": {
       "capabilities": [
         "needs_multi_numeric"
@@ -2280,6 +2411,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Regression Auto",
       "plugin_id": "analysis_regression_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_retry_rate_hotspots_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Identify processes with high retry/attempt rates.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Retry Rate Hotspots",
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2891,6 +3037,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Decision Report Bundle v2",
       "plugin_id": "report_decision_bundle_v2",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "report_payout_report_v1": {
+      "capabilities": [
+        "needs_time",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Produce a payout-focused report; supports stacked multi-input via __source_* columns.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Payout Report (Batch/Multi-Input)",
+      "plugin_id": "report_payout_report_v1",
       "type": "report",
       "version": "0.1.0"
     },

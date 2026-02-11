@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 import math
+import hashlib
 
 import numpy as np
 import pandas as pd
@@ -385,6 +386,139 @@ def recommend_prestage_prereqs(
     )
 
 
+def _pick_process_col(df: pd.DataFrame, cols: IdeaspaceColumns) -> str | None:
+    # Prefer explicit PROCESS-like columns; fall back to activity_col.
+    for col in df.columns:
+        name = str(col).lower()
+        if "process" in name:
+            return str(col)
+    if cols.activity_col and cols.activity_col in df.columns:
+        return cols.activity_col
+    return None
+
+
+def recommend_tune_schedule_qemail_frequency_v1(
+    df: pd.DataFrame, cols: IdeaspaceColumns, config: dict[str, Any]
+) -> LeverRecommendation | None:
+    """QEMAIL scheduling reduction: detect ~5-minute schedule and suggest 15-minute."""
+
+    proc_col = _pick_process_col(df, cols)
+    if not proc_col:
+        return None
+
+    time_col = cols.eligible_col or cols.time_col or cols.start_col
+    if not time_col or time_col not in df.columns:
+        return None
+
+    proc = df[proc_col].astype(str)
+    mask = proc.str.strip().str.lower() == "qemail"
+    if not mask.any():
+        return None
+
+    ts = coerce_datetime(df.loc[mask, time_col]).dropna().sort_values()
+    min_samples = int(config.get("qemail_min_samples", 500))
+    if ts.size < min_samples:
+        return None
+
+    diffs = ts.diff().dt.total_seconds().dropna()
+    diffs = diffs[(diffs > 0) & np.isfinite(diffs.to_numpy(dtype=float))]
+    if diffs.size < max(1, min_samples - 1):
+        return None
+
+    median_s = float(np.nanpercentile(diffs.to_numpy(dtype=float), 50))
+    if median_s > float(config.get("qemail_median_interval_trigger_s", 360.0)):
+        return None
+
+    proposed_minutes = int(config.get("qemail_proposed_interval_minutes", 15))
+    evidence = {
+        "metrics": {
+            "process": "QEMAIL",
+            "process_col": proc_col,
+            "time_col": time_col,
+            "median_interarrival_s": median_s,
+            "samples": int(ts.size),
+            "proposed_interval_minutes": int(proposed_minutes),
+        }
+    }
+    return LeverRecommendation(
+        lever_id="tune_schedule_qemail_frequency_v1",
+        title="Tune QEMAIL schedule frequency (reduce background overhead)",
+        action=(
+            f"QEMAIL appears to run every ~{median_s/60.0:.1f} minutes; "
+            f"increase the schedule interval to ~{proposed_minutes} minutes "
+            "to reduce background load during close-cycle pressure."
+        ),
+        estimated_improvement_pct=None,
+        confidence=0.65,
+        evidence=evidence,
+        limitations=[
+            "This does not prove causality; validate by measuring queue delay and duration before/after.",
+            "Ensure the business SLA for outbound email supports a longer interval.",
+        ],
+    )
+
+
+def _host_entity_key(col: str, value: str) -> str:
+    # Must match ideaspace_feature_extractor.entity_slices() host hashing scheme.
+    digest = hashlib.sha256(str(value).encode("utf-8")).hexdigest()[:10]
+    return f"{col}=hash:{digest}"
+
+
+def recommend_add_qpec_capacity_plus_one_v1(
+    df: pd.DataFrame, cols: IdeaspaceColumns, config: dict[str, Any]
+) -> LeverRecommendation | None:
+    """QPEC(+1) capacity scaling: detect QPEC host cluster and model p95 eligible-wait reduction."""
+
+    if not (cols.host_col and cols.eligible_col and cols.start_col):
+        return None
+
+    host = df[cols.host_col].astype(str)
+    qpec_mask = host.str.contains("qpec", case=False, na=False)
+    if not qpec_mask.any():
+        return None
+
+    qd = queue_delay_seconds(df.loc[qpec_mask], cols.eligible_col, cols.start_col)
+    qd = qd[np.isfinite(qd.to_numpy(dtype=float))]
+    if qd.size < int(config.get("qpec_min_samples", 200)):
+        return None
+
+    p95 = float(np.nanpercentile(qd.to_numpy(dtype=float), 95))
+    if p95 <= float(config.get("qpec_eligible_wait_p95_trigger_s", 60.0)):
+        return None
+
+    unique_hosts = sorted({h for h in host.loc[qpec_mask].dropna().astype(str).tolist() if h})
+    host_count = max(1, int(len(unique_hosts)))
+    modeled = float(p95 * (host_count / float(host_count + 1)))
+    est_pct = float(max(0.0, min(0.9, (p95 - modeled) / max(p95, 1e-9))) * 100.0)
+
+    evidence = {
+        "metrics": {
+            "host_col": cols.host_col,
+            "eligible_col": cols.eligible_col,
+            "start_col": cols.start_col,
+            "qpec_host_count": host_count,
+            "eligible_wait_p95_s": p95,
+            "modeled_wait_p95_s": modeled,
+            "qpec_host_entity_keys": [_host_entity_key(cols.host_col, h) for h in unique_hosts],
+        }
+    }
+    return LeverRecommendation(
+        lever_id="add_qpec_capacity_plus_one_v1",
+        title="Add QPEC capacity (+1) to reduce queue delays",
+        action=(
+            "QPEC hosts show high eligible-wait pressure; add one QPEC server (QPEC+1) "
+            "or increase QPEC workers by 1 to reduce queue delay under load."
+        ),
+        estimated_improvement_pct=est_pct,
+        confidence=0.7,
+        evidence=evidence,
+        limitations=[
+            "This uses a simple capacity scaling model (host_count/(host_count+1)). Validate with a staged rollout.",
+            "Ensure downstream dependencies can absorb higher throughput.",
+        ],
+    )
+
+
 def build_default_lever_recommendations(
     df: pd.DataFrame,
     cols: IdeaspaceColumns,
@@ -392,6 +526,8 @@ def build_default_lever_recommendations(
 ) -> list[LeverRecommendation]:
     recos: list[LeverRecommendation] = []
     for fn in (
+        recommend_tune_schedule_qemail_frequency_v1,
+        recommend_add_qpec_capacity_plus_one_v1,
         recommend_workload_isolation,
         recommend_blackout_non_critical,
         recommend_concurrency_cap,

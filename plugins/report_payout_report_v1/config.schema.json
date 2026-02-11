@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "payout_process_regex": {
+      "type": "string",
+      "description": "Regex used to select payout-like processes."
+    }
+  }
+}
+

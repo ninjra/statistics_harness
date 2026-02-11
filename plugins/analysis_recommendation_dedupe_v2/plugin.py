@@ -17,11 +17,22 @@ def _infer_action_type(item: dict[str, Any]) -> str:
     if isinstance(action, str) and action.strip():
         return action.strip()
     text = str(item.get("recommendation") or item.get("title") or "").lower()
-    if "add one server" in text or "add server" in text or "qpec+1" in text:
+    if (
+        "add one server" in text
+        or "add server" in text
+        or "qpec+1" in text
+        or "qpec(+1" in text
+        or "qpec +1" in text
+    ):
         return "add_server"
     if "remove" in text and "process" in text:
         return "remove_process"
-    if "schedule" in text or "reschedule" in text:
+    if (
+        "schedule" in text
+        or "reschedule" in text
+        or "frequency" in text
+        or ("every " in text and "min" in text)
+    ):
         return "tune_schedule"
     return "review"
 

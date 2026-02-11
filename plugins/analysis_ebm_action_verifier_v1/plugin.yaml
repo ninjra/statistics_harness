@@ -1,0 +1,23 @@
+id: analysis_ebm_action_verifier_v1
+name: EBM Action Verifier (Kona Layer)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_ideaspace_action_planner
+  - analysis_ideaspace_energy_ebm_v1
+settings:
+  description: Re-rank deterministic lever candidates by modeled energy reduction.
+  defaults:
+    max_findings: 30
+capabilities:
+  - needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+

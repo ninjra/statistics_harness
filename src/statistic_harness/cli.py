@@ -23,6 +23,7 @@ from statistic_harness.core.evaluation import evaluate_report
 from statistic_harness.core.pipeline import Pipeline
 from statistic_harness.core.plugin_manager import PluginManager
 from statistic_harness.core.report import build_report, write_report
+from statistic_harness.core.payout_report import build_payout_report
 from statistic_harness.core.storage import Storage
 from statistic_harness.core.tenancy import get_tenant_context
 from statistic_harness.core.utils import (
@@ -446,6 +447,47 @@ def cmd_create_api_key(email: str, password: str, name: str | None) -> None:
     print(token)
 
 
+def cmd_payout_report(inputs: list[str], out_dir: str) -> None:
+    _require_cli_api_key()
+    if not inputs:
+        raise SystemExit("Provide at least one --input")
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    frames = []
+    for path in inputs:
+        p = Path(path)
+        if not p.exists():
+            raise SystemExit(f"Input not found: {path}")
+        import pandas as pd
+
+        df = pd.read_csv(p)
+        df["__source_file"] = p.name
+        df["__source_hash"] = file_sha256(p)
+        frames.append(df)
+
+    import pandas as pd
+
+    stacked = pd.concat(frames, axis=0, ignore_index=True) if frames else pd.DataFrame()
+    report = build_payout_report(stacked)
+
+    artifacts_dir = out / "artifacts" / "report_payout_report_v1"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    report_json = artifacts_dir / "payout_report.json"
+    report_csv = artifacts_dir / "payout_report.csv"
+    report_json.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    # CSV: overall + per source rows
+    rows = []
+    overall = dict(report.get("metrics") or {})
+    rows.append({"scope": "overall", **overall})
+    for row in report.get("per_source") or []:
+        if isinstance(row, dict):
+            rows.append({"scope": "source", **row})
+    pd.DataFrame(rows).to_csv(report_csv, index=False)
+    print(str(report_json))
+    print(str(report_csv))
+
+
 def cmd_create_tenant(tenant_id: str, name: str | None) -> None:
     tenant_ctx = get_tenant_context()
     storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
@@ -598,6 +640,10 @@ def main() -> None:
     backfill_parser.add_argument("--plugin", required=True)
     backfill_parser.add_argument("--run-seed", type=int, default=0)
 
+    payout_parser = sub.add_parser("payout-report")
+    payout_parser.add_argument("--input", action="append", required=True)
+    payout_parser.add_argument("--out", required=True)
+
     user_parser = sub.add_parser("create-user")
     user_parser.add_argument("--email", required=True)
     user_parser.add_argument("--password", required=True)
@@ -670,6 +716,8 @@ def main() -> None:
         cmd_make_ground_truth(args.report, args.output)
     elif args.command == "backfill":
         cmd_backfill(args.plugin, args.run_seed)
+    elif args.command == "payout-report":
+        cmd_payout_report(args.input, args.out)
     elif args.command == "create-user":
         cmd_create_user(args.email, args.password, args.name, args.admin)
     elif args.command == "create-api-key":
