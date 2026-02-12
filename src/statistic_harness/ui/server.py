@@ -1751,6 +1751,16 @@ def _normalize_settings_from_form(
     }
 
 
+def _apply_sampling_setting(settings: dict[str, object], allow_row_sampling: str | None) -> None:
+    """Apply optional analysis row-sampling override from form input.
+
+    Default behavior remains OFF unless explicitly enabled.
+    """
+    if allow_row_sampling is None:
+        return
+    settings["allow_row_sampling"] = _bool_from_form(allow_row_sampling, False)
+
+
 def _auto_seed(value: str | None, fallback: int = 0) -> int:
     if not value:
         return fallback
@@ -2253,6 +2263,7 @@ async def create_run(
     normalize_exclude_name_patterns: str = Form("id,uuid,guid,key"),
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
+    allow_row_sampling: str | None = Form(None),
 ) -> JSONResponse:
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
@@ -2302,6 +2313,7 @@ async def create_run(
     settings["transform_normalize_mixed"] = plugin_settings
     if project_settings:
         settings = _merge_settings(project_settings, settings)
+    _apply_sampling_setting(settings, allow_row_sampling)
     settings["__run_meta"] = {"plugins": _run_meta_from_plugins(plugin_ids)}
 
     if run_seed in (None, 0):
@@ -2358,6 +2370,7 @@ async def run_auto_evaluate(
     normalize_exclude_name_patterns: str = Form("id,uuid,guid,key"),
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
+    allow_row_sampling: str | None = Form(None),
 ) -> HTMLResponse:
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
@@ -2398,6 +2411,7 @@ async def run_auto_evaluate(
     settings["transform_normalize_mixed"] = normalize_settings
     if project_settings:
         settings = _merge_settings(project_settings, settings)
+    _apply_sampling_setting(settings, allow_row_sampling)
     settings["__run_meta"] = {"plugins": _run_meta_from_plugins([])}
 
     run_id = uuid.uuid4().hex
@@ -2443,6 +2457,7 @@ async def api_auto_evaluate(
     normalize_exclude_name_patterns: str = Form("id,uuid,guid,key"),
     normalize_chunk_size: str = Form("1000"),
     normalize_sample_rows: str = Form("500"),
+    allow_row_sampling: str | None = Form(None),
 ) -> JSONResponse:
     upload_row = pipeline.storage.fetch_upload(upload_id)
     if not upload_row:
@@ -2483,6 +2498,7 @@ async def api_auto_evaluate(
     settings["transform_normalize_mixed"] = normalize_settings
     if project_settings:
         settings = _merge_settings(project_settings, settings)
+    _apply_sampling_setting(settings, allow_row_sampling)
     settings["__run_meta"] = {"plugins": _run_meta_from_plugins([])}
 
     run_id = uuid.uuid4().hex

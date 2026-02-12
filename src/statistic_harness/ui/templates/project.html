@@ -40,6 +40,10 @@
       <p class="muted">Uploads are hashed and deduplicated automatically. This will run every analysis plugin.</p>
       <form id="project-upload-form" class="stack">
         <input type="file" id="project-file" required />
+        <label class="muted">
+          <input type="checkbox" id="allow-row-sampling" />
+          Allow sampling for analysis (default: off)
+        </label>
         <button type="submit">Upload & Run All Plugins</button>
       </form>
       <div id="upload-status" class="status"></div>
@@ -118,6 +122,7 @@
   <script>
     const form = document.getElementById("project-upload-form");
     const fileInput = document.getElementById("project-file");
+    const allowRowSamplingInput = document.getElementById("allow-row-sampling");
     const uploadStatus = document.getElementById("upload-status");
     const runStatus = document.getElementById("run-status");
     const projectId = "{{ project_id }}";
@@ -160,6 +165,7 @@
         formData.append("upload_id", uploadPayload.upload_id);
         formData.append("plugins", "all");
         formData.append("project_id", projectId);
+        formData.append("allow_row_sampling", allowRowSamplingInput && allowRowSamplingInput.checked ? "1" : "0");
         const runResp = await fetch("/api/runs", { method: "POST", body: formData });
         const runPayload = await runResp.json();
         if (!runResp.ok) {

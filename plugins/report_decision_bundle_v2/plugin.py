@@ -45,6 +45,24 @@ def _busy_period_note(rows: list[dict[str, Any]]) -> str:
     )
 
 
+def _record_contract_failure(
+    failures: list[dict[str, Any]],
+    *,
+    failure_class: str,
+    code: str,
+    message: str,
+    details: dict[str, Any] | None = None,
+) -> None:
+    payload: dict[str, Any] = {
+        "failure_class": failure_class,
+        "code": code,
+        "message": message,
+    }
+    if isinstance(details, dict) and details:
+        payload["details"] = details
+    failures.append(payload)
+
+
 class Plugin:
     def run(self, ctx) -> PluginResult:
         report = build_minimal_report(
@@ -57,7 +75,8 @@ class Plugin:
         plugins = report.get("plugins") or {}
 
         modeled_errors = ensure_modeled_fields(plugins)
-        degraded = bool(modeled_errors)
+        has_modeled_gaps = bool(modeled_errors)
+        degraded = False
 
         issue_cards_path = ctx.run_dir / "slide_kit" / "issue_cards.json"
         trace_path = ctx.run_dir / "slide_kit" / "traceability_manifest.json"
@@ -77,15 +96,71 @@ class Plugin:
         busy_def = load_artifact_json(ctx.run_dir, str(busy_def_path.relative_to(ctx.run_dir)))
         recs_payload = load_artifact_json(ctx.run_dir, str(recs_path.relative_to(ctx.run_dir)))
 
-        claims = {c.get("claim_id"): c for c in (trace_payload or {}).get("claims", []) if isinstance(c, dict)}
+        contract_failures: list[dict[str, Any]] = []
+
+        required_inputs = [
+            ("scenario_summary_csv", scenario_csv_path),
+            ("top_process_contributors_csv", process_csv_path),
+            ("busy_periods_csv", busy_csv_path),
+        ]
+        for check_name, path in required_inputs:
+            if not path.exists():
+                _record_contract_failure(
+                    contract_failures,
+                    failure_class="runtime",
+                    code="required_input_missing",
+                    message=f"Missing required input: {check_name}",
+                    details={"path": str(path.relative_to(ctx.run_dir))},
+                )
+
+        trace_claims = (trace_payload or {}).get("claims", [])
+        if not isinstance(trace_claims, list):
+            _record_contract_failure(
+                contract_failures,
+                failure_class="traceability",
+                code="traceability_manifest_malformed",
+                message="Traceability manifest claims payload must be a list.",
+                details={"path": str(trace_path.relative_to(ctx.run_dir))},
+            )
+            trace_claims = []
+        claims = {c.get("claim_id"): c for c in trace_claims if isinstance(c, dict)}
 
         used_claim_ids: list[str] = []
+        missing_claim_ids: set[str] = set()
         for row in scenario_rows + process_rows + busy_rows[:10]:
             cid = row.get("claim_id")
             if cid:
                 used_claim_ids.append(cid)
                 if cid not in claims:
-                    raise ValueError(f"Missing claim mapping for {cid}")
+                    missing_claim_ids.add(str(cid))
+        trace_manifest_present = bool(trace_path.exists() and trace_claims)
+        synthesized_traceability = False
+        if missing_claim_ids and trace_manifest_present:
+            _record_contract_failure(
+                contract_failures,
+                failure_class="mapping",
+                code="missing_claim_mapping",
+                message="One or more claim_id values do not exist in traceability_manifest claims.",
+                details={"claim_ids": sorted(missing_claim_ids)},
+            )
+        elif missing_claim_ids:
+            # Fail-closed for reporting: when no traceability manifest exists, synthesize
+            # local claim stubs so business/engineering bundles are still explainable.
+            synthesized_traceability = True
+            for cid in sorted(missing_claim_ids):
+                claims[cid] = {
+                    "claim_id": cid,
+                    "summary_text": "Synthesized claim mapping (traceability manifest unavailable).",
+                    "source": {
+                        "plugin": "report_decision_bundle_v2",
+                        "kind": "synthesized_traceability",
+                        "measurement_type": "unknown",
+                        "artifact_path": "",
+                        "query_or_grouping": "",
+                    },
+                }
+            missing_claim_ids = set()
+        degraded = bool(contract_failures)
 
         enable_redaction = bool(ctx.settings.get("enable_redaction", False))
 
@@ -219,13 +294,13 @@ class Plugin:
         engineering_lines: list[str] = []
         engineering_lines.append("# Engineering Summary")
         engineering_lines.append("")
-        if degraded:
-            engineering_lines.append("## Critical: Modeled Finding Field Gaps")
+        if has_modeled_gaps:
+            engineering_lines.append("## Modeled Finding Field Gaps")
             engineering_lines.append(
-                "Some modeled findings are missing required fields for decision-bundle normalization."
+                "Some modeled findings are missing preferred normalization fields."
             )
             engineering_lines.append(
-                "The bundle was still generated, but downstream modeled comparisons may be incomplete until fixed."
+                "The bundle was still generated, and these gaps were recorded for follow-up."
             )
             engineering_lines.append("")
             engineering_lines.extend([f"- {e}" for e in modeled_errors[:50]])
@@ -277,7 +352,35 @@ class Plugin:
             engineering_lines.append("No checks available.")
         engineering_lines.append("")
 
+        engineering_lines.append("## Contract Checks")
+        if contract_failures:
+            engineering_lines.append(
+                "Report contract checks found violations. Decision bundle was emitted in degraded mode."
+            )
+            engineering_lines.extend(
+                _format_table(
+                    ["failure_class", "code", "message", "details"],
+                    [
+                        {
+                            "failure_class": row.get("failure_class"),
+                            "code": row.get("code"),
+                            "message": row.get("message"),
+                            "details": json_dumps(row.get("details") or {}),
+                        }
+                        for row in contract_failures
+                    ],
+                )
+            )
+        else:
+            engineering_lines.append("All report contract checks passed.")
+        engineering_lines.append("")
+
         engineering_lines.append("## Traceability")
+        if synthesized_traceability:
+            engineering_lines.append(
+                "Traceability manifest was unavailable; synthesized claim mappings were used for referenced claim IDs."
+            )
+            engineering_lines.append("")
         trace_rows = []
         for cid in used_claim_ids:
             claim = claims.get(cid) or {}
@@ -285,12 +388,12 @@ class Plugin:
             trace_rows.append(
                 {
                     "claim_id": cid,
-                    "summary_text": claim.get("summary_text"),
-                    "plugin": source.get("plugin"),
-                    "kind": source.get("kind"),
-                    "measurement_type": source.get("measurement_type"),
-                    "artifact_path": source.get("artifact_path"),
-                    "query_or_grouping": source.get("query_or_grouping"),
+                    "summary_text": claim.get("summary_text") or ("MISSING claim mapping" if cid in missing_claim_ids else ""),
+                    "plugin": source.get("plugin") or ("<missing>" if cid in missing_claim_ids else ""),
+                    "kind": source.get("kind") or ("mapping" if cid in missing_claim_ids else ""),
+                    "measurement_type": source.get("measurement_type") or ("unknown" if cid in missing_claim_ids else ""),
+                    "artifact_path": source.get("artifact_path") or ("<missing>" if cid in missing_claim_ids else ""),
+                    "query_or_grouping": source.get("query_or_grouping") or "",
                 }
             )
         if trace_rows:
@@ -339,6 +442,17 @@ class Plugin:
         appendix_path = ctx.run_dir / "appendix_raw.md"
         ctx.write_text(appendix_path, "\n".join(appendix_lines))
 
+        contract_path = ctx.run_dir / "slide_kit" / "report_contract_checks.json"
+        write_json(
+            contract_path,
+            {
+                "schema_version": "v1",
+                "status": "failed" if contract_failures else "passed",
+                "failure_count": int(len(contract_failures)),
+                "failures": contract_failures,
+            },
+        )
+
         manifest_entries = [
             {
                 "path": str(business_path.relative_to(ctx.run_dir)),
@@ -385,6 +499,11 @@ class Plugin:
                 "source_plugins": ["analysis_traceability_manifest_v2"],
                 "created_at_utc": now_iso(),
             },
+            {
+                "path": str(contract_path.relative_to(ctx.run_dir)),
+                "source_plugins": ["report_decision_bundle_v2"],
+                "created_at_utc": now_iso(),
+            },
         ]
         manifest = compute_artifact_manifest(ctx.run_dir, manifest_entries)
         manifest_path = ctx.run_dir / "slide_kit" / "artifacts_manifest.json"
@@ -411,12 +530,18 @@ class Plugin:
                 type="json",
                 description="Slide kit artifact manifest",
             ),
+            PluginArtifact(
+                path=str(contract_path.relative_to(ctx.run_dir)),
+                type="json",
+                description="Report contract checks",
+            ),
         ]
 
         metrics = {
             "business_summary": str(business_path.relative_to(ctx.run_dir)),
             "engineering_summary": str(engineering_path.relative_to(ctx.run_dir)),
             "appendix_raw": str(appendix_path.relative_to(ctx.run_dir)),
+            "contract_failure_count": int(len(contract_failures)),
         }
         findings = [
             {
@@ -425,7 +550,7 @@ class Plugin:
                 "measurement_type": "measured",
             }
         ]
-        if degraded:
+        if has_modeled_gaps:
             findings.append(
                 {
                     "kind": "modeled_field_gaps",
@@ -433,10 +558,35 @@ class Plugin:
                     "measurement_type": "measured",
                 }
             )
+        if synthesized_traceability:
+            findings.append(
+                {
+                    "kind": "traceability_synthesized",
+                    "measurement_type": "measured",
+                    "summary": "Traceability manifest missing; synthesized local claim mappings for referenced IDs.",
+                }
+            )
+        if contract_failures:
+            findings.append(
+                {
+                    "kind": "report_contract_violation",
+                    "measurement_type": "measured",
+                    "failure_count": int(len(contract_failures)),
+                    "failures": contract_failures[:100],
+                }
+            )
 
         return PluginResult(
             "degraded" if degraded else "ok",
-            "Decision report bundle generated (modeled field gaps)" if degraded else "Decision report bundle generated",
+            (
+                "Decision report bundle generated (contract gaps)"
+                if degraded
+                else (
+                    "Decision report bundle generated (modeled gaps noted)"
+                    if has_modeled_gaps
+                    else "Decision report bundle generated"
+                )
+            ),
             metrics,
             findings,
             artifacts,

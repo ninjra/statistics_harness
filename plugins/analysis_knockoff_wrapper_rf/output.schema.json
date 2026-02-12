@@ -270,6 +270,9 @@
       "properties": {
         "selected": {
           "type": "integer"
+        },
+        "targets_scanned": {
+          "type": "integer"
         }
       },
       "type": "object"

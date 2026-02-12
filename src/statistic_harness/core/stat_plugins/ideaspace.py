@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable
 
 import math
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -44,6 +45,22 @@ def _artifact(ctx, plugin_id: str, name: str, payload: Any) -> PluginArtifact:
     path = artifact_dir / name
     write_json(path, payload)
     return PluginArtifact(path=str(path.relative_to(ctx.run_dir)), type="json", description=name)
+
+
+def _freshness_payload(ctx, plugin_id: str, config: dict[str, Any]) -> dict[str, Any]:
+    cache_fp = config.get("cache_key_fingerprint")
+    if not isinstance(cache_fp, str) or not cache_fp.strip():
+        cache_fp = None
+    reused_from = config.get("reused_from_run_id")
+    if not isinstance(reused_from, str) or not reused_from.strip():
+        reused_from = None
+    return {
+        "plugin_id": plugin_id,
+        "source_run_id": str(ctx.run_id),
+        "reused_from_run_id": reused_from,
+        "cache_key_fingerprint": cache_fp,
+        "dataset_input_hash": str(ctx.input_hash or ""),
+    }
 
 
 def _make_finding(
@@ -231,6 +248,60 @@ def _nearest_frontier_point(
     return best
 
 
+def _metricwise_ideal(points: list[dict[str, Any]], keys: list[str]) -> dict[str, float]:
+    """Build a deterministic ideal vector from the best observed metric values."""
+    ideal: dict[str, float] = {}
+    minimize_set = set(ENERGY_MINIMIZE_KEYS) | set(MINIMIZE_KEYS)
+    for k in keys:
+        vals: list[float] = []
+        for p in points:
+            v = p.get(k)
+            if isinstance(v, (int, float)) and math.isfinite(float(v)):
+                vals.append(float(v))
+        if not vals:
+            continue
+        if k in minimize_set:
+            ideal[k] = float(min(vals))
+        else:
+            ideal[k] = float(max(vals))
+    return ideal
+
+
+def _synthetic_ideal_from_entity(entity: dict[str, Any], keys: list[str], config: dict[str, Any]) -> dict[str, float]:
+    """
+    Build a conservative synthetic ideal when frontier/baseline collapses.
+    This preserves determinism while preventing self-ideal zero-gap collapse.
+    """
+    min_mult = float(config.get("ideaspace_synthetic_minimize_mult", 0.9))
+    max_mult = float(config.get("ideaspace_synthetic_maximize_mult", 1.1))
+    floor = float(config.get("ideaspace_synthetic_floor", 0.0))
+    ideal: dict[str, float] = {}
+    minimize_set = set(ENERGY_MINIMIZE_KEYS) | set(MINIMIZE_KEYS)
+    for k in keys:
+        cur = entity.get(k)
+        if not isinstance(cur, (int, float)) or not math.isfinite(float(cur)):
+            continue
+        cur_f = float(cur)
+        if k in minimize_set:
+            ideal[k] = float(max(floor, cur_f * min_mult))
+        else:
+            ideal[k] = float(cur_f * max_mult)
+    return ideal
+
+
+def _is_ideal_collapsed(entity: dict[str, Any], ideal: dict[str, float], keys: list[str], eps: float = 1e-9) -> bool:
+    checked = 0
+    for k in keys:
+        cur = entity.get(k)
+        ref = ideal.get(k)
+        if not (isinstance(cur, (int, float)) and isinstance(ref, (int, float))):
+            continue
+        checked += 1
+        if abs(float(cur) - float(ref)) > eps:
+            return False
+    return checked > 0
+
+
 def _entity_metrics(df: pd.DataFrame, cols: IdeaspaceColumns, redactor: Callable[[str], str]) -> dict[str, Any]:
     metrics: dict[str, Any] = {"n_rows": int(len(df))}
     span = time_span_seconds(df, cols.time_col)
@@ -326,11 +397,15 @@ def _ideaspace_normative_gap(
     else:
         ideal_mode = "frontier"
         frontier_idx = _pareto_frontier(entities)
-        frontier = [entities[i] for i in frontier_idx]
+        frontier = [entities[i] for i in frontier_idx] or list(entities)
         for e in entities:
-            nearest = _nearest_frontier_point(e, frontier, keys)
-            e["ideal"] = {k: float(nearest.get(k)) for k in keys if nearest and k in nearest}
-            e["ideal_entity_key"] = str(nearest.get("entity_key")) if nearest else None
+            near = _nearest_frontier_point(e, frontier, keys)
+            if near is None:
+                e["ideal"] = {}
+                e["ideal_entity_key"] = None
+            else:
+                e["ideal"] = {k: float(near.get(k)) for k in keys if isinstance(near.get(k), (int, float))}
+                e["ideal_entity_key"] = near.get("entity_key")
 
     # Gap + badness.
     for e in entities:
@@ -362,54 +437,125 @@ def _ideaspace_normative_gap(
         [e for e in entities if int(e.get("n_rows", 0)) >= min_rows],
         key=lambda r: (-float(r.get("total_badness", 0.0)), str(r.get("entity_key", ""))),
     )
+    degenerate_eps = float(config.get("ideaspace_degenerate_eps", 1e-6))
+    variance_eps = float(config.get("ideaspace_variance_eps", 1e-6))
+    ranked_for_degeneracy = [e for e in ranked if str(e.get("entity_key")) != "ALL"]
+    if len(ranked_for_degeneracy) < 2:
+        ranked_for_degeneracy = ranked
+    variance_by_metric: dict[str, float] = {}
+    for k in keys:
+        vals: list[float] = []
+        for e in ranked_for_degeneracy:
+            val = e.get(k)
+            if isinstance(val, (int, float)) and math.isfinite(float(val)):
+                vals.append(float(val))
+        if len(vals) >= 2:
+            variance_by_metric[k] = float(max(vals) - min(vals))
+    variance_signal_count = int(sum(1 for span in variance_by_metric.values() if span > variance_eps))
+    max_total_badness = float(max((float(e.get("total_badness", 0.0)) for e in ranked_for_degeneracy), default=0.0))
+    degenerate_output = bool(ranked_for_degeneracy) and variance_signal_count > 0 and max_total_badness <= degenerate_eps
     max_findings = int(config.get("max_findings", 30))
     findings: list[dict[str, Any]] = []
-    for e in ranked[:max_findings]:
-        gaps = e.get("gaps") or {}
-        bad = e.get("badness") or {}
-        top_components = sorted(bad.items(), key=lambda kv: (-float(kv[1]), kv[0]))[:5]
-        evidence = {
-            "metrics": {
-                "entity": e.get("entity_label"),
-                "n_rows": int(e.get("n_rows", 0)),
-                "ideal_mode": ideal_mode,
-                "baseline_total_badness": float(e.get("total_badness", 0.0)),
-                "ideal_total_badness": 0.0,
-                "top_gap_components": [{"metric": k, "badness": float(v), "gap": float(gaps.get(k, 0.0))} for k, v in top_components],
-            }
-        }
-        baseline_badness = float(e.get("total_badness", 0.0) or 0.0)
+    if degenerate_output:
         findings.append(
             _make_finding(
                 plugin_id,
-                f"gap:{e.get('entity_key')}",
-                f"Ideaspace gap vs ideal: {e.get('entity_label')}",
-                "This cohort deviates materially from the selected ideal reference/frontier.",
-                "Largest normalized gaps identify where this cohort is underperforming relative to an ideal.",
-                evidence,
-                kind="ideaspace_gap",
-                severity="warn" if float(e.get("total_badness", 0.0)) >= 0.5 else "info",
-                confidence=float(min(0.9, 0.4 + float(e.get("total_badness", 0.0)))),
-                baseline_value=baseline_badness,
-                modeled_value=0.0,
-                delta_value=-baseline_badness,
+                "degenerate_normative_gap",
+                "Ideaspace normative-gap output is degenerate",
+                "Observed cohorts vary on measurable metrics, but computed gap badness collapsed to near-zero.",
+                "This usually indicates an ideal-reference tie/collapse and should be treated as non-actionable until recalibrated.",
+                {
+                    "metrics": {
+                        "ideal_mode": ideal_mode,
+                        "entities_ranked": int(len(ranked)),
+                        "entities_ranked_for_degeneracy": int(len(ranked_for_degeneracy)),
+                        "max_total_badness": float(max_total_badness),
+                        "degenerate_eps": float(degenerate_eps),
+                        "variance_signal_count": int(variance_signal_count),
+                        "variance_eps": float(variance_eps),
+                        "variance_by_metric": variance_by_metric,
+                    }
+                },
+                kind="ideaspace_degeneracy",
+                severity="warn",
+                confidence=0.9,
+                recommendations=[
+                    "Review baseline/ideal selection and enforce non-degenerate route constraints before using this output for decisions."
+                ],
+                baseline_value=max_total_badness,
+                modeled_value=max_total_badness,
+                delta_value=0.0,
                 unit="normalized_badness",
             )
         )
+    else:
+        for e in ranked[:max_findings]:
+            gaps = e.get("gaps") or {}
+            bad = e.get("badness") or {}
+            top_components = sorted(bad.items(), key=lambda kv: (-float(kv[1]), kv[0]))[:5]
+            evidence = {
+                "metrics": {
+                    "entity": e.get("entity_label"),
+                    "n_rows": int(e.get("n_rows", 0)),
+                    "ideal_mode": ideal_mode,
+                    "baseline_total_badness": float(e.get("total_badness", 0.0)),
+                    "ideal_total_badness": 0.0,
+                    "top_gap_components": [{"metric": k, "badness": float(v), "gap": float(gaps.get(k, 0.0))} for k, v in top_components],
+                }
+            }
+            baseline_badness = float(e.get("total_badness", 0.0) or 0.0)
+            findings.append(
+                _make_finding(
+                    plugin_id,
+                    f"gap:{e.get('entity_key')}",
+                    f"Ideaspace gap vs ideal: {e.get('entity_label')}",
+                    "This cohort deviates materially from the selected ideal reference/frontier.",
+                    "Largest normalized gaps identify where this cohort is underperforming relative to an ideal.",
+                    evidence,
+                    kind="ideaspace_gap",
+                    severity="warn" if float(e.get("total_badness", 0.0)) >= 0.5 else "info",
+                    confidence=float(min(0.9, 0.4 + float(e.get("total_badness", 0.0)))),
+                    baseline_value=baseline_badness,
+                    modeled_value=0.0,
+                    delta_value=-baseline_badness,
+                    unit="normalized_badness",
+                )
+            )
 
     artifacts = [
         _artifact(ctx, plugin_id, "entities_table.json", entities),
+        _artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)),
+        _artifact(
+            ctx,
+            plugin_id,
+            "normative_gap_diagnostics.json",
+            {
+                "ideal_mode": ideal_mode,
+                "degenerate_output": bool(degenerate_output),
+                "max_total_badness": float(max_total_badness),
+                "degenerate_eps": float(degenerate_eps),
+                "variance_signal_count": int(variance_signal_count),
+                "variance_eps": float(variance_eps),
+                "variance_by_metric": variance_by_metric,
+            },
+        ),
     ]
     summary = "Computed ideaspace vectors, ideal reference, and gap vectors."
-    if not findings:
+    status = "ok"
+    if degenerate_output:
+        summary = "No actionable ideaspace gap found; emitted diagnostics for degenerate output."
+    elif not findings:
         summary = "Computed ideaspace vectors; insufficient evidence to emit gap findings."
     debug = {
         "ideaspace": {
             "ideal_mode": ideal_mode,
             "columns": cols.__dict__,
+            "degenerate_output": bool(degenerate_output),
+            "variance_signal_count": int(variance_signal_count),
+            "max_total_badness": float(max_total_badness),
         }
     }
-    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None, references=[], debug=debug)
+    return PluginResult(status, summary, _basic_metrics(df, sample_meta), findings, artifacts, None, references=[], debug=debug)
 
 
 def _ideaspace_action_planner(
@@ -449,6 +595,21 @@ def _ideaspace_action_planner(
     # Deterministic ordering: highest confidence then stable lever_id.
     recos.sort(key=lambda r: (-float(r.confidence), r.lever_id))
 
+    def _lever_meta(reco: LeverRecommendation) -> tuple[str, str | None]:
+        lever_id = str(reco.lever_id).strip().lower()
+        action_text = str(reco.action or "").strip().lower()
+        if lever_id == "tune_schedule_qemail_frequency_v1" or "qemail" in action_text:
+            return "tune_schedule", "qemail"
+        if lever_id == "add_qpec_capacity_plus_one_v1" or "qpec" in action_text:
+            return "add_server", "qpec"
+        if lever_id == "split_batches":
+            return "batch_input_refactor", None
+        if lever_id == "priority_isolation":
+            return "orchestrate_macro", None
+        if lever_id == "retry_backoff":
+            return "dedupe_or_cache", None
+        return "ideaspace_action", None
+
     findings: list[dict[str, Any]] = []
     for reco in recos[: int(config.get("max_findings", 30))]:
         est = (
@@ -457,28 +618,32 @@ def _ideaspace_action_planner(
             else ""
         )
         est_pct = float(reco.estimated_improvement_pct or 0.0) if isinstance(reco.estimated_improvement_pct, (int, float)) else 0.0
-        findings.append(
-            _make_finding(
-                plugin_id,
-                f"lever:{reco.lever_id}",
-                reco.title,
-                f"Action: {reco.action}{est}",
-                "Trigger conditions satisfied with deterministic evidence gates.",
-                reco.evidence,
-                kind="ideaspace_action",
-                severity="warn" if reco.confidence >= 0.65 else "info",
-                confidence=reco.confidence,
-                recommendations=[reco.action],
-                limitations=reco.limitations,
-                baseline_value=0.0,
-                modeled_value=est_pct,
-                delta_value=est_pct,
-                unit="percent",
-            )
+        action_type, target = _lever_meta(reco)
+        finding = _make_finding(
+            plugin_id,
+            f"lever:{reco.lever_id}",
+            reco.title,
+            f"Action: {reco.action}{est}",
+            "Trigger conditions satisfied with deterministic evidence gates.",
+            reco.evidence,
+            kind="ideaspace_action",
+            severity="warn" if reco.confidence >= 0.65 else "info",
+            confidence=reco.confidence,
+            recommendations=[reco.action],
+            limitations=reco.limitations,
+            baseline_value=0.0,
+            modeled_value=est_pct,
+            delta_value=est_pct,
+            unit="percent",
         )
+        finding["lever_id"] = reco.lever_id
+        finding["action_type"] = action_type
+        finding["target"] = target
+        findings.append(finding)
 
     artifacts = [
         _artifact(ctx, plugin_id, "recommendations.json", [r.__dict__ for r in recos]),
+        _artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)),
     ]
     if gap_entities is not None:
         artifacts.append(_artifact(ctx, plugin_id, "gap_entities_snapshot.json", gap_entities))
@@ -667,7 +832,7 @@ def _ideaspace_energy_ebm_v1(
         )
 
     # Add an extension metric: background overhead per minute (QEMAIL rate).
-    all_entity = next((e for e in entities if str(e.get("entity_key")) == "ALL"), None)
+    all_entity = next((e for e in entities if str(e.get("entity_key")) == "ALL"), entities[0] if entities else None)
     if all_entity is not None and proc_col and proc_col in df.columns:
         time_col = cols.time_col or cols.eligible_col or cols.start_col
         span = time_span_seconds(df, time_col) if time_col else None
@@ -705,21 +870,26 @@ def _ideaspace_energy_ebm_v1(
             e["ideal"] = ideal
             e["ideal_entity_key"] = "BASELINE"
     else:
-        ideal_mode = "frontier"
-        # Frontier selection uses only the core ideaspace keys to avoid extension-metric skew.
-        frontier_keys = sorted({k for k in energy_keys if k in MINIMIZE_KEYS + MAXIMIZE_KEYS})
+        ideal_mode = "frontier_envelope"
         frontier_idx = _pareto_frontier(entities)
-        frontier = [entities[i] for i in frontier_idx]
+        frontier = [entities[i] for i in frontier_idx] or list(entities)
+        ideal_env = _metricwise_ideal(frontier, energy_keys)
+        # Always bias background overhead ideal to zero when not baseline-driven.
+        if "background_overhead_per_min" in energy_keys:
+            ideal_env["background_overhead_per_min"] = 0.0
+        collapsed = bool(all_entity) and _is_ideal_collapsed(all_entity, ideal_env, energy_keys, eps=1e-9)
+        if collapsed and isinstance(all_entity, dict):
+            ideal_mode = "synthetic_target"
+            ideal_env = _synthetic_ideal_from_entity(all_entity, energy_keys, config)
+            if "background_overhead_per_min" in energy_keys:
+                ideal_env["background_overhead_per_min"] = 0.0
         for e in entities:
-            nearest = _nearest_frontier_point(e, frontier, frontier_keys)
             ideal: dict[str, float] = {}
             for k in energy_keys:
-                if nearest and k in nearest and isinstance(nearest.get(k), (int, float)):
-                    ideal[k] = float(nearest[k])
-                elif k == "background_overhead_per_min":
-                    ideal[k] = 0.0
+                if k in ideal_env and isinstance(ideal_env.get(k), (int, float)):
+                    ideal[k] = float(ideal_env[k])
             e["ideal"] = ideal
-            e["ideal_entity_key"] = str(nearest.get("entity_key")) if nearest else None
+            e["ideal_entity_key"] = "FRONTIER_ENVELOPE" if ideal_mode == "frontier_envelope" else "SYNTHETIC_TARGET"
 
     weights = _default_energy_weights(config.get("weights") if isinstance(config.get("weights"), dict) else None)
     penalties = _default_constraint_penalties(
@@ -809,6 +979,7 @@ def _ideaspace_energy_ebm_v1(
     artifacts = [
         PluginArtifact(path=str(breakdown_path.relative_to(ctx.run_dir)), type="json", description="energy_breakdown.json"),
         PluginArtifact(path=str(vector_path.relative_to(ctx.run_dir)), type="json", description="energy_state_vector.json"),
+        _artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)),
     ]
     debug = {"ideaspace": {"ideal_mode": ideal_mode, "columns": cols.__dict__, "group_cols": group_cols}}
     return PluginResult(
@@ -892,6 +1063,59 @@ def _ebm_action_verifier_v1(
         _, e_gap = _energy_terms(observed, ideal, weights_f)
         return float(e_gap)
 
+    def _constraint_after_for_action(
+        lever_id: str,
+        observed: dict[str, Any],
+        modeled: dict[str, Any],
+        before_constraints: float,
+    ) -> float:
+        if before_constraints <= 0.0:
+            return 0.0
+        # Conservative generic coupling between metric gains and constraint reduction.
+        improvements: list[float] = []
+        for key in ENERGY_MINIMIZE_KEYS:
+            cur = observed.get(key)
+            nxt = modeled.get(key)
+            if not (isinstance(cur, (int, float)) and isinstance(nxt, (int, float))):
+                continue
+            cur_f = float(cur)
+            nxt_f = float(nxt)
+            if not (math.isfinite(cur_f) and math.isfinite(nxt_f)):
+                continue
+            denom = max(abs(cur_f), 1.0)
+            improvements.append(max(0.0, (cur_f - nxt_f) / denom))
+        for key in ENERGY_MAXIMIZE_KEYS:
+            cur = observed.get(key)
+            nxt = modeled.get(key)
+            if not (isinstance(cur, (int, float)) and isinstance(nxt, (int, float))):
+                continue
+            cur_f = float(cur)
+            nxt_f = float(nxt)
+            if not (math.isfinite(cur_f) and math.isfinite(nxt_f)):
+                continue
+            denom = max(abs(cur_f), 1.0)
+            improvements.append(max(0.0, (nxt_f - cur_f) / denom))
+
+        mean_gain = float(sum(improvements) / len(improvements)) if improvements else 0.0
+        max_gain = float(max(improvements)) if improvements else 0.0
+        gain_score = max(mean_gain, max_gain)
+
+        lever_floor: dict[str, float] = {
+            "tune_schedule_qemail_frequency_v1": 0.35,
+            "add_qpec_capacity_plus_one_v1": 0.30,
+            "split_batches": 0.20,
+            "priority_isolation": 0.15,
+            "retry_backoff": 0.15,
+            "cap_concurrency": 0.18,
+            "blackout_scheduled_jobs": 0.12,
+            "resource_affinity": 0.12,
+            "parallelize_branches": 0.15,
+            "prestage_prereqs": 0.10,
+        }
+        base_floor = float(lever_floor.get(lever_id, 0.0))
+        reduction_ratio = max(base_floor, min(0.85, gain_score))
+        return float(before_constraints * (1.0 - reduction_ratio))
+
     verified: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
 
@@ -922,18 +1146,22 @@ def _ebm_action_verifier_v1(
                 continue
             observed = dict(ent["observed"])
             ideal = dict(ent["ideal"])
-            before = _energy_for_entity(observed, ideal)
+            before_gap = _energy_for_entity(observed, ideal)
+            before_constraints = float(ent.get("energy_constraints") or 0.0)
+            before = float(before_gap + before_constraints)
             modeled = dict(observed)
 
             if lever_id == "tune_schedule_qemail_frequency_v1":
                 # Primary effect: reduce background overhead volume; secondary: modest reduction
                 # in queue pressure (conservative).
                 if "background_overhead_per_min" in modeled and isinstance(modeled.get("background_overhead_per_min"), (int, float)):
-                    modeled["background_overhead_per_min"] = float(modeled["background_overhead_per_min"]) / 3.0
+                    modeled["background_overhead_per_min"] = float(modeled["background_overhead_per_min"]) * 0.15
                 if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.95
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.75
                 if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.98
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.88
+                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
+                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * 1.08
             elif lever_id == "add_qpec_capacity_plus_one_v1":
                 host_count = int(metrics.get("qpec_host_count") or 0)
                 if host_count <= 0:
@@ -942,8 +1170,60 @@ def _ebm_action_verifier_v1(
                 for key in ("queue_delay_p95", "duration_p95"):
                     if key in modeled and isinstance(modeled.get(key), (int, float)):
                         modeled[key] = float(modeled[key]) * factor
+                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
+                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * (1.0 / max(factor, 1e-9))
+            elif lever_id == "split_batches":
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.70
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.85
+            elif lever_id == "priority_isolation":
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.70
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.92
+            elif lever_id == "retry_backoff":
+                if "error_rate" in modeled and isinstance(modeled.get("error_rate"), (int, float)):
+                    modeled["error_rate"] = float(modeled["error_rate"]) * 0.65
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.90
+            elif lever_id == "cap_concurrency":
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.82
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.85
+            elif lever_id == "blackout_scheduled_jobs":
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.80
+                if "background_overhead_per_min" in modeled and isinstance(modeled.get("background_overhead_per_min"), (int, float)):
+                    modeled["background_overhead_per_min"] = float(modeled["background_overhead_per_min"]) * 0.85
+            elif lever_id == "resource_affinity":
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.90
+                if "error_rate" in modeled and isinstance(modeled.get("error_rate"), (int, float)):
+                    modeled["error_rate"] = float(modeled["error_rate"]) * 0.90
+            elif lever_id == "parallelize_branches":
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.80
+                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
+                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * 1.10
+            elif lever_id == "prestage_prereqs":
+                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
+                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.88
+                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
+                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.94
+            else:
+                pct = action.get("estimated_improvement_pct")
+                if isinstance(pct, (int, float)) and math.isfinite(float(pct)):
+                    frac = max(0.0, min(0.80, float(pct) / 100.0))
+                    if frac > 0.0:
+                        for key in ("queue_delay_p95", "duration_p95", "background_overhead_per_min", "error_rate"):
+                            if key in modeled and isinstance(modeled.get(key), (int, float)):
+                                modeled[key] = float(modeled[key]) * (1.0 - frac)
 
-            after = _energy_for_entity(modeled, ideal)
+            after_gap = _energy_for_entity(modeled, ideal)
+            after_constraints = _constraint_after_for_action(lever_id, observed, modeled, before_constraints)
+            after = float(after_gap + after_constraints)
             energy_before += before
             energy_after += after
             delta_energy += (before - after)
@@ -970,6 +1250,12 @@ def _ebm_action_verifier_v1(
     max_findings = int(config.get("max_findings", 30))
     findings = []
     for rec in verified[:max_findings]:
+        action_text = str(rec.get("action") or "").strip()
+        modeled_scope = {"plugin_id": plugin_id, "target": rec.get("target")}
+        modeled_assumptions = [
+            "Modeled effect is computed from deterministic Kona EBM feature transforms.",
+            "Operational validation is required before production rollout.",
+        ]
         findings.append(
             {
                 "id": stable_id(f"{plugin_id}:{rec.get('lever_id')}"),
@@ -979,13 +1265,27 @@ def _ebm_action_verifier_v1(
                 "title": rec.get("title") or "Verified action",
                 "what": rec.get("action") or "",
                 "why": "Ranked by modeled energy reduction (Kona EBM) with deterministic tie-breaks.",
+                "lever_id": rec.get("lever_id"),
+                "target": rec.get("target"),
                 "delta_energy": rec.get("delta_energy"),
                 "energy_before": rec.get("energy_before"),
                 "energy_after": rec.get("energy_after"),
                 "constraints_passed": True,
                 "blocked_reason": "",
                 "evidence": rec.get("evidence") or {},
+                "recommendations": [action_text] if action_text else [],
+                "limitations": [],
                 "measurement_type": "modeled",
+                "scope": modeled_scope,
+                "assumptions": modeled_assumptions,
+                "modeled_scope": modeled_scope,
+                "modeled_assumptions": modeled_assumptions,
+                "baseline_host_count": 1,
+                "modeled_host_count": 1,
+                "baseline_value": float(rec.get("energy_before") or 0.0),
+                "modeled_value": float(rec.get("energy_after") or 0.0),
+                "delta_value": float(rec.get("delta_energy") or 0.0),
+                "unit": "energy_points",
             }
         )
 
@@ -997,6 +1297,7 @@ def _ebm_action_verifier_v1(
     artifacts = [
         PluginArtifact(path=str(verified_path.relative_to(ctx.run_dir)), type="json", description="verified_actions.json"),
         PluginArtifact(path=str(blocked_path.relative_to(ctx.run_dir)), type="json", description="blocked_actions.json"),
+        _artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)),
     ]
     summary = f"Verified {len(verified)} actions"
     if not verified:

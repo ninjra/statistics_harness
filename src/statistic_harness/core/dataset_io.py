@@ -12,9 +12,10 @@ from .utils import quote_identifier
 
 
 class DatasetAccessor:
-    def __init__(self, storage: Storage, dataset_version_id: str) -> None:
+    def __init__(self, storage: Storage, dataset_version_id: str, sql: Any | None = None) -> None:
         self.storage = storage
         self.dataset_version_id = dataset_version_id
+        self.sql = sql
         self._df: pd.DataFrame | None = None
 
     def _load_df(
@@ -71,16 +72,18 @@ class DatasetAccessor:
                             return pd.concat(frames, axis=0) if frames else pd.DataFrame()
                     except Exception:
                         pass
-                quoted_cols = ", ".join(
-                    quote_identifier(col) for col in selected_safe
-                )
+                quoted_cols = ", ".join(quote_identifier(col) for col in selected_safe)
                 sql = (
                     f"SELECT row_index, {quoted_cols} FROM "
                     f"{quote_identifier(version['table_name'])} ORDER BY row_index"
                 )
                 if limit is not None:
                     sql = f"{sql} LIMIT {limit}"
-                df = pd.read_sql_query(sql, conn)
+                if self.sql is not None:
+                    max_rows = limit if limit is not None else int(version.get("row_count") or 0) or 3_000_000
+                    df = self.sql.query_dataframe(sql, max_rows=max_rows)
+                else:
+                    df = pd.read_sql_query(sql, conn)
             else:
                 df = pd.DataFrame()
         df = df.rename(columns=dict(zip(selected_safe, selected_orig)))
@@ -231,6 +234,7 @@ class TemplateAccessor:
         dataset_version_id: str,
         template_id: int,
         table_name: str,
+        sql: Any | None = None,
         scope: str = "dataset",
         filters: dict[str, Any] | None = None,
     ) -> None:
@@ -238,6 +242,7 @@ class TemplateAccessor:
         self.dataset_version_id = dataset_version_id
         self.template_id = template_id
         self.table_name = table_name
+        self.sql = sql
         self.scope = scope
         self.filters = filters or {}
         self._df: pd.DataFrame | None = None
@@ -313,6 +318,12 @@ class TemplateAccessor:
             selected_names = list(columns)
             selected_safe = [mapping[col] for col in selected_names]
         with self.storage.connection() as conn:
+            def _read_sql(sql_text: str, params: Any | None = None) -> pd.DataFrame:
+                if self.sql is not None:
+                    max_rows = limit if limit is not None else 3_000_000
+                    return self.sql.query_dataframe(sql_text, params=params, max_rows=max_rows)
+                return pd.read_sql_query(sql_text, conn, params=params)
+
             if safe_cols:
                 quoted_cols = ", ".join(
                     quote_identifier(col) for col in selected_safe
@@ -326,7 +337,7 @@ class TemplateAccessor:
                         )
                         if limit is not None:
                             sql = f"{sql} LIMIT {limit}"
-                        df = pd.read_sql_query(sql, conn)
+                        df = _read_sql(sql)
                     elif ids:
                         placeholders = ", ".join(["?"] * len(ids))
                         sql = (
@@ -336,7 +347,7 @@ class TemplateAccessor:
                         )
                         if limit is not None:
                             sql = f"{sql} LIMIT {limit}"
-                        df = pd.read_sql_query(sql, conn, params=ids)
+                        df = _read_sql(sql, params=ids)
                     else:
                         df = pd.DataFrame(
                             columns=["dataset_version_id", "row_index", *selected_safe]
@@ -349,7 +360,7 @@ class TemplateAccessor:
                     )
                     if limit is not None:
                         sql = f"{sql} LIMIT {limit}"
-                    df = pd.read_sql_query(sql, conn, params=(self.dataset_version_id,))
+                    df = _read_sql(sql, params=(self.dataset_version_id,))
             else:
                 df = pd.DataFrame()
         df = df.rename(columns=dict(zip(selected_safe, selected_names)))
@@ -400,7 +411,7 @@ class TemplateAccessor:
 
 
 def resolve_dataset_accessor(
-    storage: Storage, dataset_version_id: str
+    storage: Storage, dataset_version_id: str, sql: Any | None = None
 ) -> tuple[Any, dict[str, Any] | None]:
     dataset_template = storage.fetch_dataset_template(dataset_version_id)
     if dataset_template and dataset_template.get("status") == "ready":
@@ -422,8 +433,9 @@ def resolve_dataset_accessor(
             dataset_version_id,
             int(dataset_template["template_id"]),
             dataset_template["table_name"],
+            sql=sql,
             scope=scope,
             filters=filters,
         )
         return accessor, dataset_template
-    return DatasetAccessor(storage, dataset_version_id), None
+    return DatasetAccessor(storage, dataset_version_id, sql=sql), None

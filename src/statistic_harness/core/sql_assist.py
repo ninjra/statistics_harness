@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
+
 
 _FORBIDDEN_TOKENS = (
     "pragma",
@@ -22,6 +24,16 @@ def _stable_json(payload: Any) -> str:
 
 def _sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _params_fingerprint(params: Any | None) -> str:
+    if params is None:
+        return "noparams"
+    try:
+        rendered = _stable_json(params)
+    except Exception:
+        rendered = repr(params)
+    return _sha256_text(rendered)[:12]
 
 
 def _sql_first_keyword(sql: str) -> str:
@@ -177,7 +189,7 @@ class SqlAssist:
         explain: bool = False,
     ) -> SqlQueryResult:
         _validate_sql(sql, mode=self._mode)
-        qid = (query_id or "").strip() or f"q_{_sha256_text(sql)[:12]}"
+        qid = (query_id or "").strip() or f"q_{_sha256_text(sql)[:12]}_{_params_fingerprint(params)}"
         base = self._sql_dir() / qid
 
         # Always persist the SQL itself.
@@ -230,6 +242,66 @@ class SqlAssist:
             sample_rows=rows_json,
             result_sha256=result_hash,
         )
+
+    def query_dataframe(
+        self,
+        sql: str,
+        params: Any | None = None,
+        *,
+        query_id: str | None = None,
+        max_rows: int = 3_000_000,
+        sample_rows: int = 200,
+        explain: bool = False,
+    ) -> pd.DataFrame:
+        """Execute read-only SQL and return a DataFrame with provenance artifacts.
+
+        This is intended for high-volume dataset_loader paths where plugins need full
+        result frames (not just sampled row payloads).
+        """
+
+        _validate_sql(sql, mode=self._mode)
+        qid = (query_id or "").strip() or f"df_{_sha256_text(sql)[:12]}_{_params_fingerprint(params)}"
+        base = self._sql_dir() / qid
+        sql_path = base.with_suffix(".sql")
+        sql_path.write_text(sql.rstrip() + "\n", encoding="utf-8")
+
+        plan: list[dict[str, Any]] = []
+        with self._storage.connection() as conn:
+            if explain:
+                try:
+                    cur = conn.execute("EXPLAIN QUERY PLAN " + sql, params or ())
+                    plan = _rows_to_jsonable(cur.fetchall())
+                except Exception:
+                    plan = []
+            df = pd.read_sql_query(sql, conn, params=params or ())
+
+        row_count = int(len(df.index))
+        if row_count > int(max_rows):
+            raise ValueError(
+                f"SQL returned >{max_rows} rows; add aggregation/filters or increase max_rows explicitly"
+            )
+
+        sample_df = df.head(int(sample_rows))
+        sample_payload = sample_df.to_dict(orient="records")
+        result_hash = _sha256_text(_stable_json(sample_payload))
+
+        manifest = {
+            "query_id": qid,
+            "mode": self._mode,
+            "schema_hash": self._schema_hash or None,
+            "sql_path": str(sql_path.relative_to(self._run_dir)),
+            "sql_sha256": _sha256_text(sql),
+            "params": params,
+            "row_count": row_count,
+            "sample_row_count": int(len(sample_payload)),
+            "sample_sha256": result_hash,
+            "explain_query_plan": plan,
+        }
+        manifest_path = base.with_suffix(".manifest.json")
+        manifest_path.write_text(_stable_json(manifest), encoding="utf-8")
+        sample_path = base.with_suffix(".sample.json")
+        sample_path.write_text(_stable_json(sample_payload), encoding="utf-8")
+        return df
 
     def validate_ro_sql(
         self,

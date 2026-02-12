@@ -4,6 +4,7 @@ import csv
 import json
 import re
 import os
+import math
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,7 @@ from typing import Any
 from jsonschema import validate
 import yaml
 
+from .four_pillars import build_four_pillars_scorecard
 from .stat_controls import confidence_from_p
 from .process_matcher import (
     compile_patterns,
@@ -22,6 +24,14 @@ from .process_matcher import (
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
 _SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
 _MAX_PER_ACTION_TYPE_ENV = "STAT_HARNESS_MAX_PER_ACTION_TYPE"
+_ALLOW_ACTION_TYPES_ENV = "STAT_HARNESS_ALLOW_ACTION_TYPES"
+_ALLOW_PROCESS_PATTERNS_ENV = "STAT_HARNESS_RECOMMENDATION_ALLOW_PROCESSES"
+_MIN_RELEVANCE_SCORE_ENV = "STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE"
+_DISCOVERY_TOP_N_ENV = "STAT_HARNESS_DISCOVERY_TOP_N"
+_MAX_OBVIOUSNESS_ENV = "STAT_HARNESS_MAX_OBVIOUSNESS"
+_RECENCY_UNKNOWN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_UNKNOWN_WEIGHT"
+_RECENCY_DECAY_PER_MONTH_ENV = "STAT_HARNESS_RECENCY_DECAY_PER_MONTH"
+_RECENCY_MIN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_MIN_WEIGHT"
 
 
 def _include_known_recommendations() -> bool:
@@ -210,6 +220,71 @@ def _process_hint(where: dict[str, Any] | None) -> str:
     return ""
 
 
+def _known_recommendation_match(
+    report: dict[str, Any], plugin_id: str | None, kind: str | None, process_hint: str
+) -> dict[str, Any] | None:
+    recommendations = report.get("recommendations")
+    if not isinstance(recommendations, dict):
+        return None
+    known_block = recommendations.get("known")
+    if not isinstance(known_block, dict):
+        return None
+    items = known_block.get("items")
+    if not isinstance(items, list):
+        return None
+    proc = str(process_hint or "").strip().lower()
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        if plugin_id and str(item.get("plugin_id") or "").strip() != str(plugin_id).strip():
+            continue
+        if kind and str(item.get("kind") or "").strip() != str(kind).strip():
+            continue
+        if proc and _item_process_norm(item) != proc:
+            continue
+        return item
+    return None
+
+
+def _synthetic_close_cycle_contention_finding(
+    report: dict[str, Any], storage: Storage | None, process_hint: str
+) -> dict[str, Any] | None:
+    if storage is None:
+        return None
+    proc = str(process_hint or "").strip().lower()
+    if not proc:
+        return None
+    model = _process_removal_model(report, storage, proc)
+    if not isinstance(model, dict):
+        return None
+    close_hours = model.get("close_delta_hours")
+    general_hours = model.get("general_delta_hours")
+    close_pct = model.get("close_modeled_percent")
+    general_pct = model.get("general_modeled_percent")
+    if not any(isinstance(v, (int, float)) and float(v) > 0.0 for v in (close_hours, general_hours, close_pct, general_pct)):
+        return None
+    best_pct = 0.0
+    for value in (close_pct, general_pct):
+        if isinstance(value, (int, float)):
+            best_pct = max(best_pct, float(value) / 100.0)
+    modeled_hours = 0.0
+    for value in (close_hours, general_hours):
+        if isinstance(value, (int, float)):
+            modeled_hours = max(modeled_hours, float(value))
+    return {
+        "kind": "close_cycle_contention",
+        "measurement_type": "modeled",
+        "process": proc,
+        "process_norm": proc,
+        "estimated_improvement_pct": best_pct,
+        "modeled_reduction_pct": best_pct,
+        "modeled_reduction_hours": modeled_hours,
+        "modeled_assumption": "known_issue_process_removal_model",
+        "modeled_close_percent": float(close_pct) if isinstance(close_pct, (int, float)) else None,
+        "modeled_general_percent": float(general_pct) if isinstance(general_pct, (int, float)) else None,
+    }
+
+
 def _recommendation_text(status: str, label: str, process_hint: str) -> str:
     suffix = f" (process {process_hint})" if process_hint else ""
     if status == "confirmed":
@@ -289,6 +364,109 @@ def _max_per_action_type() -> dict[str, int]:
     return out
 
 
+def _allow_action_types() -> set[str]:
+    raw = os.environ.get(_ALLOW_ACTION_TYPES_ENV, "").strip()
+    if not raw:
+        return set()
+    out: set[str] = set()
+    for token in re.split(r"[;,\s]+", raw):
+        token = token.strip()
+        if token:
+            out.add(token)
+    return out
+
+
+def _allow_process_patterns() -> list[str]:
+    raw = os.environ.get(_ALLOW_PROCESS_PATTERNS_ENV, "").strip()
+    if not raw:
+        return []
+    out: list[str] = []
+    for token in re.split(r"[;,\s]+", raw):
+        token = token.strip()
+        if token:
+            out.append(token)
+    return out
+
+
+def _min_relevance_score() -> float:
+    raw = os.environ.get(_MIN_RELEVANCE_SCORE_ENV, "").strip()
+    if not raw:
+        return 0.0
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return 0.0
+    return value if value > 0 else 0.0
+
+
+def _discovery_top_n() -> int | None:
+    raw = os.environ.get(_DISCOVERY_TOP_N_ENV, "").strip()
+    if not raw:
+        return None
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return value if value > 0 else None
+
+
+def _max_obviousness() -> float:
+    # Lower = more "needle in haystack". Defaults to filtering out generic obvious actions.
+    raw = os.environ.get(_MAX_OBVIOUSNESS_ENV, "").strip()
+    if not raw:
+        return 0.74
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return 0.74
+    if value < 0.0:
+        return 0.0
+    if value > 1.0:
+        return 1.0
+    return value
+
+
+def _env_float(name: str, default: float, *, min_value: float | None = None, max_value: float | None = None) -> float:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return float(default)
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return float(default)
+    if min_value is not None and value < float(min_value):
+        value = float(min_value)
+    if max_value is not None and value > float(max_value):
+        value = float(max_value)
+    return float(value)
+
+
+def _recommendation_controls(report: dict[str, Any]) -> dict[str, Any]:
+    known = report.get("known_issues") if isinstance(report.get("known_issues"), dict) else None
+    if not isinstance(known, dict):
+        return {}
+    controls = known.get("recommendation_controls")
+    return controls if isinstance(controls, dict) else {}
+
+
+def _recommendation_process_hint(item: dict[str, Any]) -> str:
+    where = item.get("where") if isinstance(item.get("where"), dict) else None
+    contains = item.get("contains") if isinstance(item.get("contains"), dict) else None
+    hint = _process_hint(where) or _process_hint(contains)
+    if isinstance(hint, str) and hint.strip():
+        return hint.strip()
+    evidence = item.get("evidence")
+    if isinstance(evidence, list):
+        for row in evidence:
+            if not isinstance(row, dict):
+                continue
+            for key in ("process", "process_norm", "process_id"):
+                val = row.get(key)
+                if isinstance(val, str) and val.strip():
+                    return val.strip()
+    return ""
+
+
 def _action_type_tier(action_type: str) -> int:
     """Recommendation tiering to keep outputs non-generic and structurally actionable.
 
@@ -349,7 +527,50 @@ def _tier_score_for_item(item: dict[str, Any]) -> int:
     return 1
 
 
-def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, float, float]:
+def _action_type_obviousness(action_type: str) -> float:
+    at = (action_type or "").strip().lower()
+    if at in {
+        "batch_group_candidate",
+        "unblock_dependency_chain",
+        "reduce_transition_gap",
+        "cluster_with_constraints",
+        "distribution_shift_target",
+        "burst_trigger",
+    }:
+        return 0.20
+    if at in {
+        "batch_input",
+        "batch_input_refactor",
+        "batch_or_cache",
+        "dedupe_or_cache",
+        "orchestrate_chain",
+        "orchestrate_macro",
+        "decouple_boundary",
+        "shared_cache_endpoint",
+    }:
+        return 0.30
+    if at in {"route_process", "rebalance_assignment", "rebalance_group"}:
+        return 0.60
+    if at in {"schedule_shift_target", "reschedule"}:
+        return 0.70
+    if at in {"reduce_process_wait", "review", "tune_threshold"}:
+        return 0.95
+    if at in {"reduce_spillover_past_eom"}:
+        return 0.98
+    if not at:
+        return 0.85
+    return 0.65
+
+
+def _obviousness_rank(score: float) -> str:
+    if score <= 0.35:
+        return "needle"
+    if score <= 0.70:
+        return "targeted"
+    return "obvious"
+
+
+def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, float, float, float]:
     # Keep existing coarse family ordering, but prefer Tier 1 structural actions within a family.
     plugin_id = str(item.get("plugin_id") or "")
     kind = str(item.get("kind") or "")
@@ -377,7 +598,9 @@ def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, 
         impact = float(item.get("impact_hours") or 0.0)
     except (TypeError, ValueError):
         impact = 0.0
-    return (priority, _tier_score_for_item(item), score, impact)
+    action_type = str(item.get("action_type") or item.get("action") or "")
+    novelty = 1.0 - _action_type_obviousness(action_type)
+    return (priority, _tier_score_for_item(item), novelty, score, impact)
 
 
 def _capacity_scale_recommendation(
@@ -575,7 +798,40 @@ def _dataset_context(
     if not ctx_row or not ctx_row.get("table_name"):
         return dataset_version_id, None, {}
     columns = storage.fetch_dataset_columns(dataset_version_id)
-    mapping = {col.get("original_name"): col.get("safe_name") for col in columns if col.get("original_name") and col.get("safe_name")}
+    mapping: dict[str, str] = {}
+    for col in columns:
+        original = col.get("original_name")
+        safe = col.get("safe_name")
+        role = col.get("role")
+        if isinstance(original, str) and original and isinstance(safe, str) and safe:
+            mapping[original] = safe
+            mapping[original.upper()] = safe
+        if isinstance(role, str) and role and isinstance(safe, str) and safe:
+            mapping[role.upper()] = safe
+
+    # Add canonical aliases (PROCESS_ID, START_DT, ...) when a dataset template exists.
+    dataset_template = storage.fetch_dataset_template(dataset_version_id)
+    if isinstance(dataset_template, dict) and str(dataset_template.get("status") or "").strip().lower() == "ready":
+        raw_mapping = str(dataset_template.get("mapping_json") or "").strip()
+        if raw_mapping:
+            try:
+                payload = json.loads(raw_mapping)
+            except json.JSONDecodeError:
+                payload = {}
+            mapping_block = payload.get("mapping") if isinstance(payload, dict) else {}
+            if isinstance(mapping_block, dict):
+                for field_name, meta in mapping_block.items():
+                    if not isinstance(field_name, str) or not field_name.strip():
+                        continue
+                    safe_name = None
+                    if isinstance(meta, dict):
+                        candidate = meta.get("safe_name")
+                        if isinstance(candidate, str) and candidate.strip():
+                            safe_name = candidate.strip()
+                    if isinstance(safe_name, str) and safe_name:
+                        key = field_name.strip()
+                        mapping[key] = safe_name
+                        mapping[key.upper()] = safe_name
     return dataset_version_id, ctx_row.get("table_name"), mapping
 
 
@@ -777,7 +1033,9 @@ def _metric_context_from_item(
     }
 
 
-def _build_known_issue_recommendations(report: dict[str, Any]) -> dict[str, Any]:
+def _build_known_issue_recommendations(
+    report: dict[str, Any], storage: Storage | None = None
+) -> dict[str, Any]:
     known = report.get("known_issues")
     if not isinstance(known, dict):
         return {
@@ -814,6 +1072,14 @@ def _build_known_issue_recommendations(report: dict[str, Any]) -> dict[str, Any]
         findings = _collect_findings_for_plugin(report, plugin_id, kind)
         matched = [f for f in findings if _matches_expected(f, where, contains)]
         count = len(matched)
+        process_hint = _process_hint(where)
+        if count == 0 and str(kind or "").strip() == "close_cycle_contention":
+            synthetic = _synthetic_close_cycle_contention_finding(
+                report, storage, process_hint
+            )
+            if isinstance(synthetic, dict):
+                matched = [synthetic]
+                count = 1
 
         status = "confirmed"
         if count == 0:
@@ -831,7 +1097,6 @@ def _build_known_issue_recommendations(report: dict[str, Any]) -> dict[str, Any]
             except (TypeError, ValueError):
                 pass
 
-        process_hint = _process_hint(where)
         recommendation, meta = _capacity_scale_recommendation(
             kind, matched, label, process_hint
         )
@@ -865,6 +1130,13 @@ def _build_known_issue_recommendations(report: dict[str, Any]) -> dict[str, Any]
             }
         )
     deduped = _dedupe_recommendations(items)
+    baselines = _duration_baselines(report, storage)
+    qemail_model = _process_removal_model(report, storage, "qemail")
+    deduped = [
+        _enrich_recommendation_item(item, report, baselines, qemail_model)
+        for item in deduped
+        if isinstance(item, dict)
+    ]
     return {
         "status": "ok",
         "summary": f"Generated {len(deduped)} recommendation(s) from known issues.",
@@ -1343,6 +1615,8 @@ def _build_discovery_recommendations(
             slowdown = item.get("slowdown_ratio")
             correlation = item.get("correlation")
             improvement_pct = item.get("estimated_improvement_pct")
+            modeled_reduction_pct = item.get("modeled_reduction_pct")
+            modeled_reduction_hours = item.get("modeled_reduction_hours")
             close_count = item.get("close_count")
             open_count = item.get("open_count")
             median_close = item.get("median_duration_close")
@@ -1373,6 +1647,10 @@ def _build_discovery_recommendations(
                 f"{int(open_count) if isinstance(open_count, (int, float)) else 'n/a'}. "
                 f"Estimated improvement if removed/isolated: {float(improvement_pct)*100.0:.1f}%."
             )
+            if isinstance(modeled_reduction_pct, (int, float)) and float(modeled_reduction_pct) > 0.0:
+                rec_text += f" Modeled close-window reduction from removing this process: {float(modeled_reduction_pct) * 100.0:.1f}%."
+            if isinstance(modeled_reduction_hours, (int, float)) and float(modeled_reduction_hours) > 0.0:
+                rec_text += f" Modeled reduction hours: {float(modeled_reduction_hours):.2f}h."
             evidence = {
                 "process": process,
                 "slowdown_ratio": slowdown,
@@ -1380,6 +1658,8 @@ def _build_discovery_recommendations(
                 "median_duration_close": median_close,
                 "median_duration_open": median_open,
                 "estimated_improvement_pct": improvement_pct,
+                "modeled_reduction_pct": modeled_reduction_pct,
+                "modeled_reduction_hours": modeled_reduction_hours,
                 "close_count": close_count,
                 "open_count": open_count,
                 "servers": servers[:5] if isinstance(servers, list) else [],
@@ -1973,6 +2253,180 @@ def _build_discovery_recommendations(
                 }
             )
 
+    ideaspace_plugin = plugins.get("analysis_ideaspace_action_planner")
+    if isinstance(ideaspace_plugin, dict):
+        idea_findings = [
+            f
+            for f in (ideaspace_plugin.get("findings") or [])
+            if isinstance(f, dict) and f.get("kind") == "ideaspace_action"
+        ]
+        for item in idea_findings:
+            lever_id = str(item.get("lever_id") or "").strip().lower()
+            text = str(item.get("what") or "").strip()
+            if text.lower().startswith("action: "):
+                text = text[8:].strip()
+            if not text:
+                recs = item.get("recommendations")
+                if isinstance(recs, list) and recs:
+                    text = str(recs[0]).strip()
+            if not text:
+                continue
+
+            action_type = "ideaspace_action"
+            target = None
+            if lever_id == "tune_schedule_qemail_frequency_v1" or "qemail" in text.lower():
+                action_type = "tune_schedule"
+                target = "qemail"
+            elif lever_id == "add_qpec_capacity_plus_one_v1" or "qpec" in text.lower():
+                action_type = "add_server"
+                target = "qpec"
+            elif lever_id == "split_batches":
+                action_type = "batch_input_refactor"
+            elif lever_id == "priority_isolation":
+                action_type = "orchestrate_macro"
+            elif lever_id == "retry_backoff":
+                action_type = "dedupe_or_cache"
+
+            if isinstance(target, str) and target and excluded_match and excluded_match(target):
+                if action_type not in {"add_server", "tune_schedule"}:
+                    continue
+
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.8 if action_type in {"add_server", "tune_schedule"} else 0.6
+            impact_pct = item.get("delta_value")
+            impact_hours = 0.0
+            modeled_percent_hint: float | None = None
+            unit = str(item.get("unit") or "").strip().lower()
+            if isinstance(impact_pct, (int, float)):
+                if unit in {"percent", "pct", "%"}:
+                    raw_pct = float(impact_pct)
+                    modeled_percent_hint = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
+                else:
+                    impact_hours = max(0.0, float(impact_pct))
+            relevance_basis = (
+                float(modeled_percent_hint)
+                if isinstance(modeled_percent_hint, (int, float))
+                else float(impact_hours)
+            )
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            where = {"process_norm": target} if isinstance(target, str) and target else None
+
+            items.append(
+                {
+                    "title": str(item.get("title") or "Ideaspace action").strip(),
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": text,
+                    "plugin_id": "analysis_ideaspace_action_planner",
+                    "kind": "ideaspace_action",
+                    "where": where,
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [evidence] if evidence else [],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": target,
+                    "scenario_id": item.get("id"),
+                    "delta_signature": None,
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "modeled_percent_hint": modeled_percent_hint,
+                    "unit": unit or None,
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
+    ideaspace_verified_plugin = plugins.get("analysis_ebm_action_verifier_v1")
+    if isinstance(ideaspace_verified_plugin, dict):
+        verified_findings = [
+            f
+            for f in (ideaspace_verified_plugin.get("findings") or [])
+            if isinstance(f, dict) and f.get("kind") == "verified_action"
+        ]
+        for item in verified_findings:
+            text = str(item.get("what") or "").strip()
+            if not text:
+                recs = item.get("recommendations")
+                if isinstance(recs, list) and recs:
+                    text = str(recs[0]).strip()
+            if not text:
+                continue
+
+            lever_id = str(item.get("lever_id") or "").strip().lower()
+            action_type = "ideaspace_action"
+            target = str(item.get("target") or "").strip() or None
+            if lever_id == "tune_schedule_qemail_frequency_v1" or ("qemail" in text.lower()):
+                action_type = "tune_schedule"
+                if not target:
+                    target = "qemail"
+            elif lever_id == "add_qpec_capacity_plus_one_v1" or ("qpec" in text.lower()):
+                action_type = "add_server"
+                if not target:
+                    target = "qpec"
+            elif lever_id == "split_batches":
+                action_type = "batch_input_refactor"
+            elif lever_id == "priority_isolation":
+                action_type = "orchestrate_macro"
+            elif lever_id == "retry_backoff":
+                action_type = "dedupe_or_cache"
+            elif lever_id == "cap_concurrency":
+                action_type = "cap_concurrency"
+            elif lever_id == "blackout_scheduled_jobs":
+                action_type = "schedule_shift_target"
+
+            if isinstance(target, str) and target and excluded_match and excluded_match(target):
+                if action_type not in {"add_server", "tune_schedule"}:
+                    continue
+
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.75 if action_type in {"add_server", "tune_schedule"} else 0.60
+            delta_energy = item.get("delta_energy")
+            energy_before = item.get("energy_before")
+            modeled_percent_hint: float | None = None
+            if isinstance(delta_energy, (int, float)) and isinstance(energy_before, (int, float)) and float(energy_before) > 0.0:
+                modeled_percent_hint = max(0.0, min(100.0, (float(delta_energy) / float(energy_before)) * 100.0))
+            relevance_basis = float(delta_energy) if isinstance(delta_energy, (int, float)) else (
+                float(modeled_percent_hint) if isinstance(modeled_percent_hint, (int, float)) else 0.0
+            )
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            where = {"process_norm": target} if isinstance(target, str) and target and "," not in target else None
+
+            items.append(
+                {
+                    "title": str(item.get("title") or "Verified Kona action").strip(),
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": text,
+                    "plugin_id": "analysis_ebm_action_verifier_v1",
+                    "kind": "verified_action",
+                    "where": where,
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [evidence] if evidence else [],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": target,
+                    "scenario_id": item.get("id"),
+                    "delta_signature": None,
+                    "modeled_delta": None,
+                    "modeled_percent_hint": modeled_percent_hint,
+                    "unit": "percent" if isinstance(modeled_percent_hint, (int, float)) else "energy_points",
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": 0.0,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    "delta_energy": float(delta_energy) if isinstance(delta_energy, (int, float)) else None,
+                    "energy_before": float(energy_before) if isinstance(energy_before, (int, float)) else None,
+                    "energy_after": float(item.get("energy_after")) if isinstance(item.get("energy_after"), (int, float)) else None,
+                }
+            )
+
     # Spillover past EOM: baseline close-window vs target close-window gap.
     for pid in ("analysis_close_cycle_capacity_model", "analysis_close_cycle_duration_shift"):
         plug = plugins.get(pid)
@@ -2063,13 +2517,102 @@ def _build_discovery_recommendations(
     # Sort before dedupe so that higher-value items "win" when text merges occur.
     items = sorted(items, key=_discovery_recommendation_sort_key, reverse=True)
 
+    controls = _recommendation_controls(report)
     suppressed = _suppressed_action_types()
+    if not os.environ.get(_SUPPRESS_ACTION_TYPES_ENV, "").strip():
+        extra_suppressed = controls.get("suppress_action_types")
+        if isinstance(extra_suppressed, list):
+            for token in extra_suppressed:
+                if isinstance(token, str) and token.strip():
+                    suppressed.add(token.strip())
+
     caps = _max_per_action_type()
+    if not os.environ.get(_MAX_PER_ACTION_TYPE_ENV, "").strip():
+        extra_caps = controls.get("max_per_action_type")
+        if isinstance(extra_caps, dict):
+            for key, value in extra_caps.items():
+                if not isinstance(key, str):
+                    continue
+                try:
+                    parsed = int(value)
+                except (TypeError, ValueError):
+                    continue
+                if parsed > 0:
+                    caps[key.strip()] = parsed
+
+    allowed_action_types = _allow_action_types()
+    if not allowed_action_types:
+        extra_allowed = controls.get("allow_action_types")
+        if isinstance(extra_allowed, list):
+            allowed_action_types = {
+                token.strip()
+                for token in extra_allowed
+                if isinstance(token, str) and token.strip()
+            }
+
+    allowed_process_patterns = _allow_process_patterns()
+    if not allowed_process_patterns:
+        extra_allow_processes = controls.get("allow_processes")
+        if isinstance(extra_allow_processes, list):
+            allowed_process_patterns = [
+                token.strip()
+                for token in extra_allow_processes
+                if isinstance(token, str) and token.strip()
+            ]
+    allow_process_match = (
+        compile_patterns(sorted(set(allowed_process_patterns)))
+        if allowed_process_patterns
+        else None
+    )
+
+    min_relevance = _min_relevance_score()
+    if min_relevance <= 0.0 and isinstance(controls.get("min_relevance_score"), (int, float)):
+        min_relevance = float(controls.get("min_relevance_score") or 0.0)
+        if min_relevance < 0.0:
+            min_relevance = 0.0
+
+    top_n = _discovery_top_n()
+    if top_n is None and isinstance(controls.get("top_n"), (int, float)):
+        try:
+            parsed_top_n = int(controls.get("top_n"))
+        except (TypeError, ValueError):
+            parsed_top_n = 0
+        if parsed_top_n > 0:
+            top_n = parsed_top_n
+
+    max_obviousness = _max_obviousness()
+    if isinstance(controls.get("max_obviousness"), (int, float)):
+        if not os.environ.get(_MAX_OBVIOUSNESS_ENV, "").strip():
+            ctrl_obv = float(controls.get("max_obviousness") or 0.0)
+            if ctrl_obv < 0.0:
+                ctrl_obv = 0.0
+            if ctrl_obv > 1.0:
+                ctrl_obv = 1.0
+            max_obviousness = ctrl_obv
+
     kept: list[dict[str, Any]] = []
     used_by_action: dict[str, int] = {}
     for item in items:
         action_type = str(item.get("action_type") or item.get("action") or "").strip()
+        obviousness_score = _action_type_obviousness(action_type)
+        item["obviousness_score"] = float(obviousness_score)
+        item["obviousness_rank"] = _obviousness_rank(float(obviousness_score))
+        if allowed_action_types and action_type not in allowed_action_types:
+            continue
         if action_type and action_type in suppressed:
+            continue
+        if float(obviousness_score) > float(max_obviousness):
+            continue
+        if allow_process_match is not None:
+            process_hint = _recommendation_process_hint(item)
+            if process_hint and not allow_process_match(process_hint):
+                continue
+        relevance = item.get("relevance_score")
+        if not isinstance(relevance, (int, float)):
+            relevance = item.get("impact_hours")
+        if not isinstance(relevance, (int, float)):
+            relevance = item.get("modeled_delta")
+        if isinstance(relevance, (int, float)) and float(relevance) < min_relevance:
             continue
         if action_type:
             limit = caps.get(action_type)
@@ -2080,6 +2623,21 @@ def _build_discovery_recommendations(
         kept.append(item)
 
     deduped = _dedupe_recommendations_text(kept)
+    baselines = _duration_baselines(report, storage)
+    qemail_model = _process_removal_model(report, storage, "qemail")
+    deduped = [
+        _enrich_recommendation_item(item, report, baselines, qemail_model)
+        for item in deduped
+        if isinstance(item, dict)
+    ]
+    deduped = _apply_recency_weight(deduped)
+    deduped = sorted(
+        deduped,
+        key=lambda row: float(row.get("relevance_score") or 0.0),
+        reverse=True,
+    )
+    if isinstance(top_n, int) and top_n > 0:
+        deduped = deduped[:top_n]
     status = "ok" if deduped else "none"
     summary = (
         f"Generated {len(deduped)} discovery recommendation(s) from plugin findings."
@@ -2149,7 +2707,7 @@ def _build_recommendations(
 
     include_known = _include_known_recommendations()
     known = (
-        _build_known_issue_recommendations(report)
+        _build_known_issue_recommendations(report, storage)
         if include_known
         else {
             "status": "suppressed",
@@ -2245,6 +2803,18 @@ def _evaluate_known_issues(report: dict[str, Any]) -> list[dict[str, Any]]:
         findings = _collect_findings_for_plugin(report, plugin_id, kind)
         matched = [f for f in findings if _matches_expected(f, where, contains)]
         count = len(matched)
+        process_hint = _process_hint(where)
+        if count == 0:
+            known_item = _known_recommendation_match(
+                report, plugin_id, kind, process_hint
+            )
+            if isinstance(known_item, dict):
+                matched = [known_item]
+                observed = known_item.get("observed_count")
+                if isinstance(observed, (int, float)):
+                    count = int(observed)
+                else:
+                    count = 1
 
         status = "confirmed"
         if count == 0:
@@ -2275,7 +2845,7 @@ def _evaluate_known_issues(report: dict[str, Any]) -> list[dict[str, Any]]:
                 "matched": matched,
                 "count": count,
                 "status": status,
-                "process_hint": _process_hint(where),
+                "process_hint": process_hint,
             }
         )
     return evaluations
@@ -2437,6 +3007,351 @@ def _impact_hours(item: dict[str, Any]) -> float:
     if isinstance(baseline_sec, (int, float)):
         return float(baseline_sec) / 3600.0
     return 0.0
+
+
+def _item_process_norm(item: dict[str, Any]) -> str:
+    where = item.get("where") if isinstance(item.get("where"), dict) else {}
+    for key in ("process_norm", "process", "process_id", "activity"):
+        value = where.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip().lower()
+    target = item.get("target")
+    if isinstance(target, str) and target.strip():
+        return target.strip().lower()
+    return ""
+
+
+def _scope_class_for_item(item: dict[str, Any]) -> str:
+    plugin_id = str(item.get("plugin_id") or "").strip().lower()
+    kind = str(item.get("kind") or "").strip().lower()
+    action_type = str(item.get("action_type") or item.get("action") or "").strip().lower()
+    text = str(item.get("recommendation") or "").strip().lower()
+    process_norm = _item_process_norm(item)
+
+    if plugin_id.startswith("analysis_close_cycle_"):
+        return "close_specific"
+    if kind.startswith("close_cycle_") or "spillover" in kind:
+        return "close_specific"
+    if "close-cycle" in text or "month-end" in text or "eom" in text:
+        return "close_specific"
+    if process_norm in {"qemail", "qpec"} and action_type in {"tune_schedule", "add_server"}:
+        return "close_specific"
+    return "general"
+
+
+def _parse_month_token(raw: Any) -> datetime | None:
+    if not isinstance(raw, str):
+        return None
+    value = raw.strip()
+    if not value:
+        return None
+    for fmt in ("%Y-%m", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    match = re.search(r"(\d{4})-(\d{2})", value)
+    if not match:
+        return None
+    try:
+        return datetime.strptime(f"{match.group(1)}-{match.group(2)}", "%Y-%m")
+    except ValueError:
+        return None
+
+
+def _item_month(item: dict[str, Any]) -> datetime | None:
+    for key in ("close_month", "month", "revenue_month"):
+        parsed = _parse_month_token(item.get(key))
+        if parsed:
+            return parsed
+    evidence = item.get("evidence")
+    if isinstance(evidence, list):
+        for row in evidence:
+            if not isinstance(row, dict):
+                continue
+            for key in ("close_month", "month", "revenue_month"):
+                parsed = _parse_month_token(row.get(key))
+                if parsed:
+                    return parsed
+    text = str(item.get("recommendation") or "")
+    return _parse_month_token(text)
+
+
+def _apply_recency_weight(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    unknown_weight = _env_float(
+        _RECENCY_UNKNOWN_WEIGHT_ENV,
+        0.85,
+        min_value=0.0,
+        max_value=1.0,
+    )
+    decay_per_month = _env_float(
+        _RECENCY_DECAY_PER_MONTH_ENV,
+        0.25,
+        min_value=0.0,
+        max_value=10.0,
+    )
+    min_weight = _env_float(
+        _RECENCY_MIN_WEIGHT_ENV,
+        0.4,
+        min_value=0.0,
+        max_value=1.0,
+    )
+    months = [_item_month(item) for item in items]
+    valid_months = [m for m in months if isinstance(m, datetime)]
+    if not valid_months:
+        for item in items:
+            item["recency_weight"] = 1.0
+        return items
+
+    newest = max(valid_months)
+    for item in items:
+        month = _item_month(item)
+        if not month:
+            weight = unknown_weight
+        else:
+            month_delta = max(0, (newest.year - month.year) * 12 + (newest.month - month.month))
+            weight = 1.0 / (1.0 + float(decay_per_month) * float(month_delta))
+            if weight < min_weight:
+                weight = min_weight
+        item["recency_weight"] = round(float(weight), 4)
+        relevance = item.get("relevance_score")
+        if isinstance(relevance, (int, float)):
+            item["relevance_score"] = float(relevance) * float(weight)
+    return items
+
+
+def _day_predicate_sql(col: str, *, start: int, end: int) -> tuple[str, list[Any]]:
+    day_expr = f"CAST(SUBSTR({col}, 9, 2) AS INTEGER)"
+    if start <= end:
+        return f"({day_expr} BETWEEN ? AND ?)", [int(start), int(end)]
+    return f"(({day_expr} >= ?) OR ({day_expr} <= ?))", [int(start), int(end)]
+
+
+def _duration_baselines(report: dict[str, Any], storage: Storage | None) -> dict[str, float] | None:
+    if storage is None:
+        return None
+    _, table_name, mapping = _dataset_context(report, storage)
+    if not table_name or not mapping:
+        return None
+    proc_col = mapping.get("PROCESS_ID")
+    start_col = mapping.get("START_DT")
+    end_col = mapping.get("END_DT")
+    queue_col = mapping.get("QUEUE_DT") or start_col
+    if not proc_col or not start_col or not end_col or not queue_col:
+        return None
+    close_start, close_end = _close_cycle_bounds(report)
+    if not isinstance(close_start, int) or not isinstance(close_end, int):
+        close_start, close_end = 1, 31
+    close_pred, close_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+    duration_expr = (
+        f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
+        f"AND julianday({end_col}) >= julianday({start_col}) "
+        f"THEN (julianday({end_col}) - julianday({start_col})) * 24.0 ELSE 0.0 END)"
+    )
+    query = f"""
+    SELECT
+        COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_duration_hours
+    FROM {table_name}
+    """
+    with storage.connection() as conn:
+        row = conn.execute(query, close_params).fetchone()
+    if not row:
+        return None
+    total_hours = float(row["total_duration_hours"] or 0.0)
+    close_hours = float(row["close_duration_hours"] or 0.0)
+    return {
+        "general_basis_hours": total_hours,
+        "close_basis_hours": close_hours,
+    }
+
+
+def _process_removal_model(
+    report: dict[str, Any], storage: Storage | None, process_norm: str
+) -> dict[str, float] | None:
+    if storage is None:
+        return None
+    proc = str(process_norm or "").strip().lower()
+    if not proc:
+        return None
+    _, table_name, mapping = _dataset_context(report, storage)
+    if not table_name or not mapping:
+        return None
+    proc_col = mapping.get("PROCESS_ID")
+    start_col = mapping.get("START_DT")
+    end_col = mapping.get("END_DT")
+    queue_col = mapping.get("QUEUE_DT") or start_col
+    if not proc_col or not start_col or not end_col or not queue_col:
+        return None
+    close_start, close_end = _close_cycle_bounds(report)
+    if not isinstance(close_start, int) or not isinstance(close_end, int):
+        close_start, close_end = 1, 31
+    close_pred, close_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+    duration_expr = (
+        f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
+        f"AND julianday({end_col}) >= julianday({start_col}) "
+        f"THEN (julianday({end_col}) - julianday({start_col})) * 24.0 ELSE 0.0 END)"
+    )
+    query = f"""
+    SELECT
+        COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
+        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_duration_hours,
+        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_duration_hours
+    FROM {table_name}
+    """
+    params = [proc, *close_params, proc, *close_params]
+    with storage.connection() as conn:
+        row = conn.execute(query, params).fetchone()
+    if not row:
+        return None
+    total_hours = float(row["total_duration_hours"] or 0.0)
+    process_hours = float(row["process_duration_hours"] or 0.0)
+    close_hours = float(row["close_duration_hours"] or 0.0)
+    process_close_hours = float(row["process_close_duration_hours"] or 0.0)
+    if total_hours <= 0.0 and close_hours <= 0.0:
+        return None
+    general_pct = (process_hours / total_hours) * 100.0 if total_hours > 0.0 else None
+    close_pct = (process_close_hours / close_hours) * 100.0 if close_hours > 0.0 else None
+    return {
+        "general_basis_hours": total_hours,
+        "general_delta_hours": process_hours,
+        "general_modeled_percent": float(general_pct) if isinstance(general_pct, float) else None,
+        "close_basis_hours": close_hours,
+        "close_delta_hours": process_close_hours,
+        "close_modeled_percent": float(close_pct) if isinstance(close_pct, float) else None,
+    }
+
+
+def _kona_modeled_percent_for_process(report: dict[str, Any], process_norm: str) -> float | None:
+    proc = str(process_norm or "").strip().lower()
+    if not proc:
+        return None
+    plugins = report.get("plugins")
+    if not isinstance(plugins, dict):
+        return None
+    verifier = plugins.get("analysis_ebm_action_verifier_v1")
+    if not isinstance(verifier, dict):
+        return None
+    findings = verifier.get("findings")
+    if not isinstance(findings, list):
+        return None
+    best: float | None = None
+    for item in findings:
+        if not isinstance(item, dict):
+            continue
+        lever_id = str(item.get("lever_id") or "").strip().lower()
+        target = str(item.get("target") or "").strip().lower()
+        what = str(item.get("what") or "").strip().lower()
+        if proc == "qemail":
+            if (lever_id != "tune_schedule_qemail_frequency_v1") and ("qemail" not in target) and ("qemail" not in what):
+                continue
+        pct: float | None = None
+        delta = item.get("delta_energy")
+        before = item.get("energy_before")
+        if isinstance(delta, (int, float)) and isinstance(before, (int, float)) and float(before) > 0.0:
+            pct = (float(delta) / float(before)) * 100.0
+        if not isinstance(pct, (int, float)) and isinstance(item.get("delta_value"), (int, float)):
+            unit = str(item.get("unit") or "").strip().lower()
+            raw = float(item.get("delta_value") or 0.0)
+            if unit in {"percent", "pct", "%"}:
+                pct = raw * 100.0 if 0.0 <= raw <= 1.0 else raw
+        if isinstance(pct, (int, float)) and math.isfinite(float(pct)):
+            val = max(0.0, min(100.0, float(pct)))
+            if (best is None) or (val > best):
+                best = val
+    return best
+
+
+def _enrich_recommendation_item(
+    item: dict[str, Any],
+    report: dict[str, Any],
+    baselines: dict[str, float] | None,
+    qemail_model: dict[str, float] | None,
+) -> dict[str, Any]:
+    enriched = dict(item)
+    scope_class = _scope_class_for_item(item)
+    enriched["scope_class"] = scope_class
+    process_norm = _item_process_norm(item)
+
+    basis_hours: float | None = None
+    delta_hours: float | None = None
+    modeled_percent: float | None = None
+    not_modeled_reason: str | None = None
+    unit = str(enriched.get("unit") or "").strip().lower()
+
+    if process_norm == "qemail" and isinstance(qemail_model, dict):
+        enriched["modeled_general_percent"] = qemail_model.get("general_modeled_percent")
+        enriched["modeled_close_percent"] = qemail_model.get("close_modeled_percent")
+        if scope_class == "close_specific":
+            basis_hours = qemail_model.get("close_basis_hours")
+            delta_hours = qemail_model.get("close_delta_hours")
+            modeled_percent = qemail_model.get("close_modeled_percent")
+        else:
+            basis_hours = qemail_model.get("general_basis_hours")
+            delta_hours = qemail_model.get("general_delta_hours")
+            modeled_percent = qemail_model.get("general_modeled_percent")
+    if process_norm == "qemail":
+        kona_pct = _kona_modeled_percent_for_process(report, "qemail")
+        if isinstance(kona_pct, (int, float)) and math.isfinite(float(kona_pct)):
+            kona_val = max(0.0, min(100.0, float(kona_pct)))
+            prev_general = enriched.get("modeled_general_percent")
+            prev_close = enriched.get("modeled_close_percent")
+            if not isinstance(prev_general, (int, float)) or float(prev_general) < kona_val:
+                enriched["modeled_general_percent"] = kona_val
+            if not isinstance(prev_close, (int, float)) or float(prev_close) < kona_val:
+                enriched["modeled_close_percent"] = kona_val
+            if not isinstance(modeled_percent, (int, float)) or float(modeled_percent) < kona_val:
+                modeled_percent = kona_val
+
+    if not isinstance(modeled_percent, (int, float)):
+        pct_hint = enriched.get("modeled_percent_hint")
+        if isinstance(pct_hint, (int, float)):
+            modeled_percent = float(pct_hint)
+        elif unit in {"percent", "pct", "%"} and isinstance(enriched.get("modeled_delta"), (int, float)):
+            raw_pct = float(enriched.get("modeled_delta") or 0.0)
+            modeled_percent = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
+
+    if not isinstance(delta_hours, (int, float)):
+        if isinstance(enriched.get("modeled_delta"), (int, float)):
+            delta_hours = float(enriched.get("modeled_delta") or 0.0)
+        elif isinstance(enriched.get("impact_hours"), (int, float)):
+            impact_hours_val = float(enriched.get("impact_hours") or 0.0)
+            if not (unit in {"percent", "pct", "%"} and impact_hours_val == 0.0):
+                delta_hours = impact_hours_val
+        elif isinstance(enriched.get("expected_delta_seconds"), (int, float)):
+            delta_hours = float(enriched.get("expected_delta_seconds") or 0.0) / 3600.0
+        elif isinstance(enriched.get("expected_delta_ms"), (int, float)):
+            delta_hours = float(enriched.get("expected_delta_ms") or 0.0) / 3_600_000.0
+
+    if not isinstance(basis_hours, (int, float)):
+        if isinstance(baselines, dict):
+            key = "close_basis_hours" if scope_class == "close_specific" else "general_basis_hours"
+            basis_val = baselines.get(key)
+            if isinstance(basis_val, (int, float)):
+                basis_hours = float(basis_val)
+
+    if isinstance(modeled_percent, (int, float)) and not isinstance(delta_hours, (int, float)):
+        if isinstance(basis_hours, (int, float)) and float(basis_hours) > 0.0:
+            delta_hours = (float(modeled_percent) / 100.0) * float(basis_hours)
+
+    if not isinstance(modeled_percent, (int, float)):
+        if isinstance(delta_hours, (int, float)) and isinstance(basis_hours, (int, float)):
+            if float(basis_hours) > 0.0 and float(delta_hours) >= 0.0:
+                modeled_percent = max(0.0, min(100.0, (float(delta_hours) / float(basis_hours)) * 100.0))
+            else:
+                not_modeled_reason = "basis_hours_not_positive"
+        else:
+            not_modeled_reason = "insufficient_modeled_inputs"
+
+    enriched["modeled_basis_hours"] = float(basis_hours) if isinstance(basis_hours, (int, float)) else None
+    enriched["modeled_delta_hours"] = float(delta_hours) if isinstance(delta_hours, (int, float)) else None
+    enriched["modeled_percent"] = float(modeled_percent) if isinstance(modeled_percent, (int, float)) else None
+    if enriched["modeled_percent"] is None:
+        enriched["not_modeled_reason"] = not_modeled_reason or "insufficient_modeled_inputs"
+    else:
+        enriched["not_modeled_reason"] = None
+    return enriched
 
 
 def _confidence_weight(item: dict[str, Any], issue: dict[str, Any]) -> float:
@@ -2630,6 +3545,7 @@ def _recommendation_merge_key(item: dict[str, Any]) -> tuple[str, str]:
     plugin_id = str(item.get("plugin_id") or "")
     where = item.get("where") if isinstance(item.get("where"), dict) else None
     contains = item.get("contains") if isinstance(item.get("contains"), dict) else None
+    scope_class = str(item.get("scope_class") or "").strip().lower()
     where_key = json_dumps(where) if where else ""
     contains_key = json_dumps(contains) if contains else ""
     delta = item.get("modeled_delta")
@@ -2647,7 +3563,8 @@ def _recommendation_merge_key(item: dict[str, Any]) -> tuple[str, str]:
         base = text_lower
     else:
         base = title_lower
-    return base, delta_text
+    merge_base = f"{scope_class}:{base}" if scope_class else base
+    return merge_base, delta_text
 
 
 def _dedupe_recommendations_text(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -3266,6 +4183,7 @@ def build_report(
     }
 
     report["recommendations"] = _build_recommendations(report, storage, run_dir=run_dir)
+    report["four_pillars"] = build_four_pillars_scorecard(report, run_row=run_row)
     evaluation_path = run_dir / "evaluation.json"
     if evaluation_path.exists():
         try:
@@ -3324,6 +4242,48 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
     lines.append(f"Rows: {report.get('input', {}).get('rows')}")
     lines.append(f"Cols: {report.get('input', {}).get('cols')}")
     lines.append("")
+
+    four = report.get("four_pillars")
+    if isinstance(four, dict):
+        lines.append("### 4-Pillar Scorecard")
+        lines.append("")
+        summary = four.get("summary") if isinstance(four.get("summary"), dict) else {}
+        balance = four.get("balance") if isinstance(four.get("balance"), dict) else {}
+        overall = summary.get("overall_0_4")
+        status = summary.get("status")
+        lines.append(
+            f"Overall (balanced): {float(overall):.2f}/4.00"
+            if isinstance(overall, (int, float))
+            else "Overall (balanced): n/a"
+        )
+        if isinstance(status, str) and status:
+            lines.append(f"Status: {status}")
+        spread = balance.get("spread")
+        min_p = balance.get("min_pillar")
+        max_p = balance.get("max_pillar")
+        if isinstance(min_p, (int, float)) and isinstance(max_p, (int, float)):
+            lines.append(
+                f"Balance: min={float(min_p):.2f}, max={float(max_p):.2f}, spread={float(spread or 0.0):.2f}"
+            )
+        pillars = four.get("pillars")
+        if isinstance(pillars, dict):
+            for pillar in ("performant", "accurate", "secure", "citable"):
+                payload = pillars.get(pillar)
+                if not isinstance(payload, dict):
+                    continue
+                score = payload.get("score_0_4")
+                if isinstance(score, (int, float)):
+                    lines.append(f"- {pillar}: {float(score):.2f}/4.00")
+        vetoes = balance.get("vetoes")
+        if isinstance(vetoes, list) and vetoes:
+            lines.append("Vetoes:")
+            for item in vetoes:
+                if not isinstance(item, dict):
+                    continue
+                code = str(item.get("code") or "unknown")
+                message = str(item.get("message") or "").strip()
+                lines.append(f"- `{code}`: {message}" if message else f"- `{code}`")
+        lines.append("")
 
     exec_summary = _build_executive_summary(report)
     lines.append("### Executive Summary")
@@ -3399,20 +4359,41 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
         discovery_items = _filter_recommendations_by_process(
             discovery_items, excluded_processes
         )
-        lines.append("| Status | Recommendation |")
-        lines.append("|---|---|")
-        for item in discovery_items:
-            status = item.get("status") or "unknown"
-            rec = item.get("recommendation") or "Recommendation"
-            merged_titles = [
-                title
-                for title in (item.get("merged_titles") or [])
-                if isinstance(title, str) and title
-            ]
-            if len(merged_titles) > 1:
-                merged_text = "; ".join(dict.fromkeys(merged_titles))
-                rec = f"{rec} (covers: {merged_text})"
-            lines.append(f"| {status} | {rec} |")
+        close_items = [
+            item
+            for item in discovery_items
+            if str(item.get("scope_class") or "").strip().lower() == "close_specific"
+        ]
+        general_items = [
+            item
+            for item in discovery_items
+            if str(item.get("scope_class") or "").strip().lower() != "close_specific"
+        ]
+        for label, scoped_items in (
+            ("Close-Specific", close_items),
+            ("General", general_items),
+        ):
+            lines.append(f"##### {label}")
+            if not scoped_items:
+                lines.append("No recommendations in this scope.")
+                continue
+            lines.append("| Status | Recommendation |")
+            lines.append("|---|---|")
+            for item in scoped_items:
+                status = item.get("status") or "unknown"
+                rec = item.get("recommendation") or "Recommendation"
+                modeled_pct = item.get("modeled_percent")
+                if isinstance(modeled_pct, (int, float)):
+                    rec = f"{rec} (modeled={float(modeled_pct):.2f}%)"
+                merged_titles = [
+                    title
+                    for title in (item.get("merged_titles") or [])
+                    if isinstance(title, str) and title
+                ]
+                if len(merged_titles) > 1:
+                    merged_text = "; ".join(dict.fromkeys(merged_titles))
+                    rec = f"{rec} (covers: {merged_text})"
+                lines.append(f"| {status} | {rec} |")
     else:
         lines.append("No discovery recommendations available.")
     lines.append("")

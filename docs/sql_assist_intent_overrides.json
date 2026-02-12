@@ -1,0 +1,20 @@
+{
+  "intents": {
+    "analysis_action_search_mip_batched_scheduler_v1": "not_applicable",
+    "analysis_action_search_simulated_annealing_v1": "not_applicable",
+    "analysis_determinism_discipline": "not_applicable",
+    "analysis_issue_cards_v2": "not_applicable",
+    "analysis_recommendation_dedupe_v2": "not_applicable",
+    "analysis_traceability_manifest_v2": "not_applicable",
+    "llm_prompt_builder": "not_applicable",
+    "llm_text2sql_local_generate_v1": "required",
+    "planner_basic": "not_applicable",
+    "report_bundle": "not_applicable",
+    "report_decision_bundle_v2": "not_applicable",
+    "report_plain_english_v1": "not_applicable",
+    "report_slide_kit_emitter_v2": "not_applicable",
+    "transform_sql_intents_pack_v1": "required",
+    "transform_sqlpack_materialize_v1": "required",
+    "transform_template": "not_applicable"
+  }
+}

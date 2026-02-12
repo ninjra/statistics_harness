@@ -386,15 +386,42 @@ def recommend_prestage_prereqs(
     )
 
 
+def _process_col_score(df: pd.DataFrame, col: str) -> float:
+    name = str(col).lower()
+    series = df[col].dropna().astype(str).str.strip()
+    series = series.loc[series != ""]
+    if series.empty:
+        return -1e9
+    series = series.head(5000)
+
+    numeric_ratio = float(pd.to_numeric(series, errors="coerce").notna().mean())
+    alpha_ratio = float(series.str.contains(r"[A-Za-z]", regex=True).mean())
+    unique_ratio = float(min(series.nunique(dropna=True) / max(len(series), 1), 1.0))
+
+    score = (alpha_ratio * 3.0) + ((1.0 - numeric_ratio) * 2.0) + ((1.0 - unique_ratio) * 1.0)
+    if "process_id" in name or "activity" in name or name.endswith("process"):
+        score += 1.0
+    if "queue" in name or "parent" in name or "dep_process" in name:
+        score -= 1.5
+    if name.endswith("_id") and "process_id" not in name and "activity" not in name:
+        score -= 0.4
+    return float(score)
+
+
 def _pick_process_col(df: pd.DataFrame, cols: IdeaspaceColumns) -> str | None:
-    # Prefer explicit PROCESS-like columns; fall back to activity_col.
+    # Prefer semantic PROCESS/ACTIVITY columns over queue or surrogate ids.
+    candidates: list[str] = []
     for col in df.columns:
         name = str(col).lower()
-        if "process" in name:
-            return str(col)
+        if "process" in name or "activity" in name:
+            candidates.append(str(col))
     if cols.activity_col and cols.activity_col in df.columns:
-        return cols.activity_col
-    return None
+        candidates.append(cols.activity_col)
+    if not candidates:
+        return None
+    candidates = list(dict.fromkeys(candidates))
+    ranked = sorted(candidates, key=lambda c: _process_col_score(df, c), reverse=True)
+    return ranked[0] if ranked else None
 
 
 def recommend_tune_schedule_qemail_frequency_v1(

@@ -1076,19 +1076,124 @@ def _map_permutation_test_karniski(
 
 
 # ---------------------------
-# Family A/C/E: placeholders
-# These run in "degraded" mode by default to avoid heavy computation unless
-# explicitly enabled/tuned.
+# Family A/C/E: topology + surface + bayesian methods
 # ---------------------------
 
 
 def _heavy_disabled(plugin_id: str, config: dict[str, Any]) -> bool:
-    # Keep default resource usage low; allow enabling heavy plugins by settings.
-    return not bool(config.get("enable_heavy", False))
+    # Backward-compatible switch:
+    # - If enable_heavy is present, honor it.
+    # - Otherwise run methods by default unless disable_heavy=true.
+    if "enable_heavy" in config:
+        return not bool(config.get("enable_heavy"))
+    return bool(config.get("disable_heavy", False))
 
 
 def _heavy_placeholder(kind: str, msg: str) -> list[dict[str, Any]]:
     return [{"kind": kind, "measurement_type": "degraded", "reason": msg}]
+
+
+def _normal_cdf(x: float) -> float:
+    return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
+
+
+def _knn_edges(X: np.ndarray, k: int, timer: BudgetTimer) -> list[tuple[int, int, float]]:
+    n = int(X.shape[0])
+    if n <= 1:
+        return []
+    k = max(1, min(int(k), n - 1))
+    edges_map: dict[tuple[int, int], float] = {}
+
+    if HAS_SKLEARN and NearestNeighbors is not None:
+        nn = NearestNeighbors(n_neighbors=k + 1, algorithm="auto")
+        nn.fit(X)
+        dists, neigh = nn.kneighbors(X, return_distance=True)
+        for i in range(n):
+            if timer.exceeded():
+                break
+            for j_idx in range(1, neigh.shape[1]):
+                j = int(neigh[i, j_idx])
+                if i == j:
+                    continue
+                a, b = (i, j) if i < j else (j, i)
+                dist = float(dists[i, j_idx])
+                prev = edges_map.get((a, b))
+                if prev is None or dist < prev:
+                    edges_map[(a, b)] = dist
+    else:
+        # Fallback without sklearn: bounded brute-force distance matrix.
+        gram = np.sum(X * X, axis=1)
+        d2 = gram[:, None] + gram[None, :] - (2.0 * np.dot(X, X.T))
+        d2 = np.maximum(d2, 0.0)
+        np.fill_diagonal(d2, np.inf)
+        for i in range(n):
+            if timer.exceeded():
+                break
+            idx = np.argpartition(d2[i], k)[:k]
+            for j in idx:
+                jj = int(j)
+                if i == jj:
+                    continue
+                a, b = (i, jj) if i < jj else (jj, i)
+                dist = float(math.sqrt(float(d2[i, jj])))
+                prev = edges_map.get((a, b))
+                if prev is None or dist < prev:
+                    edges_map[(a, b)] = dist
+
+    edges = [(a, b, d) for (a, b), d in edges_map.items()]
+    edges.sort(key=lambda row: row[2])
+    return edges
+
+
+def _union_find(n: int) -> tuple[list[int], list[int]]:
+    return list(range(n)), [0] * n
+
+
+def _uf_find(parent: list[int], x: int) -> int:
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]
+        x = parent[x]
+    return x
+
+
+def _uf_union(parent: list[int], rank: list[int], a: int, b: int) -> bool:
+    ra = _uf_find(parent, a)
+    rb = _uf_find(parent, b)
+    if ra == rb:
+        return False
+    if rank[ra] < rank[rb]:
+        parent[ra] = rb
+    elif rank[ra] > rank[rb]:
+        parent[rb] = ra
+    else:
+        parent[rb] = ra
+        rank[ra] += 1
+    return True
+
+
+def _h0_from_edges(n: int, edges: list[tuple[int, int, float]], timer: BudgetTimer) -> tuple[list[float], float]:
+    parent, rank = _union_find(n)
+    lifetimes: list[float] = []
+    mst_len = 0.0
+    merges = 0
+    for i, j, dist in edges:
+        if timer.exceeded():
+            break
+        if _uf_union(parent, rank, int(i), int(j)):
+            lifetimes.append(float(dist))
+            mst_len += float(dist)
+            merges += 1
+            if merges >= n - 1:
+                break
+    return lifetimes, mst_len
+
+
+def _connected_components_from_edges(n: int, edges: list[tuple[int, int, float]]) -> int:
+    parent, rank = _union_find(n)
+    for i, j, _ in edges:
+        _uf_union(parent, rank, int(i), int(j))
+    roots = {_uf_find(parent, i) for i in range(n)}
+    return int(len(roots))
 
 
 def _tda_persistent_homology(
@@ -1101,227 +1206,860 @@ def _tda_persistent_homology(
     sample_meta: dict[str, Any],
 ) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Heavy TDA disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistent_homology", "disabled_by_default"), [], None)
-    # Proxy implementation: MST-based H0 + cycle-rank proxy for H1 on kNN graph.
+        return PluginResult("degraded", "Heavy TDA disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistent_homology", "disabled_by_config"), [], None)
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
         return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
-    max_points = int(config.get("max_points", 1000))
+    max_points = int(config.get("max_points", 1200))
     X, cols = _numeric_matrix(df.head(max_points), numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.shape[0] < 50:
         return PluginResult("skipped", "Insufficient points for TDA proxy", {}, [], [], None)
-    k = int(config.get("knn_k", 10))
-    if not (HAS_SKLEARN and NearestNeighbors is not None):
-        return PluginResult("degraded", "sklearn missing; TDA proxy unavailable", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistent_homology", "missing_sklearn"), [], None)
-    nn = NearestNeighbors(n_neighbors=min(k, X.shape[0] - 1), algorithm="auto")
-    nn.fit(X)
-    dists, neigh = nn.kneighbors(X, return_distance=True)
-    # Build undirected edge list (i,j,dist) excluding self.
-    edges = []
-    for i in range(X.shape[0]):
-        for j_idx in range(1, neigh.shape[1]):
-            j = int(neigh[i, j_idx])
-            if i == j:
-                continue
-            dist = float(dists[i, j_idx])
-            if i < j:
-                edges.append((i, j, dist))
-    edges.sort(key=lambda e: e[2])
-    # Kruskal MST
-    parent = list(range(X.shape[0]))
-    rank = [0] * X.shape[0]
-
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    def union(a: int, b: int) -> bool:
-        ra, rb = find(a), find(b)
-        if ra == rb:
-            return False
-        if rank[ra] < rank[rb]:
-            parent[ra] = rb
-        elif rank[ra] > rank[rb]:
-            parent[rb] = ra
-        else:
-            parent[rb] = ra
-            rank[ra] += 1
-        return True
-
-    mst_len = 0.0
-    mst_edges = 0
-    for i, j, dist in edges:
-        if union(i, j):
-            mst_len += dist
-            mst_edges += 1
-            if mst_edges >= X.shape[0] - 1:
-                break
-        if timer.exceeded():
-            break
-
-    # Cycle-rank proxy using full kNN edge set: E - V + C.
-    comp_parent = list(range(X.shape[0]))
-    comp_rank = [0] * X.shape[0]
-
-    def cfind(x: int) -> int:
-        while comp_parent[x] != x:
-            comp_parent[x] = comp_parent[comp_parent[x]]
-            x = comp_parent[x]
-        return x
-
-    def cunion(a: int, b: int) -> None:
-        ra, rb = cfind(a), cfind(b)
-        if ra == rb:
-            return
-        if comp_rank[ra] < comp_rank[rb]:
-            comp_parent[ra] = rb
-        elif comp_rank[ra] > comp_rank[rb]:
-            comp_parent[rb] = ra
-        else:
-            comp_parent[rb] = ra
-            comp_rank[ra] += 1
-
-    for i, j, _ in edges:
-        cunion(i, j)
-    comps = len({cfind(i) for i in range(X.shape[0])})
+    edges = _knn_edges(X, k=int(config.get("knn_k", 10)), timer=timer)
+    if not edges:
+        return PluginResult("skipped", "No graph edges produced", {}, [], [], None)
+    lifetimes, mst_len = _h0_from_edges(int(X.shape[0]), edges, timer)
+    comps = _connected_components_from_edges(int(X.shape[0]), edges)
     V = int(X.shape[0])
     E = int(len(edges))
     cycle_rank = max(0, E - V + comps)
+    life = np.array(lifetimes, dtype=float) if lifetimes else np.array([], dtype=float)
 
     finding = {
         "kind": "tda_persistent_homology",
-        "measurement_type": "degraded",
+        "measurement_type": "measured",
         "max_points": int(X.shape[0]),
         "mst_total_length": float(mst_len),
         "cycle_rank_proxy": int(cycle_rank),
+        "h0_lifetime_p50": float(np.nanmedian(life)) if life.size else 0.0,
+        "h0_lifetime_p90": float(np.nanquantile(life, 0.9)) if life.size else 0.0,
         "features_used": cols,
     }
     artifacts = [_artifact(ctx, plugin_id, "tda_proxy.json", finding, "json")]
-    return PluginResult("ok", "TDA proxy metrics computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
+    return PluginResult("ok", "Persistent homology proxy metrics computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _tda_persistence_landscapes(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    ctx = args[1]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _tda_persistence_landscapes(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Heavy TDA disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistence_landscapes", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Persistence landscapes not yet enabled; use persistent homology proxy", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistence_landscapes", "not_implemented"), [], None)
+        return PluginResult("degraded", "Heavy TDA disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistence_landscapes", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    if len(numeric_cols) < 2:
+        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+    X, cols = _numeric_matrix(
+        df.head(int(config.get("max_points", 1200))),
+        numeric_cols,
+        max_cols=int(config.get("max_cols", 20)),
+    )
+    if X.shape[0] < 50:
+        return PluginResult("skipped", "Insufficient points for landscapes proxy", {}, [], [], None)
+    edges = _knn_edges(X, k=int(config.get("knn_k", 10)), timer=timer)
+    lifetimes, _ = _h0_from_edges(int(X.shape[0]), edges, timer)
+    if not lifetimes:
+        return PluginResult("skipped", "Insufficient topology signal", {}, [], [], None)
+    life = np.array(lifetimes, dtype=float)
+    t_max = float(np.nanmax(life))
+    grid_n = max(10, int(config.get("landscape_grid", 40)))
+    t_grid = np.linspace(0.0, t_max, grid_n)
+    l1 = []
+    l2 = []
+    for t in t_grid:
+        tri = np.minimum(t, life - t)
+        tri = np.where(tri > 0.0, tri, 0.0)
+        tri.sort()
+        l1.append(float(tri[-1]) if tri.size else 0.0)
+        l2.append(float(tri[-2]) if tri.size > 1 else 0.0)
+    integrate = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+    finding = {
+        "kind": "tda_persistence_landscapes",
+        "measurement_type": "measured",
+        "max_points": int(X.shape[0]),
+        "features_used": cols,
+        "l1_peak": float(max(l1) if l1 else 0.0),
+        "l2_peak": float(max(l2) if l2 else 0.0),
+        "l1_area": float(integrate(np.array(l1, dtype=float), t_grid)),
+        "l2_area": float(integrate(np.array(l2, dtype=float), t_grid)),
+        "h0_lifetime_p95": float(np.nanquantile(life, 0.95)),
+    }
+    payload = {"t_grid": t_grid.tolist(), "lambda_1": l1, "lambda_2": l2, "summary": finding}
+    artifacts = [_artifact(ctx, plugin_id, "persistence_landscapes.json", payload, "json")]
+    return PluginResult("ok", "Persistence landscape proxy computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _tda_mapper_graph(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    ctx = args[1]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _tda_mapper_graph(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Heavy mapper disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_mapper_graph", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Mapper graph placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_mapper_graph", "not_implemented"), [], None)
+        return PluginResult("degraded", "Heavy mapper disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_mapper_graph", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    if len(numeric_cols) < 2:
+        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+    X, cols = _numeric_matrix(
+        df.head(int(config.get("max_points", 1200))),
+        numeric_cols,
+        max_cols=int(config.get("max_cols", 20)),
+    )
+    if X.shape[0] < 80:
+        return PluginResult("skipped", "Insufficient points for mapper graph", {}, [], [], None)
+
+    seed = int(config.get("seed", 1337))
+    n_intervals = max(4, int(config.get("n_intervals", 8)))
+    overlap = float(config.get("overlap", 0.3))
+    overlap = min(0.75, max(0.0, overlap))
+    min_cluster_size = max(10, int(config.get("min_cluster_size", 30)))
+    max_clusters = max(1, int(config.get("max_clusters", 3)))
+
+    if HAS_SKLEARN and PCA is not None:
+        lens = PCA(n_components=1, random_state=seed).fit_transform(X)[:, 0]
+    else:
+        lens = X[:, 0]
+    lo = float(np.nanmin(lens))
+    hi = float(np.nanmax(lens))
+    if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
+        return PluginResult("skipped", "Lens is degenerate", {}, [], [], None)
+
+    span = hi - lo
+    width = span / float(n_intervals)
+    pad = width * overlap
+    intervals: list[tuple[float, float]] = []
+    for i in range(n_intervals):
+        start = lo + (i * width) - pad
+        end = lo + ((i + 1) * width) + pad
+        intervals.append((start, end))
+
+    nodes: list[dict[str, Any]] = []
+    node_points: list[set[int]] = []
+    point_to_nodes: dict[int, list[int]] = {}
+    for interval_id, (start, end) in enumerate(intervals):
+        if timer.exceeded():
+            break
+        mask = np.logical_and(lens >= start, lens <= end)
+        idx = np.where(mask)[0]
+        if idx.size < min_cluster_size:
+            continue
+        sub_x = X[idx]
+        k = min(max_clusters, max(1, int(idx.size // min_cluster_size)))
+        if k <= 1:
+            labels = np.zeros(idx.size, dtype=int)
+        elif HAS_SKLEARN and KMeans is not None:
+            km = KMeans(n_clusters=k, random_state=seed, n_init=10)
+            labels = km.fit_predict(sub_x)
+        else:
+            rank = np.argsort(lens[idx])
+            labels = np.zeros(idx.size, dtype=int)
+            chunk = max(1, int(math.ceil(idx.size / k)))
+            for ridx, pos in enumerate(rank):
+                labels[pos] = min(k - 1, ridx // chunk)
+        for cluster_id in sorted(set(int(v) for v in labels.tolist())):
+            cluster_points = idx[labels == cluster_id]
+            if cluster_points.size < min_cluster_size:
+                continue
+            node_id = len(nodes)
+            node_set = {int(v) for v in cluster_points.tolist()}
+            node_points.append(node_set)
+            for p in node_set:
+                point_to_nodes.setdefault(int(p), []).append(node_id)
+            nodes.append(
+                {
+                    "node_id": node_id,
+                    "interval_id": int(interval_id),
+                    "cluster_id": int(cluster_id),
+                    "n_points": int(cluster_points.size),
+                    "lens_min": float(np.nanmin(lens[cluster_points])),
+                    "lens_max": float(np.nanmax(lens[cluster_points])),
+                }
+            )
+
+    if not nodes:
+        return PluginResult("skipped", "No mapper nodes survived thresholds", {}, [], [], None)
+
+    edges_set: set[tuple[int, int]] = set()
+    for node_ids in point_to_nodes.values():
+        if len(node_ids) < 2:
+            continue
+        uniq = sorted(set(node_ids))
+        for i in range(len(uniq)):
+            for j in range(i + 1, len(uniq)):
+                edges_set.add((uniq[i], uniq[j]))
+    edges = sorted(list(edges_set))
+    degree = [0] * len(nodes)
+    for a, b in edges:
+        degree[a] += 1
+        degree[b] += 1
+
+    parent, rank = _union_find(len(nodes))
+    for a, b in edges:
+        _uf_union(parent, rank, int(a), int(b))
+    n_components = len({_uf_find(parent, i) for i in range(len(nodes))})
+    top_nodes = sorted(
+        [
+            {"node_id": int(i), "degree": int(degree[i]), "n_points": int(nodes[i]["n_points"])}
+            for i in range(len(nodes))
+        ],
+        key=lambda row: (row["degree"], row["n_points"]),
+        reverse=True,
+    )[:5]
+
+    finding = {
+        "kind": "tda_mapper_graph",
+        "measurement_type": "measured",
+        "nodes": int(len(nodes)),
+        "edges": int(len(edges)),
+        "components": int(n_components),
+        "max_degree": int(max(degree) if degree else 0),
+        "features_used": cols,
+        "top_nodes": top_nodes,
+    }
+    payload = {"nodes": nodes, "edges": [{"a": int(a), "b": int(b)} for a, b in edges], "summary": finding}
+    artifacts = [_artifact(ctx, plugin_id, "mapper_graph.json", payload, "json")]
+    return PluginResult("ok", "Mapper-style graph computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _tda_betti_curve_changepoint(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _tda_betti_curve_changepoint(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Heavy betti curves disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_betti_curve_changepoint", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Betti curve changepoint placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_betti_curve_changepoint", "not_implemented"), [], None)
+        return PluginResult("degraded", "Heavy betti curves disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_betti_curve_changepoint", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    time_col = inferred.get("time_column")
+    if time_col is None:
+        time_col = _pick_column_by_tokens(df, ("time", "date", "timestamp", "created", "start"))
+    if len(numeric_cols) < 2 or not isinstance(time_col, str) or time_col not in df.columns:
+        return PluginResult("skipped", "Need multi-numeric columns and time column", {}, [], [], None)
+    ts = pd.to_datetime(df[time_col], errors="coerce")
+    valid = ts.notna()
+    if int(valid.sum()) < 120:
+        return PluginResult("skipped", "Insufficient valid timestamps", {}, [], [], None)
+    order = np.argsort(ts[valid].to_numpy())
+    dff = df.loc[valid].iloc[order]
+    tsv = ts[valid].to_numpy()[order]
+
+    window = max(60, int(config.get("window_rows", 200)))
+    step = max(20, int(config.get("step_rows", max(40, window // 4))))
+    if len(dff) < window:
+        return PluginResult("skipped", "Insufficient rows for betti windows", {}, [], [], None)
+    k = int(config.get("knn_k", 8))
+    rows = []
+    for start in range(0, len(dff) - window + 1, step):
+        if timer.exceeded():
+            break
+        seg = dff.iloc[start : start + window]
+        X, _ = _numeric_matrix(seg, numeric_cols, max_cols=int(config.get("max_cols", 15)))
+        if X.shape[0] < 30:
+            continue
+        edges = _knn_edges(X, k=k, timer=timer)
+        if not edges:
+            continue
+        comps = _connected_components_from_edges(int(X.shape[0]), edges)
+        cycle_rank = max(0, int(len(edges)) - int(X.shape[0]) + comps)
+        rows.append(
+            {
+                "t_mid": str(pd.Timestamp(tsv[start + (window // 2)]).to_pydatetime()),
+                "betti0_proxy": int(comps),
+                "betti1_proxy": int(cycle_rank),
+                "window_rows": int(X.shape[0]),
+            }
+        )
+    if len(rows) < 5:
+        return PluginResult("skipped", "Insufficient betti windows", _basic_metrics(df, sample_meta), [], [], None)
+
+    b1 = np.array([float(r["betti1_proxy"]) for r in rows], dtype=float)
+    jump = np.abs(np.diff(b1))
+    if jump.size == 0:
+        return PluginResult("ok", "Betti curve stable", _basic_metrics(df, sample_meta), [], [], None)
+    med = float(np.nanmedian(jump))
+    mad = float(np.nanmedian(np.abs(jump - med)))
+    scale = max(1e-6, 1.4826 * mad)
+    z = (jump - med) / scale
+    z_threshold = float(config.get("changepoint_z", 3.0))
+    findings = []
+    for i, score in enumerate(z):
+        if float(score) < z_threshold:
+            continue
+        findings.append(
+            {
+                "kind": "tda_betti_curve_changepoint",
+                "measurement_type": "measured",
+                "t_at": rows[i + 1]["t_mid"],
+                "jump_betti1": float(jump[i]),
+                "z_score": float(score),
+                "betti1_before": float(b1[i]),
+                "betti1_after": float(b1[i + 1]),
+            }
+        )
+    artifacts = [_artifact(ctx, plugin_id, "betti_curve_windows.json", {"rows": rows, "jump_z": z.tolist()}, "json")]
+    return PluginResult("ok", f"Betti windows={len(rows)} changepoints={len(findings)}", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
-def _surface_multiscale_wavelet_curvature(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_multiscale_wavelet_curvature(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface complexity disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_multiscale_wavelet_curvature", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Surface curvature placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_multiscale_wavelet_curvature", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface complexity disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_multiscale_wavelet_curvature", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    if not numeric_cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
+    if not cols:
+        return PluginResult("skipped", "No numeric columns selected", {}, [], [], None)
+    scales = [int(v) for v in config.get("scales", [1, 2, 4, 8, 16]) if int(v) > 0]
+    rows = []
+    for col in cols:
+        if timer.exceeded():
+            break
+        x = pd.to_numeric(df[col], errors="coerce").to_numpy(dtype=float)
+        if np.isfinite(x).sum() < 40:
+            continue
+        med = float(np.nanmedian(x))
+        x = np.where(np.isfinite(x), x, med)
+        scale_rows = []
+        for s in scales:
+            if (2 * s + 1) >= x.size:
+                continue
+            d2 = x[2 * s :] - (2.0 * x[s:-s]) + x[: -2 * s]
+            curv = float(np.nanmean(np.abs(d2)) / max(1.0, float(s * s)))
+            energy = float(np.nanmean(d2 * d2))
+            scale_rows.append({"scale": int(s), "curvature_mean_abs": curv, "energy": energy})
+        if not scale_rows:
+            continue
+        mean_curv = float(np.nanmean([r["curvature_mean_abs"] for r in scale_rows]))
+        rows.append({"column": str(col), "mean_multiscale_curvature": mean_curv, "scales": scale_rows})
+    if not rows:
+        return PluginResult("skipped", "No valid surface curvature rows", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: float(r["mean_multiscale_curvature"]), reverse=True)
+    findings = [
+        {
+            "kind": "surface_multiscale_wavelet_curvature",
+            "measurement_type": "measured",
+            "column": row["column"],
+            "mean_multiscale_curvature": row["mean_multiscale_curvature"],
+        }
+        for row in rows[:5]
+    ]
+    artifacts = [_artifact(ctx, plugin_id, "surface_multiscale_curvature.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Surface curvature computed for {len(rows)} columns", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
-def _surface_fractal_dimension_variogram(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_fractal_dimension_variogram(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface complexity disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fractal_dimension_variogram", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Fractal dimension placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fractal_dimension_variogram", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface complexity disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fractal_dimension_variogram", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 10))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    max_lag = max(4, int(config.get("max_lag", 24)))
+    rows = []
+    for col in cols:
+        if timer.exceeded():
+            break
+        x = pd.to_numeric(df[col], errors="coerce").to_numpy(dtype=float)
+        if np.isfinite(x).sum() < 50:
+            continue
+        med = float(np.nanmedian(x))
+        x = np.where(np.isfinite(x), x, med)
+        lags = []
+        semivars = []
+        cap = min(max_lag, max(4, (x.size // 4)))
+        for h in range(1, cap + 1):
+            diff = x[h:] - x[:-h]
+            gamma = 0.5 * float(np.nanmean(diff * diff))
+            if gamma > 0.0 and math.isfinite(gamma):
+                lags.append(float(h))
+                semivars.append(float(gamma))
+        if len(lags) < 4:
+            continue
+        lx = np.log(np.array(lags, dtype=float))
+        ly = np.log(np.array(semivars, dtype=float))
+        slope, intercept = np.polyfit(lx, ly, 1)
+        hurst = float(max(0.0, min(1.0, slope / 2.0)))
+        fractal_dim = float(2.0 - hurst)
+        rows.append(
+            {
+                "column": str(col),
+                "fractal_dimension": fractal_dim,
+                "hurst_proxy": hurst,
+                "slope": float(slope),
+                "intercept": float(intercept),
+            }
+        )
+    if not rows:
+        return PluginResult("skipped", "Insufficient data for variogram dimension", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: float(r["fractal_dimension"]), reverse=True)
+    findings = [
+        {
+            "kind": "surface_fractal_dimension_variogram",
+            "measurement_type": "measured",
+            "column": row["column"],
+            "fractal_dimension": row["fractal_dimension"],
+            "hurst_proxy": row["hurst_proxy"],
+        }
+        for row in rows[:5]
+    ]
+    artifacts = [_artifact(ctx, plugin_id, "surface_variogram_dimension.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Variogram fractal metrics columns={len(rows)}", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
-def _surface_rugosity_index(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_rugosity_index(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface complexity disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_rugosity_index", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Rugosity placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_rugosity_index", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface complexity disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_rugosity_index", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    rows = []
+    for col in cols:
+        if timer.exceeded():
+            break
+        x = pd.to_numeric(df[col], errors="coerce").to_numpy(dtype=float)
+        if np.isfinite(x).sum() < 30:
+            continue
+        med = float(np.nanmedian(x))
+        x = np.where(np.isfinite(x), x, med)
+        diff = np.diff(x)
+        if diff.size == 0:
+            continue
+        robust_range = float(np.nanquantile(x, 0.95) - np.nanquantile(x, 0.05))
+        robust_range = robust_range if robust_range > 1e-9 else 1.0
+        rugosity = float(np.sum(np.abs(diff)) / (robust_range * max(1, x.size - 1)))
+        local = float(np.nanmedian(np.abs(diff)) / robust_range)
+        rows.append({"column": str(col), "rugosity_index": rugosity, "local_roughness": local})
+    if not rows:
+        return PluginResult("skipped", "No valid rugosity metrics", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: float(r["rugosity_index"]), reverse=True)
+    findings = [
+        {
+            "kind": "surface_rugosity_index",
+            "measurement_type": "measured",
+            "column": row["column"],
+            "rugosity_index": row["rugosity_index"],
+            "local_roughness": row["local_roughness"],
+        }
+        for row in rows[:5]
+    ]
+    artifacts = [_artifact(ctx, plugin_id, "surface_rugosity.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Rugosity computed for {len(rows)} columns", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
-def _surface_terrain_position_index(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_terrain_position_index(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface complexity disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_terrain_position_index", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "TPI placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_terrain_position_index", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface complexity disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_terrain_position_index", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    window = max(5, int(config.get("window", 15)))
+    if window % 2 == 0:
+        window += 1
+    kernel = np.ones(window, dtype=float) / float(window)
+    rows = []
+    for col in cols:
+        if timer.exceeded():
+            break
+        x = pd.to_numeric(df[col], errors="coerce").to_numpy(dtype=float)
+        if np.isfinite(x).sum() < window + 5:
+            continue
+        med = float(np.nanmedian(x))
+        x = np.where(np.isfinite(x), x, med)
+        smooth = np.convolve(x, kernel, mode="same")
+        tpi = x - smooth
+        abs_tpi = np.abs(tpi)
+        q90 = float(np.nanquantile(abs_tpi, 0.9))
+        rows.append(
+            {
+                "column": str(col),
+                "mean_abs_tpi": float(np.nanmean(abs_tpi)),
+                "peak_share": float(np.nanmean(abs_tpi >= q90)) if q90 > 0 else 0.0,
+                "q90_abs_tpi": q90,
+            }
+        )
+    if not rows:
+        return PluginResult("skipped", "No terrain position metrics produced", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: float(r["mean_abs_tpi"]), reverse=True)
+    findings = [
+        {
+            "kind": "surface_terrain_position_index",
+            "measurement_type": "measured",
+            "column": row["column"],
+            "mean_abs_tpi": row["mean_abs_tpi"],
+            "peak_share": row["peak_share"],
+        }
+        for row in rows[:5]
+    ]
+    artifacts = [_artifact(ctx, plugin_id, "surface_tpi.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Terrain position computed for {len(rows)} columns", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
-def _surface_fabric_sso_eigen(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_fabric_sso_eigen(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface fabric disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fabric_sso_eigen", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "SSO fabric placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fabric_sso_eigen", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface fabric disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_fabric_sso_eigen", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    X, cols = _numeric_matrix(
+        df.head(int(config.get("max_points", 2500))),
+        numeric_cols,
+        max_cols=int(config.get("max_cols", 12)),
+    )
+    if X.shape[0] < 60 or X.shape[1] < 2:
+        return PluginResult("skipped", "Need at least 60 rows and 2 numeric columns", {}, [], [], None)
+    cov = np.cov(X, rowvar=False)
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    order = np.argsort(eigvals)[::-1]
+    eigvals = eigvals[order]
+    eigvecs = eigvecs[:, order]
+    eigvals = np.maximum(eigvals, 0.0)
+    total = float(np.sum(eigvals))
+    if total <= 0.0:
+        return PluginResult("skipped", "Degenerate covariance for fabric eigen analysis", {}, [], [], None)
+    lam = eigvals / total
+    anisotropy = float((lam[0] - lam[1]) / max(1e-9, float(np.sum(lam[:2]))))
+    planarity = float((lam[1] - lam[2]) / max(1e-9, float(np.sum(lam[:3])))) if lam.size >= 3 else 0.0
+    principal = eigvecs[:, 0]
+    top_load = sorted(
+        [{"column": cols[i], "loading_abs": float(abs(principal[i]))} for i in range(len(cols))],
+        key=lambda row: row["loading_abs"],
+        reverse=True,
+    )[:5]
+    finding = {
+        "kind": "surface_fabric_sso_eigen",
+        "measurement_type": "measured",
+        "anisotropy_index": anisotropy,
+        "planarity_index": planarity,
+        "eigenvalue_ratio_1": float(lam[0]),
+        "eigenvalue_ratio_2": float(lam[1]) if lam.size > 1 else 0.0,
+        "top_principal_loadings": top_load,
+    }
+    artifacts = [_artifact(ctx, plugin_id, "surface_fabric_eigen.json", finding, "json")]
+    return PluginResult("ok", "Surface fabric eigen-analysis computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _surface_hydrology_flow_watershed(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_hydrology_flow_watershed(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Hydrology ops disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_hydrology_flow_watershed", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Hydrology placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_hydrology_flow_watershed", "not_implemented"), [], None)
+        return PluginResult("degraded", "Hydrology operations disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_hydrology_flow_watershed", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 6))]
+    if len(cols) < 3:
+        return PluginResult("skipped", "Need at least 3 numeric columns for flow/watershed proxy", {}, [], [], None)
+    frame = df[cols].head(int(config.get("max_points", 2000))).apply(pd.to_numeric, errors="coerce")
+    frame = frame.fillna(frame.median(numeric_only=True))
+    arr = frame.to_numpy(dtype=float)
+    if arr.shape[0] < 80:
+        return PluginResult("skipped", "Insufficient rows for watershed proxy", {}, [], [], None)
+    elev = arr[:, 2]
+    k = max(3, int(config.get("knn_k", 8)))
+    edges = _knn_edges(arr[:, :2], k=k, timer=timer)
+    nbrs: dict[int, list[tuple[int, float]]] = {}
+    for a, b, d in edges:
+        nbrs.setdefault(int(a), []).append((int(b), float(d)))
+        nbrs.setdefault(int(b), []).append((int(a), float(d)))
+
+    downstream = [-1] * arr.shape[0]
+    for i in range(arr.shape[0]):
+        if timer.exceeded():
+            break
+        best_j = i
+        best_drop = 0.0
+        for j, dist in nbrs.get(i, []):
+            if dist <= 0:
+                continue
+            drop = float((elev[i] - elev[j]) / dist)
+            if drop > best_drop:
+                best_drop = drop
+                best_j = int(j)
+        downstream[i] = int(best_j)
+
+    sink_cache: dict[int, int] = {}
+    for i in range(arr.shape[0]):
+        path = []
+        cur = i
+        seen = set()
+        while True:
+            if cur in sink_cache:
+                sink = sink_cache[cur]
+                break
+            nxt = downstream[cur]
+            if nxt == cur or nxt in seen:
+                sink = cur
+                break
+            seen.add(cur)
+            path.append(cur)
+            cur = nxt
+        sink_cache[i] = sink
+        for p in path:
+            sink_cache[p] = sink
+    basin_counts = pd.Series(list(sink_cache.values())).value_counts(dropna=False)
+    largest_share = float(float(basin_counts.iloc[0]) / float(arr.shape[0])) if not basin_counts.empty else 0.0
+    finding = {
+        "kind": "surface_hydrology_flow_watershed",
+        "measurement_type": "measured",
+        "n_points": int(arr.shape[0]),
+        "n_watersheds": int(len(basin_counts)),
+        "largest_watershed_share": largest_share,
+        "flow_edge_count": int(len(edges)),
+        "features_used": cols[:3],
+    }
+    artifacts = [_artifact(ctx, plugin_id, "surface_hydrology_watershed.json", {"basin_counts": basin_counts.to_dict(), "summary": finding}, "json")]
+    return PluginResult("ok", "Hydrology/watershed proxy computed", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _bayesian_point_displacement(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _bayesian_point_displacement(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Bayesian displacement disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("bayesian_point_displacement", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Bayesian displacement placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("bayesian_point_displacement", "not_implemented"), [], None)
+        return PluginResult("degraded", "Bayesian displacement disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("bayesian_point_displacement", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    time_col = inferred.get("time_column")
+    if isinstance(time_col, str) and time_col in df.columns:
+        ts = pd.to_datetime(df[time_col], errors="coerce")
+        order = np.argsort(ts.fillna(pd.Timestamp("1970-01-01")).to_numpy())
+        dff = df.iloc[order]
+    else:
+        dff = df
+    if len(dff) < 80:
+        return PluginResult("skipped", "Insufficient rows for displacement", {}, [], [], None)
+
+    split = int(len(dff) * 0.5)
+    left = dff.iloc[:split]
+    right = dff.iloc[split:]
+    findings = []
+    rows = []
+    prior_mult = float(config.get("prior_var_multiplier", 1.0))
+    min_prob = float(config.get("posterior_prob_min", 0.95))
+    for col in cols:
+        if timer.exceeded():
+            break
+        x0 = pd.to_numeric(left[col], errors="coerce").to_numpy(dtype=float)
+        x1 = pd.to_numeric(right[col], errors="coerce").to_numpy(dtype=float)
+        x0 = x0[np.isfinite(x0)]
+        x1 = x1[np.isfinite(x1)]
+        if x0.size < 20 or x1.size < 20:
+            continue
+        m0 = float(np.nanmean(x0))
+        m1 = float(np.nanmean(x1))
+        d = m1 - m0
+        v0 = float(np.nanvar(x0, ddof=1)) if x0.size > 1 else 1.0
+        v1 = float(np.nanvar(x1, ddof=1)) if x1.size > 1 else 1.0
+        se2 = (v0 / max(1, x0.size)) + (v1 / max(1, x1.size))
+        se2 = se2 if se2 > 1e-12 else 1e-12
+        tau2 = max(1e-9, prior_mult * max(v0, v1, 1e-9))
+        post_var = 1.0 / ((1.0 / tau2) + (1.0 / se2))
+        post_mean = post_var * (d / se2)
+        post_sd = math.sqrt(max(1e-12, post_var))
+        z = post_mean / post_sd
+        p_gt_0 = _normal_cdf(z)
+        lo95 = float(post_mean - 1.96 * post_sd)
+        hi95 = float(post_mean + 1.96 * post_sd)
+        row = {
+            "column": str(col),
+            "posterior_mean_delta": float(post_mean),
+            "posterior_sd": float(post_sd),
+            "posterior_p_delta_gt_0": float(p_gt_0),
+            "posterior_ci95_low": lo95,
+            "posterior_ci95_high": hi95,
+            "n_left": int(x0.size),
+            "n_right": int(x1.size),
+        }
+        rows.append(row)
+        if (p_gt_0 >= min_prob) or (p_gt_0 <= (1.0 - min_prob)):
+            findings.append(
+                {
+                    "kind": "bayesian_point_displacement",
+                    "measurement_type": "measured",
+                    **row,
+                }
+            )
+    if not rows:
+        return PluginResult("skipped", "No valid numeric columns for displacement", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: abs(float(r["posterior_mean_delta"])), reverse=True)
+    findings.sort(key=lambda r: abs(float(r["posterior_mean_delta"])), reverse=True)
+    artifacts = [_artifact(ctx, plugin_id, "bayesian_point_displacement.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Bayesian displacement columns={len(rows)} strong={len(findings)}", _basic_metrics(df, sample_meta), findings[:10], artifacts, None)
 
 
-def _monte_carlo_surface_uncertainty(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _monte_carlo_surface_uncertainty(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Monte Carlo uncertainty disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("monte_carlo_surface_uncertainty", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Monte Carlo surface uncertainty placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("monte_carlo_surface_uncertainty", "not_implemented"), [], None)
+        return PluginResult("degraded", "Monte Carlo uncertainty disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("monte_carlo_surface_uncertainty", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 8))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    frame = df[cols].head(int(config.get("max_points", 3000))).apply(pd.to_numeric, errors="coerce")
+    frame = frame.fillna(frame.median(numeric_only=True))
+    arr = frame.to_numpy(dtype=float)
+    if arr.shape[0] < 80:
+        return PluginResult("skipped", "Insufficient rows for Monte Carlo uncertainty", {}, [], [], None)
+    n_iter = max(40, int(config.get("n_iter", 200)))
+    seed = int(config.get("seed", 1337))
+    rng = np.random.RandomState(seed)
+    metrics = []
+    for _ in range(n_iter):
+        if timer.exceeded():
+            break
+        idx = rng.randint(0, arr.shape[0], size=arr.shape[0])
+        sample = arr[idx, :]
+        col_std = np.nanstd(sample, axis=0)
+        metrics.append(float(np.nanmean(col_std)))
+    if not metrics:
+        return PluginResult("skipped", "Monte Carlo halted by time budget", _basic_metrics(df, sample_meta), [], [], None)
+    m = np.array(metrics, dtype=float)
+    finding = {
+        "kind": "monte_carlo_surface_uncertainty",
+        "measurement_type": "measured",
+        "n_iter_completed": int(m.size),
+        "uncertainty_mean": float(np.nanmean(m)),
+        "uncertainty_std": float(np.nanstd(m)),
+        "uncertainty_ci95_low": float(np.nanquantile(m, 0.025)),
+        "uncertainty_ci95_high": float(np.nanquantile(m, 0.975)),
+        "features_used": cols,
+    }
+    artifacts = [_artifact(ctx, plugin_id, "monte_carlo_surface_uncertainty.json", {"samples": metrics, "summary": finding}, "json")]
+    return PluginResult("ok", f"Monte Carlo uncertainty iterations={int(m.size)}", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _surface_roughness_metrics(*args, **kwargs) -> PluginResult:
-    plugin_id = args[0]
-    df = args[2]
-    config = args[3]
-    sample_meta = args[6]
+def _surface_roughness_metrics(
+    plugin_id: str,
+    ctx,
+    df: pd.DataFrame,
+    config: dict[str, Any],
+    inferred: dict[str, Any],
+    timer: BudgetTimer,
+    sample_meta: dict[str, Any],
+) -> PluginResult:
     if _heavy_disabled(plugin_id, config):
-        return PluginResult("degraded", "Surface roughness disabled (set enable_heavy=true)", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_roughness_metrics", "disabled_by_default"), [], None)
-    return PluginResult("degraded", "Surface roughness placeholder", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_roughness_metrics", "not_implemented"), [], None)
+        return PluginResult("degraded", "Surface roughness disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_roughness_metrics", "disabled_by_config"), [], None)
+    numeric_cols = inferred.get("numeric_columns") or []
+    cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
+    if not cols:
+        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+    rows = []
+    for col in cols:
+        if timer.exceeded():
+            break
+        x = pd.to_numeric(df[col], errors="coerce").to_numpy(dtype=float)
+        if np.isfinite(x).sum() < 40:
+            continue
+        med = float(np.nanmedian(x))
+        x = np.where(np.isfinite(x), x, med)
+        d = np.diff(x)
+        if d.size == 0:
+            continue
+        std_diff = float(np.nanstd(d))
+        mad_diff = float(np.nanmedian(np.abs(d - np.nanmedian(d))))
+        sign = np.sign(d)
+        zc = float(np.nanmean(sign[1:] * sign[:-1] < 0.0)) if sign.size > 1 else 0.0
+        spec = np.abs(np.fft.rfft(d))
+        spec = spec[1:] if spec.size > 1 else spec
+        if spec.size > 0:
+            gm = float(np.exp(np.nanmean(np.log(np.maximum(spec, 1e-12)))))
+            am = float(np.nanmean(spec))
+            flatness = gm / am if am > 0 else 0.0
+        else:
+            flatness = 0.0
+        rough_score = float(std_diff + mad_diff + zc + (1.0 - flatness))
+        rows.append(
+            {
+                "column": str(col),
+                "roughness_score": rough_score,
+                "std_diff": std_diff,
+                "mad_diff": mad_diff,
+                "zero_cross_rate": zc,
+                "spectral_flatness": float(flatness),
+            }
+        )
+    if not rows:
+        return PluginResult("skipped", "No valid roughness rows", _basic_metrics(df, sample_meta), [], [], None)
+    rows.sort(key=lambda r: float(r["roughness_score"]), reverse=True)
+    findings = [
+        {
+            "kind": "surface_roughness_metrics",
+            "measurement_type": "measured",
+            "column": row["column"],
+            "roughness_score": row["roughness_score"],
+            "zero_cross_rate": row["zero_cross_rate"],
+        }
+        for row in rows[:5]
+    ]
+    artifacts = [_artifact(ctx, plugin_id, "surface_roughness_metrics.json", {"rows": rows}, "json")]
+    return PluginResult("ok", f"Surface roughness computed for {len(rows)} columns", _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
 def _basic_metrics(df: pd.DataFrame, sample_meta: dict[str, Any]) -> dict[str, Any]:
@@ -1635,15 +2373,29 @@ def _actionable_ops_levers_v1(
             cm = str((extra or {}).get("best_close_month") or "").strip()
             runs = (extra or {}).get("runs_with_key")
             uniq = (extra or {}).get("unique_values")
+            coverage = (extra or {}).get("coverage")
+            unique_ratio = (extra or {}).get("unique_ratio")
             reducible = (extra or {}).get("estimated_calls_reduced")
             cm_txt = f" in close month {cm}" if cm else ""
             runs_txt = f"{int(runs):,}" if isinstance(runs, (int, float)) else "many"
             uniq_txt = f"{int(uniq):,}" if isinstance(uniq, (int, float)) else "many"
+            coverage_txt = (
+                f"{float(coverage) * 100.0:.1f}%"
+                if isinstance(coverage, (int, float))
+                else "n/a"
+            )
+            unique_ratio_txt = (
+                f"{float(unique_ratio) * 100.0:.1f}%"
+                if isinstance(unique_ratio, (int, float))
+                else "n/a"
+            )
             reducible_txt = f"{int(reducible):,}" if isinstance(reducible, (int, float)) else ""
             reducible_clause = f" (reducing job launches by ~{reducible_txt})" if reducible_txt else ""
             recommendation = (
-                f"For {label}{cm_txt}, runs sweep across many distinct {key} values ({uniq_txt} unique across {runs_txt} runs). "
-                f"Consider changing {label} to accept a list of {key} values and process them in one run per close-month cohort{reducible_clause}. "
+                f"Convert specific process_id `{label}` to batch-input mode{cm_txt}. "
+                f"Why: {runs_txt} runs handled {uniq_txt} unique `{key}` values "
+                f"(coverage {coverage_txt}, uniqueness {unique_ratio_txt}), which indicates one-call-per-value sweep behavior. "
+                f"Change `{label}` to accept a list of `{key}` values and process one close-month cohort per run{reducible_clause}. "
                 f"Upper bound: {_fmt_hours(impact_hours)} of over-threshold wait time above {thr:.0f}s associated with this process over the observation window (not guaranteed)."
             )
         elif action_type == "throttle_or_dedupe":
@@ -2181,6 +2933,7 @@ def _actionable_ops_levers_v1(
                     median_close_by_proc = {}
 
         emitted = 0
+        emitted_batch_rows: list[dict[str, Any]] = []
         for row in candidates:
             if emitted >= max_batch_inputs:
                 break
@@ -2249,6 +3002,8 @@ def _actionable_ops_levers_v1(
                     "best_close_month": close_month or None,
                     "runs_with_key": int(runs_with_key) if isinstance(runs_with_key, (int, float)) else runs_with_key,
                     "unique_values": int(unique_values) if isinstance(unique_values, (int, float)) else unique_values,
+                    "coverage": float(row.get("coverage")) if isinstance(row.get("coverage"), (int, float)) else row.get("coverage"),
+                    "unique_ratio": float(row.get("unique_ratio")) if isinstance(row.get("unique_ratio"), (int, float)) else row.get("unique_ratio"),
                     "estimated_calls_reduced": int(estimated_calls_reduced),
                     "validation_steps": [
                         "Pick 5-10 sample values from the artifact and confirm they differ only by this key.",
@@ -2257,7 +3012,94 @@ def _actionable_ops_levers_v1(
                     ],
                 },
             )
+            emitted_batch_rows.append(
+                {
+                    "process_norm": proc_norm,
+                    "key": key,
+                    "close_month": close_month or "",
+                    "runs_with_key": int(runs_with_key) if isinstance(runs_with_key, (int, float)) else 0,
+                    "unique_values": int(unique_values) if isinstance(unique_values, (int, float)) else 0,
+                    "coverage": float(row.get("coverage")) if isinstance(row.get("coverage"), (int, float)) else 0.0,
+                    "unique_ratio": float(row.get("unique_ratio")) if isinstance(row.get("unique_ratio"), (int, float)) else 0.0,
+                    "estimated_delta_seconds_upper": float(est_total) if isinstance(est_total, (int, float)) else 0.0,
+                }
+            )
             emitted += 1
+
+        # Payout-report chain synthesis: group payout-key sweeps by close month and
+        # emit one explicit "convert these process_ids" recommendation.
+        payout_rows = [
+            row
+            for row in emitted_batch_rows
+            if "payout" in str(row.get("key") or "").strip().lower()
+        ]
+        if payout_rows:
+            grouped: dict[str, list[dict[str, Any]]] = {}
+            for row in payout_rows:
+                cm = str(row.get("close_month") or "").strip() or "unknown"
+                grouped.setdefault(cm, []).append(row)
+            for close_month, rows_for_month in sorted(grouped.items()):
+                if not rows_for_month:
+                    continue
+                rows_for_month.sort(
+                    key=lambda rr: (
+                        float(rr.get("estimated_delta_seconds_upper") or 0.0),
+                        float(rr.get("runs_with_key") or 0.0),
+                        float(rr.get("unique_ratio") or 0.0),
+                    ),
+                    reverse=True,
+                )
+                top_rows = rows_for_month[:6]
+                target_process_ids = [str(r.get("process_norm") or "").strip() for r in top_rows if str(r.get("process_norm") or "").strip()]
+                if not target_process_ids:
+                    continue
+                process_list = ", ".join(target_process_ids)
+                strongest_key = str(top_rows[0].get("key") or "payout_id")
+                total_runs = int(sum(int(r.get("runs_with_key") or 0) for r in top_rows))
+                total_delta = float(sum(float(r.get("estimated_delta_seconds_upper") or 0.0) for r in top_rows))
+                mean_unique_ratio = float(
+                    sum(float(r.get("unique_ratio") or 0.0) for r in top_rows) / float(len(top_rows))
+                )
+                mean_coverage = float(
+                    sum(float(r.get("coverage") or 0.0) for r in top_rows) / float(len(top_rows))
+                )
+                primary_process = target_process_ids[0]
+                emit(
+                    title=f"Batch payout-report chain for close month {close_month}",
+                    action_type="batch_group_candidate",
+                    process_value=primary_process,
+                    expected_delta_seconds=total_delta if total_delta > 0.0 else None,
+                    expected_delta_percent=None,
+                    confidence=0.8,
+                    assumptions=[
+                        "These process_ids are part of the same payout close-month sweep workload.",
+                        "Single-input calls can be replaced by list/batch input without changing business correctness.",
+                        "Savings are an upper bound based on observed over-threshold wait and launch count.",
+                    ],
+                    evidence={
+                        "method": "payout_chain_batch_group",
+                        "close_month": close_month,
+                        "key": strongest_key,
+                        "target_process_ids": target_process_ids,
+                        "runs_with_key_total": total_runs,
+                        "mean_unique_ratio": mean_unique_ratio,
+                        "mean_coverage": mean_coverage,
+                        "batch_input_candidates_artifact": str(artifacts[-1].path) if artifacts else None,
+                    },
+                    extra={
+                        "key": strongest_key,
+                        "best_close_month": close_month,
+                        "target_process_ids": target_process_ids,
+                        "runs_with_key": total_runs,
+                        "unique_ratio": mean_unique_ratio,
+                        "coverage": mean_coverage,
+                        "validation_steps": [
+                            "Convert each listed process_id to accept a list of payout IDs.",
+                            "Run the chain once per close-month cohort instead of once per payout ID.",
+                            "Re-run and verify launch count and queue-wait drop for these process_ids.",
+                        ],
+                    },
+                )
 
     # ---- Throttle/dedupe (bursts correlate with slowdown) ----
     if time_col and time_col in df.columns:

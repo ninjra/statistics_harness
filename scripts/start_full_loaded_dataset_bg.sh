@@ -16,6 +16,12 @@ export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-2
 export STAT_HARNESS_CLI_PROGRESS="${STAT_HARNESS_CLI_PROGRESS:-1}"
 export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 export STAT_HARNESS_STARTUP_INTEGRITY="${STAT_HARNESS_STARTUP_INTEGRITY:-off}"
+export STAT_HARNESS_DISCOVERY_TOP_N="${STAT_HARNESS_DISCOVERY_TOP_N:-12}"
+export STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE="${STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE:-0.0}"
+export STAT_HARNESS_MAX_OBVIOUSNESS="${STAT_HARNESS_MAX_OBVIOUSNESS:-0.74}"
+export STAT_HARNESS_ALLOW_ACTION_TYPES="${STAT_HARNESS_ALLOW_ACTION_TYPES:-batch_input,batch_group_candidate,batch_or_cache,batch_input_refactor,add_server,tune_schedule,unblock_dependency_chain,reduce_transition_gap}"
+# Operator exclusion list: non-adjustable processes should not appear as recommendations.
+export STAT_HARNESS_EXCLUDE_PROCESSES="${STAT_HARNESS_EXCLUDE_PROCESSES:-losextchld,losloadcld,jbcreateje,jboachild,jbvalcdblk,jbinvoice,postwkfl,qemail,jbpreproof,rdimpairje}"
 # Soft memory governor defaults (operator override via env):
 # - if system RAM usage exceeds this, the pipeline will delay starting additional analysis plugins
 #   to avoid multi-plugin RAM spikes.

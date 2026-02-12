@@ -5,6 +5,7 @@ import math
 import os
 import random
 import re
+import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -25,7 +26,6 @@ from statistic_harness.core.utils import quote_identifier, write_json
 
 
 # Third-party dependencies (installed in the project venv; do not fallback).
-from datasketch import MinHash, MinHashLSH  # type: ignore
 from simhash import Simhash  # type: ignore
 from mlxtend.frequent_patterns import fpgrowth, association_rules, apriori  # type: ignore
 from prefixspan import PrefixSpan  # type: ignore
@@ -42,6 +42,17 @@ from sklearn.decomposition import TruncatedSVD  # type: ignore
 
 
 _NOW = lambda: datetime.now(timezone.utc).isoformat()
+
+
+def _import_datasketch() -> tuple[Any, Any]:
+    # Some environments expose a foreign cupy install path that is blocked by the
+    # plugin file-access guard. MinHash itself is CPU-only, so force cupy optional
+    # import to fail closed before importing datasketch.
+    if "cupy" not in sys.modules:
+        sys.modules["cupy"] = None
+    from datasketch import MinHash, MinHashLSH  # type: ignore
+
+    return MinHash, MinHashLSH
 
 
 @dataclass(frozen=True)
@@ -283,9 +294,20 @@ def _make_actionable_lever(
     confidence: float,
     evidence: dict[str, Any],
     assumptions: list[str] | None = None,
+    scope: dict[str, Any] | None = None,
     measurement_type: str = "measured",
 ) -> dict[str, Any]:
     proc = process_norm.strip().lower()
+    normalized_scope = scope if isinstance(scope, dict) and scope else {}
+    normalized_assumptions = [a for a in (assumptions or []) if isinstance(a, str) and a.strip()]
+    if measurement_type == "modeled":
+        if not normalized_scope:
+            normalized_scope = {"scope_type": "dataset", "scope_value": "latest_window"}
+        if not normalized_assumptions:
+            normalized_assumptions = [
+                "modeled from observed historical execution traces",
+                "no external constraints were changed during modeling",
+            ]
     return {
         "kind": "actionable_ops_lever",
         "measurement_type": measurement_type,
@@ -298,7 +320,8 @@ def _make_actionable_lever(
         "expected_delta_seconds": float(expected_delta_seconds) if isinstance(expected_delta_seconds, (int, float)) else None,
         "expected_delta_percent": None,
         "confidence": float(max(0.0, min(1.0, confidence))),
-        "assumptions": assumptions or [],
+        "scope": normalized_scope,
+        "assumptions": normalized_assumptions,
         "evidence": {"plugin": plugin_id, **(evidence or {})},
     }
 
@@ -318,6 +341,8 @@ def _minhash_clusters_for_process(
     entity_counts: list[tuple[int, int]],
     entity_kv: dict[int, list[tuple[str, str]]],
     *,
+    minhash_cls: Any,
+    lsh_cls: Any,
     num_perm: int,
     threshold: float,
     min_cluster_size: int,
@@ -325,13 +350,13 @@ def _minhash_clusters_for_process(
     if len(entity_counts) < min_cluster_size:
         return []
     # Build MinHash signatures.
-    mhs: dict[int, MinHash] = {}
+    mhs: dict[int, Any] = {}
     for eid, _n in entity_counts:
         kv = entity_kv.get(eid) or []
         tokens = _tokenize_kv(kv)
         if not tokens:
             continue
-        mh = MinHash(num_perm=int(num_perm))
+        mh = minhash_cls(num_perm=int(num_perm))
         for tok in sorted(tokens):
             mh.update(tok.encode("utf-8"))
         mhs[eid] = mh
@@ -339,7 +364,7 @@ def _minhash_clusters_for_process(
     if len(mhs) < min_cluster_size:
         return []
 
-    lsh = MinHashLSH(threshold=float(threshold), num_perm=int(num_perm))
+    lsh = lsh_cls(threshold=float(threshold), num_perm=int(num_perm))
     for eid, mh in mhs.items():
         lsh.insert(str(eid), mh)
 
@@ -458,6 +483,11 @@ def _best_varying_key(entity_ids: list[int], entity_kv: dict[int, list[tuple[str
 
 
 def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any]) -> PluginResult:
+    try:
+        minhash_cls, lsh_cls = _import_datasketch()
+    except Exception as exc:
+        return PluginResult("error", f"Failed to import datasketch MinHash: {exc}", {}, [], [], None)
+
     info = _load_template_info(ctx)
     req = _require_template(info, plugin_id)
     if isinstance(req, PluginResult):
@@ -500,6 +530,8 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
             proc,
             rows,
             entity_kv,
+            minhash_cls=minhash_cls,
+            lsh_cls=lsh_cls,
             num_perm=num_perm,
             threshold=thr,
             min_cluster_size=min_cluster,
@@ -2140,7 +2172,7 @@ def _run_empirical_bayes_shrinkage(ctx, plugin_id: str, config: dict[str, Any]) 
 
 
 def _run_not_implemented(ctx, plugin_id: str, _config: dict[str, Any]) -> PluginResult:
-    return PluginResult("error", f"{plugin_id} handler not implemented", {}, [], [], None)
+    return PluginResult("error", f"{plugin_id} handler missing or unknown", {}, [], [], None)
 
 
 HANDLERS = {

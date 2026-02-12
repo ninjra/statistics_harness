@@ -1,10 +1,12 @@
 import socket
 import subprocess
+import os
 
 import pytest
 
 from statistic_harness.core.plugin_runner import (
     FileSandbox,
+    _should_block_eval_for_path,
     _install_sqlite_guard,
     _install_eval_guard,
     _install_network_guard,
@@ -41,6 +43,35 @@ def test_file_sandbox_blocks_disallowed_paths(tmp_path):
             os.open(str(blocked_dir / "nope.txt"), os.O_CREAT | os.O_WRONLY, 0o600)
 
 
+def test_file_sandbox_allows_fd_open(tmp_path):
+    allowed_dir = tmp_path / "allowed"
+    allowed_dir.mkdir()
+    rfd, wfd = os.pipe()
+    try:
+        with FileSandbox([str(allowed_dir)], [str(allowed_dir)], cwd=tmp_path):
+            with open(wfd, "wb", closefd=False) as w:
+                w.write(b"x")
+                w.flush()
+            with open(rfd, "rb", closefd=False) as r:
+                assert r.read(1) == b"x"
+    finally:
+        os.close(rfd)
+        os.close(wfd)
+
+
+def test_file_sandbox_accepts_bytes_paths(tmp_path):
+    allowed_dir = tmp_path / "allowed"
+    allowed_dir.mkdir()
+    target = allowed_dir / "bytes-path.txt"
+    path_bytes = os.fsencode(str(target))
+    with FileSandbox([str(allowed_dir)], [str(allowed_dir)], cwd=tmp_path):
+        fd = os.open(path_bytes, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o600)
+        os.write(fd, b"ok")
+        os.close(fd)
+        with open(path_bytes, "rb") as handle:
+            assert handle.read() == b"ok"
+
+
 def test_network_guard_blocks_socket():
     orig_socket = socket.socket
     orig_create = socket.create_connection
@@ -65,6 +96,18 @@ def test_eval_guard_blocks_eval():
             eval("1 + 1")  # noqa: S307 - intentional for guard test
     finally:
         builtins.eval = orig_eval
+
+
+def test_eval_guard_allows_site_packages_paths(tmp_path):
+    from pathlib import Path
+
+    root = tmp_path / "repo"
+    root.mkdir()
+    caller = root / ".venv" / "lib" / "python3.12" / "site-packages" / "mod.py"
+    caller.parent.mkdir(parents=True)
+    caller.write_text("# stub", encoding="utf-8")
+    assert _should_block_eval_for_path(caller, root) is False
+    assert _should_block_eval_for_path(Path("<frozen importlib._bootstrap>"), root) is False
 
 
 def test_sqlite_guard_blocks_other_databases(tmp_path):
@@ -93,27 +136,20 @@ def test_pickle_guard_blocks_pickling():
 
     orig_load = pickle.load
     orig_loads = pickle.loads
-    orig_dump = pickle.dump
-    orig_dumps = pickle.dumps
-    orig_pickler = pickle.Pickler
-    orig_unpickler = pickle.Unpickler
     try:
         _install_pickle_guard()
         with pytest.raises(RuntimeError):
-            pickle.dumps({"a": 1})
-        with pytest.raises(RuntimeError):
             pickle.loads(b"test")
+        assert pickle.dumps({"a": 1})  # serialization remains available
+        assert isinstance(pickle.Pickler, type)
     finally:
         pickle.load = orig_load
         pickle.loads = orig_loads
-        pickle.dump = orig_dump
-        pickle.dumps = orig_dumps
-        pickle.Pickler = orig_pickler
-        pickle.Unpickler = orig_unpickler
 
 
 def test_shell_guard_blocks_subprocess_and_os():
     import os
+    from pathlib import Path
 
     orig_system = os.system
     orig_popen = os.popen
@@ -123,7 +159,8 @@ def test_shell_guard_blocks_subprocess_and_os():
     orig_check_output = subprocess.check_output
     orig_popen_cls = subprocess.Popen
     try:
-        _install_shell_guard()
+        root = Path(__file__).resolve().parents[1]
+        _install_shell_guard(root)
         with pytest.raises(RuntimeError):
             os.system("echo blocked")
         with pytest.raises(RuntimeError):
@@ -138,3 +175,58 @@ def test_shell_guard_blocks_subprocess_and_os():
         subprocess.check_call = orig_check_call
         subprocess.check_output = orig_check_output
         subprocess.Popen = orig_popen_cls
+
+
+def test_shell_guard_allows_fc_list_probe():
+    import subprocess
+    from pathlib import Path
+
+    orig_check_output = subprocess.check_output
+    try:
+        root = Path(__file__).resolve().parents[1]
+        _install_shell_guard(root)
+        try:
+            subprocess.check_output(["fc-list", "--help"])  # noqa: S603 - guard allowlist test
+        except FileNotFoundError:
+            # Command not available in environment; still proves guard did not block it.
+            pass
+    finally:
+        subprocess.check_output = orig_check_output
+
+
+def test_shell_guard_allows_site_packages_caller(tmp_path):
+    import subprocess
+    from pathlib import Path
+
+    orig_check_output = subprocess.check_output
+    try:
+        root = tmp_path / "repo"
+        root.mkdir()
+        _install_shell_guard(root)
+        fake = root / ".venv" / "lib" / "python3.12" / "site-packages" / "fake_mod.py"
+        fake.parent.mkdir(parents=True)
+        code = compile(
+            "import subprocess\nresult = subprocess.check_output(['/bin/echo', 'ok'])",
+            str(fake),
+            "exec",
+        )
+        scope: dict[str, object] = {}
+        exec(code, scope)  # noqa: S102 - intentional for guard test
+        assert scope["result"] == b"ok\n"
+    finally:
+        subprocess.check_output = orig_check_output
+
+
+def test_shell_guard_reinstall_is_idempotent_for_trusted_caller(tmp_path):
+    import subprocess
+
+    orig_run = subprocess.run
+    base_run = getattr(orig_run, "__stat_harness_orig__", orig_run)
+    try:
+        root = tmp_path / "repo"
+        root.mkdir()
+        _install_shell_guard(root)
+        _install_shell_guard(root)
+        assert getattr(subprocess.run, "__stat_harness_orig__", None) is base_run
+    finally:
+        subprocess.run = orig_run

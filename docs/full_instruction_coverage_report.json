@@ -1,0 +1,16 @@
+{
+  "generated_by": "scripts/full_instruction_coverage_report.py",
+  "item_count": 2395,
+  "items": [],
+  "matrix_status": {
+    "binding_missing_any": false,
+    "docs_missing_any_normative": false,
+    "plugin_data_access_unclassified": [],
+    "plugin_functionality_missing_dep_edges": {},
+    "redteam_missing_required_ids": [],
+    "sql_required_not_using_sql": []
+  },
+  "missing_by_source": {},
+  "missing_item_count": 0,
+  "source_count": 40
+}

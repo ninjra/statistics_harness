@@ -89,6 +89,33 @@ def test_tiered_degradation_no_numeric_still_ok(run_dir: Path):
     assert result.status in {"ok", "skipped"}
 
 
+def test_normative_gap_degrades_on_degenerate_frontier_with_variance(run_dir: Path):
+    n = 220
+    df = pd.DataFrame(
+        {
+            "process": (["A"] * n) + (["B"] * n),
+            "ts": pd.concat(
+                [
+                    _dt_series_span(n, 220, start="2026-01-01T00:00:00Z"),
+                    _dt_series_span(n, 60, start="2026-01-01T00:00:00Z"),
+                ],
+                ignore_index=True,
+            ),
+            "duration": ([10.0] * n) + ([30.0] * n),
+        }
+    )
+    ctx = make_context(run_dir, df, settings={})
+    result = GapPlugin().run(ctx)
+    assert result.status == "ok"
+    assert any(str(f.get("kind") or "") == "ideaspace_degeneracy" for f in result.findings)
+
+    diag = read_json(run_dir / "artifacts" / "analysis_ideaspace_normative_gap" / "normative_gap_diagnostics.json")
+    assert bool(diag.get("degenerate_output")) is True
+    freshness = read_json(run_dir / "artifacts" / "analysis_ideaspace_normative_gap" / "freshness.json")
+    assert freshness.get("source_run_id") == "test-run"
+    assert isinstance(freshness.get("dataset_input_hash"), str)
+
+
 def test_action_planner_no_recos_when_triggers_not_met(run_dir: Path):
     df = pd.DataFrame({"process": ["A"] * 50, "ts": _dt_series_span(50, 60), "duration": [10.0] * 50})
     ctx = make_context(run_dir, df, settings={})

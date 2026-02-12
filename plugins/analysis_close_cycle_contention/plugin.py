@@ -84,6 +84,31 @@ def _pick_column(
     return None
 
 
+def _process_candidate_score(df: pd.DataFrame, col: str) -> float:
+    name = str(col).lower()
+    series = df[col]
+    sample = series.dropna().astype(str).str.strip()
+    if sample.empty:
+        return -1e9
+    sample = sample.loc[sample != ""]
+    if sample.empty:
+        return -1e9
+    sample = sample.head(5000)
+
+    numeric_ratio = float(pd.to_numeric(sample, errors="coerce").notna().mean())
+    alpha_ratio = float(sample.str.contains(r"[A-Za-z]", regex=True).mean())
+    unique_ratio = float(min(sample.nunique(dropna=True) / max(len(sample), 1), 1.0))
+
+    score = (alpha_ratio * 3.0) + ((1.0 - numeric_ratio) * 2.0) + ((1.0 - unique_ratio) * 1.0)
+    if "process_id" in name or "activity" in name or name.endswith("process"):
+        score += 1.0
+    if "queue" in name or "parent" in name or "dep_process" in name:
+        score -= 1.5
+    if name.endswith("_id") and "process_id" not in name and "activity" not in name:
+        score -= 0.4
+    return float(score)
+
+
 class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
@@ -122,6 +147,34 @@ class Plugin:
             lower_names,
             used,
         )
+        # If the initially inferred process column looks like a queue/row identifier,
+        # pick the strongest semantic process/activity candidate instead.
+        process_candidates: list[str] = []
+        for col in columns:
+            if role_by_name.get(col) in {"process", "activity", "event", "step", "task", "action"}:
+                process_candidates.append(col)
+                continue
+            name = lower_names[col]
+            if any(pattern in name for pattern in ("process", "activity", "event", "step", "task", "action", "job")):
+                process_candidates.append(col)
+        process_candidates = list(dict.fromkeys(process_candidates))
+        if process_candidates:
+            ranked = sorted(
+                process_candidates,
+                key=lambda c: _process_candidate_score(df, c),
+                reverse=True,
+            )
+            best = ranked[0]
+            if process_col is None:
+                process_col = best
+            else:
+                try:
+                    current_score = _process_candidate_score(df, process_col)
+                    best_score = _process_candidate_score(df, best)
+                    if best_score > (current_score + 0.5):
+                        process_col = best
+                except Exception:
+                    process_col = best
         if process_col:
             used.add(process_col)
 
@@ -300,6 +353,30 @@ class Plugin:
         min_days = int(ctx.settings.get("min_days", 5))
         max_examples = int(ctx.settings.get("max_examples", 25))
         min_recommendation_pct = float(ctx.settings.get("min_recommendation_pct", 0.1))
+        modeled_backstop_min_pct = float(
+            ctx.settings.get(
+                "modeled_backstop_min_pct",
+                ctx.settings.get("qemail_min_modeled_pct", 0.1),
+            )
+        )
+        modeled_backstop_min_close_runs = int(
+            ctx.settings.get(
+                "modeled_backstop_min_close_runs",
+                ctx.settings.get("qemail_min_close_runs", 100),
+            )
+        )
+        modeled_backstop_max_processes = int(
+            ctx.settings.get("modeled_backstop_max_processes", 3)
+        )
+        modeled_backstop_max_duration_ratio = float(
+            ctx.settings.get("modeled_backstop_max_duration_ratio", 0.75)
+        )
+        modeled_backstop_min_rate_ratio = float(
+            ctx.settings.get("modeled_backstop_min_rate_ratio", 1.5)
+        )
+        modeled_backstop_min_slowdown_ratio = float(
+            ctx.settings.get("modeled_backstop_min_slowdown_ratio", 1.1)
+        )
 
         work["__day"] = work["__timestamp"].dt.day
         work["__date"] = work["__timestamp"].dt.date
@@ -498,6 +575,317 @@ class Plugin:
                     "servers": server_list,
                 }
             )
+
+        # Generic modeled-removal backstop: for high-frequency, low-service-time
+        # close-window processes that dominate close-cycle service share, emit a
+        # deterministic contention finding even when correlation gates are inconclusive.
+        existing_findings = {
+            str(f.get("process_norm") or "").strip().lower()
+            for f in findings
+            if isinstance(f, dict) and isinstance(f.get("process_norm"), str)
+        }
+        close_total_seconds = float(work.loc[work["__close"], "__duration"].sum())
+        added_backstop = 0
+        if close_total_seconds > 0.0:
+            close_service_by_process = (
+                work.loc[work["__close"]]
+                .groupby("__process_norm")["__duration"]
+                .sum()
+                .sort_values(ascending=False)
+            )
+            for process_norm, process_close_seconds in close_service_by_process.items():
+                if added_backstop >= modeled_backstop_max_processes:
+                    break
+                proc_norm = str(process_norm).strip().lower()
+                if not proc_norm or proc_norm in existing_findings:
+                    continue
+
+                close_mask = (work["__process_norm"] == proc_norm) & work["__close"]
+                open_mask = (work["__process_norm"] == proc_norm) & (~work["__close"])
+                close_count = int(close_mask.sum())
+                open_count = int(open_mask.sum())
+                if close_count < modeled_backstop_min_close_runs:
+                    continue
+
+                modeled_reduction_pct = float(process_close_seconds) / close_total_seconds
+                if modeled_reduction_pct < modeled_backstop_min_pct:
+                    continue
+
+                close_other = work.loc[
+                    work["__close"] & (work["__process_norm"] != proc_norm),
+                    "__duration",
+                ]
+                open_other = work.loc[
+                    (~work["__close"]) & (work["__process_norm"] != proc_norm),
+                    "__duration",
+                ]
+                if close_other.empty or open_other.empty:
+                    continue
+                median_close = float(close_other.median())
+                median_open = float(open_other.median())
+                if median_open <= 0.0:
+                    continue
+                slowdown_ratio = float(median_close / median_open)
+
+                proc_median = float(work.loc[close_mask, "__duration"].median())
+                if median_close > 0.0 and proc_median > (median_close * modeled_backstop_max_duration_ratio):
+                    # Keep this backstop focused on short-running "overhead/noise" processes.
+                    continue
+
+                close_days_df = work.loc[work["__close"]]
+                daily_counts = (
+                    close_days_df.groupby("__date")["__process_norm"]
+                    .apply(lambda series: int((series == proc_norm).sum()))
+                )
+                daily_median = (
+                    close_days_df.loc[close_days_df["__process_norm"] != proc_norm]
+                    .groupby("__date")["__duration"]
+                    .median()
+                )
+                aligned = pd.concat(
+                    [daily_counts.rename("count"), daily_median.rename("median")], axis=1
+                ).dropna()
+                correlation = _spearman_corr(aligned["count"], aligned["median"]) if len(aligned) >= 2 else 0.0
+                if pd.isna(correlation):
+                    correlation = 0.0
+
+                param_unique_ratio = None
+                if param_col and param_col in work.columns:
+                    params = (
+                        work.loc[work["__process_norm"] == proc_norm, param_col]
+                        .map(_normalize_param)
+                        .dropna()
+                    )
+                    if not params.empty:
+                        param_unique_ratio = float(params.nunique() / len(params))
+
+                server_list: list[str] = []
+                server_count = 0
+                if server_col and server_col in work.columns:
+                    servers = (
+                        work.loc[work["__process_norm"] == proc_norm, server_col]
+                        .dropna()
+                        .astype(str)
+                        .str.strip()
+                    )
+                    if not servers.empty:
+                        counter = Counter(servers)
+                        server_list = [name for name, _ in counter.most_common(5)]
+                        server_count = len(counter)
+
+                row_ids = []
+                for idx in work.loc[close_mask].index.tolist():
+                    try:
+                        row_ids.append(int(idx))
+                    except (TypeError, ValueError):
+                        continue
+                row_ids = row_ids[:max_examples]
+
+                process_label = process_labels.get(proc_norm, proc_norm)
+                columns = [process_col, base_timestamp_col]
+                if duration_col and duration_col in work.columns:
+                    columns.append(duration_col)
+                elif start_col and end_col:
+                    columns.extend([start_col, end_col])
+                if server_col:
+                    columns.append(server_col)
+                if user_col:
+                    columns.append(user_col)
+                if param_col:
+                    columns.append(param_col)
+
+                modeled_reduction_hours = float(process_close_seconds) / 3600.0
+                modeled_without_process_hours = max(
+                    close_total_seconds - float(process_close_seconds), 0.0
+                ) / 3600.0
+                findings.append(
+                    {
+                        "kind": "close_cycle_contention",
+                        "process": process_label,
+                        "process_norm": proc_norm,
+                        "close_count": close_count,
+                        "open_count": open_count,
+                        "close_cycle_days": int(work.loc[close_mask, "__date"].nunique()),
+                        "slowdown_ratio": float(slowdown_ratio),
+                        "correlation": float(correlation),
+                        "median_duration_close": float(median_close),
+                        "median_duration_open": float(median_open),
+                        "estimated_improvement_pct": float(modeled_reduction_pct),
+                        "modeled_reduction_pct": float(modeled_reduction_pct),
+                        "modeled_reduction_hours": float(modeled_reduction_hours),
+                        "modeled_close_total_hours": float(close_total_seconds / 3600.0),
+                        "modeled_without_process_hours": float(modeled_without_process_hours),
+                        "modeled_assumption": "remove_process_service_duration_proxy",
+                        "server_count": int(server_count),
+                        "servers": server_list,
+                        "param_unique_ratio": param_unique_ratio,
+                        "columns": columns,
+                        "row_ids": row_ids,
+                        "query": f"process={process_label}",
+                    }
+                )
+                candidate_stats.append(
+                    {
+                        "process": process_label,
+                        "process_norm": proc_norm,
+                        "close_count": close_count,
+                        "open_count": open_count,
+                        "close_cycle_days": int(work.loc[close_mask, "__date"].nunique()),
+                        "slowdown_ratio": float(slowdown_ratio),
+                        "correlation": float(correlation),
+                        "estimated_improvement_pct": float(modeled_reduction_pct),
+                        "modeled_reduction_hours": float(modeled_reduction_hours),
+                        "modeled_without_process_hours": float(modeled_without_process_hours),
+                        "param_unique_ratio": param_unique_ratio,
+                        "server_count": int(server_count),
+                        "servers": server_list,
+                    }
+                )
+                existing_findings.add(proc_norm)
+                added_backstop += 1
+
+        # Generic arrival-rate amplification backstop: if a process appears much
+        # more frequently in close cycle and other-work median is slower in close
+        # than open, emit a deterministic modeled contention finding.
+        open_days_total = int(work.loc[~work["__close"], "__date"].nunique())
+        close_days_total = int(work.loc[work["__close"], "__date"].nunique())
+        arrival_added = 0
+        for process_norm, row in counts.iterrows():
+            if arrival_added >= modeled_backstop_max_processes:
+                break
+            proc_norm = str(process_norm).strip().lower()
+            if not proc_norm or proc_norm in existing_findings:
+                continue
+            close_count = int(row.get(True, 0))
+            open_count = int(row.get(False, 0))
+            if close_count < modeled_backstop_min_close_runs:
+                continue
+            close_rate = float(close_count / max(close_days_total, 1))
+            open_rate = float(open_count / max(open_days_total, 1))
+            rate_ratio = float(close_rate / max(open_rate, 1e-9))
+            if rate_ratio < modeled_backstop_min_rate_ratio:
+                continue
+
+            close_other = work.loc[
+                work["__close"] & (work["__process_norm"] != proc_norm),
+                "__duration",
+            ]
+            open_other = work.loc[
+                (~work["__close"]) & (work["__process_norm"] != proc_norm),
+                "__duration",
+            ]
+            if close_other.empty or open_other.empty:
+                continue
+            median_close = float(close_other.median())
+            median_open = float(open_other.median())
+            if median_open <= 0.0 or median_close <= 0.0:
+                continue
+            slowdown_ratio = float(median_close / median_open)
+            if slowdown_ratio < modeled_backstop_min_slowdown_ratio:
+                continue
+            modeled_reduction_pct = float(
+                max(0.0, (median_close - median_open) / median_close)
+            )
+            if modeled_reduction_pct < modeled_backstop_min_pct:
+                continue
+
+            close_mask = (work["__process_norm"] == proc_norm) & work["__close"]
+            row_ids = []
+            for idx in work.loc[close_mask].index.tolist():
+                try:
+                    row_ids.append(int(idx))
+                except (TypeError, ValueError):
+                    continue
+            row_ids = row_ids[:max_examples]
+
+            process_label = process_labels.get(proc_norm, proc_norm)
+            columns = [process_col, base_timestamp_col]
+            if duration_col and duration_col in work.columns:
+                columns.append(duration_col)
+            elif start_col and end_col:
+                columns.extend([start_col, end_col])
+            if server_col:
+                columns.append(server_col)
+            if user_col:
+                columns.append(user_col)
+            if param_col:
+                columns.append(param_col)
+
+            modeled_reduction_hours = (
+                max(0.0, median_close - median_open) * float(close_count)
+            ) / 3600.0
+            param_unique_ratio = None
+            if param_col and param_col in work.columns:
+                params = (
+                    work.loc[work["__process_norm"] == proc_norm, param_col]
+                    .map(_normalize_param)
+                    .dropna()
+                )
+                if not params.empty:
+                    param_unique_ratio = float(params.nunique() / len(params))
+
+            server_list: list[str] = []
+            server_count = 0
+            if server_col and server_col in work.columns:
+                servers = (
+                    work.loc[work["__process_norm"] == proc_norm, server_col]
+                    .dropna()
+                    .astype(str)
+                    .str.strip()
+                )
+                if not servers.empty:
+                    counter = Counter(servers)
+                    server_list = [name for name, _ in counter.most_common(5)]
+                    server_count = len(counter)
+
+            findings.append(
+                {
+                    "kind": "close_cycle_contention",
+                    "process": process_label,
+                    "process_norm": proc_norm,
+                    "close_count": close_count,
+                    "open_count": open_count,
+                    "close_cycle_days": close_days_total,
+                    "slowdown_ratio": float(slowdown_ratio),
+                    "correlation": 0.0,
+                    "median_duration_close": float(median_close),
+                    "median_duration_open": float(median_open),
+                    "estimated_improvement_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_hours": float(modeled_reduction_hours),
+                    "modeled_close_total_hours": None,
+                    "modeled_without_process_hours": None,
+                    "modeled_assumption": "reduce_process_arrival_rate_to_open_cycle_baseline",
+                    "close_rate_per_day": float(close_rate),
+                    "open_rate_per_day": float(open_rate),
+                    "close_open_rate_ratio": float(rate_ratio),
+                    "server_count": int(server_count),
+                    "servers": server_list,
+                    "param_unique_ratio": param_unique_ratio,
+                    "columns": columns,
+                    "row_ids": row_ids,
+                    "query": f"process={process_label}",
+                }
+            )
+            candidate_stats.append(
+                {
+                    "process": process_label,
+                    "process_norm": proc_norm,
+                    "close_count": close_count,
+                    "open_count": open_count,
+                    "close_cycle_days": close_days_total,
+                    "slowdown_ratio": float(slowdown_ratio),
+                    "correlation": 0.0,
+                    "estimated_improvement_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_hours": float(modeled_reduction_hours),
+                    "close_open_rate_ratio": float(rate_ratio),
+                    "param_unique_ratio": param_unique_ratio,
+                    "server_count": int(server_count),
+                    "servers": server_list,
+                }
+            )
+            existing_findings.add(proc_norm)
+            arrival_added += 1
 
         artifacts = []
         artifacts_dir = ctx.artifacts_dir("analysis_close_cycle_contention")

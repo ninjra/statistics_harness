@@ -1,0 +1,25 @@
+{
+  "assignments": [],
+  "candidate_count": 0,
+  "candidate_plugin_ids": [],
+  "coverage": {
+    "classified_count": 0,
+    "is_complete": true,
+    "is_exclusive": true,
+    "overlap_count": 0,
+    "unclassified_plugin_ids": [],
+    "unexpected_grouped_plugin_ids": [],
+    "unique_classified_count": 0
+  },
+  "generated_by": "scripts/sql_adoption_partition_matrix.py",
+  "groups": {
+    "group_A_shared_layer_covered": [],
+    "group_B_direct_sql_benefit": [],
+    "group_C_not_applicable_reclassify": [],
+    "group_D_optional_defer": []
+  },
+  "source_files": [
+    "docs/sql_assist_adoption_matrix.json",
+    "docs/plugin_data_access_matrix.json"
+  ]
+}

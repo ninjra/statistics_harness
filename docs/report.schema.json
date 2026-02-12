@@ -3,6 +3,62 @@
   "title": "Statistic Harness Report",
   "type": "object",
   "required": ["run_id", "created_at", "status", "input", "plugins", "lineage"],
+  "definitions": {
+    "recommendation_item": {
+      "type": "object",
+      "required": [
+        "status",
+        "recommendation",
+        "plugin_id",
+        "kind",
+        "scope_class",
+        "modeled_percent",
+        "modeled_basis_hours",
+        "modeled_delta_hours",
+        "not_modeled_reason"
+      ],
+      "properties": {
+        "status": {"type": "string"},
+        "title": {"type": "string"},
+        "category": {"type": "string"},
+        "recommendation": {"type": "string"},
+        "plugin_id": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+        "kind": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+        "scope_class": {
+          "type": "string",
+          "enum": ["general", "close_specific"]
+        },
+        "modeled_percent": {"anyOf": [{"type": "null"}, {"type": "number", "minimum": 0.0, "maximum": 100.0}]},
+        "modeled_basis_hours": {"anyOf": [{"type": "null"}, {"type": "number", "minimum": 0.0}]},
+        "modeled_delta_hours": {"anyOf": [{"type": "null"}, {"type": "number", "minimum": 0.0}]},
+        "modeled_general_percent": {"anyOf": [{"type": "null"}, {"type": "number", "minimum": 0.0, "maximum": 100.0}]},
+        "modeled_close_percent": {"anyOf": [{"type": "null"}, {"type": "number", "minimum": 0.0, "maximum": 100.0}]},
+        "not_modeled_reason": {"anyOf": [{"type": "null"}, {"type": "string"}]}
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["modeled_percent"],
+            "properties": {"modeled_percent": {"type": "null"}}
+          },
+          "then": {
+            "required": ["not_modeled_reason"],
+            "properties": {"not_modeled_reason": {"type": "string", "minLength": 1}}
+          }
+        },
+        {
+          "if": {
+            "required": ["modeled_percent"],
+            "properties": {"modeled_percent": {"type": "number"}}
+          },
+          "then": {
+            "properties": {"not_modeled_reason": {"type": "null"}}
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  },
   "properties": {
     "run_id": {"type": "string"},
     "created_at": {"type": "string"},
@@ -225,12 +281,39 @@
     },
     "recommendations": {
       "type": "object",
+      "required": ["status", "summary", "known", "discovery", "items"],
       "properties": {
         "status": {"type": "string"},
         "summary": {"type": "string"},
+        "known": {
+          "type": "object",
+          "required": ["status", "summary", "items"],
+          "properties": {
+            "status": {"type": "string"},
+            "summary": {"type": "string"},
+            "items": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/recommendation_item"}
+            }
+          },
+          "additionalProperties": true
+        },
+        "discovery": {
+          "type": "object",
+          "required": ["status", "summary", "items"],
+          "properties": {
+            "status": {"type": "string"},
+            "summary": {"type": "string"},
+            "items": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/recommendation_item"}
+            }
+          },
+          "additionalProperties": true
+        },
         "items": {
           "type": "array",
-          "items": {"type": "object"}
+          "items": {"$ref": "#/definitions/recommendation_item"}
         }
       },
       "additionalProperties": true

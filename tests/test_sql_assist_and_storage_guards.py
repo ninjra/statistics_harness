@@ -93,3 +93,27 @@ def test_sql_assist_validate_ro_sql_explain_only(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError):
         sql.validate_ro_sql("CREATE TABLE x(y INTEGER)", query_id="v_bad")
+
+
+def test_sql_assist_query_dataframe_writes_provenance(tmp_path: Path) -> None:
+    db = tmp_path / "state.sqlite"
+    storage = Storage(db, mode="rw", initialize=False)
+    with storage.connection() as conn:
+        conn.execute("CREATE TABLE t(x INTEGER)")
+        conn.execute("INSERT INTO t(x) VALUES (1)")
+        conn.execute("INSERT INTO t(x) VALUES (2)")
+
+    run_dir = tmp_path / "run"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    sql = SqlAssist(
+        storage=storage,
+        run_dir=run_dir,
+        plugin_id="demo",
+        schema_hash="deadbeef",
+        mode="ro",
+    )
+
+    df = sql.query_dataframe("SELECT x FROM t ORDER BY x", query_id="df_ok", explain=True)
+    assert list(df["x"]) == [1, 2]
+    assert (run_dir / "artifacts" / "demo" / "sql" / "df_ok.manifest.json").exists()
+    assert (run_dir / "artifacts" / "demo" / "sql" / "df_ok.sample.json").exists()

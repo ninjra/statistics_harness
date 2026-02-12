@@ -1,9 +1,24 @@
 {
-  "plugin_count": 163,
+  "contract_counts": {
+    "artifact_only": 10,
+    "dataset_loader": 129,
+    "iter_batches": 0,
+    "orchestration_only": 26,
+    "sql_assist": 3,
+    "sql_direct": 3
+  },
+  "plugin_count": 171,
   "plugins": [
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -11,8 +26,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_action_search_simulated_annealing_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -20,8 +42,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_actionable_ops_levers_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -29,8 +58,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_anova_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -38,8 +74,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_association_rules_apriori_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -47,8 +90,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_attribution",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -56,8 +106,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_bayesian_point_displacement",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -65,8 +122,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_biclustering_cheng_church_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -74,8 +138,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_bocpd_gaussian",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -83,8 +154,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_burst_detection_kleinberg",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -92,8 +170,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_burst_modeling_hawkes_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -101,8 +186,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default",
+        "override:contracts"
+      ],
       "plugin_id": "analysis_busy_period_segmentation_v2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -110,8 +203,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_capacity_scaling",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -119,8 +219,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_chain_makespan",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -128,8 +235,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_change_impact_pre_post",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -137,8 +251,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_changepoint_energy_edivisive",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -146,8 +267,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_changepoint_method_survey_guided",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -155,8 +283,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_changepoint_pelt",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -164,8 +299,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_chi_square_association",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -173,8 +315,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_capacity_impact",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -182,8 +331,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_capacity_model",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -191,8 +347,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_contention",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -200,8 +379,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_duration_shift",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -209,8 +395,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_revenue_compression",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -218,8 +411,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_uplift",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -227,8 +427,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_close_cycle_window_resolver",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -236,8 +443,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_cluster_analysis_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -245,8 +459,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_concurrency_reconstruction",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -254,8 +475,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_conformal_feature_prediction",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -263,8 +491,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_conformance_alignments",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -272,8 +507,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_conformance_checking",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -281,8 +523,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -290,8 +539,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_control_chart_cusum",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -299,8 +555,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_control_chart_ewma",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -308,8 +571,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_control_chart_individuals",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -317,8 +587,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_control_chart_suite",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -326,8 +603,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_copula_dependence",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -335,8 +619,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -344,8 +635,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_density_clustering_hdbscan_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -353,8 +651,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_dependency_community_leiden_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -362,8 +667,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_dependency_community_louvain_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -371,8 +683,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_dependency_graph_change_detection",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -380,8 +715,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_dependency_resolution_join",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -389,8 +731,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default",
+        "override:contracts"
+      ],
       "plugin_id": "analysis_determinism_discipline",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -398,8 +748,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_discrete_event_queue_simulator_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -407,8 +764,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_distribution_drift_suite",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -416,8 +780,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_distribution_shift_wasserstein_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -425,8 +796,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_dp_gmm",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -434,8 +812,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_drift_adwin",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -443,8 +828,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_dynamic_close_detection",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -452,8 +844,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_effect_size_report",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -461,8 +876,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -470,8 +892,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_event_count_bocpd_poisson",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -479,8 +908,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_evt_gumbel_tail",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -488,8 +924,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_evt_peaks_over_threshold",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -497,8 +940,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_factor_analysis_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -506,8 +956,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -515,8 +972,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_gaussian_copula_shift",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -524,8 +988,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_gaussian_knockoffs",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -533,8 +1004,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_graph_min_cut_partition_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -542,8 +1020,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_graph_topology_curves",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -551,8 +1036,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_graphical_lasso_dependency_network",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -560,8 +1052,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_hawkes_self_exciting",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -569,8 +1068,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_hmm_latent_state_sequences",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -578,8 +1084,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_ideaspace_action_planner",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -587,8 +1116,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_ideaspace_normative_gap",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -596,8 +1148,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_isolation_forest",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -605,8 +1164,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_isolation_forest_anomaly",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -614,8 +1180,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_issue_cards_v2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -623,8 +1196,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_kernel_two_sample_mmd",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -632,8 +1212,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_kingman_vut_approx",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -641,8 +1228,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_knockoff_wrapper_rf",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -650,8 +1244,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_lagged_predictability_test",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -659,8 +1260,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_littles_law_consistency",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -668,8 +1276,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_local_outlier_factor",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -677,8 +1292,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_log_template_drain",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -686,8 +1308,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_log_template_mining_drain",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -695,8 +1324,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_map_permutation_test_karniski",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -704,8 +1340,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_markov_transition_shift",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -713,8 +1356,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_matrix_profile_motifs_discords",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -722,8 +1372,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_message_entropy_drift",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -731,8 +1388,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_monte_carlo_surface_uncertainty",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -740,8 +1404,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_multiple_testing_fdr",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -749,8 +1420,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_multivariate_changepoint_pelt",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -758,8 +1436,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_multivariate_control_charts",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -767,8 +1452,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_multivariate_ewma_control",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -776,8 +1468,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_multivariate_t2_control",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -785,8 +1484,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_mutual_information_screen",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -794,8 +1500,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_notears_linear",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -803,8 +1516,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_one_class_svm",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -812,8 +1532,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_online_conformal_changepoint",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -821,8 +1548,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_param_near_duplicate_minhash_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -830,8 +1564,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_param_near_duplicate_simhash_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -839,8 +1580,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_pca_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -848,8 +1612,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_pca_control_chart",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -857,8 +1628,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_percentile_analysis",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -866,8 +1644,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_periodicity_spectral_scan",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -875,8 +1660,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default",
+        "override:contracts"
+      ],
       "plugin_id": "analysis_process_counterfactuals",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -884,8 +1677,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_process_drift_conformance_over_time",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -893,8 +1693,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_process_sequence",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -902,8 +1709,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default",
+        "override:contracts"
+      ],
       "plugin_id": "analysis_process_sequence_bottlenecks",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -911,8 +1726,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_proportional_hazards_duration",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -920,8 +1742,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_quantile_regression_duration",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -929,8 +1758,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_queue_delay_decomposition",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -938,8 +1774,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_queue_model_fit",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -947,8 +1790,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_recommendation_dedupe_v2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -956,8 +1806,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_regression_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -965,8 +1822,31 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_robust_covariance_outliers",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -974,8 +1854,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_robust_pca_pcp",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -983,8 +1870,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_robust_pca_sparse_outliers",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -992,8 +1886,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_scan_statistics",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1001,8 +1902,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_sequence_classification",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1010,8 +1918,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_sequence_grammar_sequitur_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1019,8 +1934,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_sequential_patterns_prefixspan",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1028,8 +1950,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1037,8 +1966,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1046,8 +1982,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_state_space_kalman_residuals",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1055,8 +1998,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_fabric_sso_eigen",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1064,8 +2014,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_fractal_dimension_variogram",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1073,8 +2030,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_hydrology_flow_watershed",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1082,8 +2046,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1091,8 +2062,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_roughness_metrics",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1100,8 +2078,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_rugosity_index",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1109,8 +2094,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_surface_terrain_position_index",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1118,8 +2110,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_survival_kaplan_meier",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1127,8 +2126,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_survival_time_to_event",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1136,8 +2142,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_tail_isolation",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1145,8 +2158,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_tda_betti_curve_changepoint",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1154,8 +2174,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_tda_mapper_graph",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1163,8 +2190,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_tda_persistence_landscapes",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1172,8 +2206,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_tda_persistent_homology",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1181,8 +2222,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_template_drift_two_sample",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1190,8 +2238,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_term_burst_kleinberg",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1199,8 +2254,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_time_series_analysis_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1208,8 +2270,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_topic_model_lda",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1217,8 +2286,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_topographic_angle_dynamics",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1226,8 +2302,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_topographic_similarity_angle_projection",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1235,8 +2318,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_topographic_tanova_permutation",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1244,8 +2334,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_traceability_manifest_v2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1253,8 +2350,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_transfer_entropy_directional",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1262,8 +2366,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_ttests_auto",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1271,8 +2382,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_two_sample_categorical_chi2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1280,8 +2398,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_two_sample_numeric_ad",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1289,8 +2414,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_two_sample_numeric_ks",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1298,8 +2430,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_two_sample_numeric_mann_whitney",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1307,8 +2446,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_upload_linkage",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1316,8 +2462,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default",
+        "override:contracts"
+      ],
       "plugin_id": "analysis_user_host_savings",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1325,8 +2479,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "analysis_variant_differential",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1334,8 +2495,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
       "plugin_id": "analysis_waterfall_summary_v2",
       "plugin_type": "analysis",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1343,8 +2511,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "sql_direct"
+      ],
+      "contract_sources": [
+        "detected:sql_direct"
+      ],
       "plugin_id": "ingest_tabular",
       "plugin_type": "ingest",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1352,8 +2527,16 @@
       "uses_sql_direct": true
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:type_orchestration",
+        "override:contracts"
+      ],
       "plugin_id": "llm_prompt_builder",
       "plugin_type": "llm",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1361,8 +2544,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "sql_assist"
+      ],
+      "contract_sources": [
+        "detected:sql_assist"
+      ],
       "plugin_id": "llm_text2sql_local_generate_v1",
       "plugin_type": "llm",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1370,8 +2560,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:type_orchestration",
+        "override:contracts"
+      ],
       "plugin_id": "planner_basic",
       "plugin_type": "planner",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1379,8 +2577,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
       "plugin_id": "profile_basic",
       "plugin_type": "profile",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
       "uses_dataset_loader_unbounded": true,
@@ -1388,8 +2593,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "sql_direct"
+      ],
+      "contract_sources": [
+        "detected:sql_direct"
+      ],
       "plugin_id": "profile_eventlog",
       "plugin_type": "profile",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1397,8 +2609,16 @@
       "uses_sql_direct": true
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:type_report",
+        "override:contracts"
+      ],
       "plugin_id": "report_bundle",
       "plugin_type": "report",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1406,8 +2626,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:type_report",
+        "override:contracts"
+      ],
       "plugin_id": "report_decision_bundle_v2",
       "plugin_type": "report",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1415,8 +2643,32 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "plugin_id": "report_payout_report_v1",
+      "plugin_type": "report",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:type_report",
+        "override:contracts"
+      ],
       "plugin_id": "report_plain_english_v1",
       "plugin_type": "report",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1424,8 +2676,16 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:type_report",
+        "override:contracts"
+      ],
       "plugin_id": "report_slide_kit_emitter_v2",
       "plugin_type": "report",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1433,8 +2693,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "sql_direct"
+      ],
+      "contract_sources": [
+        "detected:sql_direct"
+      ],
       "plugin_id": "transform_normalize_mixed",
       "plugin_type": "transform",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1442,8 +2709,15 @@
       "uses_sql_direct": true
     },
     {
+      "access_contracts": [
+        "sql_assist"
+      ],
+      "contract_sources": [
+        "detected:sql_assist"
+      ],
       "plugin_id": "transform_sql_intents_pack_v1",
       "plugin_type": "transform",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1451,8 +2725,15 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "sql_assist"
+      ],
+      "contract_sources": [
+        "detected:sql_assist"
+      ],
       "plugin_id": "transform_sqlpack_materialize_v1",
       "plugin_type": "transform",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
@@ -1460,13 +2741,22 @@
       "uses_sql_direct": false
     },
     {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:type_transform",
+        "override:contracts"
+      ],
       "plugin_id": "transform_template",
       "plugin_type": "transform",
+      "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
     }
-  ]
+  ],
+  "unclassified_count": 0
 }

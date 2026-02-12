@@ -439,6 +439,7 @@
           "tests/plugins/test_queue_delay_decomposition.py",
           "tests/plugins/test_queue_simulator_v1.py",
           "tests/plugins/test_recommendation_dedupe_v2.py",
+          "tests/plugins/test_report_decision_bundle_v2.py",
           "tests/plugins/test_robust_pca_sparse_outliers.py",
           "tests/plugins/test_scan_statistics.py",
           "tests/plugins/test_sequence_classification.py",
@@ -462,22 +463,28 @@
           "tests/test_enertia_evaluation.py",
           "tests/test_evaluation.py",
           "tests/test_evaluator.py",
+          "tests/test_four_pillars_scoring.py",
           "tests/test_ideaspace_plugins.py",
           "tests/test_ideaspace_utils.py",
           "tests/test_ingest_tabular.py",
+          "tests/test_known_issue_close_cycle_contention_fallback.py",
           "tests/test_kona_energy_ideaspace_architecture.py",
           "tests/test_llm_prompt_builder.py",
+          "tests/test_matrix_override_files.py",
           "tests/test_missing_plugins.py",
           "tests/test_normalization_reuse.py",
           "tests/test_parameter_normalization.py",
           "tests/test_performance_smoke.py",
           "tests/test_pipeline_integration.py",
           "tests/test_plugin_dag_validation.py",
+          "tests/test_plugin_data_access_matrix.py",
           "tests/test_plugin_discovery.py",
           "tests/test_plugin_manifest_schema.py",
           "tests/test_plugins_functionality_matrix.py",
           "tests/test_profile_basic.py",
           "tests/test_quorum_evaluation.py",
+          "tests/test_recommendation_controls_env.py",
+          "tests/test_recommendation_schema_contract.py",
           "tests/test_redteam_requirements_full.py",
           "tests/test_replay.py",
           "tests/test_report_outputs.py",
@@ -485,6 +492,7 @@
           "tests/test_report_schema.py",
           "tests/test_row_trace.py",
           "tests/test_run_manifest.py",
+          "tests/test_sql_assist_adoption_matrix.py",
           "tests/test_surface_builder.py",
           "tests/test_template_combined_run.py",
           "tests/test_template_conversion.py",
@@ -973,6 +981,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
           "tests/test_redteam_requirements_full.py",
           "tests/test_report_schema.py",
           "tests/test_run_manifest.py"
@@ -1009,6 +1018,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
           "tests/test_report_schema.py"
         ]
       },
@@ -1301,6 +1311,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_ideaspace_plugins.py",
           "tests/test_redteam_requirements_full.py"
         ]
       },
@@ -1617,6 +1628,7 @@
           "tests/plugins/test_profile_eventlog.py",
           "tests/plugins/test_queue_delay_decomposition.py",
           "tests/plugins/test_recommendation_dedupe_v2.py",
+          "tests/plugins/test_report_decision_bundle_v2.py",
           "tests/plugins/test_robust_pca_sparse_outliers.py",
           "tests/plugins/test_scan_statistics.py",
           "tests/plugins/test_sequence_classification.py",
@@ -1630,12 +1642,14 @@
           "tests/test_ideaspace_plugins.py",
           "tests/test_ideaspace_utils.py",
           "tests/test_ingest_tabular.py",
+          "tests/test_known_issue_close_cycle_contention_fallback.py",
           "tests/test_kona_energy_ideaspace_architecture.py",
           "tests/test_llm_prompt_builder.py",
           "tests/test_parameter_normalization.py",
           "tests/test_planner_features.py",
           "tests/test_profile_basic.py",
           "tests/test_row_trace.py",
+          "tests/test_sql_assist_and_storage_guards.py",
           "tests/test_surface_builder.py",
           "tests/test_template_conversion.py",
           "tests/test_template_filters.py",
@@ -2147,6 +2161,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
           "tests/test_report_schema.py"
         ]
       },
@@ -2337,6 +2352,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
           "tests/test_report_schema.py"
         ]
       },

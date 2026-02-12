@@ -428,7 +428,7 @@ This is a **minimal viable spec** for a local-only extension manager aligned to 
 | Preview: 20 rows  | Columns: 42 | Rows (estimated): 1,048,576 |
 | SHA-256: sha256:...   Size: 12.3MB   Format: XLSX            |
 |                                                                  |
-| [ ] Allow sampling for analysis (defaults OFF)                   |
+| [x] Allow sampling for analysis (defaults OFF)                   |
 |                                                                  |
 | [Upload]  [Cancel]                                              |
 +------------------------------------------------------------------+

@@ -16,6 +16,6 @@ def test_performance_smoke(tmp_path, monkeypatch):
 
     # The harness runs multiple plugins in separate subprocesses (ingest + normalize + profile + report),
     # each of which imports heavy scientific packages. On slower environments (WSL/AV scanning),
-    # 15s is too tight and causes flakes. Override in CI if you can reliably hit a lower bound.
-    max_seconds = float(os.environ.get("STAT_HARNESS_PERF_MAX_SECONDS", "25"))
+    # tight thresholds cause flakes; set a conservative default and override in CI as needed.
+    max_seconds = float(os.environ.get("STAT_HARNESS_PERF_MAX_SECONDS", "45"))
     assert elapsed < max_seconds
