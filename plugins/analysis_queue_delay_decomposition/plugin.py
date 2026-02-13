@@ -7,6 +7,7 @@ import pandas as pd
 from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.close_cycle import resolve_close_cycle_masks
 from statistic_harness.core.types import PluginArtifact, PluginResult
+from statistic_harness.core.process_filters import process_is_excluded
 from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
 
@@ -337,8 +338,9 @@ class Plugin:
         exclude_list = _parse_list(ctx.settings.get("exclude_processes"))
         if not exclude_list:
             exclude_list = ["qlongjob"]
-        exclude_processes = {p.lower() for p in exclude_list}
-        work["__excluded"] = work["__process_norm"].isin(exclude_processes)
+        work["__excluded"] = work["__process_norm"].map(
+            lambda pid: process_is_excluded(pid, exclude_list)
+        )
 
         standalone = work.loc[work["__standalone"] & ~work["__excluded"]].copy()
         if standalone.empty:
