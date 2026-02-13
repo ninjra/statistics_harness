@@ -1,0 +1,25 @@
+id: process_mining_conformance_v1
+name: Process Mining Conformance v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - process_mining_discovery_v1
+settings:
+  description: Score case variants against an expected process path.
+  defaults:
+    case_column: null
+    activity_column: null
+    time_column: null
+    expected_path: []
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

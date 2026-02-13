@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Repo Improvements Catalog Normalized Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "generated_utc",
+    "source_catalog",
+    "source_canonical_catalog",
+    "total_items",
+    "catalog"
+  ],
+  "properties": {
+    "generated_utc": {
+      "type": "string"
+    },
+    "source_catalog": {
+      "type": "string"
+    },
+    "source_canonical_catalog": {
+      "type": "string"
+    },
+    "total_items": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "catalog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "canonical_item_id",
+          "cluster_id",
+          "category",
+          "source_item_ids",
+          "source_proposed_plugins",
+          "existing_proposed_plugins",
+          "missing_proposed_plugins",
+          "normalized_touchpoints",
+          "dependency_ids",
+          "implementation_status",
+          "priority_score_inputs",
+          "priority_score",
+          "deterministic",
+          "sandbox_compliant"
+        ],
+        "properties": {
+          "canonical_item_id": {
+            "type": "string"
+          },
+          "cluster_id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "source_item_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_proposed_plugins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "existing_proposed_plugins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missing_proposed_plugins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "normalized_touchpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependency_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "implementation_status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "in_progress",
+              "done",
+              "deferred"
+            ]
+          },
+          "priority_score_inputs": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "performant",
+              "accurate",
+              "secure",
+              "citable",
+              "dependency_count"
+            ],
+            "properties": {
+              "performant": {
+                "type": "number"
+              },
+              "accurate": {
+                "type": "number"
+              },
+              "secure": {
+                "type": "number"
+              },
+              "citable": {
+                "type": "number"
+              },
+              "dependency_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "priority_score": {
+            "type": "number"
+          },
+          "deterministic": {
+            "type": "boolean"
+          },
+          "sandbox_compliant": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

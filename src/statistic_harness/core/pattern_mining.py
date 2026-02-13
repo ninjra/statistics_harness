@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any
 
 from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules  # type: ignore
 

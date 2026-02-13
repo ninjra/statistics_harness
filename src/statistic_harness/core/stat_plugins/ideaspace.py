@@ -20,7 +20,10 @@ from statistic_harness.core.ideaspace_feature_extractor import (
     queue_delay_seconds,
     time_span_seconds,
 )
-from statistic_harness.core.lever_library import build_default_lever_recommendations
+from statistic_harness.core.lever_library import (
+    LeverRecommendation,
+    build_default_lever_recommendations,
+)
 from statistic_harness.core.stat_plugins import (
     BudgetTimer,
     build_redactor,
@@ -567,7 +570,6 @@ def _ideaspace_action_planner(
     timer: BudgetTimer,
     sample_meta: dict[str, Any],
 ) -> PluginResult:
-    redactor = build_redactor(config.get("privacy") or {})
     cols = pick_columns(df, inferred, config)
 
     # Optional: load normative gap artifact for user-facing "ideal vs current" context.

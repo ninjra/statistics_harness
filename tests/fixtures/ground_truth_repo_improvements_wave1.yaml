@@ -1,0 +1,12 @@
+strict: true
+expected_findings:
+  - plugin_id: analysis_plugin_001_v1
+    kind: improvement_candidate
+    where:
+      category: Causal & Uplift Modeling
+    min_count: 1
+expected_metrics:
+  - plugin_id: analysis_plugin_001_v1
+    metric: impact_score
+    value: 1.0
+    tolerance: 0.1

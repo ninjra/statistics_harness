@@ -12,6 +12,7 @@ cd "$ROOT_DIR"
 .venv/bin/python scripts/sql_assist_adoption_matrix.py
 .venv/bin/python scripts/sql_adoption_partition_matrix.py
 .venv/bin/python scripts/sql_adoption_execution_order.py
+.venv/bin/python scripts/run_repo_improvements_pipeline.py
 .venv/bin/python scripts/docs_coverage_matrix.py
 .venv/bin/python scripts/binding_implementation_matrix.py --extra-doc topo-tda-addon-pack-plan.md
 .venv/bin/python scripts/plugins_functionality_matrix.py

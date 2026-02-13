@@ -25,9 +25,11 @@ from .utils import (
     file_sha256,
     json_dumps,
     make_run_id,
+    normalize_source_classification,
     now_iso,
     read_json,
     resolve_env_placeholders,
+    safe_join,
     stable_hash,
     write_json,
     DEFAULT_TENANT_ID,
@@ -222,6 +224,10 @@ class Pipeline:
         raw = os.environ.get(name, "").strip()
         if not raw:
             return None
+        try:
+            return int(raw)
+        except ValueError:
+            return None
 
     @staticmethod
     def _read_meminfo_kb() -> dict[str, int]:
@@ -317,10 +323,6 @@ class Pipeline:
                     pass
                 last_log = now
             time.sleep(poll_s)
-        try:
-            return int(raw)
-        except ValueError:
-            return None
 
     @staticmethod
     def _max_workers_for_stage(stage: str, layer_size: int, dataset_row_count: int | None) -> int:
@@ -490,6 +492,7 @@ class Pipeline:
         dataset_row_count: int | None = None
         dataset_table_name: str | None = None
         dataset_column_count: int | None = None
+        source_classification = normalize_source_classification(None)
         if input_file is None:
             if not dataset_version_id:
                 raise ValueError("Dataset version is required for DB-only runs")
@@ -501,6 +504,9 @@ class Pipeline:
             dataset_table_name = str(ctx_row.get("table_name") or "")
             input_hash = ctx_row.get("data_hash") or dataset_version_id
             input_filename = f"db://{dataset_version_id}"
+            source_classification = normalize_source_classification(
+                str(ctx_row.get("source_classification") or "")
+            )
             try:
                 dataset_row_count = int(ctx_row.get("row_count") or 0)
             except (TypeError, ValueError):
@@ -510,6 +516,16 @@ class Pipeline:
             except (TypeError, ValueError):
                 dataset_column_count = None
         else:
+            upload_row = self.storage.fetch_upload(upload_id) if upload_id else None
+            upload_filename = (
+                str(upload_row.get("filename") or input_file.name)
+                if upload_row
+                else input_file.name
+            )
+            source_classification = normalize_source_classification(
+                str(upload_row.get("source_classification") or "") if upload_row else None,
+                upload_filename,
+            )
             input_hash = file_sha256(input_file)
             project_id = project_id or input_hash
             dataset_id = dataset_id or dataset_version_id or (
@@ -541,7 +557,12 @@ class Pipeline:
             self.storage.ensure_project(project_id, project_id, now_iso())
             self.storage.ensure_dataset(dataset_id, project_id, dataset_id, now_iso())
             self.storage.ensure_dataset_version(
-                dataset_version_id, dataset_id, now_iso(), table_name, input_hash
+                dataset_version_id,
+                dataset_id,
+                now_iso(),
+                table_name,
+                input_hash,
+                source_classification=source_classification,
             )
             input_filename = input_file.name
             # Best-effort for worker cap heuristics; row_count is populated after ingest.

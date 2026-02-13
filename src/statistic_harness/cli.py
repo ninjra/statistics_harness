@@ -665,7 +665,7 @@ def main() -> None:
     disable_user_parser = sub.add_parser("disable-user")
     disable_user_parser.add_argument("--email", required=True)
 
-    vector_list_parser = sub.add_parser("vector-list")
+    sub.add_parser("vector-list")
 
     vector_query_parser = sub.add_parser("vector-query")
     vector_query_parser.add_argument("--collection", required=True)

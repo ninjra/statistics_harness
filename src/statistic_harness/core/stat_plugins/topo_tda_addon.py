@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from typing import Any, Callable
 
 import math
@@ -548,7 +547,6 @@ def _regression_auto(
         if len(levels) < 2:
             continue
         # one-hot encode all but first level
-        base = levels[0]
         for lvl in levels[1:]:
             vec = (df.loc[mask, col] == lvl).to_numpy(dtype=float)
             X_cat_parts.append(vec.reshape(-1, 1))
@@ -692,7 +690,7 @@ def _factor_analysis_auto(
     n_components = int(config.get("n_components", min(5, X.shape[1])))
     if HAS_SKLEARN and PCA is not None:
         pca = PCA(n_components=n_components, random_state=int(config.get("seed", 1337)))
-        Z = pca.fit_transform(X)
+        pca.fit(X)
         loadings = pca.components_.T
         explained = pca.explained_variance_ratio_.tolist()
         top = []
@@ -859,7 +857,7 @@ def _topographic_similarity_angle_projection(
         rows.append(
             {
                 "group_column": gcol,
-                "levels": [_safe_group_value(l, redactor) for l in levels],
+                "levels": [_safe_group_value(level_value, redactor) for level_value in levels],
                 "min_cosine_pair": [
                     _safe_group_value(best_pair[0], redactor),
                     _safe_group_value(best_pair[1], redactor),
@@ -3053,7 +3051,6 @@ def _actionable_ops_levers_v1(
                 target_process_ids = [str(r.get("process_norm") or "").strip() for r in top_rows if str(r.get("process_norm") or "").strip()]
                 if not target_process_ids:
                     continue
-                process_list = ", ".join(target_process_ids)
                 strongest_key = str(top_rows[0].get("key") or "payout_id")
                 total_runs = int(sum(int(r.get("runs_with_key") or 0) for r in top_rows))
                 total_delta = float(sum(float(r.get("estimated_delta_seconds_upper") or 0.0) for r in top_rows))

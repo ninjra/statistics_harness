@@ -6,8 +6,15 @@ import time
 from typing import Any
 
 from statistic_harness.core.template import mapping_hash
+from statistic_harness.core.erp_inference import infer_erp_type_from_field_names
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import json_dumps, now_iso, quote_identifier, write_json
+from statistic_harness.core.utils import (
+    json_dumps,
+    normalize_source_classification,
+    now_iso,
+    quote_identifier,
+    write_json,
+)
 
 
 _NUMERIC_RE = re.compile(r"^[+-]?(\d+(\.\d+)?|\.\d+)$")
@@ -287,6 +294,20 @@ class Plugin:
         if not template_fields:
             return PluginResult("error", "Template fields missing", {}, [], [], None)
 
+        try:
+            inferred_erp = infer_erp_type_from_field_names(
+                [str(field.get("name") or "") for field in template_fields]
+            )
+            project_id = str(getattr(ctx, "project_id", "") or "")
+            if project_id and inferred_erp != "unknown":
+                project_row = ctx.storage.fetch_project(project_id)
+                current_erp = str((project_row or {}).get("erp_type") or "").strip().lower()
+                if current_erp in {"", "unknown", inferred_erp}:
+                    ctx.storage.update_project_erp_type(project_id, inferred_erp)
+        except Exception:
+            # ERP tagging is best-effort; never fail normalization on metadata enrichment.
+            pass
+
         # Reconcile mapping keys with template field names.
         # This matters when a template already exists with semantic field names (e.g., QUEUE_DT),
         # but the dataset columns are generic (e.g., c1..cN). In that case, we map by column order
@@ -330,7 +351,16 @@ class Plugin:
             "numeric_threshold": numeric_threshold,
             "exclude_name_patterns": exclude_patterns,
         }
-        mapping_payload = {"mapping": mapping, "normalization": normalized_settings}
+        source_payload = {
+            "classification": normalize_source_classification(
+                str(dataset.get("source_classification") or "")
+            )
+        }
+        mapping_payload = {
+            "mapping": mapping,
+            "normalization": normalized_settings,
+            "source": source_payload,
+        }
         mapping_json = json_dumps(mapping_payload)
         mapping_h = mapping_hash(mapping_payload)
 

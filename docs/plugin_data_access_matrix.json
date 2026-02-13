@@ -1,13 +1,13 @@
 {
   "contract_counts": {
-    "artifact_only": 10,
+    "artifact_only": 13,
     "dataset_loader": 129,
     "iter_batches": 0,
-    "orchestration_only": 26,
+    "orchestration_only": 27,
     "sql_assist": 3,
     "sql_direct": 3
   },
-  "plugin_count": 171,
+  "plugin_count": 175,
   "plugins": [
     {
       "access_contracts": [
@@ -2512,6 +2512,38 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "plugin_id": "causal_recommendations_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "plugin_id": "changepoint_detection_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
         "sql_direct"
       ],
       "contract_sources": [
@@ -2569,6 +2601,38 @@
       ],
       "plugin_id": "planner_basic",
       "plugin_type": "planner",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "contract_sources": [
+        "inferred:depends_on"
+      ],
+      "plugin_id": "process_mining_conformance_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "plugin_id": "process_mining_discovery_v1",
+      "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,

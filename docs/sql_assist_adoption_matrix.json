@@ -1,12 +1,12 @@
 {
   "intent_counts": {
-    "not_applicable": 40,
+    "not_applicable": 44,
     "optional": 1,
     "recommended": 127,
     "required": 3
   },
   "intent_sql_coverage": {
-    "not_applicable": 0.1,
+    "not_applicable": 0.09090909090909091,
     "optional": 1.0,
     "recommended": 1.0,
     "required": 1.0
@@ -17,7 +17,7 @@
     "recommended": 127,
     "required": 3
   },
-  "plugin_count": 171,
+  "plugin_count": 175,
   "plugins": [
     {
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
@@ -1736,6 +1736,28 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "causal_recommendations_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "changepoint_detection_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
       "plugin_id": "ingest_tabular",
       "plugin_type": "ingest",
       "sql_intent": "not_applicable",
@@ -1773,6 +1795,28 @@
       "plugin_type": "planner",
       "sql_intent": "not_applicable",
       "sql_intent_source": "override",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "process_mining_conformance_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "process_mining_discovery_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
       "uses_sql": false,
       "uses_sql_direct": false,
       "uses_sql_effective": false,

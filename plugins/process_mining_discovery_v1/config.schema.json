@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "case_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "activity_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "time_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "top_k_edges": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 20
+    }
+  },
+  "additionalProperties": true
+}

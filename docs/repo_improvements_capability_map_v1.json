@@ -1,0 +1,442 @@
+{
+  "classification_counts": {
+    "deferred": 1,
+    "existing_plugin_enhancement": 0,
+    "new_plugin_scaffold": 9
+  },
+  "generated_by": "scripts/map_repo_improvements_to_capabilities.py",
+  "items": [
+    {
+      "canonical_item_id": "CANONICAL_001",
+      "category": "Causal & Uplift Modeling",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_001_v1",
+        "analysis_plugin_011_v1",
+        "analysis_plugin_021_v1",
+        "analysis_plugin_031_v1",
+        "analysis_plugin_041_v1",
+        "analysis_plugin_051_v1",
+        "analysis_plugin_061_v1",
+        "analysis_plugin_071_v1",
+        "analysis_plugin_081_v1",
+        "analysis_plugin_091_v1",
+        "analysis_plugin_101_v1",
+        "analysis_plugin_111_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_001_v1",
+        "analysis_plugin_011_v1",
+        "analysis_plugin_021_v1",
+        "analysis_plugin_031_v1",
+        "analysis_plugin_041_v1",
+        "analysis_plugin_051_v1",
+        "analysis_plugin_061_v1",
+        "analysis_plugin_071_v1",
+        "analysis_plugin_081_v1",
+        "analysis_plugin_091_v1",
+        "analysis_plugin_101_v1",
+        "analysis_plugin_111_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_002",
+      "category": "Process Mining & Event Modeling",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_002_v1",
+        "analysis_plugin_012_v1",
+        "analysis_plugin_022_v1",
+        "analysis_plugin_032_v1",
+        "analysis_plugin_042_v1",
+        "analysis_plugin_052_v1",
+        "analysis_plugin_062_v1",
+        "analysis_plugin_072_v1",
+        "analysis_plugin_082_v1",
+        "analysis_plugin_092_v1",
+        "analysis_plugin_102_v1",
+        "analysis_plugin_112_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_002_v1",
+        "analysis_plugin_012_v1",
+        "analysis_plugin_022_v1",
+        "analysis_plugin_032_v1",
+        "analysis_plugin_042_v1",
+        "analysis_plugin_052_v1",
+        "analysis_plugin_062_v1",
+        "analysis_plugin_072_v1",
+        "analysis_plugin_082_v1",
+        "analysis_plugin_092_v1",
+        "analysis_plugin_102_v1",
+        "analysis_plugin_112_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_003",
+      "category": "Performance & Resource Governance",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_003_v1",
+        "analysis_plugin_013_v1",
+        "analysis_plugin_023_v1",
+        "analysis_plugin_033_v1",
+        "analysis_plugin_043_v1",
+        "analysis_plugin_053_v1",
+        "analysis_plugin_063_v1",
+        "analysis_plugin_073_v1",
+        "analysis_plugin_083_v1",
+        "analysis_plugin_093_v1",
+        "analysis_plugin_103_v1",
+        "analysis_plugin_113_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_003_v1",
+        "analysis_plugin_013_v1",
+        "analysis_plugin_023_v1",
+        "analysis_plugin_033_v1",
+        "analysis_plugin_043_v1",
+        "analysis_plugin_053_v1",
+        "analysis_plugin_063_v1",
+        "analysis_plugin_073_v1",
+        "analysis_plugin_083_v1",
+        "analysis_plugin_093_v1",
+        "analysis_plugin_103_v1",
+        "analysis_plugin_113_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_004",
+      "category": "Statistical Rigor & Multiple Testing",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_004_v1",
+        "analysis_plugin_014_v1",
+        "analysis_plugin_024_v1",
+        "analysis_plugin_034_v1",
+        "analysis_plugin_044_v1",
+        "analysis_plugin_054_v1",
+        "analysis_plugin_064_v1",
+        "analysis_plugin_074_v1",
+        "analysis_plugin_084_v1",
+        "analysis_plugin_094_v1",
+        "analysis_plugin_104_v1",
+        "analysis_plugin_114_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_004_v1",
+        "analysis_plugin_014_v1",
+        "analysis_plugin_024_v1",
+        "analysis_plugin_034_v1",
+        "analysis_plugin_044_v1",
+        "analysis_plugin_054_v1",
+        "analysis_plugin_064_v1",
+        "analysis_plugin_074_v1",
+        "analysis_plugin_084_v1",
+        "analysis_plugin_094_v1",
+        "analysis_plugin_104_v1",
+        "analysis_plugin_114_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_005",
+      "category": "Drift & Data Quality",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_005_v1",
+        "analysis_plugin_015_v1",
+        "analysis_plugin_025_v1",
+        "analysis_plugin_035_v1",
+        "analysis_plugin_045_v1",
+        "analysis_plugin_055_v1",
+        "analysis_plugin_065_v1",
+        "analysis_plugin_075_v1",
+        "analysis_plugin_085_v1",
+        "analysis_plugin_095_v1",
+        "analysis_plugin_105_v1",
+        "analysis_plugin_115_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_005_v1",
+        "analysis_plugin_015_v1",
+        "analysis_plugin_025_v1",
+        "analysis_plugin_035_v1",
+        "analysis_plugin_045_v1",
+        "analysis_plugin_055_v1",
+        "analysis_plugin_065_v1",
+        "analysis_plugin_075_v1",
+        "analysis_plugin_085_v1",
+        "analysis_plugin_095_v1",
+        "analysis_plugin_105_v1",
+        "analysis_plugin_115_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_006",
+      "category": "Explainability & Evidence",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_006_v1",
+        "analysis_plugin_016_v1",
+        "analysis_plugin_026_v1",
+        "analysis_plugin_036_v1",
+        "analysis_plugin_046_v1",
+        "analysis_plugin_056_v1",
+        "analysis_plugin_066_v1",
+        "analysis_plugin_076_v1",
+        "analysis_plugin_086_v1",
+        "analysis_plugin_096_v1",
+        "analysis_plugin_106_v1",
+        "analysis_plugin_116_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_006_v1",
+        "analysis_plugin_016_v1",
+        "analysis_plugin_026_v1",
+        "analysis_plugin_036_v1",
+        "analysis_plugin_046_v1",
+        "analysis_plugin_056_v1",
+        "analysis_plugin_066_v1",
+        "analysis_plugin_076_v1",
+        "analysis_plugin_086_v1",
+        "analysis_plugin_096_v1",
+        "analysis_plugin_106_v1",
+        "analysis_plugin_116_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_007",
+      "category": "GPU & Engine Optimization",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_007_v1",
+        "analysis_plugin_017_v1",
+        "analysis_plugin_027_v1",
+        "analysis_plugin_037_v1",
+        "analysis_plugin_047_v1",
+        "analysis_plugin_057_v1",
+        "analysis_plugin_067_v1",
+        "analysis_plugin_077_v1",
+        "analysis_plugin_087_v1",
+        "analysis_plugin_097_v1",
+        "analysis_plugin_107_v1",
+        "analysis_plugin_117_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_007_v1",
+        "analysis_plugin_017_v1",
+        "analysis_plugin_027_v1",
+        "analysis_plugin_037_v1",
+        "analysis_plugin_047_v1",
+        "analysis_plugin_057_v1",
+        "analysis_plugin_067_v1",
+        "analysis_plugin_077_v1",
+        "analysis_plugin_087_v1",
+        "analysis_plugin_097_v1",
+        "analysis_plugin_107_v1",
+        "analysis_plugin_117_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_008",
+      "category": "Synthetic Data & Benchmarking",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_008_v1",
+        "analysis_plugin_018_v1",
+        "analysis_plugin_028_v1",
+        "analysis_plugin_038_v1",
+        "analysis_plugin_048_v1",
+        "analysis_plugin_058_v1",
+        "analysis_plugin_068_v1",
+        "analysis_plugin_078_v1",
+        "analysis_plugin_088_v1",
+        "analysis_plugin_098_v1",
+        "analysis_plugin_108_v1",
+        "analysis_plugin_118_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_008_v1",
+        "analysis_plugin_018_v1",
+        "analysis_plugin_028_v1",
+        "analysis_plugin_038_v1",
+        "analysis_plugin_048_v1",
+        "analysis_plugin_058_v1",
+        "analysis_plugin_068_v1",
+        "analysis_plugin_078_v1",
+        "analysis_plugin_088_v1",
+        "analysis_plugin_098_v1",
+        "analysis_plugin_108_v1",
+        "analysis_plugin_118_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_009",
+      "category": "LLM / Agentic Augmentation",
+      "classification": "deferred",
+      "classification_rationale": "Deferred for phase-1 local-only policy: avoid runtime agentic/online dependencies.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_009_v1",
+        "analysis_plugin_019_v1",
+        "analysis_plugin_029_v1",
+        "analysis_plugin_039_v1",
+        "analysis_plugin_049_v1",
+        "analysis_plugin_059_v1",
+        "analysis_plugin_069_v1",
+        "analysis_plugin_079_v1",
+        "analysis_plugin_089_v1",
+        "analysis_plugin_099_v1",
+        "analysis_plugin_109_v1",
+        "analysis_plugin_119_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_009_v1",
+        "analysis_plugin_019_v1",
+        "analysis_plugin_029_v1",
+        "analysis_plugin_039_v1",
+        "analysis_plugin_049_v1",
+        "analysis_plugin_059_v1",
+        "analysis_plugin_069_v1",
+        "analysis_plugin_079_v1",
+        "analysis_plugin_089_v1",
+        "analysis_plugin_099_v1",
+        "analysis_plugin_109_v1",
+        "analysis_plugin_119_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    },
+    {
+      "canonical_item_id": "CANONICAL_010",
+      "category": "Normalization & Schema Intelligence",
+      "classification": "new_plugin_scaffold",
+      "classification_rationale": "No proposed plugin id exists yet; requires scaffold before implementation.",
+      "dependency_ids": [],
+      "existing_proposed_plugins": [],
+      "missing_proposed_plugins": [
+        "analysis_plugin_010_v1",
+        "analysis_plugin_020_v1",
+        "analysis_plugin_030_v1",
+        "analysis_plugin_040_v1",
+        "analysis_plugin_050_v1",
+        "analysis_plugin_060_v1",
+        "analysis_plugin_070_v1",
+        "analysis_plugin_080_v1",
+        "analysis_plugin_090_v1",
+        "analysis_plugin_100_v1",
+        "analysis_plugin_110_v1",
+        "analysis_plugin_120_v1"
+      ],
+      "priority_score": 3.375,
+      "source_proposed_plugins": [
+        "analysis_plugin_010_v1",
+        "analysis_plugin_020_v1",
+        "analysis_plugin_030_v1",
+        "analysis_plugin_040_v1",
+        "analysis_plugin_050_v1",
+        "analysis_plugin_060_v1",
+        "analysis_plugin_070_v1",
+        "analysis_plugin_080_v1",
+        "analysis_plugin_090_v1",
+        "analysis_plugin_100_v1",
+        "analysis_plugin_110_v1",
+        "analysis_plugin_120_v1"
+      ],
+      "target_paths": [
+        "plugins",
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "tests"
+      ]
+    }
+  ],
+  "source_normalized_catalog": "docs/repo_improvements_catalog_v3.normalized.json",
+  "total_items": 10
+}

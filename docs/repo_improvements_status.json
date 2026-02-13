@@ -1,0 +1,257 @@
+{
+  "generated_by": "scripts/run_repo_improvements_pipeline.py",
+  "items": [
+    {
+      "canonical_item_id": "CANONICAL_001",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_1"
+    },
+    {
+      "canonical_item_id": "CANONICAL_002",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_1"
+    },
+    {
+      "canonical_item_id": "CANONICAL_003",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_1"
+    },
+    {
+      "canonical_item_id": "CANONICAL_004",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_1"
+    },
+    {
+      "canonical_item_id": "CANONICAL_005",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_2"
+    },
+    {
+      "canonical_item_id": "CANONICAL_006",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_2"
+    },
+    {
+      "canonical_item_id": "CANONICAL_007",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_2"
+    },
+    {
+      "canonical_item_id": "CANONICAL_008",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_3"
+    },
+    {
+      "canonical_item_id": "CANONICAL_009",
+      "classification": "deferred",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 2.375,
+      "status": "deferred",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_3"
+    },
+    {
+      "canonical_item_id": "CANONICAL_010",
+      "classification": "new_plugin_scaffold",
+      "linked_pr": null,
+      "owner": null,
+      "priority_score": 3.375,
+      "status": "todo",
+      "traceability": {
+        "report_keys": [
+          "report_keys"
+        ],
+        "target_paths": [
+          "plugins",
+          "src/statistic_harness/core/plugin_manager.py",
+          "src/statistic_harness/core/stat_plugins/registry.py",
+          "tests"
+        ]
+      },
+      "validation": {
+        "last_verified_utc": null,
+        "result": "pending",
+        "tests": []
+      },
+      "wave": "wave_3"
+    }
+  ],
+  "source_execution_plan": "docs/repo_improvements_execution_plan_v1.json",
+  "total_items": 10
+}

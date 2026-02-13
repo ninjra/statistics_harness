@@ -57,7 +57,7 @@ def test_gap_zero_on_identical_to_reference(run_dir: Path):
     )
     # Build a signed baseline that matches the observed ALL vector.
     inferred = infer_columns(df, {"time_column": "auto", "group_by": "auto", "value_columns": "auto"})
-    cols = pick_columns(df, inferred, {"ideaspace_max_group_cols": 0})
+    pick_columns(df, inferred, {"ideaspace_max_group_cols": 0})
     ideal_vector = {"duration_p95": 10.0, "rate_per_min": 250.0}
     schema_path = Path(__file__).resolve().parents[1] / "docs" / "ideaspace_baseline.schema.json"
     baseline = {

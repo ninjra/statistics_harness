@@ -196,7 +196,6 @@ def test_shell_guard_allows_fc_list_probe():
 
 def test_shell_guard_allows_site_packages_caller(tmp_path):
     import subprocess
-    from pathlib import Path
 
     orig_check_output = subprocess.check_output
     try:

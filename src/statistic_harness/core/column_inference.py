@@ -49,7 +49,6 @@ def _score_parsed(
     out_of_range = ((years < 1970) | (years > 2100)).mean()
     span_seconds = float((parsed.max() - parsed.min()).total_seconds())
     span_days = span_seconds / 86400.0
-    unique_days = parsed.dt.date.nunique()
     unique_ts = parsed.nunique()
 
     score = parse_ratio * 2.0

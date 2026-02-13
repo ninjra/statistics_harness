@@ -64,3 +64,43 @@ def test_evaluator_harness_passes_on_synthetic_report(tmp_path):
 
     ok, messages = evaluate_report(report_path, Path("tests/fixtures/ground_truth_synth.yaml"))
     assert ok, messages
+
+
+def test_evaluator_repo_improvements_wave1_fixture(tmp_path):
+    report = {
+        "run_id": "wave1",
+        "created_at": "now",
+        "status": "completed",
+        "input": {"filename": "x", "rows": 1, "cols": 1, "inferred_types": {}},
+        "lineage": {
+            "run": {"run_id": "wave1", "created_at": "now", "status": "completed", "run_seed": 0},
+            "input": {"upload_id": "", "filename": "x", "canonical_path": "", "input_hash": "", "sha256": "", "size_bytes": 0},
+            "dataset": {"dataset_version_id": "dv"},
+            "raw_format": None,
+            "template": None,
+            "plugins": {},
+        },
+        "plugins": {
+            "analysis_plugin_001_v1": {
+                "status": "ok",
+                "summary": "",
+                "metrics": {"impact_score": 1.0},
+                "findings": [
+                    {
+                        "kind": "improvement_candidate",
+                        "category": "Causal & Uplift Modeling",
+                    }
+                ],
+                "artifacts": [],
+                "error": None,
+            }
+        },
+    }
+    report_path = tmp_path / "report_wave1.json"
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+
+    ok, messages = evaluate_report(
+        report_path,
+        Path("tests/fixtures/ground_truth_repo_improvements_wave1.yaml"),
+    )
+    assert ok, messages

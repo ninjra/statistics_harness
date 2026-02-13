@@ -29,6 +29,39 @@ PATH_RE = re.compile(
 REQ_ID_RE = re.compile(r"\b[A-Z]{2,8}-\d{2}\b")
 TABLE_ROW_RE = re.compile(r"^\|\s*(?P<id>[A-Z]{2,8}-\d{2})\s*\|\s*(?P<body>.*)\|\s*$")
 
+EXCLUDED_BINDING_DOC_PATHS = {
+    "docs/implementation_matrix.json",
+    "docs/implementation_matrix.md",
+    "docs/plugins_functionality_matrix.json",
+    "docs/plugins_functionality_matrix.md",
+    "docs/binding_implementation_matrix.json",
+    "docs/binding_implementation_matrix.md",
+    "docs/redteam_ids_matrix.json",
+    "docs/redteam_ids_matrix.md",
+    "docs/full_instruction_coverage_report.json",
+    "docs/full_instruction_coverage_report.md",
+    "docs/full_repo_misses.json",
+    "docs/full_repo_misses.md",
+    "docs/repo_improvements_catalog_v3.json",
+    "docs/repo_improvements_catalog_v3.canonical.json",
+    "docs/repo_improvements_catalog_v3.reduction_report.json",
+    "docs/repo_improvements_catalog_v3.normalized.json",
+    "docs/repo_improvements_capability_map_v1.json",
+    "docs/repo_improvements_execution_plan_v1.json",
+    "docs/repo_improvements_execution_plan_v1.md",
+    "docs/repo_improvements_dependency_validation_v1.json",
+    "docs/repo_improvements_scaffold_plan_v1.json",
+    "docs/repo_improvements_status.json",
+    "docs/repo_improvements_status.md",
+    "docs/_codex_repo_manifest.txt",
+    "docs/_codex_plugin_catalog.md",
+    "docs/codex_statistics_harness_blueprint.md",
+}
+
+EXCLUDED_ROOT_PLAN_DOC_NAMES = {
+    "repo-improvements-catalog-v3-implementation-path-plan.md",
+}
+
 
 @dataclass(frozen=True)
 class DocScan:
@@ -140,7 +173,10 @@ def _iter_binding_docs(
 
 def _iter_root_plan_docs(root: Path) -> list[Path]:
     # Per user direction: include all repo-root *-plan.md files as binding inputs.
-    return sorted([p for p in root.glob("*-plan.md") if p.is_file()], key=lambda p: str(p).lower())
+    return sorted(
+        [p for p in root.glob("*-plan.md") if p.is_file() and p.name not in EXCLUDED_ROOT_PLAN_DOC_NAMES],
+        key=lambda p: str(p).lower(),
+    )
 
 
 def scan_binding_docs(
@@ -156,16 +192,7 @@ def scan_binding_docs(
     aliases = _load_json(alias_path)
     non_plugin_tokens = set((_load_json(non_plugin_path).get("tokens") or []))
 
-    exclude_paths = {
-        "docs/implementation_matrix.json",
-        "docs/implementation_matrix.md",
-        "docs/plugins_functionality_matrix.json",
-        "docs/plugins_functionality_matrix.md",
-        "docs/binding_implementation_matrix.json",
-        "docs/binding_implementation_matrix.md",
-        "docs/redteam_ids_matrix.json",
-        "docs/redteam_ids_matrix.md",
-    }
+    exclude_paths = set(EXCLUDED_BINDING_DOC_PATHS)
 
     extra_docs = list(extra_docs or [])
     extra_docs.extend(_iter_root_plan_docs(ROOT))

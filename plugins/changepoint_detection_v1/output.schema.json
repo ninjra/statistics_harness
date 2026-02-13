@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "status",
+    "summary",
+    "metrics",
+    "findings",
+    "artifacts",
+    "budget",
+    "error",
+    "references",
+    "debug"
+  ],
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "budget": {
+      "type": "object"
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "debug": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

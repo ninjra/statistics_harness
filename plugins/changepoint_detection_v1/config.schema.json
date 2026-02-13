@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "value_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "min_points": {
+      "type": "integer",
+      "minimum": 8,
+      "default": 24
+    },
+    "window": {
+      "type": "integer",
+      "minimum": 3,
+      "default": 8
+    }
+  },
+  "additionalProperties": true
+}

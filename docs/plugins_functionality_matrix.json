@@ -120,6 +120,8 @@
       "analysis_recommendation_dedupe_v2",
       "analysis_issue_cards_v2",
       "analysis_traceability_manifest_v2",
+      "causal_recommendations_v1",
+      "changepoint_detection_v1",
       "analysis_bocpd_gaussian",
       "analysis_conformal_feature_prediction",
       "analysis_dp_gmm",
@@ -133,6 +135,8 @@
       "analysis_online_conformal_changepoint",
       "analysis_process_sequence",
       "analysis_scan_statistics",
+      "process_mining_discovery_v1",
+      "process_mining_conformance_v1",
       "analysis_association_rules_apriori_v1",
       "analysis_biclustering_cheng_church_v1",
       "analysis_burst_modeling_hawkes_v1",
@@ -306,6 +310,8 @@
     "analysis_recommendation_dedupe_v2",
     "analysis_issue_cards_v2",
     "analysis_traceability_manifest_v2",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
     "ingest_tabular",
     "analysis_bocpd_gaussian",
     "analysis_conformal_feature_prediction",
@@ -321,6 +327,8 @@
     "analysis_process_sequence",
     "analysis_scan_statistics",
     "planner_basic",
+    "process_mining_discovery_v1",
+    "process_mining_conformance_v1",
     "profile_basic",
     "profile_eventlog",
     "report_bundle",
@@ -786,6 +794,12 @@
     "analysis_waterfall_summary_*": [
       "analysis_waterfall_summary_v2"
     ],
+    "causal_recommendations_v1_*": [
+      "causal_recommendations_v1"
+    ],
+    "changepoint_detection_v1_*": [
+      "changepoint_detection_v1"
+    ],
     "ingest": [
       "ingest_tabular"
     ],
@@ -795,6 +809,12 @@
     ],
     "planner": [
       "planner_basic"
+    ],
+    "process_mining_conformance_*": [
+      "process_mining_conformance_v1"
+    ],
+    "process_mining_discovery_*": [
+      "process_mining_discovery_v1"
     ],
     "profile": [
       "profile_basic",
@@ -943,6 +963,8 @@
     "analysis_recommendation_dedupe_v2",
     "analysis_issue_cards_v2",
     "analysis_traceability_manifest_v2",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
     "analysis_bocpd_gaussian",
     "analysis_conformal_feature_prediction",
     "analysis_dp_gmm",
@@ -956,6 +978,8 @@
     "analysis_online_conformal_changepoint",
     "analysis_process_sequence",
     "analysis_scan_statistics",
+    "process_mining_discovery_v1",
+    "process_mining_conformance_v1",
     "analysis_association_rules_apriori_v1",
     "analysis_biclustering_cheng_church_v1",
     "analysis_burst_modeling_hawkes_v1",
@@ -988,7 +1012,7 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 171,
+  "plugin_count": 175,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -2941,6 +2965,31 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "causal_recommendations_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Assumption-explicit causal effect approximation with simple refutation checks.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Causal Recommendations v1",
+      "plugin_id": "causal_recommendations_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "changepoint_detection_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect simple univariate changepoints with deterministic scoring.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Changepoint Detection v1",
+      "plugin_id": "changepoint_detection_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "ingest_tabular": {
       "capabilities": [],
       "depends_on": [],
@@ -2985,6 +3034,34 @@
       "name": "Planner Basic",
       "plugin_id": "planner_basic",
       "type": "planner",
+      "version": "0.1.0"
+    },
+    "process_mining_conformance_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "process_mining_discovery_v1"
+      ],
+      "description": "Score case variants against an expected process path.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Mining Conformance v1",
+      "plugin_id": "process_mining_conformance_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "process_mining_discovery_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Build a deterministic process transition graph from event-like rows.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Mining Discovery v1",
+      "plugin_id": "process_mining_discovery_v1",
+      "type": "analysis",
       "version": "0.1.0"
     },
     "profile_basic": {
