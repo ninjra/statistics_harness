@@ -6,6 +6,7 @@ import sys
 
 def main() -> int:
     steps = [
+        [sys.executable, "scripts/run_repo_improvements_pipeline.py", "--verify"],
         [sys.executable, "scripts/binding_implementation_matrix.py", "--verify"],
         [sys.executable, "scripts/docs_coverage_matrix.py", "--verify"],
         [sys.executable, "scripts/plugin_data_access_matrix.py", "--verify"],

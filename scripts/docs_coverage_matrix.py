@@ -23,6 +23,35 @@ PATH_RE = re.compile(
     r")"
 )
 
+GENERATED_DOC_PATHS = {
+    "docs/implementation_matrix.json",
+    "docs/implementation_matrix.md",
+    "docs/binding_implementation_matrix.json",
+    "docs/binding_implementation_matrix.md",
+    "docs/plugins_functionality_matrix.json",
+    "docs/plugins_functionality_matrix.md",
+    "docs/redteam_ids_matrix.json",
+    "docs/redteam_ids_matrix.md",
+    "docs/full_instruction_coverage_report.json",
+    "docs/full_instruction_coverage_report.md",
+    "docs/full_repo_misses.json",
+    "docs/full_repo_misses.md",
+    "docs/repo_improvements_catalog_v3.json",
+    "docs/repo_improvements_catalog_v3.canonical.json",
+    "docs/repo_improvements_catalog_v3.reduction_report.json",
+    "docs/repo_improvements_catalog_v3.normalized.json",
+    "docs/repo_improvements_capability_map_v1.json",
+    "docs/repo_improvements_execution_plan_v1.json",
+    "docs/repo_improvements_execution_plan_v1.md",
+    "docs/repo_improvements_dependency_validation_v1.json",
+    "docs/repo_improvements_scaffold_plan_v1.json",
+    "docs/repo_improvements_status.json",
+    "docs/repo_improvements_status.md",
+    "docs/_codex_repo_manifest.txt",
+    "docs/_codex_plugin_catalog.md",
+    "docs/codex_statistics_harness_blueprint.md",
+}
+
 
 @dataclass(frozen=True)
 class DocScan:
@@ -102,16 +131,7 @@ def scan_docs(docs_root: Path, plugins_root: Path) -> list[DocScan]:
         doc_rel = _normalize_doc_rel_path(doc)
         if doc_rel.startswith("docs/deprecated/"):
             doc_kind = "archived"
-        elif doc_rel in {
-            "docs/implementation_matrix.json",
-            "docs/implementation_matrix.md",
-            "docs/binding_implementation_matrix.json",
-            "docs/binding_implementation_matrix.md",
-            "docs/plugins_functionality_matrix.json",
-            "docs/plugins_functionality_matrix.md",
-            "docs/redteam_ids_matrix.json",
-            "docs/redteam_ids_matrix.md",
-        }:
+        elif doc_rel in GENERATED_DOC_PATHS:
             doc_kind = "generated"
         else:
             doc_kind = "normative"

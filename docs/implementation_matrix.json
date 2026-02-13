@@ -11,6 +11,22 @@
     },
     {
       "doc_kind": "generated",
+      "doc_path": "docs/_codex_plugin_catalog.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/_codex_repo_manifest.txt",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
       "doc_path": "docs/binding_implementation_matrix.json",
       "missing_paths": [],
       "plugin_ids": [],
@@ -33,6 +49,14 @@
       "referenced_paths": [
         "docs/deprecated/codex_stat_plugins_spec_pack.md"
       ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/codex_statistics_harness_blueprint.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
@@ -315,17 +339,15 @@
       "unresolved_plugin_tokens": []
     },
     {
-      "doc_kind": "normative",
+      "doc_kind": "generated",
       "doc_path": "docs/full_instruction_coverage_report.json",
       "missing_paths": [],
       "plugin_ids": [],
-      "referenced_paths": [
-        "scripts/full_instruction_coverage_report.py"
-      ],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
-      "doc_kind": "normative",
+      "doc_kind": "generated",
       "doc_path": "docs/full_instruction_coverage_report.md",
       "missing_paths": [],
       "plugin_ids": [],
@@ -333,17 +355,15 @@
       "unresolved_plugin_tokens": []
     },
     {
-      "doc_kind": "normative",
+      "doc_kind": "generated",
       "doc_path": "docs/full_repo_misses.json",
       "missing_paths": [],
       "plugin_ids": [],
-      "referenced_paths": [
-        "scripts/full_repo_misses.py"
-      ],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
-      "doc_kind": "normative",
+      "doc_kind": "generated",
       "doc_path": "docs/full_repo_misses.md",
       "missing_paths": [],
       "plugin_ids": [],
@@ -916,6 +936,137 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_capability_map_v1.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/repo_improvements_catalog.normalized.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/repo_improvements_catalog.raw.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_catalog_v3.canonical.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_catalog_v3.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_catalog_v3.normalized.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_catalog_v3.reduction_report.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_dependency_validation_v1.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_execution_plan_v1.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_execution_plan_v1.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/repo_improvements_runbook.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [
+        "docs/repo_improvements_execution_plan_v1.json",
+        "docs/repo_improvements_touchpoint_map.json",
+        "scripts/full_instruction_coverage_report.py",
+        "scripts/full_repo_misses.py",
+        "scripts/run_repo_improvements_pipeline.py",
+        "scripts/verify_docs_and_plugin_matrices.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_scaffold_plan_v1.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_status.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/repo_improvements_status.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/repo_improvements_touchpoint_map.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [
+        "src/statistic_harness/core/plugin_manager.py",
+        "src/statistic_harness/core/plugin_registry.py",
+        "src/statistic_harness/core/stat_plugins/registry.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "normative",
       "doc_path": "docs/report.schema.json",
       "missing_paths": [],
@@ -958,6 +1109,30 @@
     {
       "doc_kind": "normative",
       "doc_path": "docs/run_manifest.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/schemas/causal.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/schemas/changepoints.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/schemas/process_mining.schema.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -1560,9 +1735,12 @@
   "missing_any_normative": false,
   "scanned_docs": [
     "docs/4_pillars_scoring_spec.md",
+    "docs/_codex_plugin_catalog.md",
+    "docs/_codex_repo_manifest.txt",
     "docs/binding_implementation_matrix.json",
     "docs/binding_implementation_matrix.md",
     "docs/codex_stat_plugins_spec_pack.md",
+    "docs/codex_statistics_harness_blueprint.md",
     "docs/db_normalization_top10.md",
     "docs/deprecated/1-32-2026.txt",
     "docs/deprecated/codex_stat_plugins_spec_pack.md",
@@ -1599,9 +1777,27 @@
     "docs/redteam_ids_matrix.json",
     "docs/redteam_ids_matrix.md",
     "docs/references.md",
+    "docs/repo_improvements_capability_map_v1.json",
+    "docs/repo_improvements_catalog.normalized.schema.json",
+    "docs/repo_improvements_catalog.raw.schema.json",
+    "docs/repo_improvements_catalog_v3.canonical.json",
+    "docs/repo_improvements_catalog_v3.json",
+    "docs/repo_improvements_catalog_v3.normalized.json",
+    "docs/repo_improvements_catalog_v3.reduction_report.json",
+    "docs/repo_improvements_dependency_validation_v1.json",
+    "docs/repo_improvements_execution_plan_v1.json",
+    "docs/repo_improvements_execution_plan_v1.md",
+    "docs/repo_improvements_runbook.md",
+    "docs/repo_improvements_scaffold_plan_v1.json",
+    "docs/repo_improvements_status.json",
+    "docs/repo_improvements_status.md",
+    "docs/repo_improvements_touchpoint_map.json",
     "docs/report.schema.json",
     "docs/rich-useful-plugin-all-plugins-functioning-plan.md",
     "docs/run_manifest.schema.json",
+    "docs/schemas/causal.schema.json",
+    "docs/schemas/changepoints.schema.json",
+    "docs/schemas/process_mining.schema.json",
     "docs/sql_adoption_execution_order.md",
     "docs/sql_adoption_partition_matrix.json",
     "docs/sql_assist_adoption_matrix.json",

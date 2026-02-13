@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Changepoints Artifact Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plugin_id",
+    "generated_at",
+    "series",
+    "changepoints"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "changepoints.v1"
+    },
+    "plugin_id": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "series": {
+      "type": "string"
+    },
+    "changepoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "score"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "score": {
+            "type": "number"
+          },
+          "segment_before_mean": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "segment_after_mean": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

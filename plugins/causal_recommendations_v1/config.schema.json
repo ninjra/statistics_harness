@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "treatment_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "outcome_column": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "treatment_threshold": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "additionalProperties": true
+}

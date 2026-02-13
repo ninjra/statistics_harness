@@ -1,0 +1,15 @@
+{
+  "generated_by": "manual_seed_v1",
+  "touchpoint_map": {
+    "src/statistic_harness/core/plugin_registry.py": [
+      "src/statistic_harness/core/stat_plugins/registry.py",
+      "src/statistic_harness/core/plugin_manager.py"
+    ],
+    "plugins/": [
+      "plugins"
+    ],
+    "tests/": [
+      "tests"
+    ]
+  }
+}

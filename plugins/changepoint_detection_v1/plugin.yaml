@@ -1,0 +1,23 @@
+id: changepoint_detection_v1
+name: Changepoint Detection v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Detect simple univariate changepoints with deterministic scoring.
+  defaults:
+    value_column: null
+    min_points: 24
+    window: 8
+capabilities:
+  - needs_numeric
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

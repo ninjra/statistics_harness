@@ -8,6 +8,7 @@ import sys
 def main() -> int:
     # Order matters: some docs are scanned by other matrix generators.
     steps = [
+        [sys.executable, "scripts/run_repo_improvements_pipeline.py"],
         [sys.executable, "scripts/plugin_data_access_matrix.py"],
         [sys.executable, "scripts/plugins_functionality_matrix.py"],
         [sys.executable, "scripts/sql_assist_adoption_matrix.py"],
@@ -24,4 +25,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
