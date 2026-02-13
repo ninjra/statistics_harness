@@ -217,6 +217,79 @@ def max_upload_bytes() -> int | None:
     return limit
 
 
+SOURCE_CLASSIFICATION_REAL = "real"
+SOURCE_CLASSIFICATION_SYNTHETIC = "synthetic"
+SOURCE_CLASSIFICATION_SYSTEM_DERIVED = "system_derived"
+SOURCE_CLASSIFICATION_DEFAULT = SOURCE_CLASSIFICATION_REAL
+
+_SOURCE_CLASSIFICATION_ALIASES = {
+    SOURCE_CLASSIFICATION_REAL: SOURCE_CLASSIFICATION_REAL,
+    "actual": SOURCE_CLASSIFICATION_REAL,
+    "baseline": SOURCE_CLASSIFICATION_REAL,
+    "authentic": SOURCE_CLASSIFICATION_REAL,
+    SOURCE_CLASSIFICATION_SYNTHETIC: SOURCE_CLASSIFICATION_SYNTHETIC,
+    "synth": SOURCE_CLASSIFICATION_SYNTHETIC,
+    "generated": SOURCE_CLASSIFICATION_SYNTHETIC,
+    "simulated": SOURCE_CLASSIFICATION_SYNTHETIC,
+    "mock": SOURCE_CLASSIFICATION_SYNTHETIC,
+    "fake": SOURCE_CLASSIFICATION_SYNTHETIC,
+    SOURCE_CLASSIFICATION_SYSTEM_DERIVED: SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+    "systemderived": SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+    "system-derived": SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+    "derived": SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+    "machine_derived": SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+    "machine-derived": SOURCE_CLASSIFICATION_SYSTEM_DERIVED,
+}
+
+_SYNTHETIC_FILENAME_TOKENS = (
+    "synthetic",
+    "synth",
+    "generated",
+    "simulated",
+    "mock",
+    "fake",
+)
+_SYSTEM_DERIVED_FILENAME_TOKENS = (
+    "systemderived",
+    "system_derived",
+    "system-derived",
+    "machine_derived",
+    "machine-derived",
+)
+_REAL_FILENAME_TOKENS = ("baseline", "actual", "real", "prod", "production")
+
+
+def infer_source_classification_from_filename(filename: str | None) -> str | None:
+    name = str(filename or "").strip().lower()
+    if not name:
+        return None
+    if any(token in name for token in _SYSTEM_DERIVED_FILENAME_TOKENS):
+        return SOURCE_CLASSIFICATION_SYSTEM_DERIVED
+    if any(token in name for token in _SYNTHETIC_FILENAME_TOKENS):
+        return SOURCE_CLASSIFICATION_SYNTHETIC
+    if any(token in name for token in _REAL_FILENAME_TOKENS):
+        return SOURCE_CLASSIFICATION_REAL
+    return None
+
+
+def normalize_source_classification(
+    value: str | None,
+    filename: str | None = None,
+    *,
+    default: str = SOURCE_CLASSIFICATION_DEFAULT,
+) -> str:
+    raw = str(value or "").strip().lower()
+    if raw:
+        canonical = _SOURCE_CLASSIFICATION_ALIASES.get(raw)
+        if canonical:
+            return canonical
+    inferred = infer_source_classification_from_filename(filename)
+    if inferred:
+        return inferred
+    fallback = _SOURCE_CLASSIFICATION_ALIASES.get(str(default).strip().lower())
+    return fallback or SOURCE_CLASSIFICATION_DEFAULT
+
+
 def auth_enabled() -> bool:
     raw = os.environ.get("STAT_HARNESS_ENABLE_AUTH", "").strip().lower()
     return raw in {"1", "true", "yes", "on"}

@@ -16,6 +16,7 @@ from .utils import (
     DEFAULT_TENANT_ID,
     ensure_dir,
     json_dumps,
+    normalize_source_classification,
     now_iso,
     quote_identifier,
     scope_key,
@@ -684,7 +685,7 @@ class Storage:
         with self.connection() as conn:
             cur = conn.execute(
                 """
-                SELECT upload_id, filename, size_bytes, sha256, created_at
+                SELECT upload_id, filename, size_bytes, sha256, source_classification, created_at
                 FROM uploads
                 WHERE tenant_id = ?
                 ORDER BY created_at DESC
@@ -977,16 +978,26 @@ class Storage:
         sha256: str,
         created_at: str,
         verified_at: str | None = None,
+        source_classification: str | None = None,
     ) -> None:
         tenant_id = self._tenant_id()
+        normalized_source = normalize_source_classification(source_classification, filename)
         with self.connection() as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO uploads
-                (upload_id, tenant_id, filename, size_bytes, sha256, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (upload_id, tenant_id, filename, size_bytes, sha256, source_classification, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
-                (upload_id, tenant_id, filename, size_bytes, sha256, created_at),
+                (
+                    upload_id,
+                    tenant_id,
+                    filename,
+                    size_bytes,
+                    sha256,
+                    normalized_source,
+                    created_at,
+                ),
             )
             # Track CAS blob lifecycle + references.
             conn.execute(
@@ -1083,6 +1094,7 @@ class Storage:
                    dv.row_count,
                    dv.column_count,
                    dv.data_hash,
+                   dv.source_classification,
                    d.project_id
             FROM dataset_versions dv
             JOIN datasets d ON d.dataset_id = dv.dataset_id
@@ -1101,8 +1113,10 @@ class Storage:
         table_name: str,
         data_hash: str | None = None,
         conn: sqlite3.Connection | None = None,
+        source_classification: str | None = None,
     ) -> None:
         tenant_id = self._tenant_id()
+        normalized_source = normalize_source_classification(source_classification)
         if conn is None:
             with self.connection() as temp:
                 self.ensure_dataset_version(
@@ -1112,15 +1126,30 @@ class Storage:
                     table_name,
                     data_hash,
                     temp,
+                    normalized_source,
                 )
                 return
         conn.execute(
             """
-            INSERT OR IGNORE INTO dataset_versions
-            (dataset_version_id, tenant_id, dataset_id, created_at, table_name, data_hash)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO dataset_versions
+            (dataset_version_id, tenant_id, dataset_id, created_at, table_name, data_hash, source_classification)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(dataset_version_id) DO UPDATE SET
+                source_classification = CASE
+                    WHEN excluded.source_classification = 'real'
+                        THEN COALESCE(dataset_versions.source_classification, 'real')
+                    ELSE excluded.source_classification
+                END
             """,
-            (dataset_version_id, tenant_id, dataset_id, created_at, table_name, data_hash),
+            (
+                dataset_version_id,
+                tenant_id,
+                dataset_id,
+                created_at,
+                table_name,
+                data_hash,
+                normalized_source,
+            ),
         )
 
     def reset_dataset_version(

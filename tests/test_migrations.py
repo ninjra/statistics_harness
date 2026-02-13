@@ -96,3 +96,18 @@ def test_migrations_from_golden(tmp_path):
             count = int(cur.fetchone()[0])
             assert count >= min_count
         conn.close()
+
+
+def test_migrations_add_source_classification_columns(tmp_path):
+    db_path = tmp_path / "state.sqlite"
+    conn = sqlite3.connect(db_path)
+    run_migrations(conn)
+    uploads_cols = {
+        str(row[1]) for row in conn.execute("PRAGMA table_info(uploads)").fetchall()
+    }
+    dataset_version_cols = {
+        str(row[1]) for row in conn.execute("PRAGMA table_info(dataset_versions)").fetchall()
+    }
+    assert "source_classification" in uploads_cols
+    assert "source_classification" in dataset_version_cols
+    conn.close()

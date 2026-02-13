@@ -769,6 +769,16 @@ def main() -> int:
         default="",
         help="Optional allowlist of process patterns to keep in recommendations.",
     )
+    parser.add_argument(
+        "--planner-allow",
+        default="",
+        help="Optional allowlist of plugin ids for planner auto mode (comma/space/semicolon-separated).",
+    )
+    parser.add_argument(
+        "--planner-deny",
+        default="",
+        help="Optional denylist of plugin ids for planner auto mode (comma/space/semicolon-separated).",
+    )
     args = parser.parse_args()
 
     # User-facing completeness: include known-issue recommendations in report synthesis.
@@ -838,11 +848,22 @@ def main() -> int:
         llm = _discover_plugin_ids({"llm"})
         plugin_ids = [*profiles, *planners, *transforms, *analyses, *reports, *llm]
 
+    planner_allow = _parse_exclude_processes(str(args.planner_allow or ""))
+    planner_deny = _parse_exclude_processes(str(args.planner_deny or ""))
+    run_settings: dict[str, Any] = {"exclude_processes": exclude_processes}
+    if planner_allow or planner_deny:
+        planner_settings: dict[str, Any] = {}
+        if planner_allow:
+            planner_settings["allow"] = planner_allow
+        if planner_deny:
+            planner_settings["deny"] = planner_deny
+        run_settings["planner_basic"] = planner_settings
+
     pipeline = Pipeline(ctx.appdata_root, Path("plugins"), tenant_id=ctx.tenant_id)
     run_id = pipeline.run(
         input_file=None,
         plugin_ids=plugin_ids,
-        settings={"exclude_processes": exclude_processes},
+        settings=run_settings,
         run_seed=int(args.run_seed),
         dataset_version_id=dataset_version_id,
         run_id=run_id,
@@ -868,6 +889,8 @@ def main() -> int:
         "report_path": str(report_path),
         "runtime_trend": runtime_trend,
         "exclude_processes": exclude_processes,
+        "planner_allow": planner_allow,
+        "planner_deny": planner_deny,
         "recommendations": recs,
         "known_issue_checks": known_checks,
         "ideaspace_route_map": route_map,

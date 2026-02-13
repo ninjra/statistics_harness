@@ -1,7 +1,9 @@
+import json
+
 import pandas as pd
 
 from plugins.transform_normalize_mixed.plugin import Plugin
-from statistic_harness.core.utils import quote_identifier
+from statistic_harness.core.utils import now_iso, quote_identifier
 from tests.conftest import make_context
 
 
@@ -43,3 +45,23 @@ def test_transform_normalize_mixed_basic(run_dir):
         assert row[0] == "foo"
         assert isinstance(row[1], (int, float))
         assert row[2] == "001"
+
+
+def test_transform_normalize_mixed_includes_source_classification(run_dir):
+    df = pd.DataFrame({"Name": ["Foo"], "Amount": ["1"]})
+    ctx = make_context(run_dir, df, {})
+    ctx.storage.ensure_dataset_version(
+        ctx.dataset_version_id,
+        ctx.dataset_id,
+        now_iso(),
+        f"dataset_{ctx.dataset_version_id}",
+        ctx.dataset_id,
+        source_classification="synthetic",
+    )
+
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    dataset_template = ctx.storage.fetch_dataset_template(ctx.dataset_version_id)
+    assert dataset_template is not None
+    payload = json.loads(str(dataset_template.get("mapping_json") or "{}"))
+    assert payload.get("source", {}).get("classification") == "synthetic"

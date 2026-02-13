@@ -910,6 +910,14 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "normative",
+      "doc_path": "docs/proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "generated",
       "doc_path": "docs/redteam_ids_matrix.json",
       "missing_paths": [],
@@ -1774,6 +1782,7 @@
     "docs/plugin_manifest.schema.json",
     "docs/plugins_functionality_matrix.json",
     "docs/plugins_functionality_matrix.md",
+    "docs/proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
     "docs/redteam_ids_matrix.json",
     "docs/redteam_ids_matrix.md",
     "docs/references.md",

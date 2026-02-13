@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import sqlite3
 from typing import Callable
 
-from .utils import DEFAULT_TENANT_ID, now_iso
+from .utils import DEFAULT_TENANT_ID, json_dumps, normalize_source_classification, now_iso
 
 Migration = Callable[[sqlite3.Connection], None]
 
@@ -907,6 +909,119 @@ def migration_26(conn: sqlite3.Connection) -> None:
     )
 
 
+def _ensure_source_classification_columns(conn: sqlite3.Connection) -> None:
+    uploads_added = False
+    dataset_versions_added = False
+
+    if not _column_exists(conn, "uploads", "source_classification"):
+        conn.execute(
+            "ALTER TABLE uploads ADD COLUMN source_classification TEXT NOT NULL DEFAULT 'real'"
+        )
+        uploads_added = True
+    if not _column_exists(conn, "dataset_versions", "source_classification"):
+        conn.execute(
+            "ALTER TABLE dataset_versions ADD COLUMN source_classification TEXT NOT NULL DEFAULT 'real'"
+        )
+        dataset_versions_added = True
+
+    if uploads_added:
+        conn.execute(
+            """
+            UPDATE uploads
+            SET source_classification = 'system_derived'
+            WHERE lower(filename) LIKE '%systemderived%'
+               OR lower(filename) LIKE '%system_derived%'
+               OR lower(filename) LIKE '%system-derived%'
+            """
+        )
+        conn.execute(
+            """
+            UPDATE uploads
+            SET source_classification = 'synthetic'
+            WHERE lower(filename) LIKE '%synthetic%'
+               OR lower(filename) LIKE '%synth%'
+               OR lower(filename) LIKE '%generated%'
+               OR lower(filename) LIKE '%simulated%'
+            """
+        )
+
+    if uploads_added or dataset_versions_added:
+        conn.execute(
+            """
+            UPDATE dataset_versions
+            SET source_classification = (
+                SELECT CASE
+                    WHEN SUM(CASE WHEN u.source_classification = 'system_derived' THEN 1 ELSE 0 END) > 0
+                        THEN 'system_derived'
+                    WHEN SUM(CASE WHEN u.source_classification = 'synthetic' THEN 1 ELSE 0 END) > 0
+                        THEN 'synthetic'
+                    ELSE 'real'
+                END
+                FROM runs r
+                JOIN uploads u
+                  ON u.upload_id = r.upload_id
+                 AND u.tenant_id = r.tenant_id
+                WHERE r.dataset_version_id = dataset_versions.dataset_version_id
+                  AND r.tenant_id = dataset_versions.tenant_id
+            )
+            WHERE EXISTS (
+                SELECT 1
+                FROM runs r
+                WHERE r.dataset_version_id = dataset_versions.dataset_version_id
+                  AND r.tenant_id = dataset_versions.tenant_id
+            )
+            """
+        )
+
+    # Backfill legacy normalization mappings that predate source metadata.
+    rows = conn.execute(
+        """
+        SELECT dt.dataset_version_id,
+               dt.template_id,
+               dt.mapping_json,
+               dv.source_classification
+        FROM dataset_templates dt
+        JOIN dataset_versions dv
+          ON dv.dataset_version_id = dt.dataset_version_id
+         AND dv.tenant_id = dt.tenant_id
+        """
+    ).fetchall()
+    for row in rows:
+        raw_json = str(row[2] or "").strip()
+        if not raw_json:
+            continue
+        try:
+            payload = json.loads(raw_json)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict):
+            continue
+        source_cls = normalize_source_classification(str(row[3] or ""))
+        source_block = payload.get("source")
+        current_cls = ""
+        if isinstance(source_block, dict):
+            current_cls = str(source_block.get("classification") or "")
+        if normalize_source_classification(current_cls) == source_cls:
+            continue
+        payload["source"] = {"classification": source_cls}
+        new_json = json_dumps(payload)
+        mapping_h = hashlib.sha256(new_json.encode("utf-8")).hexdigest()
+        conn.execute(
+            """
+            UPDATE dataset_templates
+            SET mapping_json = ?, mapping_hash = ?, updated_at = COALESCE(updated_at, ?)
+            WHERE dataset_version_id = ? AND template_id = ?
+            """,
+            (
+                new_json,
+                mapping_h,
+                now_iso(),
+                str(row[0]),
+                int(row[1]),
+            ),
+        )
+
+
 MIGRATIONS: list[Migration] = [
     migration_1,
     migration_2,
@@ -953,3 +1068,5 @@ def run_migrations(conn: sqlite3.Connection) -> None:
             (version, now_iso()),
         )
         conn.execute(f"PRAGMA user_version = {version}")
+    # Keep latest additive columns present even when DBs were created at the current user_version.
+    _ensure_source_classification_columns(conn)

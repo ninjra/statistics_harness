@@ -7,7 +7,13 @@ from typing import Any
 
 from statistic_harness.core.template import mapping_hash
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import json_dumps, now_iso, quote_identifier, write_json
+from statistic_harness.core.utils import (
+    json_dumps,
+    normalize_source_classification,
+    now_iso,
+    quote_identifier,
+    write_json,
+)
 
 
 _NUMERIC_RE = re.compile(r"^[+-]?(\d+(\.\d+)?|\.\d+)$")
@@ -330,7 +336,16 @@ class Plugin:
             "numeric_threshold": numeric_threshold,
             "exclude_name_patterns": exclude_patterns,
         }
-        mapping_payload = {"mapping": mapping, "normalization": normalized_settings}
+        source_payload = {
+            "classification": normalize_source_classification(
+                str(dataset.get("source_classification") or "")
+            )
+        }
+        mapping_payload = {
+            "mapping": mapping,
+            "normalization": normalized_settings,
+            "source": source_payload,
+        }
         mapping_json = json_dumps(mapping_payload)
         mapping_h = mapping_hash(mapping_payload)
 

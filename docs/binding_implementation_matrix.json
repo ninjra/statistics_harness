@@ -1276,6 +1276,17 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/references.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -2635,6 +2646,7 @@
     "docs/plugin_data_access_overrides.json",
     "docs/plugin_dev_guide.md",
     "docs/plugin_manifest.schema.json",
+    "docs/proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
     "docs/references.md",
     "docs/repo_improvements_catalog.normalized.schema.json",
     "docs/repo_improvements_catalog.raw.schema.json",

@@ -54,6 +54,7 @@ from statistic_harness.core.utils import (
     atomic_write_text,
     json_dumps,
     max_upload_bytes,
+    normalize_source_classification,
     now_iso,
     safe_join,
     scope_key,
@@ -2137,7 +2138,11 @@ async def raw_format_detail(request: Request, format_id: int) -> HTMLResponse:
 
 
 @app.post("/api/upload")
-async def upload(file: UploadFile = File(...)) -> JSONResponse:
+async def upload(
+    request: Request,
+    file: UploadFile = File(...),
+    source_classification: str = Form(""),
+) -> JSONResponse:
     upload_id = uuid.uuid4().hex
     upload_dir = upload_quarantine_dir(APPDATA_DIR, upload_id)
     upload_dir.mkdir(parents=True, exist_ok=True)
@@ -2148,6 +2153,10 @@ async def upload(file: UploadFile = File(...)) -> JSONResponse:
     if Path(filename).suffix.lower() not in allowed:
         raise HTTPException(status_code=400, detail="Unsupported file type")
     target = upload_dir / filename
+    requested_source = source_classification or str(
+        request.query_params.get("source_classification") or ""
+    )
+    normalized_source = normalize_source_classification(requested_source, filename)
     hasher = hashlib.sha256()
     total = 0
     max_bytes = max_upload_bytes()
@@ -2179,20 +2188,31 @@ async def upload(file: UploadFile = File(...)) -> JSONResponse:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     verified_at = now_iso()
     pipeline.storage.create_upload(
-        upload_id, filename, total, sha256, verified_at, verified_at=verified_at
+        upload_id,
+        filename,
+        total,
+        sha256,
+        verified_at,
+        verified_at=verified_at,
+        source_classification=normalized_source,
     )
     return JSONResponse(
         {
             "upload_id": upload_id,
             "filename": filename,
             "sha256": sha256,
+            "source_classification": normalized_source,
             "deduplicated": bool(deduplicated),
         }
     )
 
 
 @app.post("/api/upload/raw")
-async def upload_raw(request: Request, filename: str = Query(...)) -> JSONResponse:
+async def upload_raw(
+    request: Request,
+    filename: str = Query(...),
+    source_classification: str = Query(""),
+) -> JSONResponse:
     upload_id = uuid.uuid4().hex
     upload_dir = upload_quarantine_dir(APPDATA_DIR, upload_id)
     upload_dir.mkdir(parents=True, exist_ok=True)
@@ -2203,6 +2223,7 @@ async def upload_raw(request: Request, filename: str = Query(...)) -> JSONRespon
     if Path(filename).suffix.lower() not in allowed:
         raise HTTPException(status_code=400, detail="Unsupported file type")
     target = upload_dir / filename
+    normalized_source = normalize_source_classification(source_classification, filename)
     hasher = hashlib.sha256()
     total = 0
     max_bytes = max_upload_bytes()
@@ -2235,13 +2256,20 @@ async def upload_raw(request: Request, filename: str = Query(...)) -> JSONRespon
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     verified_at = now_iso()
     pipeline.storage.create_upload(
-        upload_id, filename, total, sha256, verified_at, verified_at=verified_at
+        upload_id,
+        filename,
+        total,
+        sha256,
+        verified_at,
+        verified_at=verified_at,
+        source_classification=normalized_source,
     )
     return JSONResponse(
         {
             "upload_id": upload_id,
             "filename": filename,
             "sha256": sha256,
+            "source_classification": normalized_source,
             "deduplicated": bool(deduplicated),
         }
     )

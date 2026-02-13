@@ -65,3 +65,35 @@ def test_upload_blob_refcount_increments(tmp_path: Path) -> None:
     assert int(blob.get("refcount") or 0) == 2
     assert blob.get("verified_at") == created_at
 
+
+def test_upload_source_classification_inference_and_override(tmp_path: Path) -> None:
+    db_path = tmp_path / "appdata" / "state.sqlite"
+    storage = Storage(db_path)
+
+    created_at = now_iso()
+    storage.create_upload("u1", "baseline_real_data.csv", 10, "sha-real", created_at)
+    storage.create_upload(
+        "u2",
+        "proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
+        10,
+        "sha-synth",
+        created_at,
+    )
+    storage.create_upload(
+        "u3",
+        "capture.csv",
+        10,
+        "sha-derived",
+        created_at,
+        source_classification="systemderived",
+    )
+
+    upload_1 = storage.fetch_upload("u1")
+    upload_2 = storage.fetch_upload("u2")
+    upload_3 = storage.fetch_upload("u3")
+    assert upload_1 is not None
+    assert upload_2 is not None
+    assert upload_3 is not None
+    assert upload_1["source_classification"] == "real"
+    assert upload_2["source_classification"] == "synthetic"
+    assert upload_3["source_classification"] == "system_derived"
