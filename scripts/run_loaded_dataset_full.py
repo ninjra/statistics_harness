@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -13,6 +14,10 @@ from typing import Any
 import yaml
 
 from statistic_harness.core.pipeline import Pipeline
+from statistic_harness.core.erp_inference import (
+    infer_erp_type_from_field_names,
+    normalize_field_name,
+)
 from statistic_harness.core.tenancy import get_tenant_context
 from statistic_harness.core.utils import make_run_id
 
@@ -90,9 +95,25 @@ def _latest_dataset_version_row(db_path: Path) -> dict[str, Any] | None:
     try:
         row = conn.execute(
             """
-            SELECT dataset_version_id, dataset_id, created_at, table_name, row_count, column_count, data_hash
-            FROM dataset_versions
-            ORDER BY row_count DESC, created_at DESC
+            SELECT dv.dataset_version_id,
+                   dv.dataset_id,
+                   dv.created_at,
+                   dv.table_name,
+                   dv.row_count,
+                   dv.column_count,
+                   dv.data_hash,
+                   dv.raw_format_id,
+                   dv.source_classification,
+                   d.project_id,
+                   p.erp_type
+            FROM dataset_versions dv
+            LEFT JOIN datasets d
+              ON d.dataset_id = dv.dataset_id
+             AND d.tenant_id = dv.tenant_id
+            LEFT JOIN projects p
+              ON p.project_id = d.project_id
+             AND p.tenant_id = d.tenant_id
+            ORDER BY dv.row_count DESC, dv.created_at DESC
             LIMIT 1
             """
         ).fetchone()
@@ -106,14 +127,232 @@ def _dataset_version_row(db_path: Path, dataset_version_id: str) -> dict[str, An
     try:
         row = conn.execute(
             """
-            SELECT dataset_version_id, dataset_id, created_at, table_name, row_count, column_count, data_hash
-            FROM dataset_versions
-            WHERE dataset_version_id = ?
+            SELECT dv.dataset_version_id,
+                   dv.dataset_id,
+                   dv.created_at,
+                   dv.table_name,
+                   dv.row_count,
+                   dv.column_count,
+                   dv.data_hash,
+                   dv.raw_format_id,
+                   dv.source_classification,
+                   d.project_id,
+                   p.erp_type
+            FROM dataset_versions dv
+            LEFT JOIN datasets d
+              ON d.dataset_id = dv.dataset_id
+             AND d.tenant_id = dv.tenant_id
+            LEFT JOIN projects p
+              ON p.project_id = d.project_id
+             AND p.tenant_id = d.tenant_id
+            WHERE dv.dataset_version_id = ?
             LIMIT 1
             """,
             (dataset_version_id,),
         ).fetchone()
         return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def _dataset_semantic_field_names(
+    conn: sqlite3.Connection, dataset_version_id: str
+) -> list[str]:
+    template_row = conn.execute(
+        """
+        SELECT template_id
+        FROM dataset_templates
+        WHERE dataset_version_id = ?
+        ORDER BY updated_at DESC
+        LIMIT 1
+        """,
+        (dataset_version_id,),
+    ).fetchone()
+    if template_row and template_row["template_id"] is not None:
+        rows = conn.execute(
+            """
+            SELECT name
+            FROM template_fields
+            WHERE template_id = ?
+            ORDER BY field_id
+            """,
+            (int(template_row["template_id"]),),
+        ).fetchall()
+        names = [
+            str(row["name"]).strip()
+            for row in rows
+            if isinstance(row["name"], str) and str(row["name"]).strip()
+        ]
+        if names:
+            return names
+
+    rows = conn.execute(
+        """
+        SELECT original_name
+        FROM dataset_columns
+        WHERE dataset_version_id = ?
+        ORDER BY column_id
+        """,
+        (dataset_version_id,),
+    ).fetchall()
+    return [
+        str(row["original_name"]).strip()
+        for row in rows
+        if isinstance(row["original_name"], str) and str(row["original_name"]).strip()
+    ]
+
+
+def _schema_signature(field_names: list[str]) -> str:
+    normalized = [normalize_field_name(name) for name in field_names if normalize_field_name(name)]
+    payload = json.dumps(normalized, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _dataset_identity(
+    conn: sqlite3.Connection, dataset_row: dict[str, Any]
+) -> dict[str, Any]:
+    dataset_version_id = str(dataset_row.get("dataset_version_id") or "")
+    names = _dataset_semantic_field_names(conn, dataset_version_id)
+    inferred_erp = infer_erp_type_from_field_names(names)
+    configured_erp = str(dataset_row.get("erp_type") or "").strip().lower()
+    effective_erp = configured_erp if configured_erp and configured_erp != "unknown" else inferred_erp
+    return {
+        "dataset_version_id": dataset_version_id,
+        "field_names": names,
+        "field_count": len(names),
+        "schema_signature": _schema_signature(names) if names else "",
+        "configured_erp_type": configured_erp or "unknown",
+        "inferred_erp_type": inferred_erp,
+        "erp_type": effective_erp or "unknown",
+    }
+
+
+def _baseline_comparison(
+    db_path: Path, dataset_row: dict[str, Any]
+) -> dict[str, Any]:
+    conn = _connect(db_path)
+    try:
+        target = _dataset_identity(conn, dataset_row)
+        target_id = str(target.get("dataset_version_id") or "")
+        target_created = _parse_ts(dataset_row.get("created_at"))
+        target_erp = str(target.get("erp_type") or "unknown")
+        target_sig = str(target.get("schema_signature") or "")
+
+        candidates_rows = conn.execute(
+            """
+            SELECT dv.dataset_version_id,
+                   dv.dataset_id,
+                   dv.created_at,
+                   dv.row_count,
+                   dv.column_count,
+                   dv.source_classification,
+                   d.project_id,
+                   p.erp_type
+            FROM dataset_versions dv
+            LEFT JOIN datasets d
+              ON d.dataset_id = dv.dataset_id
+             AND d.tenant_id = dv.tenant_id
+            LEFT JOIN projects p
+              ON p.project_id = d.project_id
+             AND p.tenant_id = d.tenant_id
+            WHERE dv.dataset_version_id != ?
+            """,
+            (target_id,),
+        ).fetchall()
+
+        ranked: list[tuple[tuple[Any, ...], dict[str, Any], dict[str, Any]]] = []
+        for row in candidates_rows:
+            cand_row = dict(row)
+            if str(cand_row.get("source_classification") or "").strip().lower() != "real":
+                continue
+            cand = _dataset_identity(conn, cand_row)
+            cand_erp = str(cand.get("erp_type") or "unknown")
+            cand_sig = str(cand.get("schema_signature") or "")
+            same_erp = target_erp != "unknown" and cand_erp == target_erp
+            same_sig = bool(target_sig) and cand_sig == target_sig
+            if not same_erp and not same_sig:
+                continue
+            cand_created = _parse_ts(cand_row.get("created_at"))
+            prior = bool(
+                target_created
+                and cand_created
+                and cand_created <= target_created
+            )
+            time_distance = None
+            if target_created and cand_created:
+                time_distance = abs((target_created - cand_created).total_seconds())
+            ranked.append(
+                (
+                    (
+                        0 if same_erp else 1,
+                        0 if same_sig else 1,
+                        0 if prior else 1,
+                        float(time_distance) if isinstance(time_distance, (int, float)) else float("inf"),
+                        str(cand_row.get("dataset_version_id") or ""),
+                    ),
+                    cand_row,
+                    cand,
+                )
+            )
+
+        if not ranked:
+            return {
+                "available": False,
+                "dataset_version_id": target_id,
+                "erp_type": target_erp,
+                "inferred_erp_type": target.get("inferred_erp_type"),
+                "configured_erp_type": target.get("configured_erp_type"),
+                "reason": "no_real_baseline_for_same_erp_or_schema",
+            }
+
+        ranked.sort(key=lambda item: item[0])
+        baseline_row, baseline_identity = ranked[0][1], ranked[0][2]
+        baseline_id = str(baseline_row.get("dataset_version_id") or "")
+        row_count_target = int(dataset_row.get("row_count") or 0)
+        row_count_baseline = int(baseline_row.get("row_count") or 0)
+        col_count_target = int(dataset_row.get("column_count") or 0)
+        col_count_baseline = int(baseline_row.get("column_count") or 0)
+        delta_rows = row_count_target - row_count_baseline
+        delta_cols = col_count_target - col_count_baseline
+        row_ratio = (
+            (float(row_count_target) / float(row_count_baseline))
+            if row_count_baseline > 0
+            else None
+        )
+
+        return {
+            "available": True,
+            "dataset_version_id": target_id,
+            "baseline_dataset_version_id": baseline_id,
+            "erp_type": target_erp,
+            "inferred_erp_type": target.get("inferred_erp_type"),
+            "configured_erp_type": target.get("configured_erp_type"),
+            "baseline_inferred_erp_type": baseline_identity.get("inferred_erp_type"),
+            "baseline_configured_erp_type": baseline_identity.get("configured_erp_type"),
+            "baseline_match_basis": {
+                "same_erp": bool(
+                    target_erp != "unknown"
+                    and str(baseline_identity.get("erp_type") or "unknown") == target_erp
+                ),
+                "same_schema_signature": bool(
+                    target_sig
+                    and str(baseline_identity.get("schema_signature") or "") == target_sig
+                ),
+            },
+            "target_source_classification": str(
+                dataset_row.get("source_classification") or "unknown"
+            ),
+            "baseline_source_classification": str(
+                baseline_row.get("source_classification") or "unknown"
+            ),
+            "target_row_count": row_count_target,
+            "baseline_row_count": row_count_baseline,
+            "row_count_delta": delta_rows,
+            "row_count_ratio": row_ratio,
+            "target_column_count": col_count_target,
+            "baseline_column_count": col_count_baseline,
+            "column_count_delta": delta_cols,
+        }
     finally:
         conn.close()
 
@@ -320,7 +559,11 @@ def _extract_ideaspace_route_map(run_dir: Path, max_steps: int = 12) -> dict[str
 
 
 def _render_recommendations_md(
-    recs: dict[str, Any], known_checks: dict[str, Any], route_map: dict[str, Any] | None = None, max_items: int = 40
+    recs: dict[str, Any],
+    known_checks: dict[str, Any],
+    route_map: dict[str, Any] | None = None,
+    erp_baseline: dict[str, Any] | None = None,
+    max_items: int = 40,
 ) -> str:
     summary = str(recs.get("summary") or "").strip()
     lines = []
@@ -328,6 +571,41 @@ def _render_recommendations_md(
     if summary:
         lines.append("")
         lines.append(summary)
+
+    if isinstance(erp_baseline, dict):
+        lines.append("")
+        lines.append("## ERP Baseline Comparison")
+        if erp_baseline.get("available"):
+            erp_type = str(erp_baseline.get("erp_type") or "unknown")
+            baseline_id = str(erp_baseline.get("baseline_dataset_version_id") or "")
+            lines.append(f"- ERP type: {erp_type}")
+            lines.append(f"- Baseline dataset_version_id: `{baseline_id}`")
+            basis = erp_baseline.get("baseline_match_basis")
+            if isinstance(basis, dict):
+                lines.append(
+                    "- Match basis: "
+                    + f"same_erp={bool(basis.get('same_erp'))}, "
+                    + f"same_schema_signature={bool(basis.get('same_schema_signature'))}"
+                )
+            lines.append(
+                "- Rows: "
+                + f"target={int(erp_baseline.get('target_row_count') or 0):,}, "
+                + f"baseline={int(erp_baseline.get('baseline_row_count') or 0):,}, "
+                + f"delta={int(erp_baseline.get('row_count_delta') or 0):+,}"
+            )
+            row_ratio = erp_baseline.get("row_count_ratio")
+            if isinstance(row_ratio, (int, float)):
+                lines.append(f"- Row ratio (target/baseline): {float(row_ratio):.3f}x")
+            lines.append(
+                "- Columns: "
+                + f"target={int(erp_baseline.get('target_column_count') or 0)}, "
+                + f"baseline={int(erp_baseline.get('baseline_column_count') or 0)}, "
+                + f"delta={int(erp_baseline.get('column_count_delta') or 0):+}"
+            )
+        else:
+            lines.append(
+                "- No same-ERP real baseline dataset found for comparison in local state."
+            )
 
     def _as_items(block: Any) -> list[dict[str, Any]]:
         if isinstance(block, dict) and isinstance(block.get("items"), list):
@@ -609,12 +887,43 @@ def _plain_recommendation_fields(item: dict[str, Any]) -> tuple[str, str]:
 
 
 def _render_recommendations_plain_md(
-    recs: dict[str, Any], known_checks: dict[str, Any], route_map: dict[str, Any] | None = None, max_items: int = 30
+    recs: dict[str, Any],
+    known_checks: dict[str, Any],
+    route_map: dict[str, Any] | None = None,
+    erp_baseline: dict[str, Any] | None = None,
+    max_items: int = 30,
 ) -> str:
     lines: list[str] = []
     lines.append("# Recommendations (Plain Language)")
     lines.append("")
     lines.append("This version is written for easier reading (high school to early college level).")
+
+    if isinstance(erp_baseline, dict):
+        lines.append("")
+        lines.append("## ERP Baseline Comparison (Plain)")
+        if erp_baseline.get("available"):
+            lines.append(
+                f"- This dataset is treated as ERP type `{str(erp_baseline.get('erp_type') or 'unknown')}`."
+            )
+            lines.append(
+                "- It is compared against baseline dataset "
+                + f"`{str(erp_baseline.get('baseline_dataset_version_id') or '')}` "
+                + "from the same ERP family."
+            )
+            lines.append(
+                "- Row count changed by "
+                + f"{int(erp_baseline.get('row_count_delta') or 0):+,} rows "
+                + f"(target={int(erp_baseline.get('target_row_count') or 0):,}, "
+                + f"baseline={int(erp_baseline.get('baseline_row_count') or 0):,})."
+            )
+            lines.append(
+                "- Column count changed by "
+                + f"{int(erp_baseline.get('column_count_delta') or 0):+} columns."
+            )
+        else:
+            lines.append(
+                "- No same-ERP real baseline dataset was found in local state."
+            )
 
     def _as_items(block: Any) -> list[dict[str, Any]]:
         if isinstance(block, dict) and isinstance(block.get("items"), list):
@@ -881,6 +1190,7 @@ def main() -> int:
     ideaspace_gap = _top_findings(report, "analysis_ideaspace_normative_gap", n=8)
     ideaspace_actions = _top_findings(report, "analysis_ideaspace_action_planner", n=12)
     runtime_trend = _runtime_trend(db_path, dataset_version_id, run_id)
+    erp_baseline = _baseline_comparison(db_path, dataset)
 
     answers = {
         "dataset": dataset,
@@ -888,6 +1198,7 @@ def main() -> int:
         "run_dir": str(run_dir),
         "report_path": str(report_path),
         "runtime_trend": runtime_trend,
+        "erp_baseline_comparison": erp_baseline,
         "exclude_processes": exclude_processes,
         "planner_allow": planner_allow,
         "planner_deny": planner_deny,
@@ -902,11 +1213,21 @@ def main() -> int:
     _write_json(run_dir / "answers_summary.json", answers)
     _write_text(
         run_dir / "answers_recommendations.md",
-        _render_recommendations_md(recs, known_checks, route_map=route_map),
+        _render_recommendations_md(
+            recs,
+            known_checks,
+            route_map=route_map,
+            erp_baseline=erp_baseline,
+        ),
     )
     _write_text(
         run_dir / "answers_recommendations_plain.md",
-        _render_recommendations_plain_md(recs, known_checks, route_map=route_map),
+        _render_recommendations_plain_md(
+            recs,
+            known_checks,
+            route_map=route_map,
+            erp_baseline=erp_baseline,
+        ),
     )
 
     print(f"DATASET_VERSION_ID={dataset_version_id}")
@@ -927,6 +1248,38 @@ def main() -> int:
             print(f"RUNTIME_STDDEV_MINUTES={float(std_minutes):.2f}")
         if isinstance(delta_pct, (int, float)):
             print(f"RUNTIME_DELTA_VS_AVG_PCT={float(delta_pct):+.1f}")
+    if isinstance(erp_baseline, dict):
+        print(f"ERP_TYPE={str(erp_baseline.get('erp_type') or 'unknown')}")
+        if erp_baseline.get("available"):
+            print(
+                "ERP_BASELINE_DATASET_VERSION_ID="
+                + str(erp_baseline.get("baseline_dataset_version_id") or "")
+            )
+            print(
+                "ERP_BASELINE_MATCH="
+                + "same_erp="
+                + str(bool((erp_baseline.get("baseline_match_basis") or {}).get("same_erp"))).lower()
+                + ",same_schema_signature="
+                + str(
+                    bool(
+                        (erp_baseline.get("baseline_match_basis") or {}).get(
+                            "same_schema_signature"
+                        )
+                    )
+                ).lower()
+            )
+            print(
+                "ERP_BASELINE_ROW_DELTA="
+                + str(int(erp_baseline.get("row_count_delta") or 0))
+            )
+            row_ratio = erp_baseline.get("row_count_ratio")
+            if isinstance(row_ratio, (int, float)):
+                print(f"ERP_BASELINE_ROW_RATIO={float(row_ratio):.6f}")
+        else:
+            print(
+                "ERP_BASELINE_DATASET_VERSION_ID="
+            )
+            print("ERP_BASELINE_MATCH=none")
     print(str(run_dir / "report.md"))
     print(str(run_dir / "answers_recommendations.md"))
     print(str(run_dir / "answers_recommendations_plain.md"))

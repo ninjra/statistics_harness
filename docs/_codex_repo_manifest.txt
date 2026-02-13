@@ -21169,6 +21169,7 @@ src/statistic_harness/core/close_cycle.py
 src/statistic_harness/core/column_inference.py
 src/statistic_harness/core/dataset_cache.py
 src/statistic_harness/core/dataset_io.py
+src/statistic_harness/core/erp_inference.py
 src/statistic_harness/core/evaluation.py
 src/statistic_harness/core/evaluator.py
 src/statistic_harness/core/four_pillars.py
@@ -21632,6 +21633,7 @@ tests/test_determinism.py
 tests/test_docs_implementation_matrix.py
 tests/test_enertia_evaluation.py
 tests/test_env_placeholders.py
+tests/test_erp_inference.py
 tests/test_evaluation.py
 tests/test_evaluator.py
 tests/test_feature_flags.py

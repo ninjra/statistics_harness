@@ -65,3 +65,23 @@ def test_transform_normalize_mixed_includes_source_classification(run_dir):
     assert dataset_template is not None
     payload = json.loads(str(dataset_template.get("mapping_json") or "{}"))
     assert payload.get("source", {}).get("classification") == "synthetic"
+
+
+def test_transform_normalize_mixed_sets_quorum_erp_from_field_structure(run_dir):
+    df = pd.DataFrame(
+        {
+            "PROCESS_QUEUE_ID": [1, 2],
+            "PROCESS_ID": ["A", "B"],
+            "STATUS_CD": ["DONE", "DONE"],
+            "LOCAL_MACHINE_ID": ["H1", "H2"],
+            "QUEUE_DT": ["2026-01-01T00:00:00", "2026-01-01T00:01:00"],
+            "START_DT": ["2026-01-01T00:02:00", "2026-01-01T00:03:00"],
+            "END_DT": ["2026-01-01T00:04:00", "2026-01-01T00:05:00"],
+        }
+    )
+    ctx = make_context(run_dir, df, {})
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    project = ctx.storage.fetch_project(ctx.project_id)
+    assert project is not None
+    assert str(project.get("erp_type") or "") == "quorum"
