@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Statistic Harness Run Manifest",
+  "type": "object",
+  "required": ["schema_version", "run_id", "run_fingerprint", "created_at", "run_seed", "requested_run_seed", "input", "plugins", "artifacts", "summary"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "run_id": { "type": "string" },
+    "run_fingerprint": { "type": "string" },
+    "created_at": { "type": "string" },
+    "requested_run_seed": { "type": "integer" },
+    "run_seed": { "type": "integer" },
+    "input": {
+      "type": "object",
+      "required": ["input_hash", "original_filename", "upload_id"],
+      "properties": {
+        "upload_id": { "type": "string" },
+        "input_hash": { "type": "string" },
+        "original_filename": { "type": "string" }
+      }
+    },
+    "config": { "type": "object" },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["plugin_id", "status"],
+        "properties": {
+          "plugin_id": { "type": "string" },
+          "status": { "type": "string" },
+          "plugin_version": { "type": ["string", "null"] },
+          "code_hash": { "type": ["string", "null"] },
+          "settings_hash": { "type": ["string", "null"] },
+          "execution_fingerprint": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "executions": { "type": "array" },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "bytes"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string" },
+          "bytes": { "type": "integer" },
+          "plugin_id": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["status"],
+      "properties": { "status": { "type": "string" } }
+    }
+  }
+}
+

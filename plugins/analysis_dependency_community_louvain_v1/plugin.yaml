@@ -1,0 +1,24 @@
+id: analysis_dependency_community_louvain_v1
+name: Dependency Community Detection (Louvain)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Detect dependency communities to identify decoupling boundaries and
+    refactor modules.
+  defaults:
+    top_k: 20
+    min_edge_weight: 5
+capabilities:
+- needs_eventlog
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

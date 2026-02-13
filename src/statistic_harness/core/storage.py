@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import shutil
 import sqlite3
 from contextlib import contextmanager
 from dataclasses import asdict
@@ -21,12 +23,26 @@ from .utils import (
 
 
 class Storage:
-    def __init__(self, db_path: Path, tenant_id: str | None = None) -> None:
+    def __init__(
+        self,
+        db_path: Path,
+        tenant_id: str | None = None,
+        *,
+        mode: str = "rw",
+        initialize: bool = True,
+        # Optional sqlite authorizer policy for plugin subprocesses.
+        deny_write_prefixes: list[str] | None = None,
+        allow_write_prefixes: list[str] | None = None,
+    ) -> None:
         ensure_dir(db_path.parent)
         self.db_path = db_path
         self.tenant_id = tenant_id or DEFAULT_TENANT_ID
-        with self.connection() as conn:
-            run_migrations(conn)
+        self.mode = str(mode or "rw")
+        self.deny_write_prefixes = [str(p) for p in (deny_write_prefixes or []) if str(p)]
+        self.allow_write_prefixes = [str(p) for p in (allow_write_prefixes or []) if str(p)]
+        if initialize and self.mode == "rw":
+            with self.connection() as conn:
+                run_migrations(conn)
 
     def _tenant_id(self) -> str:
         return self.tenant_id or DEFAULT_TENANT_ID
@@ -47,13 +63,86 @@ class Storage:
         return f"{prefix}{value}"
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path, check_same_thread=False, timeout=30.0)
+        if self.mode == "ro":
+            uri = f"file:{self.db_path.resolve()}?mode=ro"
+            conn = sqlite3.connect(uri, uri=True, check_same_thread=False, timeout=30.0)
+        else:
+            conn = sqlite3.connect(self.db_path, check_same_thread=False, timeout=30.0)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON")
-        conn.execute("PRAGMA journal_mode = WAL")
-        conn.execute("PRAGMA synchronous = NORMAL")
-        conn.execute("PRAGMA temp_store = MEMORY")
+        if self.mode != "ro":
+            conn.execute("PRAGMA journal_mode = WAL")
+            conn.execute("PRAGMA synchronous = NORMAL")
+            conn.execute("PRAGMA temp_store = MEMORY")
         conn.execute("PRAGMA busy_timeout = 30000")
+
+        # In subprocess plugin execution, we harden connections:
+        # - "ro": prevent any writes/transactions.
+        # - "scratch": allow writes, but prevent db attachment and unsafe functions.
+        # - "rw" with deny/allow prefixes: prevent writes to protected table prefixes.
+        if self.mode in {"ro", "scratch"} or self.deny_write_prefixes:
+            def _authorizer(action_code: int, param1: str, param2: str, dbname: str, source: str) -> int:
+                # Disallow loadable extensions unconditionally.
+                if action_code == sqlite3.SQLITE_FUNCTION and str(param2 or "").lower() in {"load_extension"}:
+                    return sqlite3.SQLITE_DENY
+                if self.mode == "ro":
+                    if action_code in {
+                        sqlite3.SQLITE_INSERT,
+                        sqlite3.SQLITE_UPDATE,
+                        sqlite3.SQLITE_DELETE,
+                        sqlite3.SQLITE_TRANSACTION,
+                        sqlite3.SQLITE_CREATE_TABLE,
+                        sqlite3.SQLITE_DROP_TABLE,
+                        sqlite3.SQLITE_ALTER_TABLE,
+                        sqlite3.SQLITE_CREATE_INDEX,
+                        sqlite3.SQLITE_DROP_INDEX,
+                        sqlite3.SQLITE_CREATE_TRIGGER,
+                        sqlite3.SQLITE_DROP_TRIGGER,
+                        sqlite3.SQLITE_CREATE_VIEW,
+                        sqlite3.SQLITE_DROP_VIEW,
+                    }:
+                        return sqlite3.SQLITE_DENY
+                    # Prevent PRAGMA/ATTACH usage after initialization so plugins cannot escape.
+                    # We still allow PRAGMA reads in ro mode because schema introspection relies on it
+                    # (and the DB is opened with mode=ro anyway).
+                    if action_code in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+                        return sqlite3.SQLITE_DENY
+                if self.mode == "scratch":
+                    if action_code in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+                        return sqlite3.SQLITE_DENY
+
+                # Protected table prefixes policy (applies in any mode when configured).
+                if self.deny_write_prefixes and action_code in {
+                    sqlite3.SQLITE_INSERT,
+                    sqlite3.SQLITE_UPDATE,
+                    sqlite3.SQLITE_DELETE,
+                    sqlite3.SQLITE_CREATE_TABLE,
+                    sqlite3.SQLITE_DROP_TABLE,
+                    sqlite3.SQLITE_ALTER_TABLE,
+                    sqlite3.SQLITE_CREATE_INDEX,
+                    sqlite3.SQLITE_DROP_INDEX,
+                    sqlite3.SQLITE_CREATE_VIEW,
+                    sqlite3.SQLITE_DROP_VIEW,
+                    sqlite3.SQLITE_CREATE_TRIGGER,
+                    sqlite3.SQLITE_DROP_TRIGGER,
+                }:
+                    targets = [param1, param2]
+
+                    def _is_denied(name: str | None) -> bool:
+                        if not isinstance(name, str) or not name:
+                            return False
+                        if any(name.startswith(p) for p in self.allow_write_prefixes or []):
+                            return False
+                        return any(name.startswith(p) for p in self.deny_write_prefixes or [])
+
+                    if any(_is_denied(t) for t in targets):
+                        return sqlite3.SQLITE_DENY
+                return sqlite3.SQLITE_OK
+
+            try:
+                conn.set_authorizer(_authorizer)
+            except Exception:
+                pass
         return conn
 
     @contextmanager
@@ -68,6 +157,36 @@ class Storage:
         finally:
             conn.close()
 
+    def integrity_check(self, full: bool = False) -> tuple[bool, str]:
+        pragma = "integrity_check" if full else "quick_check"
+        with self.connection() as conn:
+            row = conn.execute(f"PRAGMA {pragma}").fetchone()
+        msg = str(row[0]) if row else "unknown"
+        return msg.lower() == "ok", msg
+
+    def backup_to(self, dest_path: Path) -> None:
+        ensure_dir(dest_path.parent)
+        src = self._connect()
+        try:
+            dest = sqlite3.connect(dest_path)
+            try:
+                src.backup(dest)
+                dest.commit()
+            finally:
+                dest.close()
+        finally:
+            src.close()
+
+    def restore_from(self, source_path: Path) -> None:
+        if not source_path.exists():
+            raise FileNotFoundError(str(source_path))
+        ensure_dir(self.db_path.parent)
+        tmp_path = self.db_path.with_suffix(self.db_path.suffix + ".restore.tmp")
+        if tmp_path.exists():
+            tmp_path.unlink()
+        shutil.copy2(source_path, tmp_path)
+        os.replace(tmp_path, self.db_path)
+
     def create_run(
         self,
         run_id: str,
@@ -79,10 +198,12 @@ class Storage:
         settings: dict[str, Any],
         error: dict[str, Any] | None,
         run_seed: int = 0,
+        requested_run_seed: int | None = None,
         project_id: str | None = None,
         dataset_id: str | None = None,
         dataset_version_id: str | None = None,
         input_hash: str | None = None,
+        run_fingerprint: str | None = None,
     ) -> None:
         tenant_id = self._tenant_id()
         with self.connection() as conn:
@@ -90,8 +211,9 @@ class Storage:
                 """
                 INSERT INTO runs
                 (run_id, tenant_id, created_at, status, upload_id, input_filename, canonical_path, settings_json, error_json,
-                 run_seed, project_id, dataset_id, dataset_version_id, input_hash)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 run_seed, requested_run_seed, started_at, completed_at,
+                 project_id, dataset_id, dataset_version_id, input_hash, run_fingerprint, run_manifest_sha256)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     run_id,
@@ -104,10 +226,15 @@ class Storage:
                     json_dumps(settings),
                     json_dumps(error) if error else None,
                     int(run_seed),
+                    int(requested_run_seed) if requested_run_seed is not None else None,
+                    created_at,
+                    None,
                     project_id,
                     dataset_id,
                     dataset_version_id,
                     input_hash,
+                    run_fingerprint,
+                    None,
                 ),
             )
 
@@ -115,10 +242,36 @@ class Storage:
         self, run_id: str, status: str, error: dict[str, Any] | None = None
     ) -> None:
         tenant_id = self._tenant_id()
+        completed_at = None
+        if status.lower() in {"completed", "error", "aborted", "partial"}:
+            completed_at = now_iso()
         with self.connection() as conn:
             conn.execute(
-                "UPDATE runs SET status = ?, error_json = ? WHERE run_id = ? AND tenant_id = ?",
-                (status, json_dumps(error) if error else None, run_id, tenant_id),
+                "UPDATE runs SET status = ?, error_json = ?, completed_at = COALESCE(completed_at, ?) "
+                "WHERE run_id = ? AND tenant_id = ?",
+                (
+                    status,
+                    json_dumps(error) if error else None,
+                    completed_at,
+                    run_id,
+                    tenant_id,
+                ),
+            )
+
+    def update_run_fingerprint(self, run_id: str, run_fingerprint: str) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                "UPDATE runs SET run_fingerprint = ? WHERE run_id = ? AND tenant_id = ?",
+                (run_fingerprint, run_id, tenant_id),
+            )
+
+    def update_run_manifest_sha256(self, run_id: str, manifest_sha256: str) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                "UPDATE runs SET run_manifest_sha256 = ? WHERE run_id = ? AND tenant_id = ?",
+                (manifest_sha256, run_id, tenant_id),
             )
 
     def save_plugin_result(
@@ -131,18 +284,22 @@ class Storage:
         settings_hash: str | None,
         dataset_hash: str | None,
         result: PluginResult,
+        execution_fingerprint: str | None = None,
     ) -> None:
         tenant_id = self._tenant_id()
         artifacts = [asdict(a) for a in result.artifacts]
         error_payload = asdict(result.error) if result.error else None
         budget_payload = result.budget if isinstance(result.budget, dict) else {}
+        references_payload = result.references if isinstance(result.references, list) else []
+        debug_payload = result.debug if isinstance(result.debug, dict) else {}
         with self.connection() as conn:
             conn.execute(
                 """
                 INSERT INTO plugin_results_v2
                 (run_id, tenant_id, plugin_id, plugin_version, executed_at, code_hash, settings_hash, dataset_hash,
-                 status, summary, metrics_json, findings_json, artifacts_json, error_json, budget_json)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 status, summary, metrics_json, findings_json, artifacts_json, error_json, budget_json,
+                 references_json, debug_json, execution_fingerprint)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     run_id,
@@ -160,7 +317,148 @@ class Storage:
                     json_dumps(artifacts),
                     json_dumps(error_payload) if error_payload else None,
                     json_dumps(budget_payload),
+                    json_dumps(references_payload),
+                    json_dumps(debug_payload),
+                    execution_fingerprint,
                 ),
+            )
+
+    def insert_event(
+        self,
+        kind: str,
+        created_at: str,
+        run_id: str | None = None,
+        plugin_id: str | None = None,
+        run_fingerprint: str | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO events
+                (tenant_id, created_at, kind, run_id, plugin_id, run_fingerprint, payload_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    tenant_id,
+                    created_at,
+                    kind,
+                    run_id,
+                    plugin_id,
+                    run_fingerprint,
+                    json_dumps(payload) if payload else None,
+                ),
+            )
+
+    def list_events(self, run_id: str, limit: int = 500) -> list[dict[str, Any]]:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT created_at, kind, plugin_id, run_fingerprint, payload_json
+                FROM events
+                WHERE tenant_id = ? AND run_id = ?
+                ORDER BY created_at ASC, event_id ASC
+                LIMIT ?
+                """,
+                (tenant_id, run_id, int(limit)),
+            )
+            rows: list[dict[str, Any]] = []
+            for row in cur.fetchall():
+                item = dict(row)
+                try:
+                    item["payload"] = json.loads(item.get("payload_json") or "null")
+                except Exception:
+                    item["payload"] = None
+                rows.append(item)
+            return rows
+
+    def upsert_artifact(
+        self,
+        run_id: str,
+        path: str,
+        sha256: str,
+        size_bytes: int | None,
+        mime: str | None,
+        created_at: str,
+        plugin_id: str | None = None,
+    ) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO artifacts
+                (tenant_id, run_id, plugin_id, path, sha256, size_bytes, mime, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (tenant_id, run_id, plugin_id, path, sha256, size_bytes, mime, created_at),
+            )
+
+    def list_artifacts(self, run_id: str) -> list[dict[str, Any]]:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT plugin_id, path, sha256, size_bytes, mime, created_at
+                FROM artifacts
+                WHERE tenant_id = ? AND run_id = ?
+                ORDER BY plugin_id ASC, path ASC, created_at ASC
+                """,
+                (tenant_id, run_id),
+            )
+            return [dict(row) for row in cur.fetchall()]
+
+    def fetch_cached_plugin_result(
+        self, execution_fingerprint: str
+    ) -> dict[str, Any] | None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            row = conn.execute(
+                """
+                SELECT *
+                FROM plugin_results_v2
+                WHERE tenant_id = ? AND execution_fingerprint = ? AND status = 'ok'
+                ORDER BY result_id DESC
+                LIMIT 1
+                """,
+                (tenant_id, execution_fingerprint),
+            ).fetchone()
+            if not row:
+                return None
+            item = dict(row)
+        for key in ("metrics_json", "findings_json", "artifacts_json", "error_json", "budget_json", "references_json", "debug_json"):
+            raw = item.get(key)
+            if raw is None:
+                item[key.replace("_json", "")] = None
+                continue
+            try:
+                item[key.replace("_json", "")] = json.loads(raw)
+            except Exception:
+                item[key.replace("_json", "")] = None
+        return item
+
+    def plugin_enabled(self, plugin_id: str) -> bool:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            row = conn.execute(
+                "SELECT enabled FROM plugin_registry WHERE tenant_id = ? AND plugin_id = ?",
+                (tenant_id, plugin_id),
+            ).fetchone()
+        if not row:
+            return True
+        return bool(int(row[0] or 0))
+
+    def set_plugin_enabled(self, plugin_id: str, enabled: bool, updated_at: str) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO plugin_registry (tenant_id, plugin_id, enabled, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(tenant_id, plugin_id) DO UPDATE SET enabled=excluded.enabled, updated_at=excluded.updated_at
+                """,
+                (tenant_id, plugin_id, 1 if enabled else 0, updated_at),
             )
 
     def insert_plugin_execution(
@@ -268,6 +566,40 @@ class Storage:
                 ),
             )
 
+    def abort_plugin_executions_for_run(
+        self,
+        run_id: str,
+        *,
+        status: str = "aborted",
+        note: str | None = None,
+    ) -> int:
+        """Mark any still-running plugin executions for a run as aborted.
+
+        Returns the number of rows updated.
+        """
+
+        tenant_id = self._tenant_id()
+        completed_at = now_iso()
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                UPDATE plugin_executions
+                SET completed_at = COALESCE(completed_at, ?),
+                    duration_ms = COALESCE(duration_ms, 0),
+                    status = ?,
+                    stderr = COALESCE(stderr, ?)
+                WHERE run_id = ? AND tenant_id = ? AND status = 'running'
+                """,
+                (
+                    completed_at,
+                    status,
+                    note,
+                    run_id,
+                    tenant_id,
+                ),
+            )
+            return int(cur.rowcount or 0)
+
     def fetch_plugin_executions(self, run_id: str) -> list[dict[str, Any]]:
         tenant_id = self._tenant_id()
         with self.connection() as conn:
@@ -311,6 +643,21 @@ class Storage:
             )
             row = cur.fetchone()
             return dict(row) if row else None
+
+    def list_runs_by_status(self, status: str, limit: int = 500) -> list[dict[str, Any]]:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT run_id, created_at, status, run_seed, requested_run_seed, run_fingerprint
+                FROM runs
+                WHERE tenant_id = ? AND status = ?
+                ORDER BY created_at DESC
+                LIMIT ?
+                """,
+                (tenant_id, status, int(limit)),
+            )
+            return [dict(row) for row in cur.fetchall()]
 
     def fetch_upload(self, upload_id: str) -> dict[str, Any] | None:
         tenant_id = self._tenant_id()
@@ -629,6 +976,7 @@ class Storage:
         size_bytes: int,
         sha256: str,
         created_at: str,
+        verified_at: str | None = None,
     ) -> None:
         tenant_id = self._tenant_id()
         with self.connection() as conn:
@@ -639,6 +987,45 @@ class Storage:
                 VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (upload_id, tenant_id, filename, size_bytes, sha256, created_at),
+            )
+            # Track CAS blob lifecycle + references.
+            conn.execute(
+                """
+                INSERT INTO upload_blobs (tenant_id, sha256, size_bytes, created_at, verified_at, refcount)
+                VALUES (?, ?, ?, ?, ?, 1)
+                ON CONFLICT(tenant_id, sha256) DO UPDATE SET
+                    size_bytes = excluded.size_bytes,
+                    verified_at = COALESCE(excluded.verified_at, upload_blobs.verified_at),
+                    refcount = upload_blobs.refcount + 1
+                """,
+                (
+                    tenant_id,
+                    sha256,
+                    int(size_bytes),
+                    created_at,
+                    verified_at,
+                ),
+            )
+
+    def fetch_upload_blob(self, sha256: str) -> dict[str, Any] | None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM upload_blobs WHERE tenant_id = ? AND sha256 = ?",
+                (tenant_id, sha256),
+            ).fetchone()
+            return dict(row) if row else None
+
+    def update_upload_blob_verified(self, sha256: str, verified_at: str) -> None:
+        tenant_id = self._tenant_id()
+        with self.connection() as conn:
+            conn.execute(
+                """
+                UPDATE upload_blobs
+                SET verified_at = ?
+                WHERE tenant_id = ? AND sha256 = ?
+                """,
+                (verified_at, tenant_id, sha256),
             )
 
     def ensure_project(self, project_id: str, fingerprint: str, created_at: str) -> None:
@@ -693,6 +1080,8 @@ class Storage:
             SELECT dv.dataset_version_id,
                    dv.dataset_id,
                    dv.table_name,
+                   dv.row_count,
+                   dv.column_count,
                    dv.data_hash,
                    d.project_id
             FROM dataset_versions dv
@@ -732,6 +1121,82 @@ class Storage:
             VALUES (?, ?, ?, ?, ?, ?)
             """,
             (dataset_version_id, tenant_id, dataset_id, created_at, table_name, data_hash),
+        )
+
+    def reset_dataset_version(
+        self,
+        dataset_version_id: str,
+        table_name: str | None = None,
+        data_hash: str | None = None,
+        created_at: str | None = None,
+        conn: sqlite3.Connection | None = None,
+    ) -> None:
+        tenant_id = self._tenant_id()
+        if conn is None:
+            with self.connection() as temp:
+                self.reset_dataset_version(
+                    dataset_version_id, table_name, data_hash, created_at, temp
+                )
+                return
+        if table_name is None:
+            row = conn.execute(
+                """
+                SELECT table_name
+                FROM dataset_versions
+                WHERE dataset_version_id = ? AND tenant_id = ?
+                """,
+                (dataset_version_id, tenant_id),
+            ).fetchone()
+            table_name = row["table_name"] if row else None
+        if table_name:
+            conn.execute(f"DROP TABLE IF EXISTS {quote_identifier(table_name)}")
+        for template_row in self.fetch_dataset_templates(
+            dataset_version_id, conn=conn
+        ):
+            template_table = template_row.get("table_name")
+            if template_table:
+                conn.execute(
+                    f"DELETE FROM {quote_identifier(template_table)} WHERE dataset_version_id = ?",
+                    (dataset_version_id,),
+                )
+        conn.execute(
+            "DELETE FROM dataset_columns WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        conn.execute(
+            "DELETE FROM dataset_role_candidates WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        conn.execute(
+            "DELETE FROM dataset_templates WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        conn.execute(
+            "DELETE FROM template_conversions WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        conn.execute(
+            "DELETE FROM row_parameter_link WHERE dataset_version_id = ?",
+            (dataset_version_id,),
+        )
+        conn.execute(
+            "DELETE FROM analysis_jobs WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        conn.execute(
+            "DELETE FROM deliveries WHERE dataset_version_id = ? AND tenant_id = ?",
+            (dataset_version_id, tenant_id),
+        )
+        if created_at is None:
+            created_at = now_iso()
+        conn.execute(
+            """
+            UPDATE dataset_versions
+            SET created_at = ?, table_name = COALESCE(?, table_name),
+                row_count = 0, column_count = 0, data_hash = ?, raw_format_id = NULL
+            WHERE dataset_version_id = ? AND tenant_id = ?
+            """,
+            (created_at, table_name, data_hash, dataset_version_id, tenant_id),
         )
 
     def update_dataset_version_stats(
@@ -795,8 +1260,8 @@ class Storage:
         conn.executemany(
             """
             INSERT INTO dataset_columns
-            (dataset_version_id, tenant_id, column_id, safe_name, original_name, dtype, role, pii_tags_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (dataset_version_id, tenant_id, column_id, safe_name, original_name, dtype, role, pii_tags_json, stats_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 (
@@ -808,6 +1273,7 @@ class Storage:
                     col.get("dtype"),
                     col.get("role"),
                     json_dumps(col.get("pii_tags")) if col.get("pii_tags") else None,
+                    json_dumps(col.get("stats")) if col.get("stats") else None,
                 )
                 for col in columns
             ],
@@ -826,16 +1292,47 @@ class Storage:
             with self.connection() as temp:
                 self.update_dataset_column_roles(dataset_version_id, role_by_name, temp)
                 return
+        # Prefer safe_name (unique) as the update key. For back-compat, allow original_name
+        # only when it maps to a single safe_name; otherwise fail closed to avoid ambiguous
+        # updates when input data contains duplicate column headers.
+        cur = conn.execute(
+            """
+            SELECT safe_name, original_name
+            FROM dataset_columns
+            WHERE dataset_version_id = ? AND tenant_id = ?
+            """,
+            (dataset_version_id, tenant_id),
+        )
+        safe_set: set[str] = set()
+        original_to_safe: dict[str, list[str]] = {}
+        for row in cur.fetchall():
+            safe = str(row["safe_name"])
+            orig = str(row["original_name"])
+            safe_set.add(safe)
+            original_to_safe.setdefault(orig, []).append(safe)
+
+        resolved: list[tuple[str, str]] = []
+        for key, role in role_by_name.items():
+            if key in safe_set:
+                resolved.append((key, role))
+                continue
+            safes = original_to_safe.get(key)
+            if not safes:
+                raise ValueError(f"Unknown dataset column key: {key}")
+            if len(safes) != 1:
+                raise ValueError(
+                    f"Ambiguous original_name={key!r} maps to multiple safe_names={sorted(safes)}; "
+                    "pass safe_name instead."
+                )
+            resolved.append((safes[0], role))
+
         conn.executemany(
             """
             UPDATE dataset_columns
             SET role = ?
-            WHERE dataset_version_id = ? AND original_name = ? AND tenant_id = ?
+            WHERE dataset_version_id = ? AND safe_name = ? AND tenant_id = ?
             """,
-            [
-                (role, dataset_version_id, name, tenant_id)
-                for name, role in role_by_name.items()
-            ],
+            [(role, dataset_version_id, safe, tenant_id) for safe, role in resolved],
         )
 
     def fetch_dataset_columns(
@@ -847,7 +1344,7 @@ class Storage:
                 return self.fetch_dataset_columns(dataset_version_id, temp)
         cur = conn.execute(
             """
-            SELECT column_id, safe_name, original_name, dtype, role, pii_tags_json
+            SELECT column_id, safe_name, original_name, dtype, role, pii_tags_json, stats_json
             FROM dataset_columns
             WHERE dataset_version_id = ? AND tenant_id = ?
             ORDER BY column_id
@@ -863,8 +1360,85 @@ class Storage:
                     entry["pii_tags"] = json.loads(tags)
                 except json.JSONDecodeError:
                     entry["pii_tags"] = []
+            stats_json = entry.get("stats_json")
+            if stats_json:
+                try:
+                    entry["stats"] = json.loads(stats_json)
+                except json.JSONDecodeError:
+                    entry["stats"] = {}
             rows.append(entry)
         return rows
+
+    def update_dataset_column_stats(
+        self,
+        dataset_version_id: str,
+        stats_by_name: dict[str, dict[str, Any]],
+        conn: sqlite3.Connection | None = None,
+    ) -> None:
+        tenant_id = self._tenant_id()
+        if not stats_by_name:
+            return
+        if conn is None:
+            with self.connection() as temp:
+                self.update_dataset_column_stats(dataset_version_id, stats_by_name, temp)
+                return
+        cur = conn.execute(
+            """
+            SELECT safe_name, original_name
+            FROM dataset_columns
+            WHERE dataset_version_id = ? AND tenant_id = ?
+            """,
+            (dataset_version_id, tenant_id),
+        )
+        safe_set: set[str] = set()
+        original_to_safe: dict[str, list[str]] = {}
+        for row in cur.fetchall():
+            safe = str(row["safe_name"])
+            orig = str(row["original_name"])
+            safe_set.add(safe)
+            original_to_safe.setdefault(orig, []).append(safe)
+
+        resolved: list[tuple[str, dict[str, Any]]] = []
+        for key, stats in stats_by_name.items():
+            if key in safe_set:
+                resolved.append((key, stats))
+                continue
+            safes = original_to_safe.get(key)
+            if not safes:
+                raise ValueError(f"Unknown dataset column key: {key}")
+            if len(safes) != 1:
+                raise ValueError(
+                    f"Ambiguous original_name={key!r} maps to multiple safe_names={sorted(safes)}; "
+                    "pass safe_name instead."
+                )
+            resolved.append((safes[0], stats))
+
+        conn.executemany(
+            """
+            UPDATE dataset_columns
+            SET stats_json = ?
+            WHERE dataset_version_id = ? AND safe_name = ? AND tenant_id = ?
+            """,
+            [
+                (json_dumps(stats), dataset_version_id, safe, tenant_id)
+                for safe, stats in resolved
+            ],
+        )
+
+    def analyze_table(
+        self, table_name: str, conn: sqlite3.Connection | None = None
+    ) -> None:
+        """Update SQLite planner stats for the given table (best-effort)."""
+
+        if conn is None:
+            with self.connection() as temp:
+                self.analyze_table(table_name, temp)
+                return
+        safe_table = quote_identifier(table_name)
+        try:
+            conn.execute(f"ANALYZE {safe_table}")
+        except Exception:
+            pass
 
     def update_dataset_column_pii_tags(
         self,
@@ -881,15 +1455,46 @@ class Storage:
                     dataset_version_id, tags_by_name, temp
                 )
                 return
+        cur = conn.execute(
+            """
+            SELECT safe_name, original_name
+            FROM dataset_columns
+            WHERE dataset_version_id = ? AND tenant_id = ?
+            """,
+            (dataset_version_id, tenant_id),
+        )
+        safe_set: set[str] = set()
+        original_to_safe: dict[str, list[str]] = {}
+        for row in cur.fetchall():
+            safe = str(row["safe_name"])
+            orig = str(row["original_name"])
+            safe_set.add(safe)
+            original_to_safe.setdefault(orig, []).append(safe)
+
+        resolved: list[tuple[str, list[str]]] = []
+        for key, tags in tags_by_name.items():
+            if key in safe_set:
+                resolved.append((key, tags))
+                continue
+            safes = original_to_safe.get(key)
+            if not safes:
+                raise ValueError(f"Unknown dataset column key: {key}")
+            if len(safes) != 1:
+                raise ValueError(
+                    f"Ambiguous original_name={key!r} maps to multiple safe_names={sorted(safes)}; "
+                    "pass safe_name instead."
+                )
+            resolved.append((safes[0], tags))
+
         conn.executemany(
             """
             UPDATE dataset_columns
             SET pii_tags_json = ?
-            WHERE dataset_version_id = ? AND original_name = ? AND tenant_id = ?
+            WHERE dataset_version_id = ? AND safe_name = ? AND tenant_id = ?
             """,
             [
-                (json_dumps(tags), dataset_version_id, name, tenant_id)
-                for name, tags in tags_by_name.items()
+                (json_dumps(tags), dataset_version_id, safe, tenant_id)
+                for safe, tags in resolved
             ],
         )
 
@@ -1568,6 +2173,46 @@ class Storage:
         )
         conn.execute(ddl)
 
+    def ensure_dataset_row_index_index(
+        self,
+        table_name: str,
+        conn: sqlite3.Connection | None = None,
+    ) -> None:
+        """Ensure an index exists for row_index on a dataset table.
+
+        Many dataset reads use ORDER BY row_index and/or range predicates on row_index.
+        Without an index, SQLite sorts/scans each time, which is catastrophic when every
+        plugin loads the dataset in its own subprocess.
+        """
+
+        if conn is None:
+            with self.connection() as temp:
+                self.ensure_dataset_row_index_index(table_name, temp)
+                return
+        safe_table = quote_identifier(table_name)
+        # Keep identifier length bounded to avoid SQLite identifier-length surprises.
+        digest = hashlib.sha256(table_name.encode("utf-8")).hexdigest()[:16]
+        index_name = quote_identifier(f"idx_row_index_{digest}")
+        conn.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON {safe_table}(row_index)")
+
+    def ensure_dataset_column_index(
+        self,
+        table_name: str,
+        safe_column: str,
+        conn: sqlite3.Connection | None = None,
+    ) -> None:
+        """Ensure an index exists for a specific dataset column (best-effort)."""
+
+        if conn is None:
+            with self.connection() as temp:
+                self.ensure_dataset_column_index(table_name, safe_column, temp)
+                return
+        safe_table = quote_identifier(table_name)
+        safe_col = quote_identifier(safe_column)
+        digest = hashlib.sha256(f"{table_name}:{safe_column}".encode("utf-8")).hexdigest()[:16]
+        index_name = quote_identifier(f"idx_col_{digest}")
+        conn.execute(f"CREATE INDEX IF NOT EXISTS {index_name} ON {safe_table}({safe_col})")
+
     def create_template_table(
         self,
         table_name: str,
@@ -1597,6 +2242,14 @@ class Storage:
         conn.execute(
             f"CREATE INDEX IF NOT EXISTS idx_{table_name}_dataset ON {safe_table}(dataset_version_id)"
         )
+        # Many template reads are deterministic row_index-ordered scans within a dataset_version.
+        # This composite index prevents large sorts/scans when plugins read the normalized view.
+        try:
+            conn.execute(
+                f"CREATE INDEX IF NOT EXISTS idx_{table_name}_dataset_row_index ON {safe_table}(dataset_version_id, row_index)"
+            )
+        except Exception:
+            pass
 
     def add_append_only_triggers(
         self, table_name: str, conn: sqlite3.Connection | None = None
@@ -2242,6 +2895,25 @@ class Storage:
             )
             row = cur.fetchone()
             return dict(row) if row else None
+
+    def fetch_dataset_templates(
+        self, dataset_version_id: str, conn: sqlite3.Connection | None = None
+    ) -> list[dict[str, Any]]:
+        tenant_id = self._tenant_id()
+        if conn is None:
+            with self.connection() as temp:
+                return self.fetch_dataset_templates(dataset_version_id, temp)
+        cur = conn.execute(
+            """
+            SELECT dt.*, t.table_name, t.name AS template_name, t.version AS template_version
+            FROM dataset_templates dt
+            JOIN templates t ON t.template_id = dt.template_id
+            WHERE dt.dataset_version_id = ? AND dt.tenant_id = ? AND t.tenant_id = ?
+            ORDER BY dt.updated_at DESC
+            """,
+            (dataset_version_id, tenant_id, tenant_id),
+        )
+        return [dict(row) for row in cur.fetchall()]
 
     def ensure_template_aggregate_dataset(
         self,

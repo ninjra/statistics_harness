@@ -1,0 +1,24 @@
+id: analysis_discrete_event_queue_simulator_v1
+name: Discrete-Event Queue Simulator
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- analysis_action_search_mip_batched_scheduler_v1
+- analysis_close_cycle_capacity_model
+settings:
+  description: Stress-test action plans via discrete-event simulation and estimate
+    deltas to hit the close-window target.
+  defaults:
+    sim_hours: 72
+    replications: 5
+capabilities:
+- needs_eventlog
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

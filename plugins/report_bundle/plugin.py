@@ -78,17 +78,28 @@ class Plugin:
         ]
         summary = "Report generated"
         status = "ok"
-        error = None
         if vector_store_enabled():
             try:
                 count = _index_report(ctx, report)
                 summary = f"Report generated; indexed {count} vectors"
             except Exception as exc:  # pragma: no cover - optional path
-                status = "error"
-                summary = "Report generated; vector index failed"
-                error = PluginError(
-                    type=type(exc).__name__,
-                    message=str(exc),
-                    traceback=traceback.format_exc(),
+                # Vector indexing is optional; do not fail the run if sqlite-vec isn't available.
+                summary = f"Report generated; vector index skipped ({type(exc).__name__}: {exc})"
+                return PluginResult(
+                    status="ok",
+                    summary=summary,
+                    # Keep metrics empty to satisfy plugins/report_bundle/output.schema.json.
+                    metrics={},
+                    findings=[
+                        {
+                            "kind": "vector_index_skipped",
+                            "measurement_type": "measured",
+                            "reason": str(exc),
+                            "error_type": type(exc).__name__,
+                            "traceback": traceback.format_exc(),
+                        }
+                    ],
+                    artifacts=artifacts,
+                    error=None,
                 )
-        return PluginResult(status, summary, {}, [], artifacts, error)
+        return PluginResult(status, summary, {}, [], artifacts, None)

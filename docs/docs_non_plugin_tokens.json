@@ -1,0 +1,15 @@
+{
+  "tokens": [
+    "analysis_jobs",
+    "analysis_x",
+    "analysis_xxx",
+    "analysis_four_pillars_rank_v1",
+    "analysis_knowledge_bank_comparison_v1",
+    "ingest_repo_scorecard",
+    "profile_dataframe",
+    "report_v2_utils",
+    "report_json",
+    "report_md",
+    "report_sha256"
+  ]
+}

@@ -18,7 +18,9 @@ settings:
     - uuid
     - guid
     - key
-    chunk_size: 1000
+    # Normalization is IO-bound and writes into SQLite. Larger chunks improve throughput and
+    # reduce per-chunk overhead (especially on 500k-2M row datasets).
+    chunk_size: 10000
     sample_rows: 500
 capabilities: []
 config_schema: config.schema.json

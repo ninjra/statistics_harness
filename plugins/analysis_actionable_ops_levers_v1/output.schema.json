@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "artifacts": {
+      "type": "array"
+    },
+    "budget": {
+      "type": "object"
+    },
+    "debug": {
+      "type": "object"
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "findings": {
+      "type": "array"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "references": {
+      "type": "array"
+    },
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "metrics",
+    "findings",
+    "artifacts",
+    "budget",
+    "error",
+    "references",
+    "debug"
+  ],
+  "type": "object"
+}
+

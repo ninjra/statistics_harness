@@ -1,0 +1,3134 @@
+{
+  "by_type_in_global_order": {
+    "analysis": [
+      "analysis_actionable_ops_levers_v1",
+      "analysis_anova_auto",
+      "analysis_attribution",
+      "analysis_bayesian_point_displacement",
+      "analysis_burst_detection_kleinberg",
+      "analysis_busy_period_segmentation_v2",
+      "analysis_capacity_scaling",
+      "analysis_chain_makespan",
+      "analysis_change_impact_pre_post",
+      "analysis_changepoint_energy_edivisive",
+      "analysis_changepoint_method_survey_guided",
+      "analysis_changepoint_pelt",
+      "analysis_chi_square_association",
+      "analysis_close_cycle_window_resolver",
+      "analysis_close_cycle_capacity_impact",
+      "analysis_close_cycle_capacity_model",
+      "analysis_close_cycle_contention",
+      "analysis_close_cycle_duration_shift",
+      "analysis_close_cycle_revenue_compression",
+      "analysis_close_cycle_uplift",
+      "analysis_cluster_analysis_auto",
+      "analysis_concurrency_reconstruction",
+      "analysis_conformance_alignments",
+      "analysis_conformance_checking",
+      "analysis_control_chart_cusum",
+      "analysis_control_chart_ewma",
+      "analysis_control_chart_individuals",
+      "analysis_control_chart_suite",
+      "analysis_copula_dependence",
+      "analysis_dependency_graph_change_detection",
+      "analysis_dependency_resolution_join",
+      "analysis_determinism_discipline",
+      "analysis_distribution_drift_suite",
+      "analysis_drift_adwin",
+      "analysis_dynamic_close_detection",
+      "analysis_effect_size_report",
+      "analysis_event_count_bocpd_poisson",
+      "analysis_evt_gumbel_tail",
+      "analysis_evt_peaks_over_threshold",
+      "analysis_factor_analysis_auto",
+      "analysis_graphical_lasso_dependency_network",
+      "analysis_hawkes_self_exciting",
+      "analysis_hmm_latent_state_sequences",
+      "analysis_isolation_forest",
+      "analysis_isolation_forest_anomaly",
+      "analysis_kernel_two_sample_mmd",
+      "analysis_kingman_vut_approx",
+      "analysis_lagged_predictability_test",
+      "analysis_littles_law_consistency",
+      "analysis_local_outlier_factor",
+      "analysis_log_template_drain",
+      "analysis_log_template_mining_drain",
+      "analysis_map_permutation_test_karniski",
+      "analysis_markov_transition_shift",
+      "analysis_matrix_profile_motifs_discords",
+      "analysis_message_entropy_drift",
+      "analysis_monte_carlo_surface_uncertainty",
+      "analysis_multiple_testing_fdr",
+      "analysis_multivariate_changepoint_pelt",
+      "analysis_multivariate_control_charts",
+      "analysis_multivariate_ewma_control",
+      "analysis_multivariate_t2_control",
+      "analysis_mutual_information_screen",
+      "analysis_one_class_svm",
+      "analysis_pca_auto",
+      "analysis_pca_control_chart",
+      "analysis_percentile_analysis",
+      "analysis_periodicity_spectral_scan",
+      "analysis_process_counterfactuals",
+      "analysis_process_drift_conformance_over_time",
+      "analysis_process_sequence_bottlenecks",
+      "analysis_action_search_mip_batched_scheduler_v1",
+      "analysis_action_search_simulated_annealing_v1",
+      "analysis_discrete_event_queue_simulator_v1",
+      "analysis_proportional_hazards_duration",
+      "analysis_quantile_regression_duration",
+      "analysis_queue_delay_decomposition",
+      "analysis_queue_model_fit",
+      "analysis_regression_auto",
+      "analysis_robust_covariance_outliers",
+      "analysis_robust_pca_pcp",
+      "analysis_robust_pca_sparse_outliers",
+      "analysis_sequence_classification",
+      "analysis_sequential_patterns_prefixspan",
+      "analysis_state_space_kalman_residuals",
+      "analysis_surface_fabric_sso_eigen",
+      "analysis_surface_fractal_dimension_variogram",
+      "analysis_surface_hydrology_flow_watershed",
+      "analysis_surface_multiscale_wavelet_curvature",
+      "analysis_surface_roughness_metrics",
+      "analysis_surface_rugosity_index",
+      "analysis_surface_terrain_position_index",
+      "analysis_survival_kaplan_meier",
+      "analysis_survival_time_to_event",
+      "analysis_tail_isolation",
+      "analysis_tda_betti_curve_changepoint",
+      "analysis_tda_mapper_graph",
+      "analysis_tda_persistence_landscapes",
+      "analysis_tda_persistent_homology",
+      "analysis_template_drift_two_sample",
+      "analysis_term_burst_kleinberg",
+      "analysis_time_series_analysis_auto",
+      "analysis_topic_model_lda",
+      "analysis_topographic_angle_dynamics",
+      "analysis_topographic_similarity_angle_projection",
+      "analysis_topographic_tanova_permutation",
+      "analysis_transfer_entropy_directional",
+      "analysis_ttests_auto",
+      "analysis_two_sample_categorical_chi2",
+      "analysis_two_sample_numeric_ad",
+      "analysis_two_sample_numeric_ks",
+      "analysis_two_sample_numeric_mann_whitney",
+      "analysis_upload_linkage",
+      "analysis_user_host_savings",
+      "analysis_variant_differential",
+      "analysis_waterfall_summary_v2",
+      "analysis_recommendation_dedupe_v2",
+      "analysis_issue_cards_v2",
+      "analysis_traceability_manifest_v2",
+      "analysis_bocpd_gaussian",
+      "analysis_conformal_feature_prediction",
+      "analysis_dp_gmm",
+      "analysis_gaussian_copula_shift",
+      "analysis_gaussian_knockoffs",
+      "analysis_graph_topology_curves",
+      "analysis_ideaspace_normative_gap",
+      "analysis_ideaspace_action_planner",
+      "analysis_knockoff_wrapper_rf",
+      "analysis_notears_linear",
+      "analysis_online_conformal_changepoint",
+      "analysis_process_sequence",
+      "analysis_scan_statistics",
+      "analysis_association_rules_apriori_v1",
+      "analysis_biclustering_cheng_church_v1",
+      "analysis_burst_modeling_hawkes_v1",
+      "analysis_close_cycle_change_point_v1",
+      "analysis_constrained_clustering_cop_kmeans_v1",
+      "analysis_daily_pattern_alignment_dtw_v1",
+      "analysis_density_clustering_hdbscan_v1",
+      "analysis_dependency_community_leiden_v1",
+      "analysis_dependency_community_louvain_v1",
+      "analysis_dependency_critical_path_v1",
+      "analysis_distribution_shift_wasserstein_v1",
+      "analysis_empirical_bayes_shrinkage_v1",
+      "analysis_frequent_itemsets_fpgrowth_v1",
+      "analysis_graph_min_cut_partition_v1",
+      "analysis_hold_time_attribution_v1",
+      "analysis_ideaspace_energy_ebm_v1",
+      "analysis_ebm_action_verifier_v1",
+      "analysis_param_near_duplicate_minhash_v1",
+      "analysis_param_near_duplicate_simhash_v1",
+      "analysis_param_variant_explosion_v1",
+      "analysis_retry_rate_hotspots_v1",
+      "analysis_sequence_grammar_sequitur_v1",
+      "analysis_sequential_patterns_prefixspan_v1",
+      "analysis_similarity_graph_spectral_clustering_v1"
+    ],
+    "ingest": [
+      "ingest_tabular"
+    ],
+    "llm": [
+      "llm_prompt_builder",
+      "llm_text2sql_local_generate_v1"
+    ],
+    "planner": [
+      "planner_basic"
+    ],
+    "profile": [
+      "profile_basic",
+      "profile_eventlog"
+    ],
+    "report": [
+      "report_bundle",
+      "report_plain_english_v1",
+      "report_slide_kit_emitter_v2",
+      "report_decision_bundle_v2",
+      "report_payout_report_v1"
+    ],
+    "transform": [
+      "transform_normalize_mixed",
+      "transform_sql_intents_pack_v1",
+      "transform_sqlpack_materialize_v1",
+      "transform_template"
+    ]
+  },
+  "global_toposort": [
+    "analysis_actionable_ops_levers_v1",
+    "analysis_anova_auto",
+    "analysis_attribution",
+    "analysis_bayesian_point_displacement",
+    "analysis_burst_detection_kleinberg",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_scaling",
+    "analysis_chain_makespan",
+    "analysis_change_impact_pre_post",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_close_cycle_window_resolver",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_uplift",
+    "analysis_cluster_analysis_auto",
+    "analysis_concurrency_reconstruction",
+    "analysis_conformance_alignments",
+    "analysis_conformance_checking",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_control_chart_suite",
+    "analysis_copula_dependence",
+    "analysis_dependency_graph_change_detection",
+    "analysis_dependency_resolution_join",
+    "analysis_determinism_discipline",
+    "analysis_distribution_drift_suite",
+    "analysis_drift_adwin",
+    "analysis_dynamic_close_detection",
+    "analysis_effect_size_report",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_hawkes_self_exciting",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_isolation_forest",
+    "analysis_isolation_forest_anomaly",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_lagged_predictability_test",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_log_template_mining_drain",
+    "analysis_map_permutation_test_karniski",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multiple_testing_fdr",
+    "analysis_multivariate_changepoint_pelt",
+    "analysis_multivariate_control_charts",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_one_class_svm",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_percentile_analysis",
+    "analysis_periodicity_spectral_scan",
+    "analysis_process_counterfactuals",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_process_sequence_bottlenecks",
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_regression_duration",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_regression_auto",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_robust_pca_sparse_outliers",
+    "analysis_sequence_classification",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_state_space_kalman_residuals",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_tail_isolation",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_transfer_entropy_directional",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_upload_linkage",
+    "analysis_user_host_savings",
+    "analysis_variant_differential",
+    "analysis_waterfall_summary_v2",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_issue_cards_v2",
+    "analysis_traceability_manifest_v2",
+    "ingest_tabular",
+    "analysis_bocpd_gaussian",
+    "analysis_conformal_feature_prediction",
+    "analysis_dp_gmm",
+    "analysis_gaussian_copula_shift",
+    "analysis_gaussian_knockoffs",
+    "analysis_graph_topology_curves",
+    "analysis_ideaspace_normative_gap",
+    "analysis_ideaspace_action_planner",
+    "analysis_knockoff_wrapper_rf",
+    "analysis_notears_linear",
+    "analysis_online_conformal_changepoint",
+    "analysis_process_sequence",
+    "analysis_scan_statistics",
+    "planner_basic",
+    "profile_basic",
+    "profile_eventlog",
+    "report_bundle",
+    "llm_prompt_builder",
+    "report_plain_english_v1",
+    "report_slide_kit_emitter_v2",
+    "report_decision_bundle_v2",
+    "transform_normalize_mixed",
+    "analysis_association_rules_apriori_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_hold_time_attribution_v1",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
+    "report_payout_report_v1",
+    "transform_sql_intents_pack_v1",
+    "llm_text2sql_local_generate_v1",
+    "transform_sqlpack_materialize_v1",
+    "transform_template"
+  ],
+  "groups": {
+    "analysis_action_search_*": [
+      "analysis_action_search_mip_batched_scheduler_v1",
+      "analysis_action_search_simulated_annealing_v1"
+    ],
+    "analysis_actionable_ops_*": [
+      "analysis_actionable_ops_levers_v1"
+    ],
+    "analysis_anova_auto_*": [
+      "analysis_anova_auto"
+    ],
+    "analysis_association_rules_*": [
+      "analysis_association_rules_apriori_v1"
+    ],
+    "analysis_attribution": [
+      "analysis_attribution"
+    ],
+    "analysis_bayesian_point_*": [
+      "analysis_bayesian_point_displacement"
+    ],
+    "analysis_biclustering_cheng_*": [
+      "analysis_biclustering_cheng_church_v1"
+    ],
+    "analysis_bocpd_gaussian_*": [
+      "analysis_bocpd_gaussian"
+    ],
+    "analysis_burst_detection_*": [
+      "analysis_burst_detection_kleinberg"
+    ],
+    "analysis_burst_modeling_*": [
+      "analysis_burst_modeling_hawkes_v1"
+    ],
+    "analysis_busy_period_*": [
+      "analysis_busy_period_segmentation_v2"
+    ],
+    "analysis_capacity_scaling_*": [
+      "analysis_capacity_scaling"
+    ],
+    "analysis_chain_makespan_*": [
+      "analysis_chain_makespan"
+    ],
+    "analysis_change_impact_*": [
+      "analysis_change_impact_pre_post"
+    ],
+    "analysis_changepoint_energy_*": [
+      "analysis_changepoint_energy_edivisive"
+    ],
+    "analysis_changepoint_method_*": [
+      "analysis_changepoint_method_survey_guided"
+    ],
+    "analysis_changepoint_pelt_*": [
+      "analysis_changepoint_pelt"
+    ],
+    "analysis_chi_square_*": [
+      "analysis_chi_square_association"
+    ],
+    "analysis_close_cycle_*": [
+      "analysis_close_cycle_window_resolver",
+      "analysis_close_cycle_capacity_impact",
+      "analysis_close_cycle_capacity_model",
+      "analysis_close_cycle_contention",
+      "analysis_close_cycle_duration_shift",
+      "analysis_close_cycle_revenue_compression",
+      "analysis_close_cycle_uplift",
+      "analysis_close_cycle_change_point_v1"
+    ],
+    "analysis_cluster_analysis_*": [
+      "analysis_cluster_analysis_auto"
+    ],
+    "analysis_concurrency_reconstruction_*": [
+      "analysis_concurrency_reconstruction"
+    ],
+    "analysis_conformal_feature_*": [
+      "analysis_conformal_feature_prediction"
+    ],
+    "analysis_conformance_alignments_*": [
+      "analysis_conformance_alignments"
+    ],
+    "analysis_conformance_checking_*": [
+      "analysis_conformance_checking"
+    ],
+    "analysis_constrained_clustering_*": [
+      "analysis_constrained_clustering_cop_kmeans_v1"
+    ],
+    "analysis_control_chart_*": [
+      "analysis_control_chart_cusum",
+      "analysis_control_chart_ewma",
+      "analysis_control_chart_individuals",
+      "analysis_control_chart_suite"
+    ],
+    "analysis_copula_dependence_*": [
+      "analysis_copula_dependence"
+    ],
+    "analysis_daily_pattern_*": [
+      "analysis_daily_pattern_alignment_dtw_v1"
+    ],
+    "analysis_density_clustering_*": [
+      "analysis_density_clustering_hdbscan_v1"
+    ],
+    "analysis_dependency_community_*": [
+      "analysis_dependency_community_leiden_v1",
+      "analysis_dependency_community_louvain_v1"
+    ],
+    "analysis_dependency_critical_*": [
+      "analysis_dependency_critical_path_v1"
+    ],
+    "analysis_dependency_graph_*": [
+      "analysis_dependency_graph_change_detection"
+    ],
+    "analysis_dependency_resolution_*": [
+      "analysis_dependency_resolution_join"
+    ],
+    "analysis_determinism_discipline_*": [
+      "analysis_determinism_discipline"
+    ],
+    "analysis_discrete_event_*": [
+      "analysis_discrete_event_queue_simulator_v1"
+    ],
+    "analysis_distribution_drift_*": [
+      "analysis_distribution_drift_suite"
+    ],
+    "analysis_distribution_shift_*": [
+      "analysis_distribution_shift_wasserstein_v1"
+    ],
+    "analysis_dp_gmm_*": [
+      "analysis_dp_gmm"
+    ],
+    "analysis_drift_adwin_*": [
+      "analysis_drift_adwin"
+    ],
+    "analysis_dynamic_close_*": [
+      "analysis_dynamic_close_detection"
+    ],
+    "analysis_ebm_action_*": [
+      "analysis_ebm_action_verifier_v1"
+    ],
+    "analysis_effect_size_*": [
+      "analysis_effect_size_report"
+    ],
+    "analysis_empirical_bayes_*": [
+      "analysis_empirical_bayes_shrinkage_v1"
+    ],
+    "analysis_event_count_*": [
+      "analysis_event_count_bocpd_poisson"
+    ],
+    "analysis_evt_gumbel_*": [
+      "analysis_evt_gumbel_tail"
+    ],
+    "analysis_evt_peaks_*": [
+      "analysis_evt_peaks_over_threshold"
+    ],
+    "analysis_factor_analysis_*": [
+      "analysis_factor_analysis_auto"
+    ],
+    "analysis_frequent_itemsets_*": [
+      "analysis_frequent_itemsets_fpgrowth_v1"
+    ],
+    "analysis_gaussian_copula_*": [
+      "analysis_gaussian_copula_shift"
+    ],
+    "analysis_gaussian_knockoffs_*": [
+      "analysis_gaussian_knockoffs"
+    ],
+    "analysis_graph_min_*": [
+      "analysis_graph_min_cut_partition_v1"
+    ],
+    "analysis_graph_topology_*": [
+      "analysis_graph_topology_curves"
+    ],
+    "analysis_graphical_lasso_*": [
+      "analysis_graphical_lasso_dependency_network"
+    ],
+    "analysis_hawkes_self_*": [
+      "analysis_hawkes_self_exciting"
+    ],
+    "analysis_hmm_latent_*": [
+      "analysis_hmm_latent_state_sequences"
+    ],
+    "analysis_hold_time_*": [
+      "analysis_hold_time_attribution_v1"
+    ],
+    "analysis_ideaspace_action_*": [
+      "analysis_ideaspace_action_planner"
+    ],
+    "analysis_ideaspace_energy_*": [
+      "analysis_ideaspace_energy_ebm_v1"
+    ],
+    "analysis_ideaspace_normative_*": [
+      "analysis_ideaspace_normative_gap"
+    ],
+    "analysis_isolation_forest_*": [
+      "analysis_isolation_forest",
+      "analysis_isolation_forest_anomaly"
+    ],
+    "analysis_issue_cards_*": [
+      "analysis_issue_cards_v2"
+    ],
+    "analysis_kernel_two_*": [
+      "analysis_kernel_two_sample_mmd"
+    ],
+    "analysis_kingman_vut_*": [
+      "analysis_kingman_vut_approx"
+    ],
+    "analysis_knockoff_wrapper_*": [
+      "analysis_knockoff_wrapper_rf"
+    ],
+    "analysis_lagged_predictability_*": [
+      "analysis_lagged_predictability_test"
+    ],
+    "analysis_littles_law_*": [
+      "analysis_littles_law_consistency"
+    ],
+    "analysis_local_outlier_*": [
+      "analysis_local_outlier_factor"
+    ],
+    "analysis_log_template_*": [
+      "analysis_log_template_drain",
+      "analysis_log_template_mining_drain"
+    ],
+    "analysis_map_permutation_*": [
+      "analysis_map_permutation_test_karniski"
+    ],
+    "analysis_markov_transition_*": [
+      "analysis_markov_transition_shift"
+    ],
+    "analysis_matrix_profile_*": [
+      "analysis_matrix_profile_motifs_discords"
+    ],
+    "analysis_message_entropy_*": [
+      "analysis_message_entropy_drift"
+    ],
+    "analysis_monte_carlo_*": [
+      "analysis_monte_carlo_surface_uncertainty"
+    ],
+    "analysis_multiple_testing_*": [
+      "analysis_multiple_testing_fdr"
+    ],
+    "analysis_multivariate_changepoint_*": [
+      "analysis_multivariate_changepoint_pelt"
+    ],
+    "analysis_multivariate_control_*": [
+      "analysis_multivariate_control_charts"
+    ],
+    "analysis_multivariate_ewma_*": [
+      "analysis_multivariate_ewma_control"
+    ],
+    "analysis_multivariate_t2_*": [
+      "analysis_multivariate_t2_control"
+    ],
+    "analysis_mutual_information_*": [
+      "analysis_mutual_information_screen"
+    ],
+    "analysis_notears_linear_*": [
+      "analysis_notears_linear"
+    ],
+    "analysis_one_class_*": [
+      "analysis_one_class_svm"
+    ],
+    "analysis_online_conformal_*": [
+      "analysis_online_conformal_changepoint"
+    ],
+    "analysis_param_near_*": [
+      "analysis_param_near_duplicate_minhash_v1",
+      "analysis_param_near_duplicate_simhash_v1"
+    ],
+    "analysis_param_variant_*": [
+      "analysis_param_variant_explosion_v1"
+    ],
+    "analysis_pca_auto_*": [
+      "analysis_pca_auto"
+    ],
+    "analysis_pca_control_*": [
+      "analysis_pca_control_chart"
+    ],
+    "analysis_percentile_analysis_*": [
+      "analysis_percentile_analysis"
+    ],
+    "analysis_periodicity_spectral_*": [
+      "analysis_periodicity_spectral_scan"
+    ],
+    "analysis_process_counterfactuals_*": [
+      "analysis_process_counterfactuals"
+    ],
+    "analysis_process_drift_*": [
+      "analysis_process_drift_conformance_over_time"
+    ],
+    "analysis_process_sequence_*": [
+      "analysis_process_sequence_bottlenecks",
+      "analysis_process_sequence"
+    ],
+    "analysis_proportional_hazards_*": [
+      "analysis_proportional_hazards_duration"
+    ],
+    "analysis_quantile_regression_*": [
+      "analysis_quantile_regression_duration"
+    ],
+    "analysis_queue_delay_*": [
+      "analysis_queue_delay_decomposition"
+    ],
+    "analysis_queue_model_*": [
+      "analysis_queue_model_fit"
+    ],
+    "analysis_recommendation_dedupe_*": [
+      "analysis_recommendation_dedupe_v2"
+    ],
+    "analysis_regression_auto_*": [
+      "analysis_regression_auto"
+    ],
+    "analysis_retry_rate_*": [
+      "analysis_retry_rate_hotspots_v1"
+    ],
+    "analysis_robust_covariance_*": [
+      "analysis_robust_covariance_outliers"
+    ],
+    "analysis_robust_pca_*": [
+      "analysis_robust_pca_pcp",
+      "analysis_robust_pca_sparse_outliers"
+    ],
+    "analysis_scan_statistics_*": [
+      "analysis_scan_statistics"
+    ],
+    "analysis_sequence_classification_*": [
+      "analysis_sequence_classification"
+    ],
+    "analysis_sequence_grammar_*": [
+      "analysis_sequence_grammar_sequitur_v1"
+    ],
+    "analysis_sequential_patterns_*": [
+      "analysis_sequential_patterns_prefixspan",
+      "analysis_sequential_patterns_prefixspan_v1"
+    ],
+    "analysis_similarity_graph_*": [
+      "analysis_similarity_graph_spectral_clustering_v1"
+    ],
+    "analysis_state_space_*": [
+      "analysis_state_space_kalman_residuals"
+    ],
+    "analysis_surface_fabric_*": [
+      "analysis_surface_fabric_sso_eigen"
+    ],
+    "analysis_surface_fractal_*": [
+      "analysis_surface_fractal_dimension_variogram"
+    ],
+    "analysis_surface_hydrology_*": [
+      "analysis_surface_hydrology_flow_watershed"
+    ],
+    "analysis_surface_multiscale_*": [
+      "analysis_surface_multiscale_wavelet_curvature"
+    ],
+    "analysis_surface_roughness_*": [
+      "analysis_surface_roughness_metrics"
+    ],
+    "analysis_surface_rugosity_*": [
+      "analysis_surface_rugosity_index"
+    ],
+    "analysis_surface_terrain_*": [
+      "analysis_surface_terrain_position_index"
+    ],
+    "analysis_survival_kaplan_*": [
+      "analysis_survival_kaplan_meier"
+    ],
+    "analysis_survival_time_*": [
+      "analysis_survival_time_to_event"
+    ],
+    "analysis_tail_isolation_*": [
+      "analysis_tail_isolation"
+    ],
+    "analysis_tda_betti_*": [
+      "analysis_tda_betti_curve_changepoint"
+    ],
+    "analysis_tda_mapper_*": [
+      "analysis_tda_mapper_graph"
+    ],
+    "analysis_tda_persistence_*": [
+      "analysis_tda_persistence_landscapes"
+    ],
+    "analysis_tda_persistent_*": [
+      "analysis_tda_persistent_homology"
+    ],
+    "analysis_template_drift_*": [
+      "analysis_template_drift_two_sample"
+    ],
+    "analysis_term_burst_*": [
+      "analysis_term_burst_kleinberg"
+    ],
+    "analysis_time_series_*": [
+      "analysis_time_series_analysis_auto"
+    ],
+    "analysis_topic_model_*": [
+      "analysis_topic_model_lda"
+    ],
+    "analysis_topographic_angle_*": [
+      "analysis_topographic_angle_dynamics"
+    ],
+    "analysis_topographic_similarity_*": [
+      "analysis_topographic_similarity_angle_projection"
+    ],
+    "analysis_topographic_tanova_*": [
+      "analysis_topographic_tanova_permutation"
+    ],
+    "analysis_traceability_manifest_*": [
+      "analysis_traceability_manifest_v2"
+    ],
+    "analysis_transfer_entropy_*": [
+      "analysis_transfer_entropy_directional"
+    ],
+    "analysis_ttests_auto_*": [
+      "analysis_ttests_auto"
+    ],
+    "analysis_two_sample_*": [
+      "analysis_two_sample_categorical_chi2",
+      "analysis_two_sample_numeric_ad",
+      "analysis_two_sample_numeric_ks",
+      "analysis_two_sample_numeric_mann_whitney"
+    ],
+    "analysis_upload_linkage_*": [
+      "analysis_upload_linkage"
+    ],
+    "analysis_user_host_*": [
+      "analysis_user_host_savings"
+    ],
+    "analysis_variant_differential_*": [
+      "analysis_variant_differential"
+    ],
+    "analysis_waterfall_summary_*": [
+      "analysis_waterfall_summary_v2"
+    ],
+    "ingest": [
+      "ingest_tabular"
+    ],
+    "llm": [
+      "llm_prompt_builder",
+      "llm_text2sql_local_generate_v1"
+    ],
+    "planner": [
+      "planner_basic"
+    ],
+    "profile": [
+      "profile_basic",
+      "profile_eventlog"
+    ],
+    "report": [
+      "report_bundle",
+      "report_plain_english_v1",
+      "report_slide_kit_emitter_v2",
+      "report_decision_bundle_v2",
+      "report_payout_report_v1"
+    ],
+    "transform": [
+      "transform_normalize_mixed",
+      "transform_sql_intents_pack_v1",
+      "transform_sqlpack_materialize_v1",
+      "transform_template"
+    ]
+  },
+  "missing_dep_edges": {},
+  "pipeline_auto_plan_order": [
+    "ingest_tabular",
+    "transform_normalize_mixed",
+    "transform_sql_intents_pack_v1",
+    "transform_sqlpack_materialize_v1",
+    "transform_template",
+    "profile_basic",
+    "profile_eventlog",
+    "planner_basic",
+    "analysis_actionable_ops_levers_v1",
+    "analysis_anova_auto",
+    "analysis_attribution",
+    "analysis_bayesian_point_displacement",
+    "analysis_burst_detection_kleinberg",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_scaling",
+    "analysis_chain_makespan",
+    "analysis_change_impact_pre_post",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_close_cycle_window_resolver",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_uplift",
+    "analysis_cluster_analysis_auto",
+    "analysis_concurrency_reconstruction",
+    "analysis_conformance_alignments",
+    "analysis_conformance_checking",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_control_chart_suite",
+    "analysis_copula_dependence",
+    "analysis_dependency_graph_change_detection",
+    "analysis_dependency_resolution_join",
+    "analysis_determinism_discipline",
+    "analysis_distribution_drift_suite",
+    "analysis_drift_adwin",
+    "analysis_dynamic_close_detection",
+    "analysis_effect_size_report",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_hawkes_self_exciting",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_isolation_forest",
+    "analysis_isolation_forest_anomaly",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_lagged_predictability_test",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_log_template_mining_drain",
+    "analysis_map_permutation_test_karniski",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multiple_testing_fdr",
+    "analysis_multivariate_changepoint_pelt",
+    "analysis_multivariate_control_charts",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_one_class_svm",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_percentile_analysis",
+    "analysis_periodicity_spectral_scan",
+    "analysis_process_counterfactuals",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_process_sequence_bottlenecks",
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_regression_duration",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_regression_auto",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_robust_pca_sparse_outliers",
+    "analysis_sequence_classification",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_state_space_kalman_residuals",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_tail_isolation",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_transfer_entropy_directional",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_upload_linkage",
+    "analysis_user_host_savings",
+    "analysis_variant_differential",
+    "analysis_waterfall_summary_v2",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_issue_cards_v2",
+    "analysis_traceability_manifest_v2",
+    "analysis_bocpd_gaussian",
+    "analysis_conformal_feature_prediction",
+    "analysis_dp_gmm",
+    "analysis_gaussian_copula_shift",
+    "analysis_gaussian_knockoffs",
+    "analysis_graph_topology_curves",
+    "analysis_ideaspace_normative_gap",
+    "analysis_ideaspace_action_planner",
+    "analysis_knockoff_wrapper_rf",
+    "analysis_notears_linear",
+    "analysis_online_conformal_changepoint",
+    "analysis_process_sequence",
+    "analysis_scan_statistics",
+    "analysis_association_rules_apriori_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_hold_time_attribution_v1",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
+    "report_plain_english_v1",
+    "report_slide_kit_emitter_v2",
+    "report_decision_bundle_v2",
+    "report_payout_report_v1",
+    "report_bundle",
+    "llm_prompt_builder",
+    "llm_text2sql_local_generate_v1"
+  ],
+  "plugin_count": 171,
+  "plugins": {
+    "analysis_action_search_mip_batched_scheduler_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Solve a constrained selection of actions with MIP/CP-SAT to produce a concrete plan.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Action Search (MIP Batched Scheduler)",
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_action_search_simulated_annealing_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_process_sequence_bottlenecks",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Search combinations of actions to hit target close window under constraints.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Action Search (Simulated Annealing)",
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_actionable_ops_levers_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "CEO-grade, process-targeted operational recommendations derived from logs.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Actionable Ops Levers (v1)",
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_anova_auto": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Anova Auto",
+      "plugin_id": "analysis_anova_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_association_rules_apriori_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Generate actionable conditional rules over parameters to simplify variants and remove redundant runs.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Association Rules (Apriori)",
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_attribution": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Attribute eligible wait to process/module/user with deterministic ranking.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Attribution Analysis",
+      "plugin_id": "analysis_attribution",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_bayesian_point_displacement": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Bayesian Point Displacement",
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_biclustering_cheng_church_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find coherent process\u00d7param blocks that suggest shared batch endpoints or shared caches.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Biclustering (Process\u00d7Param Coherence)",
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_bocpd_gaussian": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Simple BOCPD",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "BOCPD Gaussian",
+      "plugin_id": "analysis_bocpd_gaussian",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_burst_detection_kleinberg": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Burst Detection Kleinberg",
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_burst_modeling_hawkes_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Model bursts as self-exciting patterns to identify trigger processes and dampening interventions.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Burst Modeling (Hawkes-Style)",
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_busy_period_segmentation_v2": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Build busy-period intervals from over-threshold wait-to-start.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Busy Period Segmentation v2",
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_capacity_scaling": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Model capacity scaling impact on eligible wait.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Capacity Scaling Scenario",
+      "plugin_id": "analysis_capacity_scaling",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_chain_makespan": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Compute per-sequence makespan, runtime, and idle gap statistics.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Chain Makespan Analysis",
+      "plugin_id": "analysis_chain_makespan",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_change_impact_pre_post": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Change Impact Pre Post",
+      "plugin_id": "analysis_change_impact_pre_post",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_changepoint_energy_edivisive": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Changepoint Energy Edivisive",
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_changepoint_method_survey_guided": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Changepoint Method Survey Guided",
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_changepoint_pelt": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Changepoint Pelt",
+      "plugin_id": "analysis_changepoint_pelt",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_chi_square_association": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Chi Square Association",
+      "plugin_id": "analysis_chi_square_association",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_capacity_impact": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Detect close-cycle completion-time improvement when a 3rd server is added.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Capacity Impact",
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_capacity_model": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Model close-cycle completion-time impact from adding capacity (model-only findings).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Capacity Model",
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_change_point_v1": {
+      "capabilities": [
+        "needs_time"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Heuristic change detection on queue delay/duration time series to flag close-cycle drift.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Change Point (Heuristic)",
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_contention": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Detect close-cycle slowdowns and contention (e.g., qemail/qpec)",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Contention Analysis",
+      "plugin_id": "analysis_close_cycle_contention",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_duration_shift": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Detect per-process duration shifts between close and open cycles.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Duration Shift Analysis",
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_revenue_compression": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Model capacity needed to compress revenue process close-window span to target days.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Revenue Compression",
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_uplift": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Detect close-cycle slowdowns using share-shift statistics.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Uplift Analysis",
+      "plugin_id": "analysis_close_cycle_uplift",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_close_cycle_window_resolver": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Resolve close-cycle windows using Accounting Month roll signals and default calendar bounds.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Window Resolver",
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_cluster_analysis_auto": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Cluster Auto",
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_concurrency_reconstruction": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Reconstruct concurrent execution levels from start/end timestamps.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Concurrency Reconstruction",
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_conformal_feature_prediction": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Conformal anomaly detection",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Conformal Feature Prediction",
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_conformance_alignments": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Conformance Alignments",
+      "plugin_id": "analysis_conformance_alignments",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_conformance_checking": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [],
+      "description": "Detect deviations from baseline process flow.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Conformance Checking",
+      "plugin_id": "analysis_conformance_checking",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_constrained_clustering_cop_kmeans_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Apply constraints-aware clustering to propose safe groupings that respect exclude lists and domain constraints.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Constrained Clustering (COP-KMeans)",
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_control_chart_cusum": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Control Chart Cusum",
+      "plugin_id": "analysis_control_chart_cusum",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_control_chart_ewma": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Control Chart Ewma",
+      "plugin_id": "analysis_control_chart_ewma",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_control_chart_individuals": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Control Chart Individuals",
+      "plugin_id": "analysis_control_chart_individuals",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_control_chart_suite": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect shifts via Individuals/EWMA/CUSUM.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Control Chart Suite",
+      "plugin_id": "analysis_control_chart_suite",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_copula_dependence": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Copula Dependence",
+      "plugin_id": "analysis_copula_dependence",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_daily_pattern_alignment_dtw_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Align daily patterns (close vs non-close) to detect shape anomalies and close-cycle drivers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Daily Pattern Alignment (DTW)",
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_density_clustering_hdbscan_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Cluster executions into variable-density groups to propose batchable sets without choosing k.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Density Clustering (HDBSCAN)",
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_community_leiden_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Detect higher-quality dependency communities (Leiden) to identify stable module boundaries.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Community Detection (Leiden)",
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_community_louvain_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Detect dependency communities to identify decoupling boundaries and refactor modules.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Community Detection (Louvain)",
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_critical_path_v1": {
+      "capabilities": [
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Computes a dependency-chain depth proxy from parent/dependency ID columns.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Critical Path (Proxy)",
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_graph_change_detection": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Graph Change Detection",
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dependency_resolution_join": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Join dependency end times to quantify dependency lag.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dependency Resolution Join",
+      "plugin_id": "analysis_dependency_resolution_join",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_determinism_discipline": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Check analysis findings for measurement_type discipline and modeled assumptions.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Determinism Discipline",
+      "plugin_id": "analysis_determinism_discipline",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_discrete_event_queue_simulator_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "analysis_action_search_mip_batched_scheduler_v1",
+        "analysis_close_cycle_capacity_model"
+      ],
+      "description": "Stress-test action plans via discrete-event simulation and estimate deltas to hit the close-window target.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Discrete-Event Queue Simulator",
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_distribution_drift_suite": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect distribution drift with FDR control.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Distribution Drift Suite",
+      "plugin_id": "analysis_distribution_drift_suite",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_distribution_shift_wasserstein_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Quantify close vs open workload/latency distribution shift to target concrete levers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Distribution Shift (Wasserstein/EMD)",
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dp_gmm": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Simplified DP GMM",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "DP GMM",
+      "plugin_id": "analysis_dp_gmm",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_drift_adwin": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Drift Adwin",
+      "plugin_id": "analysis_drift_adwin",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dynamic_close_detection": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect dynamic close windows using Accounting Month roll signals in params.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dynamic Close Window Detection",
+      "plugin_id": "analysis_dynamic_close_detection",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ebm_action_verifier_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "analysis_ideaspace_action_planner",
+        "analysis_ideaspace_energy_ebm_v1"
+      ],
+      "description": "Re-rank deterministic lever candidates by modeled energy reduction.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "EBM Action Verifier (Kona Layer)",
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_effect_size_report": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Effect Size Report",
+      "plugin_id": "analysis_effect_size_report",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_empirical_bayes_shrinkage_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Stable ranking of true worst drivers using shrinkage (James\u2013Stein style de-noising).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Empirical Bayes Shrinkage Rankings",
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_event_count_bocpd_poisson": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Event Count Bocpd Poisson",
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_evt_gumbel_tail": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Evt Gumbel Tail",
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_evt_peaks_over_threshold": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Evt Peaks Over Threshold",
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_factor_analysis_auto": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Factor Auto",
+      "plugin_id": "analysis_factor_analysis_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_frequent_itemsets_fpgrowth_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Mine frequent parameter itemsets to identify repeatable recipes and consolidation opportunities.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Frequent Param Sets (FP-Growth)",
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_gaussian_copula_shift": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Dependence shift detection",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Gaussian Copula Shift",
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_gaussian_knockoffs": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Simple knockoff-style feature selection",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Gaussian Knockoffs",
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_min_cut_partition_v1": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find minimal cut edges between subsystems to propose where to decouple or queue-separate.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Graph Minimum Cut Partition",
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_topology_curves": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Approximate topology curves",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Graph Topology Curves",
+      "plugin_id": "analysis_graph_topology_curves",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graphical_lasso_dependency_network": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Graphical Lasso Dependency Network",
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_hawkes_self_exciting": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Hawkes Self Exciting",
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_hmm_latent_state_sequences": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Hmm Latent State Sequences",
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_hold_time_attribution_v1": {
+      "capabilities": [
+        "needs_time",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Attribute delay into pre-eligibility holds vs eligible-wait, per process.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Hold Time Attribution",
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ideaspace_action_planner": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular",
+        "analysis_ideaspace_normative_gap"
+      ],
+      "description": "Deterministic lever library that turns ideaspace gaps into actions (no speculation gates).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ideaspace Action Planner",
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ideaspace_energy_ebm_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Deterministic energy-based model scoring ideaspace state vs ideal (baseline or frontier).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ideaspace Energy EBM (Kona Layer)",
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ideaspace_normative_gap": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Tiered ideaspace feature extraction + ideal frontier/baseline + gap vectors.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ideaspace Normative Gap",
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_isolation_forest": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Isolation Forest",
+      "plugin_id": "analysis_isolation_forest",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_isolation_forest_anomaly": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect multivariate anomalies via Isolation Forest.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Isolation Forest Anomaly",
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_issue_cards_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_recommendation_dedupe_v2"
+      ],
+      "description": "Build issue cards for known issues.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Issue Cards v2",
+      "plugin_id": "analysis_issue_cards_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_kernel_two_sample_mmd": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Kernel Two Sample Mmd",
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_kingman_vut_approx": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Kingman Vut Approx",
+      "plugin_id": "analysis_kingman_vut_approx",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_knockoff_wrapper_rf": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Knockoff wrapper with RandomForestRegressor",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Knockoff Wrapper RF",
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_lagged_predictability_test": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Lagged Predictability Test",
+      "plugin_id": "analysis_lagged_predictability_test",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_littles_law_consistency": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Littles Law Consistency",
+      "plugin_id": "analysis_littles_law_consistency",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_local_outlier_factor": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Local Outlier Factor",
+      "plugin_id": "analysis_local_outlier_factor",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_log_template_drain": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Log Template Drain",
+      "plugin_id": "analysis_log_template_drain",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_log_template_mining_drain": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [],
+      "description": "Extract log templates and rare patterns.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Log Template Mining (Drain)",
+      "plugin_id": "analysis_log_template_mining_drain",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_map_permutation_test_karniski": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Map Permutation Test Karniski",
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_markov_transition_shift": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Markov Transition Shift",
+      "plugin_id": "analysis_markov_transition_shift",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_matrix_profile_motifs_discords": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Matrix Profile Motifs Discords",
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_message_entropy_drift": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Message Entropy Drift",
+      "plugin_id": "analysis_message_entropy_drift",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_monte_carlo_surface_uncertainty": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Monte Carlo Surface Uncertainty",
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multiple_testing_fdr": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Multiple Testing Fdr",
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multivariate_changepoint_pelt": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect changepoints in multivariate series via PELT.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Multivariate Changepoint (PELT)",
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multivariate_control_charts": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect coordinated multi-metric drift.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Multivariate Control Charts",
+      "plugin_id": "analysis_multivariate_control_charts",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multivariate_ewma_control": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Multivariate Ewma Control",
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multivariate_t2_control": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Multivariate T2 Control",
+      "plugin_id": "analysis_multivariate_t2_control",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_mutual_information_screen": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Mutual Information Screen",
+      "plugin_id": "analysis_mutual_information_screen",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_notears_linear": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Simplified NOTEARS",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "NOTEARS Linear",
+      "plugin_id": "analysis_notears_linear",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_one_class_svm": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "One Class Svm",
+      "plugin_id": "analysis_one_class_svm",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_online_conformal_changepoint": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Rolling mean conformal changepoint detection",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Online Conformal Changepoint",
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_param_near_duplicate_minhash_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find near-duplicate executions by MinHash+LSH over tokenized params to propose batch/multi-input refactors.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Near-Duplicate Detection (MinHash/LSH)",
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_param_near_duplicate_simhash_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Find near-duplicate executions using SimHash over tokenized params/text; propose batch, cache, or dedupe changes.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Near-Duplicate Detection (SimHash)",
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_param_variant_explosion_v1": {
+      "capabilities": [
+        "needs_text",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Detects high unique(parameter)/runs ratios per process (cache/batch opportunities).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Param Variant Explosion",
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_pca_auto": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Pca Auto",
+      "plugin_id": "analysis_pca_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_pca_control_chart": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Pca Control Chart",
+      "plugin_id": "analysis_pca_control_chart",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_percentile_analysis": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Compute p50/p95/p99 for eligible wait and completion time per group.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Percentile Analysis",
+      "plugin_id": "analysis_percentile_analysis",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_periodicity_spectral_scan": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Periodicity Spectral Scan",
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_process_counterfactuals": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Model per-process over-threshold wait reductions to a baseline quantile.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Counterfactuals",
+      "plugin_id": "analysis_process_counterfactuals",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_process_drift_conformance_over_time": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Drift Conformance Over Time",
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_process_sequence": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Sequence mining for event logs",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Sequence Mining",
+      "plugin_id": "analysis_process_sequence",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_process_sequence_bottlenecks": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Identify high-gap process transitions and model savings.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Process Sequence Bottlenecks",
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_proportional_hazards_duration": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Proportional Hazards Duration",
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_quantile_regression_duration": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Quantile Regression Duration",
+      "plugin_id": "analysis_quantile_regression_duration",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_queue_delay_decomposition": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Decompose queue delay into eligible vs capacity waiting and summarize by process.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Queue Delay Decomposition",
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_queue_model_fit": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Queue Model Fit",
+      "plugin_id": "analysis_queue_model_fit",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_recommendation_dedupe_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_waterfall_summary_v2"
+      ],
+      "description": "Deduplicate recommendations by action/target/scenario/delta.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Recommendation Dedupe v2",
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_regression_auto": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Regression Auto",
+      "plugin_id": "analysis_regression_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_retry_rate_hotspots_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Identify processes with high retry/attempt rates.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Retry Rate Hotspots",
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_robust_covariance_outliers": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Robust Covariance Outliers",
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_robust_pca_pcp": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Robust Pca Pcp",
+      "plugin_id": "analysis_robust_pca_pcp",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_robust_pca_sparse_outliers": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Detect sparse outliers via low-rank reconstruction.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Robust PCA Sparse Outliers",
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_scan_statistics": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Window scan statistics",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Scan Statistics",
+      "plugin_id": "analysis_scan_statistics",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sequence_classification": {
+      "capabilities": [
+        "needs_eventlog"
+      ],
+      "depends_on": [],
+      "description": "Classify jobs as standalone or sequence-linked based on dependency pointers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Standalone vs Sequence Classification",
+      "plugin_id": "analysis_sequence_classification",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sequence_grammar_sequitur_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Discover repeated subsequences (\u201cmacros\u201d) via grammar inference and propose consolidation into fewer steps.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sequence Grammar Inference (SEQUITUR)",
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sequential_patterns_prefixspan": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sequential Patterns Prefixspan",
+      "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sequential_patterns_prefixspan_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Mine frequent process sequences (case/trace scoped) to propose orchestration macros.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sequential Patterns (PrefixSpan)",
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_similarity_graph_spectral_clustering_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_text"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Cluster a similarity graph of processes/params into coherent groups for batching and consolidation.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Similarity Graph Spectral Clustering",
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_state_space_kalman_residuals": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "State Space Kalman Residuals",
+      "plugin_id": "analysis_state_space_kalman_residuals",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_fabric_sso_eigen": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Fabric Sso Eigen",
+      "plugin_id": "analysis_surface_fabric_sso_eigen",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_fractal_dimension_variogram": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Fractal Dimension Variogram",
+      "plugin_id": "analysis_surface_fractal_dimension_variogram",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_hydrology_flow_watershed": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Hydrology Flow Watershed",
+      "plugin_id": "analysis_surface_hydrology_flow_watershed",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_multiscale_wavelet_curvature": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Multiscale Wavelet Curvature",
+      "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_roughness_metrics": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Roughness Metrics",
+      "plugin_id": "analysis_surface_roughness_metrics",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_rugosity_index": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Rugosity Index",
+      "plugin_id": "analysis_surface_rugosity_index",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_surface_terrain_position_index": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Surface Terrain Position Index",
+      "plugin_id": "analysis_surface_terrain_position_index",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_survival_kaplan_meier": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Survival Kaplan Meier",
+      "plugin_id": "analysis_survival_kaplan_meier",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_survival_time_to_event": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Survival Time To Event",
+      "plugin_id": "analysis_survival_time_to_event",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tail_isolation": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Isolate tail eligible-wait segments above a threshold and attribute by dimension.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tail Isolation",
+      "plugin_id": "analysis_tail_isolation",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tda_betti_curve_changepoint": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tda Betti Curve Changepoint",
+      "plugin_id": "analysis_tda_betti_curve_changepoint",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tda_mapper_graph": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tda Mapper Graph",
+      "plugin_id": "analysis_tda_mapper_graph",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tda_persistence_landscapes": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tda Persistence Landscapes",
+      "plugin_id": "analysis_tda_persistence_landscapes",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tda_persistent_homology": {
+      "capabilities": [
+        "topo_tda_addon",
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tda Persistent Homology",
+      "plugin_id": "analysis_tda_persistent_homology",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_template_drift_two_sample": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Template Drift Two Sample",
+      "plugin_id": "analysis_template_drift_two_sample",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_term_burst_kleinberg": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Term Burst Kleinberg",
+      "plugin_id": "analysis_term_burst_kleinberg",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_time_series_analysis_auto": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Time Series Auto",
+      "plugin_id": "analysis_time_series_analysis_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_topic_model_lda": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Topic Model Lda",
+      "plugin_id": "analysis_topic_model_lda",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_topographic_angle_dynamics": {
+      "capabilities": [
+        "needs_multi_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Topographic Angle Dynamics",
+      "plugin_id": "analysis_topographic_angle_dynamics",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_topographic_similarity_angle_projection": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Topographic Similarity Angle Projection",
+      "plugin_id": "analysis_topographic_similarity_angle_projection",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_topographic_tanova_permutation": {
+      "capabilities": [
+        "needs_multi_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Topographic Tanova Permutation",
+      "plugin_id": "analysis_topographic_tanova_permutation",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_traceability_manifest_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_busy_period_segmentation_v2",
+        "analysis_waterfall_summary_v2"
+      ],
+      "description": "Build claim registry for report numbers.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Traceability Manifest v2",
+      "plugin_id": "analysis_traceability_manifest_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_transfer_entropy_directional": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Transfer Entropy Directional",
+      "plugin_id": "analysis_transfer_entropy_directional",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ttests_auto": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [],
+      "description": "Topo/TDA addon pack plugin.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ttests Auto",
+      "plugin_id": "analysis_ttests_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_two_sample_categorical_chi2": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Two Sample Categorical Chi2",
+      "plugin_id": "analysis_two_sample_categorical_chi2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_two_sample_numeric_ad": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Two Sample Numeric Ad",
+      "plugin_id": "analysis_two_sample_numeric_ad",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_two_sample_numeric_ks": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Two Sample Numeric Ks",
+      "plugin_id": "analysis_two_sample_numeric_ks",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_two_sample_numeric_mann_whitney": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Two Sample Numeric Mann Whitney",
+      "plugin_id": "analysis_two_sample_numeric_mann_whitney",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_upload_linkage": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Link XLSX upload events to downstream BKRVNU rows using time and user signals.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Upload to Revenue Linkage Analysis",
+      "plugin_id": "analysis_upload_linkage",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_user_host_savings": {
+      "capabilities": [
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Model savings from rebalancing users/hosts to a baseline wait level.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "User/Host Savings",
+      "plugin_id": "analysis_user_host_savings",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_variant_differential": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Auto-generated plugin skeleton.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Variant Differential",
+      "plugin_id": "analysis_variant_differential",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_waterfall_summary_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_busy_period_segmentation_v2",
+        "analysis_queue_delay_decomposition"
+      ],
+      "description": "Build decision waterfall summary for over-threshold wait.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Waterfall Summary v2",
+      "plugin_id": "analysis_waterfall_summary_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "ingest_tabular": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Read tabular files into canonical CSV",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Ingest Tabular",
+      "plugin_id": "ingest_tabular",
+      "type": "ingest",
+      "version": "0.1.0"
+    },
+    "llm_prompt_builder": {
+      "capabilities": [],
+      "depends_on": [
+        "report_bundle"
+      ],
+      "description": "Offline prompt builder",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "LLM Prompt Builder",
+      "plugin_id": "llm_prompt_builder",
+      "type": "llm",
+      "version": "0.1.0"
+    },
+    "llm_text2sql_local_generate_v1": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "transform_sql_intents_pack_v1"
+      ],
+      "description": "Generate a citeable SQL pack locally (vLLM) from schema snapshot + intents.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Local Text2SQL Pack Generator (v1)",
+      "plugin_id": "llm_text2sql_local_generate_v1",
+      "type": "llm",
+      "version": "0.1.0"
+    },
+    "planner_basic": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Deterministic plugin selection",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Planner Basic",
+      "plugin_id": "planner_basic",
+      "type": "planner",
+      "version": "0.1.0"
+    },
+    "profile_basic": {
+      "capabilities": [],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Basic profiling",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Profile Basic",
+      "plugin_id": "profile_basic",
+      "type": "profile",
+      "version": "0.1.0"
+    },
+    "profile_eventlog": {
+      "capabilities": [],
+      "depends_on": [
+        "ingest_tabular"
+      ],
+      "description": "Event-log field inference",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Profile Eventlog",
+      "plugin_id": "profile_eventlog",
+      "type": "profile",
+      "version": "0.1.0"
+    },
+    "report_bundle": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Build report",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Report Bundle",
+      "plugin_id": "report_bundle",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "report_decision_bundle_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_issue_cards_v2",
+        "analysis_recommendation_dedupe_v2",
+        "analysis_busy_period_segmentation_v2",
+        "analysis_waterfall_summary_v2",
+        "analysis_traceability_manifest_v2",
+        "report_slide_kit_emitter_v2"
+      ],
+      "description": "Generate business, engineering, and appendix report bundle.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Decision Report Bundle v2",
+      "plugin_id": "report_decision_bundle_v2",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "report_payout_report_v1": {
+      "capabilities": [
+        "needs_time",
+        "needs_categorical"
+      ],
+      "depends_on": [
+        "transform_normalize_mixed"
+      ],
+      "description": "Produce a payout-focused report; supports stacked multi-input via __source_* columns.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Payout Report (Batch/Multi-Input)",
+      "plugin_id": "report_payout_report_v1",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "report_plain_english_v1": {
+      "capabilities": [],
+      "depends_on": [
+        "report_bundle"
+      ],
+      "description": "Render a separate plain-English report (plain_report.md).",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Plain-English Report (v1)",
+      "plugin_id": "report_plain_english_v1",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "report_slide_kit_emitter_v2": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "analysis_traceability_manifest_v2",
+        "analysis_busy_period_segmentation_v2",
+        "analysis_waterfall_summary_v2"
+      ],
+      "description": "Emit slide kit CSV tables for decision report.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Slide Kit Emitter v2",
+      "plugin_id": "report_slide_kit_emitter_v2",
+      "type": "report",
+      "version": "0.1.0"
+    },
+    "transform_normalize_mixed": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Normalize mixed-type datasets into a template with consistent typing",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Normalize Mixed Types",
+      "plugin_id": "transform_normalize_mixed",
+      "type": "transform",
+      "version": "0.1.0"
+    },
+    "transform_sql_intents_pack_v1": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [],
+      "description": "Produce schema snapshot + SQL query intents for local text2sql generation.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "SQL Intents Pack (v1)",
+      "plugin_id": "transform_sql_intents_pack_v1",
+      "type": "transform",
+      "version": "0.1.0"
+    },
+    "transform_sqlpack_materialize_v1": {
+      "capabilities": [
+        "needs_artifacts"
+      ],
+      "depends_on": [
+        "llm_text2sql_local_generate_v1"
+      ],
+      "description": "Materialize (CREATE TABLE/VIEW) plugin-owned derived objects from a validated SQL pack.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "SQL Pack Materializer (v1)",
+      "plugin_id": "transform_sqlpack_materialize_v1",
+      "type": "transform",
+      "version": "0.1.0"
+    },
+    "transform_template": {
+      "capabilities": [],
+      "depends_on": [],
+      "description": "Apply template mapping to dataset",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Template Transformer",
+      "plugin_id": "transform_template",
+      "type": "transform",
+      "version": "0.1.0"
+    }
+  },
+  "plugins_root": "plugins"
+}

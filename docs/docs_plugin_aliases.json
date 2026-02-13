@@ -1,0 +1,7 @@
+{
+  "analysis_concurrency_recon": "analysis_concurrency_reconstruction",
+  "analysis_dynamic_close_window": "analysis_dynamic_close_detection",
+  "analysis_scan_stats": "analysis_scan_statistics",
+  "analysis_vector_index": "report_bundle",
+  "report_builder": "report_bundle"
+}

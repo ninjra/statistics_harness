@@ -1,0 +1,31 @@
+id: analysis_user_host_savings
+name: User/Host Savings
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Model savings from rebalancing users/hosts to a baseline wait level.
+  defaults:
+    user_column: null
+    host_column: null
+    eligible_column: null
+    queue_column: null
+    start_column: null
+    wait_threshold_seconds: 60
+    baseline_quantile: 0.25
+    min_runs: 100
+    max_groups: 20
+    max_dimension_columns: 2
+    max_start_columns: 2
+    max_eligible_columns: 2
+capabilities:
+  - needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

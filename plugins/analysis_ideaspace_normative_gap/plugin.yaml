@@ -3,26 +3,24 @@ name: Ideaspace Normative Gap
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-depends_on: []
+depends_on:
+- ingest_tabular
 settings:
-  description: Build deterministic normative gaps per process from wait-time performance.
+  description: Tiered ideaspace feature extraction + ideal frontier/baseline + gap vectors.
   defaults:
-    process_column: null
-    queue_column: null
-    eligible_column: null
-    start_column: null
-    min_samples: 15
-    max_processes: 50
-    max_rows: 150000
-    exclude_processes: ["qemail", "qpec", "qlongjob", "*los*"]
+    ideaspace_max_group_cols: 3
+    ideaspace_max_groups_per_col: 10
+    ideaspace_max_entities: 60
+    ideaspace_min_rows_entity: 200
+    ideaspace_baseline_path: null
 capabilities:
-  - needs_eventlog
-  - needs_timestamp
+- needs_numeric
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:
-    - appdata
-    - plugins
-    - run_dir
+  - appdata
+  - plugins
+  - run_dir
+

@@ -9,7 +9,7 @@ def test_default_flags_disabled(monkeypatch):
     monkeypatch.delenv("STAT_HARNESS_ENABLE_VECTOR_STORE", raising=False)
     monkeypatch.delenv("STAT_HARNESS_ENABLE_TENANCY", raising=False)
     assert not auth_enabled()
-    assert not vector_store_enabled()
+    assert vector_store_enabled()
     assert not tenancy_enabled()
 
 

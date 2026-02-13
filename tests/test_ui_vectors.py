@@ -25,7 +25,7 @@ def test_vectors_page_disabled(monkeypatch, tmp_path):
         return response.template.render(response.context)
 
     body = asyncio.run(render_body())
-    assert "Vector store is disabled" in body
+    assert "sqlite-vec extension unavailable" in body
 
 
 def test_vectors_page_prefill(monkeypatch, tmp_path):

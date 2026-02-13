@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "status": { "type": "string" },
+    "summary": { "type": "string" },
+    "metrics": { "type": "object" },
+    "findings": { "type": "array" },
+    "artifacts": { "type": "array" }
+  }
+}
+

@@ -6,7 +6,17 @@ from typing import Any, Iterable
 import numpy as np
 import pandas as pd
 
-from statistic_harness.core.close_cycle import load_close_cycle_windows
+from statistic_harness.core.close_cycle import (
+    baseline_target_spillover_masks,
+    compute_close_month,
+    load_close_cycle_windows,
+)
+from statistic_harness.core.process_matcher import (
+    compile_patterns,
+    default_exclude_process_patterns,
+    merge_patterns,
+    parse_exclude_patterns_env,
+)
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -248,6 +258,46 @@ def _choose_best_datetime_column(
     best_score, best_col = scored[0]
     if best_score <= 0:
         return None
+    return best_col
+
+
+def _choose_best_relative_column(
+    candidates: Iterable[str],
+    df: pd.DataFrame,
+    start_col: str | None,
+    max_rows: int = 50000,
+) -> str | None:
+    if not start_col:
+        return None
+    candidates = list(candidates)
+    if not candidates:
+        return None
+    start_series = df[start_col]
+    if start_series.shape[0] > max_rows:
+        start_series = start_series.head(max_rows)
+    start_ts = pd.to_datetime(start_series, errors="coerce", utc=False)
+    best_col = None
+    best_score = -1.0
+    for col in candidates:
+        series = df[col]
+        if series.shape[0] > max_rows:
+            series = series.head(max_rows)
+        ts = pd.to_datetime(series, errors="coerce", utc=False)
+        delta = (start_ts - ts).dt.total_seconds()
+        valid = delta[delta.notna()]
+        if valid.empty:
+            continue
+        positive = valid[valid >= 0]
+        if positive.empty:
+            continue
+        parse_ratio = float(len(positive)) / float(max(len(start_ts), 1))
+        if parse_ratio < 0.15:
+            continue
+        median_val = float(positive.median())
+        score = median_val * parse_ratio
+        if score > best_score:
+            best_score = score
+            best_col = col
     return best_col
 
 
@@ -597,8 +647,7 @@ class Plugin:
         if end_col:
             used.add(end_col)
 
-        queue_col = _pick_column(
-            ctx.settings.get("queue_column"),
+        queue_candidates = _candidate_columns(
             columns,
             role_by_name,
             {"queue", "queued", "enqueue"},
@@ -606,11 +655,21 @@ class Plugin:
             lower_names,
             used,
         )
+        preferred_queue = ctx.settings.get("queue_column")
+        if preferred_queue and preferred_queue in columns:
+            queue_col = preferred_queue
+        else:
+            queue_col = _choose_best_relative_column(queue_candidates, df, start_col)
+            if not queue_col:
+                queue_col = _choose_best_datetime_column(
+                    queue_candidates, df, ("queue", "queued", "enqueue")
+                )
+            if not queue_col and queue_candidates:
+                queue_col = queue_candidates[0]
         if queue_col:
             used.add(queue_col)
 
-        eligible_col = _pick_column(
-            ctx.settings.get("eligible_column"),
+        eligible_candidates = _candidate_columns(
             columns,
             role_by_name,
             {"eligible", "ready", "available"},
@@ -618,6 +677,19 @@ class Plugin:
             lower_names,
             used,
         )
+        preferred_eligible = ctx.settings.get("eligible_column")
+        if preferred_eligible and preferred_eligible in columns:
+            eligible_col = preferred_eligible
+        else:
+            eligible_col = _choose_best_relative_column(
+                eligible_candidates, df, start_col
+            )
+            if not eligible_col:
+                eligible_col = _choose_best_datetime_column(
+                    eligible_candidates, df, ("eligible", "ready", "available")
+                )
+            if not eligible_col and eligible_candidates:
+                eligible_col = eligible_candidates[0]
         eligible_fallback = None
         if eligible_col:
             used.add(eligible_col)
@@ -835,6 +907,122 @@ class Plugin:
             work["__eligible_wait_sec"] = np.nan
             work["__eligible_to_end_sec"] = np.nan
 
+        # ---- Baseline vs Target Close Window Spillover (20->5 baseline, 20->EOM target) ----
+        # This metric is intentionally day-of-month based (wrap-around baseline), independent
+        # of the inferred/dynamic close window resolver used elsewhere in this plugin.
+        baseline_close_start_day = int(ctx.settings.get("baseline_close_start_day", 20))
+        baseline_close_end_day = int(ctx.settings.get("baseline_close_end_day", 5))
+        target_close_end_day = int(ctx.settings.get("target_close_end_day", 31))
+
+        spillover_findings: list[dict[str, Any]] = []
+        spillover_payload: dict[str, Any] | None = None
+        if process_col and process_col in work.columns and work["__start_ts"].notna().any():
+            # Exclude patterns (defaults + optional env + plugin setting).
+            exclude_list = ctx.settings.get("exclude_processes")
+            if not isinstance(exclude_list, (list, tuple, set)):
+                exclude_list = []
+            patterns = merge_patterns(
+                default_exclude_process_patterns(),
+                parse_exclude_patterns_env(),
+                [str(x) for x in exclude_list],
+            )
+            exclude_match = compile_patterns(patterns)
+
+            baseline_mask, target_mask, spillover_mask = baseline_target_spillover_masks(
+                work["__start_ts"],
+                baseline_close_start_day=baseline_close_start_day,
+                baseline_close_end_day=baseline_close_end_day,
+                target_close_end_day=target_close_end_day,
+            )
+            close_month = compute_close_month(
+                work["__start_ts"], baseline_close_end_day=baseline_close_end_day
+            )
+            if spillover_mask is not None and close_month is not None:
+                proc_norm = (
+                    work[process_col].astype(str).str.strip().str.lower()
+                )
+                # Apply exclusions before aggregation.
+                keep = ~proc_norm.apply(exclude_match)
+                mask = spillover_mask & keep
+                spill = work.loc[mask].copy()
+                spill["__close_month"] = close_month.loc[spill.index]
+                spill["__process_norm"] = proc_norm.loc[spill.index]
+                spill_rows_total = int(spill.shape[0])
+                spill_queue_wait_h = float(spill["__queue_wait_sec"].fillna(0).sum()) / 3600.0 if "__queue_wait_sec" in spill.columns else 0.0
+                spill_service_h = float(spill["__service_sec"].fillna(0).sum()) / 3600.0 if "__service_sec" in spill.columns else 0.0
+
+                by_proc = (
+                    spill.groupby("__process_norm", dropna=False)
+                    .agg(
+                        rows=("__process_norm", "size"),
+                        queue_wait_hours_total=("__queue_wait_sec", lambda s: float(s.fillna(0).sum()) / 3600.0),
+                        service_hours_total=("__service_sec", lambda s: float(s.fillna(0).sum()) / 3600.0),
+                    )
+                    .reset_index()
+                )
+                by_proc = by_proc.sort_values(
+                    ["queue_wait_hours_total", "service_hours_total", "rows"],
+                    ascending=[False, False, False],
+                )
+                top_proc = []
+                for _, row in by_proc.head(15).iterrows():
+                    top_proc.append(
+                        {
+                            "process_norm": str(row["__process_norm"]),
+                            "spillover_rows": int(row["rows"]),
+                            "spillover_queue_wait_hours_total": float(row["queue_wait_hours_total"]),
+                            "spillover_service_hours_total": float(row["service_hours_total"]),
+                        }
+                    )
+
+                by_month = (
+                    spill.groupby("__close_month", dropna=False)
+                    .agg(
+                        rows=("__close_month", "size"),
+                        queue_wait_hours_total=("__queue_wait_sec", lambda s: float(s.fillna(0).sum()) / 3600.0),
+                        service_hours_total=("__service_sec", lambda s: float(s.fillna(0).sum()) / 3600.0),
+                    )
+                    .reset_index()
+                    .sort_values(["rows"], ascending=[False])
+                )
+                month_rows = [
+                    {
+                        "close_month": str(r["__close_month"]),
+                        "spillover_rows": int(r["rows"]),
+                        "spillover_queue_wait_hours_total": float(r["queue_wait_hours_total"]),
+                        "spillover_service_hours_total": float(r["service_hours_total"]),
+                    }
+                    for _, r in by_month.iterrows()
+                ]
+
+                spillover_payload = {
+                    "baseline_close_start_day": baseline_close_start_day,
+                    "baseline_close_end_day": baseline_close_end_day,
+                    "target_close_end_day": target_close_end_day,
+                    "spillover_rows_total": spill_rows_total,
+                    "spillover_queue_wait_hours_total": spill_queue_wait_h,
+                    "spillover_service_hours_total": spill_service_h,
+                    "top_spillover_processes": top_proc,
+                    "spillover_by_close_month": month_rows,
+                }
+                spillover_findings.append(
+                    {
+                        "kind": "spillover_past_eom",
+                        "measurement_type": "measured",
+                        "baseline_close_start_day": baseline_close_start_day,
+                        "baseline_close_end_day": baseline_close_end_day,
+                        "target_close_end_day": target_close_end_day,
+                        "spillover_rows_total": spill_rows_total,
+                        "spillover_queue_wait_hours_total": spill_queue_wait_h,
+                        "spillover_service_hours_total": spill_service_h,
+                        "evidence": {
+                            "definition": "spillover = (baseline_close_window 20..5) minus (target_close_window 20..EOM/31), cohorting close_month by shifting days<=end to previous month",
+                            "top_spillover_processes": top_proc[:10],
+                        },
+                        "columns": [process_col, start_col, queue_col, end_col],
+                    }
+                )
+
         close_mode = str(ctx.settings.get("close_window_mode", "infer") or "infer").lower()
         if close_mode == "calendar":
             close_mode = "override"
@@ -905,6 +1093,9 @@ class Plugin:
                 "close_window_mode": close_mode,
                 "close_cycle_start_day": close_start_day,
                 "close_cycle_end_day": close_end_day,
+                "baseline_close_start_day": baseline_close_start_day,
+                "baseline_close_end_day": baseline_close_end_day,
+                "target_close_end_day": target_close_end_day,
                 "min_close_days": min_close_days,
                 "max_close_days": max_close_days,
                 "lookahead_days": lookahead_days,
@@ -1252,8 +1443,19 @@ class Plugin:
                             "close_window_mode": close_mode,
                             "close_window_source": close_window_source,
                         },
+                        "modeled_assumptions": [assumption],
+                        "modeled_scope": {
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "close_window_mode": close_mode,
+                            "close_window_source": close_window_source,
+                        },
                         "baseline_median_sec": baseline_val,
                         "modeled_median_sec": modeled_val,
+                        "baseline_value": baseline_val,
+                        "modeled_value": modeled_val,
+                        "delta_value": (modeled_val - baseline_val) if modeled_val is not None else None,
+                        "unit": "seconds",
                         "effect": effect,
                         "target_reduction": target_reduction,
                         "tolerance": tolerance,
@@ -1264,8 +1466,16 @@ class Plugin:
                         "baseline_host_source": baseline_host_source,
                         "added_hosts": added_hosts,
                         "scale_factor": scale_factor,
+                        "scale_factor_standard": scale_factor,
+                        "scale_factor_original": scale_factor,
+                        "scale_factor_original_definition": "scale_factor_standard = new_host_count / baseline_host_count",
                         "host_count_baseline": baseline_host_count,
                         "host_count_modeled": (
+                            baseline_host_count + added_hosts
+                            if baseline_host_count is not None
+                            else None
+                        ),
+                        "modeled_host_count": (
                             baseline_host_count + added_hosts
                             if baseline_host_count is not None
                             else None
@@ -1303,6 +1513,18 @@ class Plugin:
             )
 
         artifacts_dir = ctx.artifacts_dir("analysis_close_cycle_capacity_model")
+
+        # Attach spillover metrics/artifacts (baseline vs target close window).
+        if spillover_payload:
+            spill_path = artifacts_dir / "spillover_target_window.json"
+            write_json(spill_path, spillover_payload)
+            for row in spillover_findings:
+                if isinstance(row, dict):
+                    ev = row.get("evidence") if isinstance(row.get("evidence"), dict) else {}
+                    ev["artifact"] = str(spill_path.relative_to(ctx.run_dir))
+                    row["evidence"] = ev
+            findings.extend(spillover_findings)
+
         out_path = artifacts_dir / "results.json"
         write_json(out_path, {"summary": summary, "findings": findings})
         artifacts = [
@@ -1312,6 +1534,14 @@ class Plugin:
                 description="Close-cycle capacity model summary",
             )
         ]
+        if spillover_payload:
+            artifacts.append(
+                PluginArtifact(
+                    path=str((artifacts_dir / "spillover_target_window.json").relative_to(ctx.run_dir)),
+                    type="json",
+                    description="Baseline vs target close-window spillover metrics",
+                )
+            )
 
         csv_path = artifacts_dir / "results.csv"
         with csv_path.open("w", encoding="utf-8", newline="") as handle:
@@ -1448,6 +1678,17 @@ class Plugin:
             "close_cycle_rows_default": close_rows_default,
             "close_cycle_rows_dynamic": close_rows_dynamic,
         }
+        if spillover_payload:
+            metrics.update(
+                {
+                    "spillover_rows_total": int(spillover_payload.get("spillover_rows_total") or 0),
+                    "spillover_queue_wait_hours_total": float(spillover_payload.get("spillover_queue_wait_hours_total") or 0.0),
+                    "spillover_service_hours_total": float(spillover_payload.get("spillover_service_hours_total") or 0.0),
+                    "baseline_close_start_day": int(spillover_payload.get("baseline_close_start_day") or baseline_close_start_day),
+                    "baseline_close_end_day": int(spillover_payload.get("baseline_close_end_day") or baseline_close_end_day),
+                    "target_close_end_day": int(spillover_payload.get("target_close_end_day") or target_close_end_day),
+                }
+            )
         return PluginResult(
             "ok",
             "Computed close-cycle capacity model",

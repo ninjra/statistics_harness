@@ -1,0 +1,25 @@
+id: analysis_burst_modeling_hawkes_v1
+name: Burst Modeling (Hawkes-Style)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Model bursts as self-exciting patterns to identify trigger processes
+    and dampening interventions.
+  defaults:
+    top_k: 20
+    bucket_minutes: 60
+capabilities:
+- needs_eventlog
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

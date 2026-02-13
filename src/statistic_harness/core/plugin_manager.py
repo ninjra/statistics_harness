@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+import copy
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -139,9 +140,50 @@ class PluginManager:
         module = importlib.import_module(module_name)
         return getattr(module, class_name)()
 
+    def health(self, spec: PluginSpec, plugin: Any | None = None) -> dict[str, Any]:
+        """Best-effort plugin health check.
+
+        Contract: a plugin instance may implement `health()` returning one of:
+        - dict with a `status` field ("ok"/"unhealthy"/"error")
+        - bool (True=ok, False=unhealthy)
+        - None (treated as ok)
+        """
+
+        if plugin is None:
+            try:
+                plugin = self.load_plugin(spec)
+            except Exception as exc:
+                return {"status": "error", "message": f"Load failed: {type(exc).__name__}: {exc}"}
+        fn = getattr(plugin, "health", None)
+        if not callable(fn):
+            return {"status": "ok", "note": "No health() implemented"}
+        try:
+            result = fn()
+        except Exception as exc:
+            return {"status": "error", "message": f"health() raised: {type(exc).__name__}: {exc}"}
+        if result is None:
+            return {"status": "ok"}
+        if isinstance(result, bool):
+            return {"status": "ok" if result else "unhealthy"}
+        if isinstance(result, dict):
+            status = str(result.get("status") or "ok")
+            payload = dict(result)
+            payload["status"] = status
+            return payload
+        return {"status": "ok", "detail": str(result)}
+
     def validate_config(self, spec: PluginSpec, config: dict[str, Any]) -> None:
         schema = self._load_schema(spec.config_schema)
         validate(instance=config, schema=schema)
+
+    def resolve_config(self, spec: PluginSpec, config: dict[str, Any]) -> dict[str, Any]:
+        """Apply JSONSchema defaults deterministically, then validate."""
+
+        schema = self._load_schema(spec.config_schema)
+        resolved: dict[str, Any] = copy.deepcopy(config)
+        _apply_jsonschema_defaults(schema, resolved)
+        validate(instance=resolved, schema=schema)
+        return resolved
 
     def validate_output(self, spec: PluginSpec, payload: dict[str, Any]) -> None:
         schema = self._load_schema(spec.output_schema)
@@ -157,6 +199,8 @@ class PluginManager:
             "artifacts": [asdict(a) for a in getattr(result, "artifacts", [])],
             "budget": getattr(result, "budget", None),
             "error": asdict(result.error) if getattr(result, "error", None) else None,
+            "references": getattr(result, "references", []),
+            "debug": getattr(result, "debug", {}),
         }
 
     def _load_schema(self, path: Path) -> dict[str, Any]:
@@ -173,3 +217,49 @@ class PluginManager:
     def validate_config_schema(self, schema_path: Path, defaults: dict[str, Any]) -> None:
         schema = self._load_schema(schema_path)
         validate(instance=defaults, schema=schema)
+
+
+def _apply_jsonschema_defaults(schema: Any, instance: Any) -> Any:
+    """Recursively apply `default` values from a JSONSchema into `instance`.
+
+    This intentionally handles only the common subset used in this repo:
+    - object properties + their defaults
+    - array items schemas
+    - allOf composition
+    """
+
+    if not isinstance(schema, dict):
+        return instance
+
+    # If the instance is "missing" at this node, apply the node default.
+    if instance is None and "default" in schema:
+        instance = copy.deepcopy(schema["default"])
+
+    for subschema in schema.get("allOf") or []:
+        instance = _apply_jsonschema_defaults(subschema, instance)
+
+    schema_type = schema.get("type")
+    if schema_type == "object" and isinstance(instance, dict):
+        props = schema.get("properties") or {}
+        for key in sorted(props.keys()):
+            prop_schema = props.get(key)
+            if key not in instance:
+                if isinstance(prop_schema, dict) and "default" in prop_schema:
+                    instance[key] = copy.deepcopy(prop_schema["default"])
+            if key in instance:
+                instance[key] = _apply_jsonschema_defaults(prop_schema, instance[key])
+
+        additional = schema.get("additionalProperties")
+        if isinstance(additional, dict):
+            for key in sorted(instance.keys()):
+                if key in props:
+                    continue
+                instance[key] = _apply_jsonschema_defaults(additional, instance[key])
+
+    if schema_type == "array" and isinstance(instance, list):
+        items_schema = schema.get("items")
+        if isinstance(items_schema, dict):
+            for idx, value in enumerate(list(instance)):
+                instance[idx] = _apply_jsonschema_defaults(items_schema, value)
+
+    return instance

@@ -27,9 +27,26 @@ class Plugin:
                     [],
                     None,
                 )
-        if not template_id or not isinstance(mapping, dict):
+        # Gating: this transform is only meaningful when a template is explicitly configured.
+        # For "run all plugins" harness runs, skip cleanly rather than erroring.
+        if template_id in (None, 0, ""):
             return PluginResult(
-                "error", "template_id and mapping required", {}, [], [], None
+                "skipped",
+                "No template configured (template_id not set)",
+                {},
+                [],
+                [],
+                None,
+                debug={"gating_reason": "template_id_missing"},
+            )
+        if not isinstance(mapping, dict) or not mapping:
+            return PluginResult(
+                "error",
+                "mapping required when template_id is set",
+                {},
+                [],
+                [],
+                None,
             )
 
         row_count = apply_template(

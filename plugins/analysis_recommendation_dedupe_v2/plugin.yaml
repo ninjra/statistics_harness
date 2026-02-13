@@ -1,0 +1,22 @@
+id: analysis_recommendation_dedupe_v2
+name: Recommendation Dedupe v2
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_waterfall_summary_v2
+settings:
+  description: Deduplicate recommendations by action/target/scenario/delta.
+  defaults:
+    max_summary: 10
+    recommendations_override: null
+capabilities:
+  - needs_artifacts
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

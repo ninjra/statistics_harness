@@ -303,21 +303,34 @@ class Plugin:
             for _, row in grouped.head(max_groups).iterrows():
                 key = row["__key"]
                 row_ids = temp.loc[temp["__key"] == key].index.tolist()[:max_examples]
+                baseline_hours = float(row["baseline_sec"]) / 3600.0
+                modeled_hours = float(row["modeled_sec"]) / 3600.0
                 findings.append(
                     {
                         "kind": "capacity_scaling",
                         "dimension": name,
                         "key": key,
                         "rows": int(row["rows"]),
-                        "baseline_wait_hours": float(row["baseline_sec"]) / 3600.0,
-                        "modeled_wait_hours": float(row["modeled_sec"]) / 3600.0,
+                        "baseline_wait_hours": baseline_hours,
+                        "modeled_wait_hours": modeled_hours,
                         "reduction_hours": float(row["reduction_sec"]) / 3600.0,
                         "scale_factor": float(scale_factor),
+                        "scale_factor_standard": float(scale_factor),
+                        "scale_factor_original": float(scale_factor),
+                        "scale_factor_original_definition": "scale_factor_standard = new_host_count / baseline_host_count",
                         "host_count_baseline": host_count or None,
                         "host_count_modeled": host_count_modeled,
+                        "baseline_host_count": host_count or None,
+                        "modeled_host_count": host_count_modeled,
                         "eligible_basis": eligible_basis,
                         "assumptions": assumptions,
                         "scope": scope,
+                        "modeled_assumptions": assumptions,
+                        "modeled_scope": scope,
+                        "baseline_value": baseline_hours,
+                        "modeled_value": modeled_hours,
+                        "delta_value": modeled_hours - baseline_hours,
+                        "unit": "hours",
                         "measurement_type": "modeled",
                         "row_ids": [int(i) for i in row_ids],
                         "columns": [
@@ -335,6 +348,8 @@ class Plugin:
         total_modeled = float(work["__scaled_wait_sec"].sum())
         total_reduction = float(work["__reduction_sec"].sum())
 
+        baseline_hours = total_baseline / 3600.0
+        modeled_hours = total_modeled / 3600.0
         findings.insert(
             0,
             {
@@ -342,15 +357,26 @@ class Plugin:
                 "dimension": "overall",
                 "key": "overall",
                 "rows": int(work.shape[0]),
-                "baseline_wait_hours": total_baseline / 3600.0,
-                "modeled_wait_hours": total_modeled / 3600.0,
+                "baseline_wait_hours": baseline_hours,
+                "modeled_wait_hours": modeled_hours,
                 "reduction_hours": total_reduction / 3600.0,
                 "scale_factor": float(scale_factor),
+                "scale_factor_standard": float(scale_factor),
+                "scale_factor_original": float(scale_factor),
+                "scale_factor_original_definition": "scale_factor_standard = new_host_count / baseline_host_count",
                 "host_count_baseline": host_count or None,
                 "host_count_modeled": host_count_modeled,
+                "baseline_host_count": host_count or None,
+                "modeled_host_count": host_count_modeled,
                 "eligible_basis": eligible_basis,
                 "assumptions": assumptions,
                 "scope": scope,
+                "modeled_assumptions": assumptions,
+                "modeled_scope": scope,
+                "baseline_value": baseline_hours,
+                "modeled_value": modeled_hours,
+                "delta_value": modeled_hours - baseline_hours,
+                "unit": "hours",
                 "measurement_type": "modeled",
                 "row_ids": [int(i) for i in work.index.tolist()[:max_examples]],
                 "columns": [

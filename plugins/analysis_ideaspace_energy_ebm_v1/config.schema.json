@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "baseline_path": {
+      "type": "string",
+      "description": "Optional baseline path for ideal vector (must be under run_dir or appdata)."
+    },
+    "weights": {
+      "type": "object",
+      "description": "Optional per-metric weight overrides.",
+      "additionalProperties": { "type": "number" }
+    },
+    "constraint_penalties": {
+      "type": "object",
+      "description": "Optional penalty overrides.",
+      "additionalProperties": { "type": "number" }
+    },
+    "timestamp_parse_rate_threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "ideaspace_max_groups_per_col": { "type": "integer", "minimum": 1 },
+    "ideaspace_max_entities": { "type": "integer", "minimum": 1 }
+  }
+}
+

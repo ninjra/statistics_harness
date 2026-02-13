@@ -122,11 +122,15 @@ class Plugin:
 
         sample_rows = int(ctx.settings.get("sample_rows", 500))
         min_confidence = float(ctx.settings.get("min_confidence", 2.0))
+        duration_sample_rows = int(ctx.settings.get("duration_sample_rows", 5000))
 
         columns = ctx.storage.fetch_dataset_columns(ctx.dataset_version_id)
         if not columns:
             return PluginResult("skipped", "No columns available", {}, [], [], None)
 
+        name_to_safe = {
+            col["original_name"]: col["safe_name"] for col in columns if col.get("safe_name")
+        }
         with ctx.storage.connection() as conn:
             version = ctx.storage.get_dataset_version(ctx.dataset_version_id, conn)
             if not version:
@@ -144,6 +148,7 @@ class Plugin:
         df = df.rename(columns={col["safe_name"]: col["original_name"] for col in columns})
         candidates: list[dict[str, Any]] = []
         best_by_column: dict[int, tuple[str, float]] = {}
+        best_by_role: dict[str, tuple[str, float]] = {}
         low_confidence_roles: set[str] = set()
 
         for col in columns:
@@ -178,22 +183,26 @@ class Plugin:
                     best_score = score
             if best_role:
                 best_by_column[col["column_id"]] = (best_role, best_score)
+                if best_role not in best_by_role or best_score > best_by_role[best_role][1]:
+                    best_by_role[best_role] = (name, best_score)
 
         ctx.storage.replace_dataset_role_candidates(ctx.dataset_version_id, candidates)
 
-        role_by_name: dict[str, str] = {}
+        role_by_safe: dict[str, str] = {}
         for col in columns:
             entry = best_by_column.get(col["column_id"])
             if not entry:
                 continue
             role, score = entry
             if score >= min_confidence:
-                role_by_name[col["original_name"]] = role
+                safe = str(col.get("safe_name") or "")
+                if safe:
+                    role_by_safe[safe] = role
             else:
                 low_confidence_roles.add(role)
 
-        if role_by_name:
-            ctx.storage.update_dataset_column_roles(ctx.dataset_version_id, role_by_name)
+        if role_by_safe:
+            ctx.storage.update_dataset_column_roles(ctx.dataset_version_id, role_by_safe)
 
         findings = []
         for col in columns:
@@ -225,8 +234,66 @@ class Plugin:
         metrics = {
             "columns_scanned": len(columns),
             "candidates": len(candidates),
-            "roles_assigned": len(role_by_name),
+            "roles_assigned": len(role_by_safe),
             "low_confidence_roles": len(low_confidence_roles),
         }
-        summary = f"Inferred roles for {len(role_by_name)} columns"
+
+        duration_stats: dict[str, Any] | None = None
+        start_choice = best_by_role.get("start_time")
+        end_choice = best_by_role.get("end_time")
+        start_col = start_choice[0] if start_choice and start_choice[1] >= min_confidence else None
+        end_col = end_choice[0] if end_choice and end_choice[1] >= min_confidence else None
+        if start_col and end_col and start_col in name_to_safe and end_col in name_to_safe:
+            safe_start = name_to_safe[start_col]
+            safe_end = name_to_safe[end_col]
+            with ctx.storage.connection() as conn:
+                version = ctx.storage.get_dataset_version(ctx.dataset_version_id, conn)
+                if version:
+                    quoted = ", ".join(
+                        quote_identifier(col) for col in (safe_start, safe_end)
+                    )
+                    sql = (
+                        f"SELECT {quoted} FROM {quote_identifier(version['table_name'])} "
+                        "ORDER BY row_index LIMIT ?"
+                    )
+                    df_dur = pd.read_sql_query(sql, conn, params=(duration_sample_rows,))
+                    df_dur = df_dur.rename(
+                        columns={safe_start: start_col, safe_end: end_col}
+                    )
+                    start_ts = pd.to_datetime(df_dur[start_col], errors="coerce")
+                    end_ts = pd.to_datetime(df_dur[end_col], errors="coerce")
+                    delta = (end_ts - start_ts).dt.total_seconds()
+                    delta = delta.dropna()
+                    if not delta.empty:
+                        values = delta.to_numpy()
+                        values = values[pd.notna(values)]
+                        if values.size:
+                            negative = int((values < 0).sum())
+                            duration_stats = {
+                                "start_column": start_col,
+                                "end_column": end_col,
+                                "sample_rows": int(len(df_dur)),
+                                "rows_used": int(values.size),
+                                "min_sec": float(values.min()),
+                                "max_sec": float(values.max()),
+                                "mean_sec": float(values.mean()),
+                                "median_sec": float(pd.Series(values).median()),
+                                "p90_sec": float(pd.Series(values).quantile(0.9)),
+                                "p95_sec": float(pd.Series(values).quantile(0.95)),
+                                "p99_sec": float(pd.Series(values).quantile(0.99)),
+                                "negative_count": negative,
+                            }
+                            metrics["time_to_completion"] = duration_stats
+                            findings.append(
+                                {
+                                    "kind": "time_to_completion",
+                                    "columns": [start_col, end_col],
+                                    "measurement_type": "measured",
+                                    "stats": duration_stats,
+                                }
+                            )
+
+        summary = f"Inferred roles for {len(role_by_safe)} columns"
+        if duration_stats:
+            summary += "; computed time-to-completion stats"
         return PluginResult("ok", summary, metrics, findings, [], None)

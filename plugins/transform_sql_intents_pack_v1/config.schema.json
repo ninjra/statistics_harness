@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "transform_sql_intents_pack_v1 config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "out_intents_name": { "type": "string", "default": "sql_intents.json" }
+  }
+}
+

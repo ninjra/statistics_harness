@@ -21,7 +21,18 @@ dependencies = [
   "pandas",
   "openpyxl",
   "scikit-learn",
+  "networkx",
   "jsonschema",
+  "datasketch",
+  "mlxtend",
+  "prefixspan",
+  "hdbscan",
+  "python-igraph",
+  "leidenalg",
+  "ortools",
+  "simpy",
+  "dtaidistance",
+  "simhash",
 ]
 
 [project.optional-dependencies]
@@ -37,3 +48,6 @@ stat-harness = "statistic_harness.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+console_output_style = "progress"

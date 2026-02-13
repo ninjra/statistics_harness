@@ -1,0 +1,27 @@
+id: analysis_similarity_graph_spectral_clustering_v1
+name: Similarity Graph Spectral Clustering
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_basic
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Cluster a similarity graph of processes/params into coherent groups
+    for batching and consolidation.
+  defaults:
+    n_clusters: 8
+    top_k: 20
+    min_edge_weight: 5
+capabilities:
+- needs_eventlog
+- needs_text
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

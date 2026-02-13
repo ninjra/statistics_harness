@@ -1,49 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
   "additionalProperties": true,
-  "properties": {
-    "process_column": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "queue_column": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "eligible_column": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "start_column": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "min_samples": {
-      "type": "integer",
-      "minimum": 5
-    },
-    "max_processes": {
-      "type": "integer",
-      "minimum": 5
-    },
-    "exclude_processes": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "max_rows": {
-      "type": "integer",
-      "minimum": 1000
-    }
-  }
+  "properties": {},
+  "type": "object"
 }
+

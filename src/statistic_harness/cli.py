@@ -4,6 +4,8 @@ import argparse
 import os
 import hashlib
 import json
+import zipfile
+import platform
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +23,7 @@ from statistic_harness.core.evaluation import evaluate_report
 from statistic_harness.core.pipeline import Pipeline
 from statistic_harness.core.plugin_manager import PluginManager
 from statistic_harness.core.report import build_report, write_report
+from statistic_harness.core.payout_report import build_payout_report
 from statistic_harness.core.storage import Storage
 from statistic_harness.core.tenancy import get_tenant_context
 from statistic_harness.core.utils import (
@@ -28,10 +31,16 @@ from statistic_harness.core.utils import (
     json_dumps,
     now_iso,
     file_sha256,
+    is_windows_or_wsl,
     vector_store_enabled,
 )
 from statistic_harness.core.vector_store import VectorStore, hash_embedding
 from statistic_harness.ui.server import app
+
+
+if is_windows_or_wsl() and "STAT_HARNESS_SAFE_RENAME" not in os.environ:
+    # Default ON for Windows/WSL to reduce partial artifact risk from transient locks.
+    os.environ["STAT_HARNESS_SAFE_RENAME"] = "1"
 
 
 def load_settings(path: str | None) -> dict[str, Any]:
@@ -47,6 +56,229 @@ def cmd_list_plugins() -> None:
     manager = PluginManager(Path("plugins"))
     for spec in manager.discover():
         print(f"{spec.plugin_id}: {spec.name} ({spec.type})")
+
+
+def cmd_plugins_validate(plugin_id: str | None = None) -> None:
+    manager = PluginManager(Path("plugins"))
+    specs = manager.discover()
+    failures: list[str] = []
+
+    if manager.discovery_errors:
+        for err in manager.discovery_errors:
+            failures.append(f"{err.plugin_id}: discovery error: {err.message}")
+
+    selected = specs
+    if plugin_id:
+        selected = [spec for spec in specs if spec.plugin_id == plugin_id]
+        if not selected:
+            raise SystemExit(f"Unknown plugin id: {plugin_id}")
+
+    for spec in selected:
+        try:
+            # Load and validate schemas (discovery already checks presence).
+            manager.validate_config(spec, dict(spec.settings.get("defaults", {})))
+            # Import entrypoint and instantiate plugin.
+            plugin = manager.load_plugin(spec)
+            if not hasattr(plugin, "run"):
+                raise TypeError("Missing run() method")
+            health = manager.health(spec, plugin=plugin)
+            if str(health.get("status") or "ok").lower() not in {"ok", "healthy"}:
+                raise RuntimeError(f"Unhealthy plugin: {health}")
+        except Exception as exc:
+            failures.append(f"{spec.plugin_id}: {type(exc).__name__}: {exc}")
+
+    for line in sorted(failures):
+        print(line)
+    if failures:
+        raise SystemExit(1)
+    print("OK")
+
+
+def cmd_integrity_check(full: bool = False) -> None:
+    tenant_ctx = get_tenant_context()
+    storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
+    ok, msg = storage.integrity_check(full=full)
+    if not ok:
+        raise SystemExit(f"Integrity check failed: {msg}")
+    print("OK")
+
+
+def cmd_backup(out_path: str | None, retention_days: int = 60) -> None:
+    tenant_ctx = get_tenant_context()
+    storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
+    backups_dir = tenant_ctx.appdata_root / "backups"
+    backups_dir.mkdir(parents=True, exist_ok=True)
+    if out_path:
+        dest = Path(out_path)
+    else:
+        ts = now_iso().replace(":", "").replace("-", "")
+        dest = backups_dir / f"state-{ts}.sqlite"
+    storage.backup_to(dest)
+    if not out_path:
+        # Best-effort retention cleanup (mtime-based).
+        try:
+            import time
+
+            cutoff = time.time() - (max(1, int(retention_days)) * 86400)
+            for path in sorted(backups_dir.glob("state-*.sqlite")):
+                try:
+                    if path.stat().st_mtime < cutoff:
+                        path.unlink()
+                except Exception:
+                    continue
+        except Exception:
+            pass
+    print(str(dest))
+
+
+def cmd_restore(source_path: str) -> None:
+    tenant_ctx = get_tenant_context()
+    storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
+    storage.restore_from(Path(source_path))
+    ok, msg = storage.integrity_check(full=False)
+    if not ok:
+        raise SystemExit(f"Restore completed but integrity check failed: {msg}")
+    print("OK")
+
+
+def cmd_diag(run_id: str, out_path: str | None) -> None:
+    tenant_ctx = get_tenant_context()
+    run_dir = tenant_ctx.tenant_root / "runs" / run_id
+    if not run_dir.exists():
+        raise SystemExit("Run not found")
+    if out_path:
+        dest = Path(out_path)
+    else:
+        dest = run_dir / "diag.zip"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    # Allowlisted contents only.
+    allow = [
+        "run_manifest.json",
+        "report.json",
+        "report.md",
+        "evaluation.json",
+    ]
+    with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for name in allow:
+            path = run_dir / name
+            if path.exists() and path.is_file():
+                zf.write(path, arcname=name)
+        for item in sorted((run_dir / "logs").rglob("*")) if (run_dir / "logs").exists() else []:
+            if item.is_file():
+                zf.write(item, arcname=str(item.relative_to(run_dir)).replace("\\", "/"))
+        for item in sorted((run_dir / "artifacts").rglob("*")) if (run_dir / "artifacts").exists() else []:
+            if item.is_file():
+                zf.write(item, arcname=str(item.relative_to(run_dir)).replace("\\", "/"))
+        # System info (no env secrets).
+        info = {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "vector_store_enabled": vector_store_enabled(),
+            "auth_enabled": auth_enabled(),
+        }
+        zf.writestr("system.json", json.dumps(info, indent=2, sort_keys=True))
+        zf.write(Path("docs") / "report.schema.json", arcname="schemas/report.schema.json")
+        zf.write(Path("docs") / "run_manifest.schema.json", arcname="schemas/run_manifest.schema.json")
+    print(str(dest))
+
+
+def cmd_export(
+    run_id: str,
+    out_path: str | None,
+    *,
+    include_logs: bool = True,
+    include_artifacts: bool = True,
+    include_dataset: bool = False,
+) -> None:
+    """Export a repro pack zip (manifest + schemas + report + optional logs/artifacts)."""
+
+    tenant_ctx = get_tenant_context()
+    run_dir = tenant_ctx.tenant_root / "runs" / run_id
+    if not run_dir.exists():
+        raise SystemExit("Run not found")
+    if out_path:
+        dest = Path(out_path)
+    else:
+        dest = run_dir / "repro_pack.zip"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    allow = [
+        "run_manifest.json",
+        "report.json",
+        "report.md",
+        "evaluation.json",
+    ]
+    with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for name in allow:
+            path = run_dir / name
+            if path.exists() and path.is_file():
+                zf.write(path, arcname=name)
+        if include_logs:
+            for item in sorted((run_dir / "logs").rglob("*")) if (run_dir / "logs").exists() else []:
+                if item.is_file():
+                    zf.write(item, arcname=str(item.relative_to(run_dir)).replace("\\", "/"))
+        if include_artifacts:
+            for item in sorted((run_dir / "artifacts").rglob("*")) if (run_dir / "artifacts").exists() else []:
+                if item.is_file():
+                    zf.write(item, arcname=str(item.relative_to(run_dir)).replace("\\", "/"))
+        if include_dataset:
+            for item in sorted((run_dir / "dataset").rglob("*")) if (run_dir / "dataset").exists() else []:
+                if item.is_file():
+                    zf.write(item, arcname=str(item.relative_to(run_dir)).replace("\\", "/"))
+
+        info = {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "vector_store_enabled": vector_store_enabled(),
+            "auth_enabled": auth_enabled(),
+        }
+        zf.writestr("system.json", json.dumps(info, indent=2, sort_keys=True))
+        zf.write(Path("docs") / "report.schema.json", arcname="schemas/report.schema.json")
+        zf.write(Path("docs") / "run_manifest.schema.json", arcname="schemas/run_manifest.schema.json")
+    print(str(dest))
+
+
+def cmd_db_doctor(full: bool = False) -> None:
+    """Operator-oriented DB check wrapper (integrity check + basic status)."""
+
+    tenant_ctx = get_tenant_context()
+    storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
+    ok, msg = storage.integrity_check(full=full)
+    if not ok:
+        raise SystemExit(f"Integrity check failed: {msg}")
+    print("OK")
+
+
+def cmd_replay(run_id: str) -> None:
+    tenant_ctx = get_tenant_context()
+    run_dir = tenant_ctx.tenant_root / "runs" / run_id
+    manifest_path = run_dir / "run_manifest.json"
+    if not manifest_path.exists():
+        raise SystemExit("Missing run_manifest.json")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    schema = json.loads((Path("docs") / "run_manifest.schema.json").read_text(encoding="utf-8"))
+    from jsonschema import validate  # lazy import for CLI
+
+    validate(instance=manifest, schema=schema)
+    for art in manifest.get("artifacts") or []:
+        if not isinstance(art, dict):
+            continue
+        rel = str(art.get("path") or "")
+        if not rel:
+            continue
+        path = (run_dir / rel).resolve()
+        try:
+            path.relative_to(run_dir.resolve())
+        except ValueError:
+            raise SystemExit(f"Path traversal in manifest artifact: {rel}")
+        if not path.exists():
+            raise SystemExit(f"Missing artifact: {rel}")
+        want = str(art.get("sha256") or "")
+        got = file_sha256(path)
+        if want and got != want:
+            raise SystemExit(f"Hash mismatch for {rel}: expected {want} got {got}")
+    print("OK")
 
 
 def cmd_serve(host: str, port: int) -> None:
@@ -83,6 +315,7 @@ def cmd_run(
     file_path: str, plugins: str, settings_path: str | None, run_seed: int
 ) -> None:
     _require_cli_api_key()
+    os.environ.setdefault("STAT_HARNESS_CLI_PROGRESS", "1")
     tenant_ctx = get_tenant_context()
     pipeline = Pipeline(
         tenant_ctx.appdata_root, Path("plugins"), tenant_id=tenant_ctx.tenant_id
@@ -214,6 +447,47 @@ def cmd_create_api_key(email: str, password: str, name: str | None) -> None:
     print(token)
 
 
+def cmd_payout_report(inputs: list[str], out_dir: str) -> None:
+    _require_cli_api_key()
+    if not inputs:
+        raise SystemExit("Provide at least one --input")
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    frames = []
+    for path in inputs:
+        p = Path(path)
+        if not p.exists():
+            raise SystemExit(f"Input not found: {path}")
+        import pandas as pd
+
+        df = pd.read_csv(p)
+        df["__source_file"] = p.name
+        df["__source_hash"] = file_sha256(p)
+        frames.append(df)
+
+    import pandas as pd
+
+    stacked = pd.concat(frames, axis=0, ignore_index=True) if frames else pd.DataFrame()
+    report = build_payout_report(stacked)
+
+    artifacts_dir = out / "artifacts" / "report_payout_report_v1"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    report_json = artifacts_dir / "payout_report.json"
+    report_csv = artifacts_dir / "payout_report.csv"
+    report_json.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    # CSV: overall + per source rows
+    rows = []
+    overall = dict(report.get("metrics") or {})
+    rows.append({"scope": "overall", **overall})
+    for row in report.get("per_source") or []:
+        if isinstance(row, dict):
+            rows.append({"scope": "source", **row})
+    pd.DataFrame(rows).to_csv(report_csv, index=False)
+    print(str(report_json))
+    print(str(report_csv))
+
+
 def cmd_create_tenant(tenant_id: str, name: str | None) -> None:
     tenant_ctx = get_tenant_context()
     storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
@@ -310,13 +584,47 @@ def main() -> None:
 
     sub.add_parser("list-plugins")
 
+    plugins_parser = sub.add_parser("plugins")
+    plugins_sub = plugins_parser.add_subparsers(dest="plugins_command", required=True)
+    plugins_validate_parser = plugins_sub.add_parser("validate")
+    plugins_validate_parser.add_argument("--plugin-id")
+
+    integrity_parser = sub.add_parser("integrity-check")
+    integrity_parser.add_argument("--full", action="store_true")
+
+    backup_parser = sub.add_parser("backup")
+    backup_parser.add_argument("--out")
+    backup_parser.add_argument("--retention-days", type=int, default=60)
+
+    restore_parser = sub.add_parser("restore")
+    restore_parser.add_argument("--path", required=True)
+
+    diag_parser = sub.add_parser("diag")
+    diag_parser.add_argument("--run-id", required=True)
+    diag_parser.add_argument("--out")
+
+    export_parser = sub.add_parser("export")
+    export_parser.add_argument("--run-id", required=True)
+    export_parser.add_argument("--out")
+    export_parser.add_argument("--no-logs", action="store_true")
+    export_parser.add_argument("--no-artifacts", action="store_true")
+    export_parser.add_argument("--include-dataset", action="store_true")
+
+    replay_parser = sub.add_parser("replay")
+    replay_parser.add_argument("--run-id", required=True)
+
+    db_parser = sub.add_parser("db")
+    db_sub = db_parser.add_subparsers(dest="db_command", required=True)
+    db_doctor = db_sub.add_parser("doctor")
+    db_doctor.add_argument("--full", action="store_true")
+
     serve_parser = sub.add_parser("serve")
     serve_parser.add_argument("--host", default="127.0.0.1")
     serve_parser.add_argument("--port", type=int, default=8000)
 
     run_parser = sub.add_parser("run")
     run_parser.add_argument("--file", required=True)
-    run_parser.add_argument("--plugins", default="auto")
+    run_parser.add_argument("--plugins", default="all")
     run_parser.add_argument("--settings")
     run_parser.add_argument("--run-seed", type=int, default=0)
 
@@ -331,6 +639,10 @@ def main() -> None:
     backfill_parser = sub.add_parser("backfill")
     backfill_parser.add_argument("--plugin", required=True)
     backfill_parser.add_argument("--run-seed", type=int, default=0)
+
+    payout_parser = sub.add_parser("payout-report")
+    payout_parser.add_argument("--input", action="append", required=True)
+    payout_parser.add_argument("--out", required=True)
 
     user_parser = sub.add_parser("create-user")
     user_parser.add_argument("--email", required=True)
@@ -366,6 +678,34 @@ def main() -> None:
 
     if args.command == "list-plugins":
         cmd_list_plugins()
+    elif args.command == "plugins":
+        if args.plugins_command == "validate":
+            cmd_plugins_validate(args.plugin_id)
+        else:
+            raise SystemExit(2)
+    elif args.command == "integrity-check":
+        cmd_integrity_check(full=bool(args.full))
+    elif args.command == "backup":
+        cmd_backup(args.out, args.retention_days)
+    elif args.command == "restore":
+        cmd_restore(args.path)
+    elif args.command == "diag":
+        cmd_diag(args.run_id, args.out)
+    elif args.command == "export":
+        cmd_export(
+            args.run_id,
+            args.out,
+            include_logs=not bool(args.no_logs),
+            include_artifacts=not bool(args.no_artifacts),
+            include_dataset=bool(args.include_dataset),
+        )
+    elif args.command == "replay":
+        cmd_replay(args.run_id)
+    elif args.command == "db":
+        if args.db_command == "doctor":
+            cmd_db_doctor(full=bool(args.full))
+        else:
+            raise SystemExit(2)
     elif args.command == "serve":
         cmd_serve(args.host, args.port)
     elif args.command == "run":
@@ -376,6 +716,8 @@ def main() -> None:
         cmd_make_ground_truth(args.report, args.output)
     elif args.command == "backfill":
         cmd_backfill(args.plugin, args.run_seed)
+    elif args.command == "payout-report":
+        cmd_payout_report(args.input, args.out)
     elif args.command == "create-user":
         cmd_create_user(args.email, args.password, args.name, args.admin)
     elif args.command == "create-api-key":

@@ -1,0 +1,30 @@
+id: llm_text2sql_local_generate_v1
+name: Local Text2SQL Pack Generator (v1)
+version: 0.1.0
+type: llm
+entrypoint: plugin.py:Plugin
+depends_on:
+  - transform_sql_intents_pack_v1
+settings:
+  description: Generate a citeable SQL pack locally (vLLM) from schema snapshot + intents.
+  defaults:
+    enabled: false
+    model_name: SQLCoder-7B-2
+    council_models: []
+    models_root: /mnt/d/autocapture/models
+    out_dir: appdata/sqlpacks
+    temperature: 0.0
+    top_p: 1.0
+    max_tokens: 4096
+config_schema: config.schema.json
+output_schema: output.schema.json
+capabilities:
+  - needs_artifacts
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - docs
+    - run_dir
+    - models

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "case_column": {"type": ["string", "null"]},
+    "process_column": {"type": ["string", "null"]},
+    "start_column": {"type": ["string", "null"]},
+    "end_column": {"type": ["string", "null"]},
+    "wait_threshold_seconds": {"type": "number"},
+    "baseline_quantile": {"type": "number"},
+    "min_transition_count": {"type": "integer"},
+    "max_pairs": {"type": "integer"},
+    "max_case_columns": {"type": "integer"},
+    "max_process_columns": {"type": "integer"},
+    "max_start_columns": {"type": "integer"},
+    "max_end_columns": {"type": "integer"}
+  }
+}

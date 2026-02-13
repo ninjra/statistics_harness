@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Statistic Harness SQL Pack (Text2SQL)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_hash", "dialect", "model", "decode", "queries"],
+  "properties": {
+    "schema_hash": { "type": "string", "minLength": 8 },
+    "dialect": { "type": "string", "enum": ["sqlite"] },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "source": { "type": "string" },
+        "revision": { "type": "string" }
+      }
+    },
+    "decode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["temperature", "top_p", "max_tokens"],
+      "properties": {
+        "temperature": { "type": "number" },
+        "top_p": { "type": "number" },
+        "max_tokens": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "queries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "purpose", "sql", "mode"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "mode": { "type": "string", "enum": ["ro", "plugin"] },
+          "sql": { "type": "string", "minLength": 1 },
+          "params": {}
+        }
+      }
+    }
+  }
+}
+

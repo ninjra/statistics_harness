@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "min_runs": { "type": "integer", "minimum": 1 },
+    "unique_ratio_trigger": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}
+

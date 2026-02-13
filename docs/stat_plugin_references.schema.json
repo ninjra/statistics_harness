@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stat Plugin References",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "title": {"type": "string"},
+      "url": {"type": ["string", "null"]},
+      "doi": {"type": ["string", "null"]},
+      "notes": {"type": ["string", "null"]}
+    },
+    "required": ["title"]
+  }
+}

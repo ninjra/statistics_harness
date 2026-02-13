@@ -4,23 +4,31 @@ version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
-  - analysis_ideaspace_normative_gap
+- ingest_tabular
+- analysis_ideaspace_normative_gap
 settings:
-  description: Turn normative gaps into operational, quantified, no-speculation recommendations.
+  description: Deterministic lever library that turns ideaspace gaps into actions (no speculation gates).
   defaults:
-    min_gap_sec: 180
-    min_runs: 20
-    min_gap_pct: 0.1
-    max_actions: 5
-    exclude_processes: ["qemail", "qpec", "qlongjob", "*los*"]
+    ideaspace_min_rows_for_reco: 200
+    ideaspace_bucket_seconds: 60
+    ideaspace_queue_delay_p95_trigger_s: 120.0
+    ideaspace_blackout_trigger_ratio: 0.25
+    ideaspace_concurrency_thrash_corr_trigger: -0.15
+    ideaspace_batch_tail_multiplier_trigger: 1.5
+    ideaspace_retry_bucket_seconds: 60
+    ideaspace_retry_burst_count_trigger: 10
+    ideaspace_affinity_multiplier_trigger: 0.9
+    ideaspace_parallelize_pair_min: 25
+    ideaspace_parallelize_balance_trigger: 0.25
+    ideaspace_prestage_min_count: 20
 capabilities:
-  - needs_eventlog
-  - needs_timestamp
+- needs_numeric
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:
-    - appdata
-    - plugins
-    - run_dir
+  - appdata
+  - plugins
+  - run_dir
+

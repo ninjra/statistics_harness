@@ -8,6 +8,18 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+$IsWsl = $false
+if ($env:WSL_DISTRO_NAME -or $env:WSL_INTEROP) {
+  $IsWsl = $true
+} elseif (Test-Path "/proc/version") {
+  try {
+    $versionText = Get-Content -Path "/proc/version" -ErrorAction SilentlyContinue
+    if ($versionText -match "microsoft") { $IsWsl = $true }
+  } catch {
+    $IsWsl = $false
+  }
+}
+
 function Test-BadPythonPath($exePath) {
   return ($exePath -match "WindowsApps" -or $exePath -match "wsl.exe" -or $exePath -match "^/usr/" -or $exePath -match "\\wsl$")
 }
@@ -138,7 +150,7 @@ function Show-ReportView {
   if ($Mode -eq "console") {
     Write-Host ""
     Write-Host "===== REPORT ====="
-    Get-Content -Path $ReportPath -Raw
+    Get-Content -Path $ReportPath
   }
 }
 
@@ -164,7 +176,10 @@ function Write-Log {
 Set-Content -Path $LogPath -Value ("started_at=" + (Get-Date).ToString("s")) -Encoding UTF8
 Write-Log -Lines @("repo_root=" + $RepoRoot)
 
-$tmp = Join-Path $env:TEMP "stat_harness_run_gauntlet.py"
+$TempRoot = $env:TEMP
+if ([string]::IsNullOrWhiteSpace($TempRoot)) { $TempRoot = $env:TMP }
+if ([string]::IsNullOrWhiteSpace($TempRoot)) { $TempRoot = "/tmp" }
+$tmp = Join-Path $TempRoot "stat_harness_run_gauntlet.py"
 $py = @"
 import os
 import sqlite3
@@ -327,8 +342,11 @@ for msg in messages:
 Set-Content -Path $tmp -Value $py -Encoding UTF8
 
 function Invoke-WSLRun {
-  $wsl = Get-Command wsl.exe -ErrorAction SilentlyContinue
-  if (!$wsl) { throw "WSL not found. Install WSL or provide a native Windows Python." }
+  $wsl = $null
+  if (-not $IsWsl) {
+    $wsl = Get-Command wsl.exe -ErrorAction SilentlyContinue
+    if (!$wsl) { throw "WSL not found. Install WSL or provide a native Windows Python." }
+  }
   function Convert-ToWslPath {
     param([string]$Path)
     $full = (Resolve-Path $Path).Path
@@ -347,7 +365,7 @@ function Invoke-WSLRun {
   if (-not $TmpWsl) { throw "Failed to resolve WSL path for $tmp" }
   $DatasetArg = $DatasetVersionId
   $SeedArg = $RunSeed
-  $bashTmp = Join-Path $env:TEMP "stat_harness_run_gauntlet.sh"
+  $bashTmp = Join-Path $TempRoot "stat_harness_run_gauntlet.sh"
   $bashLines = @(
     'set -e',
     "cd `"$RepoRootWsl`"",
@@ -366,8 +384,8 @@ function Invoke-WSLRun {
     'if [ -z "$PYTHON_BIN" ]; then echo "WSL_PYTHON_MISSING=python3.11+"; exit 1; fi',
     'if [ ! -d ".venv_wsl" ]; then "$PYTHON_BIN" -m venv .venv_wsl; fi',
     '. .venv_wsl/bin/activate',
-    'python -m pip install -e .',
-    "STAT_HARNESS_APPDATA=`"$RepoRootWsl/appdata`" DATASET_VERSION_ID=`"$DatasetArg`" RUN_SEED=`"$SeedArg`" python `"$TmpWsl`""
+    "export PYTHONPATH=`"$RepoRootWsl`"",
+    "STAT_HARNESS_APPDATA=`"$RepoRootWsl/appdata`" PYTHONPATH=`"$RepoRootWsl`" DATASET_VERSION_ID=`"$DatasetArg`" RUN_SEED=`"$SeedArg`" python `"$TmpWsl`""
   )
   $bashText = ($bashLines -join "`n")
   [System.IO.File]::WriteAllText($bashTmp, $bashText, (New-Object System.Text.UTF8Encoding($false)))
@@ -384,7 +402,11 @@ function Invoke-WSLRun {
   )
   if (-not $bash) { throw "WSL command is empty." }
   try {
-    $output = & wsl.exe bash -lc $bash 2>&1
+    if ($IsWsl) {
+      $output = & bash -lc $bash 2>&1
+    } else {
+      $output = & wsl.exe bash -lc $bash 2>&1
+    }
   } catch {
     $err = $_ | Out-String
     Write-Log -Lines @("WSL_INVOKE_ERROR", $err)
@@ -441,7 +463,7 @@ if (-not (Test-PythonExe $VenvPython @())) {
   exit 0
 }
 
-& $VenvPython -m pip install -e $RepoRoot | Out-Host
+& $VenvPython -m pip install -e $RepoRoot --no-build-isolation --no-deps | Out-Host
 
 $env:DATASET_VERSION_ID = $DatasetVersionId
 $env:RUN_SEED = [string]$RunSeed

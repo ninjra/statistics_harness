@@ -77,6 +77,12 @@
     },
     "summary": {
       "type": "string"
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
     }
   },
   "required": [
@@ -86,7 +92,9 @@
     "findings",
     "artifacts",
     "budget",
-    "error"
+    "error",
+    "references",
+    "debug"
   ],
   "type": "object"
 }

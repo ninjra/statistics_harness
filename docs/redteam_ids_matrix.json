@@ -1,0 +1,3002 @@
+{
+  "generated_by": "scripts/redteam_ids_matrix.py",
+  "items": [
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 112
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 116
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 113
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 117
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 114
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 118
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 115
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 119
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [
+          "replay"
+        ],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_replay.py"
+        ]
+      },
+      "id": "EXEC-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 116
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 120
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 117
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 121
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 118
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 122
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXEC-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 119
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 123
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 133
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [
+          "plugins"
+        ],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/plugins/test_action_search_annealing_v1.py",
+          "tests/plugins/test_action_search_mip_v1.py",
+          "tests/plugins/test_actionable_ops_lever_synthesis_from_top20.py",
+          "tests/plugins/test_analysis_anova_auto.py",
+          "tests/plugins/test_analysis_bayesian_point_displacement.py",
+          "tests/plugins/test_analysis_burst_detection_kleinberg.py",
+          "tests/plugins/test_analysis_change_impact_pre_post.py",
+          "tests/plugins/test_analysis_changepoint_energy_edivisive.py",
+          "tests/plugins/test_analysis_changepoint_method_survey_guided.py",
+          "tests/plugins/test_analysis_changepoint_pelt.py",
+          "tests/plugins/test_analysis_chi_square_association.py",
+          "tests/plugins/test_analysis_cluster_analysis_auto.py",
+          "tests/plugins/test_analysis_conformance_alignments.py",
+          "tests/plugins/test_analysis_conformance_checking.py",
+          "tests/plugins/test_analysis_control_chart_cusum.py",
+          "tests/plugins/test_analysis_control_chart_ewma.py",
+          "tests/plugins/test_analysis_control_chart_individuals.py",
+          "tests/plugins/test_analysis_control_chart_suite.py",
+          "tests/plugins/test_analysis_copula_dependence.py",
+          "tests/plugins/test_analysis_dependency_graph_change_detection.py",
+          "tests/plugins/test_analysis_distribution_drift_suite.py",
+          "tests/plugins/test_analysis_drift_adwin.py",
+          "tests/plugins/test_analysis_effect_size_report.py",
+          "tests/plugins/test_analysis_event_count_bocpd_poisson.py",
+          "tests/plugins/test_analysis_evt_gumbel_tail.py",
+          "tests/plugins/test_analysis_evt_peaks_over_threshold.py",
+          "tests/plugins/test_analysis_factor_analysis_auto.py",
+          "tests/plugins/test_analysis_graphical_lasso_dependency_network.py",
+          "tests/plugins/test_analysis_hawkes_self_exciting.py",
+          "tests/plugins/test_analysis_hmm_latent_state_sequences.py",
+          "tests/plugins/test_analysis_isolation_forest.py",
+          "tests/plugins/test_analysis_isolation_forest_anomaly.py",
+          "tests/plugins/test_analysis_kernel_two_sample_mmd.py",
+          "tests/plugins/test_analysis_kingman_vut_approx.py",
+          "tests/plugins/test_analysis_lagged_predictability_test.py",
+          "tests/plugins/test_analysis_littles_law_consistency.py",
+          "tests/plugins/test_analysis_local_outlier_factor.py",
+          "tests/plugins/test_analysis_log_template_drain.py",
+          "tests/plugins/test_analysis_log_template_mining_drain.py",
+          "tests/plugins/test_analysis_map_permutation_test_karniski.py",
+          "tests/plugins/test_analysis_markov_transition_shift.py",
+          "tests/plugins/test_analysis_matrix_profile_motifs_discords.py",
+          "tests/plugins/test_analysis_message_entropy_drift.py",
+          "tests/plugins/test_analysis_monte_carlo_surface_uncertainty.py",
+          "tests/plugins/test_analysis_multiple_testing_fdr.py",
+          "tests/plugins/test_analysis_multivariate_changepoint_pelt.py",
+          "tests/plugins/test_analysis_multivariate_control_charts.py",
+          "tests/plugins/test_analysis_multivariate_ewma_control.py",
+          "tests/plugins/test_analysis_multivariate_t2_control.py",
+          "tests/plugins/test_analysis_mutual_information_screen.py",
+          "tests/plugins/test_analysis_one_class_svm.py",
+          "tests/plugins/test_analysis_pca_auto.py",
+          "tests/plugins/test_analysis_pca_control_chart.py",
+          "tests/plugins/test_analysis_periodicity_spectral_scan.py",
+          "tests/plugins/test_analysis_process_drift_conformance_over_time.py",
+          "tests/plugins/test_analysis_proportional_hazards_duration.py",
+          "tests/plugins/test_analysis_quantile_regression_duration.py",
+          "tests/plugins/test_analysis_queue_model_fit.py",
+          "tests/plugins/test_analysis_regression_auto.py",
+          "tests/plugins/test_analysis_robust_covariance_outliers.py",
+          "tests/plugins/test_analysis_robust_pca_pcp.py",
+          "tests/plugins/test_analysis_robust_pca_sparse_outliers.py",
+          "tests/plugins/test_analysis_sequential_patterns_prefixspan.py",
+          "tests/plugins/test_analysis_state_space_kalman_residuals.py",
+          "tests/plugins/test_analysis_surface_fabric_sso_eigen.py",
+          "tests/plugins/test_analysis_surface_fractal_dimension_variogram.py",
+          "tests/plugins/test_analysis_surface_hydrology_flow_watershed.py",
+          "tests/plugins/test_analysis_surface_multiscale_wavelet_curvature.py",
+          "tests/plugins/test_analysis_surface_roughness_metrics.py",
+          "tests/plugins/test_analysis_surface_rugosity_index.py",
+          "tests/plugins/test_analysis_surface_terrain_position_index.py",
+          "tests/plugins/test_analysis_survival_kaplan_meier.py",
+          "tests/plugins/test_analysis_survival_time_to_event.py",
+          "tests/plugins/test_analysis_tda_betti_curve_changepoint.py",
+          "tests/plugins/test_analysis_tda_mapper_graph.py",
+          "tests/plugins/test_analysis_tda_persistence_landscapes.py",
+          "tests/plugins/test_analysis_tda_persistent_homology.py",
+          "tests/plugins/test_analysis_template_drift_two_sample.py",
+          "tests/plugins/test_analysis_term_burst_kleinberg.py",
+          "tests/plugins/test_analysis_time_series_analysis_auto.py",
+          "tests/plugins/test_analysis_topic_model_lda.py",
+          "tests/plugins/test_analysis_topographic_angle_dynamics.py",
+          "tests/plugins/test_analysis_topographic_similarity_angle_projection.py",
+          "tests/plugins/test_analysis_topographic_tanova_permutation.py",
+          "tests/plugins/test_analysis_transfer_entropy_directional.py",
+          "tests/plugins/test_analysis_ttests_auto.py",
+          "tests/plugins/test_analysis_two_sample_categorical_chi2.py",
+          "tests/plugins/test_analysis_two_sample_numeric_ad.py",
+          "tests/plugins/test_analysis_two_sample_numeric_ks.py",
+          "tests/plugins/test_analysis_two_sample_numeric_mann_whitney.py",
+          "tests/plugins/test_analysis_variant_differential.py",
+          "tests/plugins/test_apriori_rules_v1.py",
+          "tests/plugins/test_attribution.py",
+          "tests/plugins/test_biclustering_cheng_church_v1.py",
+          "tests/plugins/test_bocpd_gaussian.py",
+          "tests/plugins/test_busy_period_segmentation_v2.py",
+          "tests/plugins/test_capacity_scaling.py",
+          "tests/plugins/test_chain_makespan.py",
+          "tests/plugins/test_close_cycle_capacity_impact.py",
+          "tests/plugins/test_close_cycle_capacity_model.py",
+          "tests/plugins/test_close_cycle_contention.py",
+          "tests/plugins/test_close_cycle_revenue_compression.py",
+          "tests/plugins/test_concurrency_reconstruction.py",
+          "tests/plugins/test_conformal_feature_prediction.py",
+          "tests/plugins/test_conformance_checking.py",
+          "tests/plugins/test_control_chart_suite.py",
+          "tests/plugins/test_cop_kmeans_v1.py",
+          "tests/plugins/test_crosscutting_new_plugins.py",
+          "tests/plugins/test_dependency_communities_v1.py",
+          "tests/plugins/test_dependency_resolution_join.py",
+          "tests/plugins/test_determinism_discipline.py",
+          "tests/plugins/test_distribution_drift_suite.py",
+          "tests/plugins/test_dp_gmm.py",
+          "tests/plugins/test_dtw_alignment_v1.py",
+          "tests/plugins/test_empirical_bayes_shrinkage_v1.py",
+          "tests/plugins/test_eventlog_fixture_smoke.py",
+          "tests/plugins/test_fpgrowth_itemsets_v1.py",
+          "tests/plugins/test_gaussian_copula_shift.py",
+          "tests/plugins/test_gaussian_knockoffs.py",
+          "tests/plugins/test_graph_topology_curves.py",
+          "tests/plugins/test_hawkes_burst_v1.py",
+          "tests/plugins/test_hdbscan_v1.py",
+          "tests/plugins/test_isolation_forest_anomaly.py",
+          "tests/plugins/test_knockoff_wrapper_rf.py",
+          "tests/plugins/test_log_template_mining_drain.py",
+          "tests/plugins/test_min_cut_partition_v1.py",
+          "tests/plugins/test_multivariate_changepoint_pelt.py",
+          "tests/plugins/test_multivariate_control_charts.py",
+          "tests/plugins/test_notears_linear.py",
+          "tests/plugins/test_online_conformal_changepoint.py",
+          "tests/plugins/test_param_near_duplicate_minhash_v1.py",
+          "tests/plugins/test_param_near_duplicate_simhash_v1.py",
+          "tests/plugins/test_percentile_analysis.py",
+          "tests/plugins/test_prefixspan_v1.py",
+          "tests/plugins/test_process_counterfactuals.py",
+          "tests/plugins/test_process_sequence.py",
+          "tests/plugins/test_process_sequence_bottlenecks.py",
+          "tests/plugins/test_profile_eventlog.py",
+          "tests/plugins/test_queue_delay_decomposition.py",
+          "tests/plugins/test_queue_simulator_v1.py",
+          "tests/plugins/test_recommendation_dedupe_v2.py",
+          "tests/plugins/test_report_decision_bundle_v2.py",
+          "tests/plugins/test_robust_pca_sparse_outliers.py",
+          "tests/plugins/test_scan_statistics.py",
+          "tests/plugins/test_sequence_classification.py",
+          "tests/plugins/test_sequitur_v1.py",
+          "tests/plugins/test_spectral_clustering_v1.py",
+          "tests/plugins/test_tail_isolation.py",
+          "tests/plugins/test_traceability_manifest_v2.py",
+          "tests/plugins/test_transform_normalize_mixed.py",
+          "tests/plugins/test_user_host_savings.py",
+          "tests/plugins/test_wasserstein_shift_v1.py",
+          "tests/plugins/test_waterfall_summary_v2.py",
+          "tests/stat_plugins/test_contract.py",
+          "tests/stat_plugins/test_utils.py",
+          "tests/test_binding_implementation_matrix.py",
+          "tests/test_cli_plugins_validate.py",
+          "tests/test_config_defaults.py",
+          "tests/test_crash_recovery_aborts_plugin_executions.py",
+          "tests/test_dedupe_runs.py",
+          "tests/test_determinism.py",
+          "tests/test_docs_implementation_matrix.py",
+          "tests/test_enertia_evaluation.py",
+          "tests/test_evaluation.py",
+          "tests/test_evaluator.py",
+          "tests/test_four_pillars_scoring.py",
+          "tests/test_ideaspace_plugins.py",
+          "tests/test_ideaspace_utils.py",
+          "tests/test_ingest_tabular.py",
+          "tests/test_known_issue_close_cycle_contention_fallback.py",
+          "tests/test_kona_energy_ideaspace_architecture.py",
+          "tests/test_llm_prompt_builder.py",
+          "tests/test_matrix_override_files.py",
+          "tests/test_missing_plugins.py",
+          "tests/test_normalization_reuse.py",
+          "tests/test_parameter_normalization.py",
+          "tests/test_performance_smoke.py",
+          "tests/test_pipeline_integration.py",
+          "tests/test_plugin_dag_validation.py",
+          "tests/test_plugin_data_access_matrix.py",
+          "tests/test_plugin_discovery.py",
+          "tests/test_plugin_manifest_schema.py",
+          "tests/test_plugins_functionality_matrix.py",
+          "tests/test_profile_basic.py",
+          "tests/test_quorum_evaluation.py",
+          "tests/test_recommendation_controls_env.py",
+          "tests/test_recommendation_schema_contract.py",
+          "tests/test_redteam_requirements_full.py",
+          "tests/test_replay.py",
+          "tests/test_report_outputs.py",
+          "tests/test_report_plugins_stage.py",
+          "tests/test_report_schema.py",
+          "tests/test_row_trace.py",
+          "tests/test_run_manifest.py",
+          "tests/test_sql_assist_adoption_matrix.py",
+          "tests/test_surface_builder.py",
+          "tests/test_template_combined_run.py",
+          "tests/test_template_conversion.py",
+          "tests/test_top20_methods_matrix.py",
+          "tests/test_top20_plugins_smoke.py",
+          "tests/test_top20_scaffold_integrity.py"
+        ]
+      },
+      "id": "EXT-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 134
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 135
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 136
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 137
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": [
+          "health"
+        ]
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 138
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 139
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "EXT-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 140
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "src/statistic_harness/core/pipeline.py",
+          "src/statistic_harness/core/utils.py"
+        ],
+        "symbols": [
+          "atomic_dir"
+        ]
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 82
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 82
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 83
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 83
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 84
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 84
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [
+          "db"
+        ],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/plugins/test_hdbscan_v1.py",
+          "tests/test_atomic_writes.py",
+          "tests/test_config_defaults.py",
+          "tests/test_crash_recovery_aborts_plugin_executions.py",
+          "tests/test_dataset_row_index_index.py",
+          "tests/test_migrations.py",
+          "tests/test_normalization_reuse.py",
+          "tests/test_plugin_dag_validation.py",
+          "tests/test_plugin_discovery.py",
+          "tests/test_redteam_requirements_full.py",
+          "tests/test_repair_stale_running_runs.py",
+          "tests/test_sandbox.py",
+          "tests/test_sql_assist_and_storage_guards.py",
+          "tests/test_tenant_isolation.py",
+          "tests/test_upload_cas.py"
+        ]
+      },
+      "id": "FND-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 85
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 85
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 86
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 86
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "plugins/ingest_tabular/plugin.py"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_plugin_manifest_schema.py",
+          "tests/test_top20_scaffold_integrity.py"
+        ]
+      },
+      "id": "FND-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 87
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 87
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [
+          "STAT_HARNESS_SAFE_RENAME"
+        ],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 88
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 88
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "FND-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 89
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 89
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "docs/report.schema.json",
+          "docs/run_manifest.schema.json"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
+          "tests/test_redteam_requirements_full.py",
+          "tests/test_report_schema.py",
+          "tests/test_run_manifest.py"
+        ]
+      },
+      "id": "META-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 97
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 99
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "docs/report.schema.json"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
+          "tests/test_report_schema.py"
+        ]
+      },
+      "id": "META-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 98
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 100
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 99
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 101
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 100
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 102
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 101
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 103
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 102
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 104
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 103
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 105
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [
+          "export"
+        ],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "META-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 104
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 106
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 157
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 167
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 158
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 168
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [
+          "diag"
+        ],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_ideaspace_plugins.py",
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 159
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 169
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 160
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 170
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 161
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 171
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 162
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 172
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 163
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 173
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "OBS-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 164
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": [
+          "df",
+          "iter_batches"
+        ]
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/conftest.py",
+          "tests/plugins/test_analysis_anova_auto.py",
+          "tests/plugins/test_analysis_bayesian_point_displacement.py",
+          "tests/plugins/test_analysis_burst_detection_kleinberg.py",
+          "tests/plugins/test_analysis_change_impact_pre_post.py",
+          "tests/plugins/test_analysis_changepoint_energy_edivisive.py",
+          "tests/plugins/test_analysis_changepoint_method_survey_guided.py",
+          "tests/plugins/test_analysis_changepoint_pelt.py",
+          "tests/plugins/test_analysis_chi_square_association.py",
+          "tests/plugins/test_analysis_cluster_analysis_auto.py",
+          "tests/plugins/test_analysis_conformance_alignments.py",
+          "tests/plugins/test_analysis_conformance_checking.py",
+          "tests/plugins/test_analysis_control_chart_cusum.py",
+          "tests/plugins/test_analysis_control_chart_ewma.py",
+          "tests/plugins/test_analysis_control_chart_individuals.py",
+          "tests/plugins/test_analysis_control_chart_suite.py",
+          "tests/plugins/test_analysis_copula_dependence.py",
+          "tests/plugins/test_analysis_dependency_graph_change_detection.py",
+          "tests/plugins/test_analysis_distribution_drift_suite.py",
+          "tests/plugins/test_analysis_drift_adwin.py",
+          "tests/plugins/test_analysis_effect_size_report.py",
+          "tests/plugins/test_analysis_event_count_bocpd_poisson.py",
+          "tests/plugins/test_analysis_evt_gumbel_tail.py",
+          "tests/plugins/test_analysis_evt_peaks_over_threshold.py",
+          "tests/plugins/test_analysis_factor_analysis_auto.py",
+          "tests/plugins/test_analysis_graphical_lasso_dependency_network.py",
+          "tests/plugins/test_analysis_hawkes_self_exciting.py",
+          "tests/plugins/test_analysis_hmm_latent_state_sequences.py",
+          "tests/plugins/test_analysis_isolation_forest.py",
+          "tests/plugins/test_analysis_isolation_forest_anomaly.py",
+          "tests/plugins/test_analysis_kernel_two_sample_mmd.py",
+          "tests/plugins/test_analysis_kingman_vut_approx.py",
+          "tests/plugins/test_analysis_lagged_predictability_test.py",
+          "tests/plugins/test_analysis_littles_law_consistency.py",
+          "tests/plugins/test_analysis_local_outlier_factor.py",
+          "tests/plugins/test_analysis_log_template_drain.py",
+          "tests/plugins/test_analysis_log_template_mining_drain.py",
+          "tests/plugins/test_analysis_map_permutation_test_karniski.py",
+          "tests/plugins/test_analysis_markov_transition_shift.py",
+          "tests/plugins/test_analysis_matrix_profile_motifs_discords.py",
+          "tests/plugins/test_analysis_message_entropy_drift.py",
+          "tests/plugins/test_analysis_monte_carlo_surface_uncertainty.py",
+          "tests/plugins/test_analysis_multiple_testing_fdr.py",
+          "tests/plugins/test_analysis_multivariate_changepoint_pelt.py",
+          "tests/plugins/test_analysis_multivariate_control_charts.py",
+          "tests/plugins/test_analysis_multivariate_ewma_control.py",
+          "tests/plugins/test_analysis_multivariate_t2_control.py",
+          "tests/plugins/test_analysis_mutual_information_screen.py",
+          "tests/plugins/test_analysis_one_class_svm.py",
+          "tests/plugins/test_analysis_pca_auto.py",
+          "tests/plugins/test_analysis_pca_control_chart.py",
+          "tests/plugins/test_analysis_periodicity_spectral_scan.py",
+          "tests/plugins/test_analysis_process_drift_conformance_over_time.py",
+          "tests/plugins/test_analysis_proportional_hazards_duration.py",
+          "tests/plugins/test_analysis_quantile_regression_duration.py",
+          "tests/plugins/test_analysis_queue_model_fit.py",
+          "tests/plugins/test_analysis_regression_auto.py",
+          "tests/plugins/test_analysis_robust_covariance_outliers.py",
+          "tests/plugins/test_analysis_robust_pca_pcp.py",
+          "tests/plugins/test_analysis_robust_pca_sparse_outliers.py",
+          "tests/plugins/test_analysis_sequential_patterns_prefixspan.py",
+          "tests/plugins/test_analysis_state_space_kalman_residuals.py",
+          "tests/plugins/test_analysis_surface_fabric_sso_eigen.py",
+          "tests/plugins/test_analysis_surface_fractal_dimension_variogram.py",
+          "tests/plugins/test_analysis_surface_hydrology_flow_watershed.py",
+          "tests/plugins/test_analysis_surface_multiscale_wavelet_curvature.py",
+          "tests/plugins/test_analysis_surface_roughness_metrics.py",
+          "tests/plugins/test_analysis_surface_rugosity_index.py",
+          "tests/plugins/test_analysis_surface_terrain_position_index.py",
+          "tests/plugins/test_analysis_survival_kaplan_meier.py",
+          "tests/plugins/test_analysis_survival_time_to_event.py",
+          "tests/plugins/test_analysis_tda_betti_curve_changepoint.py",
+          "tests/plugins/test_analysis_tda_mapper_graph.py",
+          "tests/plugins/test_analysis_tda_persistence_landscapes.py",
+          "tests/plugins/test_analysis_tda_persistent_homology.py",
+          "tests/plugins/test_analysis_template_drift_two_sample.py",
+          "tests/plugins/test_analysis_term_burst_kleinberg.py",
+          "tests/plugins/test_analysis_time_series_analysis_auto.py",
+          "tests/plugins/test_analysis_topic_model_lda.py",
+          "tests/plugins/test_analysis_topographic_angle_dynamics.py",
+          "tests/plugins/test_analysis_topographic_similarity_angle_projection.py",
+          "tests/plugins/test_analysis_topographic_tanova_permutation.py",
+          "tests/plugins/test_analysis_transfer_entropy_directional.py",
+          "tests/plugins/test_analysis_ttests_auto.py",
+          "tests/plugins/test_analysis_two_sample_categorical_chi2.py",
+          "tests/plugins/test_analysis_two_sample_numeric_ad.py",
+          "tests/plugins/test_analysis_two_sample_numeric_ks.py",
+          "tests/plugins/test_analysis_two_sample_numeric_mann_whitney.py",
+          "tests/plugins/test_analysis_variant_differential.py",
+          "tests/plugins/test_attribution.py",
+          "tests/plugins/test_bocpd_gaussian.py",
+          "tests/plugins/test_busy_period_segmentation_v2.py",
+          "tests/plugins/test_capacity_scaling.py",
+          "tests/plugins/test_chain_makespan.py",
+          "tests/plugins/test_close_cycle_capacity_impact.py",
+          "tests/plugins/test_close_cycle_capacity_model.py",
+          "tests/plugins/test_close_cycle_contention.py",
+          "tests/plugins/test_close_cycle_revenue_compression.py",
+          "tests/plugins/test_concurrency_reconstruction.py",
+          "tests/plugins/test_conformal_feature_prediction.py",
+          "tests/plugins/test_conformance_checking.py",
+          "tests/plugins/test_control_chart_suite.py",
+          "tests/plugins/test_crosscutting_new_plugins.py",
+          "tests/plugins/test_dependency_resolution_join.py",
+          "tests/plugins/test_determinism_discipline.py",
+          "tests/plugins/test_distribution_drift_suite.py",
+          "tests/plugins/test_dp_gmm.py",
+          "tests/plugins/test_eventlog_fixture_smoke.py",
+          "tests/plugins/test_gaussian_copula_shift.py",
+          "tests/plugins/test_gaussian_knockoffs.py",
+          "tests/plugins/test_graph_topology_curves.py",
+          "tests/plugins/test_isolation_forest_anomaly.py",
+          "tests/plugins/test_knockoff_wrapper_rf.py",
+          "tests/plugins/test_log_template_mining_drain.py",
+          "tests/plugins/test_multivariate_changepoint_pelt.py",
+          "tests/plugins/test_multivariate_control_charts.py",
+          "tests/plugins/test_notears_linear.py",
+          "tests/plugins/test_online_conformal_changepoint.py",
+          "tests/plugins/test_percentile_analysis.py",
+          "tests/plugins/test_process_counterfactuals.py",
+          "tests/plugins/test_process_sequence.py",
+          "tests/plugins/test_process_sequence_bottlenecks.py",
+          "tests/plugins/test_profile_eventlog.py",
+          "tests/plugins/test_queue_delay_decomposition.py",
+          "tests/plugins/test_recommendation_dedupe_v2.py",
+          "tests/plugins/test_report_decision_bundle_v2.py",
+          "tests/plugins/test_robust_pca_sparse_outliers.py",
+          "tests/plugins/test_scan_statistics.py",
+          "tests/plugins/test_sequence_classification.py",
+          "tests/plugins/test_tail_isolation.py",
+          "tests/plugins/test_traceability_manifest_v2.py",
+          "tests/plugins/test_transform_normalize_mixed.py",
+          "tests/plugins/test_user_host_savings.py",
+          "tests/plugins/test_waterfall_summary_v2.py",
+          "tests/stat_plugins/test_utils.py",
+          "tests/test_dataset_streaming.py",
+          "tests/test_ideaspace_plugins.py",
+          "tests/test_ideaspace_utils.py",
+          "tests/test_ingest_tabular.py",
+          "tests/test_known_issue_close_cycle_contention_fallback.py",
+          "tests/test_kona_energy_ideaspace_architecture.py",
+          "tests/test_llm_prompt_builder.py",
+          "tests/test_parameter_normalization.py",
+          "tests/test_planner_features.py",
+          "tests/test_profile_basic.py",
+          "tests/test_row_trace.py",
+          "tests/test_sql_assist_and_storage_guards.py",
+          "tests/test_surface_builder.py",
+          "tests/test_template_conversion.py",
+          "tests/test_template_filters.py",
+          "tests/test_top20_plugins_smoke.py"
+        ]
+      },
+      "id": "PERF-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 187
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 199
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 188
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 200
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 189
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 201
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 190
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 202
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 191
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 203
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 192
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 204
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 193
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PERF-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 194
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 127
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "docs/plugin_manifest.schema.json"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_plugin_manifest_schema.py"
+        ]
+      },
+      "id": "PLUG-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 128
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 129
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 130
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 131
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 132
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 133
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "PLUG-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 134
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 202
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 214
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "docs/report.schema.json"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
+          "tests/test_report_schema.py"
+        ]
+      },
+      "id": "QA-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 203
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 215
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 204
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 216
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 205
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 217
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 206
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 218
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 207
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 219
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "QA-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 208
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [
+          "docs/report.schema.json"
+        ],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_recommendation_schema_contract.py",
+          "tests/test_report_schema.py"
+        ]
+      },
+      "id": "QA-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 209
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "RD-00",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 217
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "RD-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 218
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "RD-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 219
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "RD-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 220
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 172
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 183
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 173
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 184
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 174
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 185
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 175
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 186
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 176
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 187
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 177
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 188
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 178
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 189
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "SEC-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": false,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 179
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-01",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 142
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 150
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-02",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 143
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 151
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-03",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 144
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 152
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-04",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 145
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 153
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-05",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 146
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 154
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-06",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 147
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 155
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-07",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 148
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 156
+        }
+      ],
+      "status": "implemented"
+    },
+    {
+      "declared": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "evidence": {
+        "test_paths": [
+          "tests/test_redteam_requirements_full.py"
+        ]
+      },
+      "id": "UX-08",
+      "missing": {
+        "cli_subcommands": [],
+        "env_vars": [],
+        "paths": [],
+        "symbols": []
+      },
+      "required": true,
+      "sources": [
+        {
+          "doc_path": "docs/deprecated/redteam2-5-2026.txt",
+          "line_no": 149
+        },
+        {
+          "doc_path": "docs/stat_redteam2-6-26.md",
+          "line_no": 157
+        }
+      ],
+      "status": "implemented"
+    }
+  ],
+  "missing_required_ids": [],
+  "requirement_count": 84,
+  "sources": [
+    "docs/stat_redteam2-6-26.md",
+    "docs/deprecated/redteam2-5-2026.txt"
+  ]
+}

@@ -1,0 +1,24 @@
+id: analysis_dependency_community_leiden_v1
+name: Dependency Community Detection (Leiden)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Detect higher-quality dependency communities (Leiden) to identify stable
+    module boundaries.
+  defaults:
+    top_k: 20
+    min_edge_weight: 5
+capabilities:
+- needs_eventlog
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

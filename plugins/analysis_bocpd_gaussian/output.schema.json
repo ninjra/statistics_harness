@@ -264,6 +264,12 @@
     "metrics": {
       "additionalProperties": false,
       "properties": {
+        "columns_scanned": {
+          "type": "integer"
+        },
+        "columns_with_findings": {
+          "type": "integer"
+        },
         "count": {
           "type": "integer"
         }
@@ -280,6 +286,12 @@
     },
     "summary": {
       "type": "string"
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
     }
   },
   "required": [
@@ -288,7 +300,9 @@
     "metrics",
     "findings",
     "artifacts",
-    "budget"
+    "budget",
+    "references",
+    "debug"
   ],
   "title": "Plugin Result",
   "type": "object"

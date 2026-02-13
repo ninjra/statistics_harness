@@ -1,0 +1,23 @@
+{
+  "generated_by": "scripts/full_repo_misses.py",
+  "hard_gaps": {
+    "binding_missing_any": false,
+    "docs_missing_any_normative": false,
+    "instruction_coverage_items": [],
+    "plugin_data_access_unclassified": [],
+    "plugin_missing_dep_edges": {},
+    "redteam_missing_required_ids": []
+  },
+  "has_hard_gaps": false,
+  "soft_gaps": {
+    "optional_sql_not_using": [],
+    "recommended_sql_not_using": [],
+    "required_sql_not_using": []
+  },
+  "summary": {
+    "hard_gap_count": 0,
+    "optional_sql_not_using_count": 0,
+    "recommended_sql_not_using_count": 0,
+    "required_sql_not_using_count": 0
+  }
+}

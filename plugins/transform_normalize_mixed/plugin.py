@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from typing import Any
 
 from statistic_harness.core.template import mapping_hash
@@ -86,8 +87,10 @@ class Plugin:
             for pat in exclude_patterns
             if str(pat).strip()
         ]
-        chunk_size = int(ctx.settings.get("chunk_size", 1000))
-        sample_rows = int(ctx.settings.get("sample_rows", 500))
+        # Larger default chunk improves normalization throughput for multi-million row datasets.
+        chunk_size = int(ctx.settings.get("chunk_size", 10_000))
+        # Deprecated: this plugin must not row-sample for type decisions. Kept for back-compat config parsing.
+        _sample_rows = int(ctx.settings.get("sample_rows", 500))
 
         dataset = ctx.storage.get_dataset_version(dataset_version_id)
         if not dataset:
@@ -99,12 +102,17 @@ class Plugin:
             return PluginResult("skipped", "No columns found", {}, [], [], None)
 
         name_counts: dict[str, int] = {}
-        mapping: dict[str, str] = {}
+        col_specs: list[dict[str, Any]] = []
+        # Initial mapping keyed by dataset-derived field names (often column headers).
+        # For pre-existing templates with semantic field names, this will be reconciled later.
+        mapping: dict[str, Any] = {}
         column_safe_names: list[str] = []
-        original_names: list[str] = []
 
         for idx, col in enumerate(columns, start=1):
-            original = _normalize_name(col["original_name"], f"column_{idx}")
+            original = _normalize_name(col.get("original_name"), f"column_{idx}")
+            safe = str(col.get("safe_name") or "").strip()
+            if not safe:
+                return PluginResult("error", "Dataset column missing safe_name", {}, [], [], None)
             base = original
             if base in name_counts:
                 name_counts[base] += 1
@@ -112,63 +120,132 @@ class Plugin:
             else:
                 name_counts[base] = 1
                 field_name = base
-            mapping[field_name] = original
-            original_names.append(original)
-            column_safe_names.append(col["safe_name"])
 
-        safe_by_original = {
-            orig: safe for orig, safe in zip(original_names, column_safe_names)
-        }
+            col_specs.append(
+                {
+                    "column_id": int(col.get("column_id") if col.get("column_id") is not None else (idx - 1)),
+                    "field_name": field_name,
+                    "original_name": original,
+                    "safe_name": safe,
+                    "dtype": col.get("dtype"),
+                }
+            )
+            mapping[field_name] = {"original_name": original, "safe_name": safe}
+            column_safe_names.append(safe)
 
-        coercion_allowed: dict[str, bool] = {}
+        coercion_allowed: dict[str, bool] = {col: False for col in column_safe_names}
         if numeric_coercion:
-            sample_limit = max(sample_rows, 0)
-            if sample_limit > 0:
-                with ctx.storage.connection() as conn:
-                    raw_table = dataset["table_name"]
-                    quoted_cols = ", ".join(
-                        quote_identifier(col) for col in column_safe_names
-                    )
-                    sql = (
-                        f"SELECT {quoted_cols} FROM {quote_identifier(raw_table)} "
-                        "ORDER BY row_id LIMIT ?"
-                    )
-                    cur = conn.execute(sql, (sample_limit,))
-                    sample = cur.fetchall()
-                counts = {col: {"num": 0, "total": 0} for col in column_safe_names}
-                for row in sample:
-                    for col in column_safe_names:
-                        value = row[col]
-                        if value is None:
-                            continue
-                        counts[col]["total"] += 1
-                        if _is_numeric_like(value):
-                            counts[col]["num"] += 1
-                for col in column_safe_names:
-                    total = counts[col]["total"]
-                    ratio = counts[col]["num"] / total if total else 0.0
-                    coercion_allowed[col] = ratio >= numeric_threshold
-            else:
-                coercion_allowed = {col: True for col in column_safe_names}
-        else:
-            coercion_allowed = {col: False for col in column_safe_names}
+            raw_table = str(dataset["table_name"])
+            row_count = int(dataset.get("row_count") or 0)
 
-        for col, name in zip(column_safe_names, original_names):
-            lowered = name.lower()
+            # Read declared raw-table column types once (cheap) so we can accept already-numeric cols.
+            declared_types: dict[str, str] = {}
+            with ctx.storage.connection() as conn:
+                try:
+                    info = conn.execute(
+                        f"PRAGMA table_info({quote_identifier(raw_table)})"
+                    ).fetchall()
+                    for r in info:
+                        name = str(r["name"])
+                        ctype = str(r["type"] or "")
+                        declared_types[name] = ctype.upper()
+                except Exception:
+                    declared_types = {}
+
+            # Prefer full-dataset numeric-like ratios computed during ingest (no re-scan).
+            stats_by_safe: dict[str, dict[str, Any]] = {}
+            for col in columns:
+                safe = str(col.get("safe_name") or "")
+                st = col.get("stats")
+                if safe and isinstance(st, dict):
+                    stats_by_safe[safe] = st
+
+            # Decide coercion using (in order):
+            # 1) declared type is already numeric => allow
+            # 2) stored ingest stats numeric_like_ratio => allow if >= threshold
+            # 3) fallback: full DB scan for that column (no sampling)
+            pending: list[str] = []
+            for safe in column_safe_names:
+                ctype = declared_types.get(safe, "")
+                if "INT" in ctype or "REAL" in ctype or "FLOA" in ctype or "DOUB" in ctype:
+                    coercion_allowed[safe] = True
+                    continue
+                st = stats_by_safe.get(safe) or {}
+                ratio = st.get("numeric_like_ratio")
+                if isinstance(ratio, (int, float)):
+                    coercion_allowed[safe] = float(ratio) >= float(numeric_threshold)
+                else:
+                    pending.append(safe)
+
+            # Full-scan fallback for missing stats (kept for older datasets/tests).
+            if pending and row_count > 0:
+                with ctx.storage.connection() as conn:
+                    last_row_id = 0
+                    while True:
+                        cols_sql = ", ".join(quote_identifier(c) for c in pending)
+                        sql = (
+                            f"SELECT row_id, {cols_sql} FROM {quote_identifier(raw_table)} "
+                            f"WHERE row_id > ? ORDER BY row_id LIMIT ?"
+                        )
+                        rows = conn.execute(sql, (last_row_id, int(chunk_size))).fetchall()
+                        if not rows:
+                            break
+                        for r in rows:
+                            last_row_id = int(r["row_id"])
+                            for c in pending:
+                                v = r[c]
+                                if v is None:
+                                    continue
+                                # Compute exact numeric-like ratio. This is row-complete (no sampling),
+                                # but can be expensive on very wide datasets.
+                                key_total = f"__tmp_total__{c}"
+                                key_num = f"__tmp_num__{c}"
+                                stats_by_safe.setdefault(c, {})
+                                stats_by_safe[c][key_total] = int(stats_by_safe[c].get(key_total) or 0) + 1
+                                if _is_numeric_like(v):
+                                    stats_by_safe[c][key_num] = int(stats_by_safe[c].get(key_num) or 0) + 1
+                        if last_row_id <= 0:
+                            break
+                for c in pending:
+                    st = stats_by_safe.get(c) or {}
+                    total = int(st.get(f"__tmp_total__{c}") or 0)
+                    num = int(st.get(f"__tmp_num__{c}") or 0)
+                    ratio = (float(num) / float(total)) if total else 0.0
+                    coercion_allowed[c] = ratio >= float(numeric_threshold)
+                # Persist any newly computed full-dataset ratios back into dataset column stats.
+                # This avoids repeating this expensive scan in future runs.
+                try:
+                    stats_by_safe_name: dict[str, dict[str, Any]] = {}
+                    for col in columns:
+                        safe = str(col.get("safe_name") or "")
+                        if not safe:
+                            continue
+                        st = stats_by_safe.get(safe) or {}
+                        total = int(st.get(f"__tmp_total__{safe}") or 0)
+                        num = int(st.get(f"__tmp_num__{safe}") or 0)
+                        if total > 0:
+                            stats_by_safe_name[safe] = {
+                                **(col.get("stats") or {}),
+                                "numeric_like_ratio": float(num) / float(total),
+                            }
+                    if stats_by_safe_name:
+                        ctx.storage.update_dataset_column_stats(dataset_version_id, stats_by_safe_name)
+                except Exception:
+                    pass
+
+        for spec in col_specs:
+            lowered = str(spec["original_name"]).lower()
             if any(token in lowered for token in exclude_patterns):
-                coercion_allowed[col] = False
+                coercion_allowed[str(spec["safe_name"])] = False
 
         field_defs: list[dict[str, Any]] = []
-        for field_name, original in zip(mapping.keys(), original_names):
-            safe_name = safe_by_original.get(original, "")
+        for spec in col_specs:
+            safe_name = str(spec["safe_name"])
             sqlite_type = "REAL" if coercion_allowed.get(safe_name) else "TEXT"
             field_defs.append(
                 {
-                    "name": field_name,
-                    "dtype": next(
-                        (col.get("dtype") for col in columns if col["original_name"] == original),
-                        None,
-                    ),
+                    "name": str(spec["field_name"]),
+                    "dtype": spec.get("dtype"),
                     "sqlite_type": sqlite_type,
                 }
             )
@@ -210,6 +287,37 @@ class Plugin:
         if not template_fields:
             return PluginResult("error", "Template fields missing", {}, [], [], None)
 
+        # Reconcile mapping keys with template field names.
+        # This matters when a template already exists with semantic field names (e.g., QUEUE_DT),
+        # but the dataset columns are generic (e.g., c1..cN). In that case, we map by column order
+        # so we don't silently populate the normalized table with NULLs.
+        template_field_names = [str(field.get("name") or "") for field in template_fields]
+        if template_field_names and not set(template_field_names).issubset(set(mapping.keys())):
+            ordered = sorted(col_specs, key=lambda s: int(s.get("column_id") or 0))
+            if len(ordered) != len(template_field_names):
+                return PluginResult(
+                    "error",
+                    "Template/dataset column count mismatch; cannot infer mapping",
+                    {
+                        "template_name": template_name,
+                        "template_id": int(template_id),
+                        "template_fields": int(len(template_field_names)),
+                        "dataset_columns": int(len(ordered)),
+                    },
+                    [],
+                    [],
+                    None,
+                )
+            mapping = {}
+            for i, tname in enumerate(template_field_names):
+                src = ordered[i]
+                mapping[tname] = {
+                    "original_name": str(src.get("original_name") or ""),
+                    "safe_name": str(src.get("safe_name") or ""),
+                    "inferred_by": "column_order",
+                    "source_column_id": int(src.get("column_id") or 0),
+                }
+
         table_name = template["table_name"] if template else None
         if not table_name:
             return PluginResult("error", "Template table missing", {}, [], [], None)
@@ -238,7 +346,9 @@ class Plugin:
 
         row_count = 0
         coerced_columns = [
-            name for name, safe in safe_by_original.items() if coercion_allowed.get(safe)
+            str(spec["field_name"])
+            for spec in col_specs
+            if coercion_allowed.get(str(spec["safe_name"]))
         ]
 
         try:
@@ -248,6 +358,27 @@ class Plugin:
                     (dataset_version_id,),
                 )
                 raw_table = dataset["table_name"]
+                # Ensure key indexes and planner stats exist before the bulk scan.
+                try:
+                    ctx.storage.ensure_dataset_row_index_index(str(raw_table), conn)
+                except Exception:
+                    pass
+                try:
+                    ctx.storage.analyze_table(str(raw_table), conn)
+                except Exception:
+                    pass
+
+                # Cache declared raw-table sqlite types (cheap, and used for stats + role hints).
+                declared_types: dict[str, str] = {}
+                try:
+                    info = conn.execute(
+                        f"PRAGMA table_info({quote_identifier(str(raw_table))})"
+                    ).fetchall()
+                    for r in info:
+                        declared_types[str(r["name"])] = str(r["type"] or "").upper()
+                except Exception:
+                    declared_types = {}
+
                 quoted_cols = ", ".join(
                     quote_identifier(col) for col in column_safe_names
                 )
@@ -260,25 +391,104 @@ class Plugin:
                 template_safe_cols = [field["safe_name"] for field in template_fields]
                 field_names = [field["name"] for field in template_fields]
 
+                # Full-dataset abstract representation (computed during normalization to avoid
+                # repeated scans across many plugins):
+                # - null counts for every column
+                # - numeric min/max/mean
+                # - text min/max length + numeric_like_ratio
+                stats_by_safe: dict[str, dict[str, Any]] = {}
+                for col in columns:
+                    safe = str(col.get("safe_name") or "")
+                    orig = str(col.get("original_name") or "")
+                    if not safe:
+                        continue
+                    # Prefer the normalized/template typing decision for downstream plugin efficiency.
+                    sqlite_type = "REAL" if coercion_allowed.get(safe, False) else (declared_types.get(safe, "TEXT") or "TEXT")
+                    sqlite_type = str(sqlite_type).upper()
+                    st: dict[str, Any] = {
+                        "sqlite_type": sqlite_type,
+                        "original_name": orig,
+                        "n": 0,
+                        "nulls": 0,
+                    }
+                    if sqlite_type in {"INTEGER", "REAL"}:
+                        st.update({"min": None, "max": None, "sum": 0.0})
+                    else:
+                        st.update(
+                            {
+                                "min_len": None,
+                                "max_len": None,
+                                "numeric_like_total": 0,
+                                "numeric_like_num": 0,
+                            }
+                        )
+                    stats_by_safe[safe] = st
+
+                def _update_stats_value(safe: str, value: Any) -> None:
+                    st = stats_by_safe.get(safe)
+                    if not st:
+                        return
+                    st["n"] = int(st.get("n") or 0) + 1
+                    if value is None:
+                        st["nulls"] = int(st.get("nulls") or 0) + 1
+                        return
+                    sqlite_type = str(st.get("sqlite_type") or "TEXT").upper()
+                    if sqlite_type in {"INTEGER", "REAL"}:
+                        if isinstance(value, bool):
+                            num = float(int(value))
+                        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+                            num = float(value)
+                        else:
+                            # Keep stats conservative if coercion produced a non-numeric.
+                            return
+                        prev_min = st.get("min")
+                        prev_max = st.get("max")
+                        st["min"] = num if prev_min is None else float(min(float(prev_min), num))
+                        st["max"] = num if prev_max is None else float(max(float(prev_max), num))
+                        st["sum"] = float(st.get("sum") or 0.0) + num
+                    else:
+                        text = str(value)
+                        ln = len(text)
+                        prev_min = st.get("min_len")
+                        prev_max = st.get("max_len")
+                        st["min_len"] = ln if prev_min is None else int(min(int(prev_min), ln))
+                        st["max_len"] = ln if prev_max is None else int(max(int(prev_max), ln))
+                        st["numeric_like_total"] = int(st.get("numeric_like_total") or 0) + 1
+                        if _is_numeric_like(text):
+                            st["numeric_like_num"] = int(st.get("numeric_like_num") or 0) + 1
+
+                started = time.perf_counter()
+                last_log = started
                 while True:
                     cur = conn.execute(select_sql, (last_row_id, chunk_size))
                     batch_rows = cur.fetchall()
                     if not batch_rows:
                         break
+                    # Log at chunk start so operators see progress even when the chunk is large.
+                    try:
+                        ctx.logger(
+                            f"chunk_start rows={len(batch_rows)} last_row_id={last_row_id}"
+                        )
+                    except Exception:
+                        pass
                     batch = []
                     for row in batch_rows:
                         last_row_id = int(row["row_id"])
-                        raw_by_name = {
-                            orig: row[safe]
-                            for orig, safe in zip(original_names, column_safe_names)
-                        }
                         values = []
                         row_data = {}
                         for field_name in field_names:
-                            raw_name = mapping.get(field_name)
-                            value = raw_by_name.get(raw_name)
-                            safe_name = safe_by_original.get(raw_name, "")
-                            allow_numeric = coercion_allowed.get(safe_name, False)
+                            src = mapping.get(field_name) or {}
+                            if not isinstance(src, dict):
+                                src = {}
+                            src_safe = str(src.get("safe_name") or "")
+                            if src_safe:
+                                try:
+                                    value = row[src_safe]
+                                except Exception:
+                                    value = None
+                            else:
+                                value = None
+                            allow_numeric = coercion_allowed.get(src_safe, False)
                             normalized = _normalize_value(
                                 value,
                                 allow_numeric=allow_numeric,
@@ -288,7 +498,9 @@ class Plugin:
                             )
                             values.append(normalized)
                             row_data[field_name] = normalized
-                        row_json = json.dumps(row_data, ensure_ascii=False)
+                            if src_safe:
+                                _update_stats_value(src_safe, normalized)
+                        row_json = json.dumps(row_data, ensure_ascii=False, separators=(",", ":"))
                         batch.append(
                             (
                                 dataset_version_id,
@@ -301,6 +513,170 @@ class Plugin:
                     ctx.storage.insert_template_rows(
                         table_name, template_safe_cols, batch, conn
                     )
+                    now = time.perf_counter()
+                    if (now - last_log) >= 5.0:
+                        elapsed = max(0.001, now - started)
+                        rate = float(row_count) / float(elapsed)
+                        ctx.logger(
+                            f"normalized_rows={row_count} elapsed_s={elapsed:.1f} "
+                            f"rate_rows_s={rate:.1f} last_row_id={last_row_id}"
+                        )
+                        last_log = now
+
+                finalized: dict[str, dict[str, Any]] = {}
+                # Persist full-dataset stats + role hints (best-effort).
+                try:
+                    for safe, st in stats_by_safe.items():
+                        out = dict(st)
+                        sqlite_type = str(out.get("sqlite_type") or "TEXT").upper()
+                        if sqlite_type in {"INTEGER", "REAL"}:
+                            n = int(out.get("n") or 0)
+                            nulls = int(out.get("nulls") or 0)
+                            used = max(0, n - nulls)
+                            if used > 0:
+                                out["mean"] = float(out.get("sum") or 0.0) / float(used)
+                            out.pop("sum", None)
+                        else:
+                            total = int(out.get("numeric_like_total") or 0)
+                            num = int(out.get("numeric_like_num") or 0)
+                            if total > 0:
+                                out["numeric_like_ratio"] = float(num) / float(total)
+                            out.pop("numeric_like_total", None)
+                            out.pop("numeric_like_num", None)
+                        finalized[safe] = out
+
+                    if finalized:
+                        ctx.storage.update_dataset_column_stats(dataset_version_id, finalized, conn)
+                except Exception:
+                    pass
+
+                # Best-effort role hints + indexes to speed downstream plugin SQL filtering/grouping.
+                try:
+                    role_by_safe: dict[str, str] = {}
+
+                    def _infer_role(col_name: str, sqlite_type: str) -> str | None:
+                        lname = col_name.lower()
+                        if any(tok in lname for tok in ("param", "parameter", "params", "meta", "config")):
+                            return "parameter"
+                        if any(tok in lname for tok in ("timestamp", "time", "date")):
+                            return "timestamp"
+                        if lname.endswith("id") or "_id" in lname or " id" in lname:
+                            return "id"
+                        if any(tok in lname for tok in ("event", "action", "activity")):
+                            return "event"
+                        if "variant" in lname:
+                            return "variant"
+                        if "status" in lname:
+                            return "status"
+                        if sqlite_type in {"INTEGER", "REAL"}:
+                            return "numeric"
+                        return None
+
+                    index_candidates: list[tuple[str, str]] = []
+                    for c in columns:
+                        orig = str(c.get("original_name") or "")
+                        safe = str(c.get("safe_name") or "")
+                        if not safe:
+                            continue
+                        st = (finalized.get(safe) or {})
+                        sqlite_type = str(st.get("sqlite_type") or declared_types.get(safe, "TEXT") or "TEXT").upper()
+                        role = _infer_role(orig, sqlite_type)
+                        if role:
+                            role_by_safe[safe] = role
+                        max_len = st.get("max_len")
+                        if role in {"timestamp", "id", "event", "variant", "status"}:
+                            if sqlite_type in {"INTEGER", "REAL"}:
+                                index_candidates.append((orig, safe))
+                            else:
+                                try:
+                                    if max_len is None or int(max_len) <= 256:
+                                        index_candidates.append((orig, safe))
+                                except (TypeError, ValueError):
+                                    index_candidates.append((orig, safe))
+
+                    if role_by_safe:
+                        try:
+                            ctx.storage.update_dataset_column_roles(dataset_version_id, role_by_safe, conn)
+                        except Exception:
+                            pass
+
+                    # Cap index count to keep normalization predictable.
+                    index_candidates = index_candidates[:12]
+                    for _, safe in index_candidates:
+                        try:
+                            ctx.storage.ensure_dataset_column_index(str(raw_table), safe, conn)
+                        except Exception:
+                            pass
+
+                    # Add exact categorical summaries for a small set of key-like columns.
+                    # This is full-dataset and DB-backed, but limited to a few columns.
+                    safe_table_q = quote_identifier(str(raw_table))
+
+                    def _sensitive_name(col_name: str) -> bool:
+                        lname = col_name.lower()
+                        return any(tok in lname for tok in ("email", "ssn", "phone", "address"))
+
+                    for orig, safe in index_candidates[:8]:
+                        role = role_by_safe.get(safe)
+                        if role not in {"event", "variant", "status"}:
+                            continue
+                        st = finalized.get(safe) or {}
+                        sqlite_type = str(st.get("sqlite_type") or "TEXT").upper()
+                        if sqlite_type != "TEXT":
+                            continue
+                        try:
+                            max_len = st.get("max_len")
+                            if max_len is not None and int(max_len) > 256:
+                                continue
+                        except (TypeError, ValueError):
+                            pass
+
+                        qcol = quote_identifier(safe)
+                        try:
+                            row = conn.execute(
+                                f"SELECT COUNT(DISTINCT {qcol}) AS d FROM {safe_table_q}"
+                            ).fetchone()
+                            if row is not None:
+                                st["distinct_count"] = int(row["d"] or 0)
+                        except Exception:
+                            pass
+                        if not _sensitive_name(orig):
+                            try:
+                                rows = conn.execute(
+                                    f"""
+                                    SELECT {qcol} AS v, COUNT(*) AS c
+                                    FROM {safe_table_q}
+                                    GROUP BY {qcol}
+                                    ORDER BY c DESC
+                                    LIMIT 20
+                                    """
+                                ).fetchall()
+                                top = []
+                                for r in rows or []:
+                                    v = r["v"]
+                                    if v is None:
+                                        sval = "(null)"
+                                    else:
+                                        sval = str(v)
+                                        if len(sval) > 200:
+                                            sval = sval[:200] + "..."
+                                    top.append({"value": sval, "count": int(r["c"] or 0)})
+                                if top:
+                                    st["top_values"] = top
+                            except Exception:
+                                pass
+                        finalized[safe] = st
+
+                    if finalized:
+                        ctx.storage.update_dataset_column_stats(dataset_version_id, finalized, conn)
+                except Exception:
+                    pass
+
+                # Improve planner stats after bulk load.
+                try:
+                    ctx.storage.analyze_table(table_name, conn)
+                except Exception:
+                    pass
 
             ctx.storage.upsert_dataset_template(
                 dataset_version_id,

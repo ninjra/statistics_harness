@@ -6,8 +6,13 @@ import pandas as pd
 
 from statistic_harness.core.column_inference import infer_timestamp_series
 from statistic_harness.core.close_cycle import resolve_close_cycle_masks
+from statistic_harness.core.process_matcher import (
+    compile_patterns,
+    default_exclude_process_patterns,
+    merge_patterns,
+    parse_exclude_patterns_env,
+)
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.process_filters import process_is_excluded
 from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
 
@@ -202,6 +207,19 @@ class Plugin:
         if start_col:
             used.add(start_col)
 
+        server_candidates = _candidate_columns(
+            ctx.settings.get("server_column"),
+            columns,
+            role_by_name,
+            {"server", "host", "node", "instance", "machine"},
+            ["server", "host", "node", "instance", "machine"],
+            lower_names,
+            used,
+        )
+        server_col = server_candidates[0] if server_candidates else None
+        if server_col:
+            used.add(server_col)
+
         end_candidates = _candidate_columns(
             ctx.settings.get("end_column"),
             columns,
@@ -237,7 +255,7 @@ class Plugin:
             ]
 
         selected_cols: list[str] = []
-        for col in [process_col, queue_col, eligible_col, start_col, end_col, *dep_cols]:
+        for col in [process_col, queue_col, eligible_col, start_col, end_col, server_col, *dep_cols]:
             if col and col in columns and col not in selected_cols:
                 selected_cols.append(col)
         work = df.loc[:, selected_cols].copy()
@@ -337,10 +355,12 @@ class Plugin:
 
         exclude_list = _parse_list(ctx.settings.get("exclude_processes"))
         if not exclude_list:
-            exclude_list = ["qlongjob"]
-        work["__excluded"] = work["__process_norm"].map(
-            lambda pid: process_is_excluded(pid, exclude_list)
-        )
+            exclude_list = default_exclude_process_patterns()
+        patterns = merge_patterns(parse_exclude_patterns_env(), exclude_list)
+        exclude_match = compile_patterns(patterns)
+        unique = [p for p in work["__process_norm"].dropna().unique()]
+        excluded_map = {str(p): bool(exclude_match(str(p))) for p in unique}
+        work["__excluded"] = work["__process_norm"].map(excluded_map).fillna(False)
 
         standalone = work.loc[work["__standalone"] & ~work["__excluded"]].copy()
         if standalone.empty:
@@ -475,7 +495,7 @@ class Plugin:
         findings = []
         columns_used = [
             col
-            for col in [process_col, queue_col, eligible_col, start_col, end_col]
+            for col in [process_col, queue_col, eligible_col, start_col, end_col, server_col]
             if col
         ]
 
@@ -585,48 +605,90 @@ class Plugin:
             }
             findings.append(impact_finding)
 
-            scale_factor = float(ctx.settings.get("capacity_scale_factor", 0.6667))
-            if remaining_gt_hours > 0 and scale_factor > 0:
-                modeled = remaining_gt_hours * scale_factor
-                modeled_close = remaining_close_gt_hours * scale_factor
-                modeled_open = remaining_open_gt_hours * scale_factor
-                assumptions = [
-                    "capacity-proportional scaling on >threshold eligible-wait",
-                ]
-                scope = {
-                    "metric": "eligible_wait_gt_hours",
-                    "close_cycle_start_day": close_start,
-                    "close_cycle_end_day": close_end,
-                    "close_cycle_mode": close_mode,
-                    "close_cycle_window_days": window_days,
-                    "close_cycle_source": close_source,
-                    "close_cycle_dynamic_available": dynamic_available,
-                    "close_cycle_dynamic_months": len(dynamic_windows),
-                    "close_cycle_rows_default": close_rows_default,
-                    "close_cycle_rows_dynamic": close_rows_dynamic,
-                    "inferred_close_cycle_start_day": inferred_start,
-                    "inferred_close_cycle_end_day": inferred_end,
-                    "eligible_basis": eligible_basis,
-                }
-                findings.append(
-                    {
-                        "kind": "capacity_scale_model",
-                        "process": target_entry["process"],
-                        "eligible_wait_gt_hours_without_target": remaining_gt_hours,
-                        "eligible_wait_gt_hours_modeled": modeled,
-                        "eligible_wait_gt_hours_close_without_target": remaining_close_gt_hours,
-                        "eligible_wait_gt_hours_close_modeled": modeled_close,
-                        "eligible_wait_gt_hours_open_without_target": remaining_open_gt_hours,
-                        "eligible_wait_gt_hours_open_modeled": modeled_open,
-                        "scale_factor": scale_factor,
-                        "host_count_baseline": None,
-                        "host_count_modeled": None,
-                        "measurement_type": "modeled",
-                        "assumptions": assumptions,
-                        "scope": scope,
-                        "columns": columns_used,
-                    }
+        # Per-process x+1 capacity model. Emit even when baseline is 0 so
+        # strict known-issue gates can report "not applicable" explicitly.
+        max_models = int(ctx.settings.get("max_capacity_models", 5))
+        scale_factor_default = float(ctx.settings.get("capacity_scale_factor", 0.6667))
+        modeled_scope_common = {
+            "metric": "eligible_wait_gt_hours",
+            "close_cycle_start_day": close_start,
+            "close_cycle_end_day": close_end,
+            "close_cycle_mode": close_mode,
+            "close_cycle_window_days": window_days,
+            "close_cycle_source": close_source,
+            "close_cycle_dynamic_available": dynamic_available,
+            "close_cycle_dynamic_months": len(dynamic_windows),
+            "close_cycle_rows_default": close_rows_default,
+            "close_cycle_rows_dynamic": close_rows_dynamic,
+            "inferred_close_cycle_start_day": inferred_start,
+            "inferred_close_cycle_end_day": inferred_end,
+            "eligible_basis": eligible_basis,
+            "server_column": server_col,
+        }
+        assumptions_common = ["capacity-proportional scaling on >threshold eligible-wait"]
+
+        models_added = 0
+        for entry in summaries:
+            if models_added >= max_models:
+                break
+            proc_norm = entry["process_norm"]
+            proc_label = entry["process"]
+
+            baseline_gt = float(entry["eligible_wait_gt_hours_total"])
+            baseline_gt_close = float(entry["eligible_wait_gt_hours_close"])
+            baseline_gt_open = float(entry["eligible_wait_gt_hours_open"])
+
+            host_count = None
+            scale_factor_standard = None
+            host_count_modeled = None
+            scale_factor_used = scale_factor_default
+
+            if server_col and server_col in work.columns:
+                servers = (
+                    work.loc[work["__process_norm"] == proc_norm, server_col]
+                    .dropna()
+                    .astype(str)
+                    .str.strip()
                 )
+                if not servers.empty:
+                    host_count = int(servers.nunique())
+                    if host_count > 0:
+                        host_count_modeled = host_count + 1
+                        scale_factor_standard = host_count / float(host_count_modeled)
+                        scale_factor_used = float(scale_factor_standard)
+
+            modeled_gt = baseline_gt * scale_factor_used
+            modeled_gt_close = baseline_gt_close * scale_factor_used
+            modeled_gt_open = baseline_gt_open * scale_factor_used
+
+            findings.append(
+                {
+                    "kind": "capacity_scale_model",
+                    "process": proc_label,
+                    "process_norm": proc_norm,
+                    "eligible_wait_gt_hours_baseline": baseline_gt,
+                    "eligible_wait_gt_hours_modeled": modeled_gt,
+                    "eligible_wait_gt_hours_close_baseline": baseline_gt_close,
+                    "eligible_wait_gt_hours_close_modeled": modeled_gt_close,
+                    "eligible_wait_gt_hours_open_baseline": baseline_gt_open,
+                    "eligible_wait_gt_hours_open_modeled": modeled_gt_open,
+                    "scale_factor": float(scale_factor_used),
+                    "scale_factor_standard": scale_factor_standard,
+                    "scale_factor_original": float(scale_factor_default),
+                    "scale_factor_original_definition": "modeled_wait = baseline_wait * scale_factor",
+                    "host_count_baseline": host_count,
+                    "host_count_modeled": host_count_modeled,
+                    "measurement_type": "modeled",
+                    "assumptions": assumptions_common,
+                    "scope": modeled_scope_common,
+                    "baseline_value": baseline_gt,
+                    "modeled_value": modeled_gt,
+                    "delta_value": modeled_gt - baseline_gt,
+                    "unit": "hours",
+                    "columns": columns_used,
+                }
+            )
+            models_added += 1
 
         artifacts_dir = ctx.artifacts_dir("analysis_queue_delay_decomposition")
         out_path = artifacts_dir / "results.json"
@@ -639,6 +701,7 @@ class Plugin:
                     "eligible_column": eligible_col,
                     "start_column": start_col,
                     "end_column": end_col,
+                    "server_column": server_col,
                     "dependency_columns": dep_cols,
                     "eligible_basis": eligible_basis,
                     "close_cycle_start_day": close_start,

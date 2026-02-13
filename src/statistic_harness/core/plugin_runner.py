@@ -4,6 +4,7 @@ import builtins
 import io
 import json
 import os
+import tempfile
 import subprocess
 import sys
 import time
@@ -23,6 +24,34 @@ from .utils import ensure_dir, now_iso, read_json, write_json
 _NETWORK_ENV = "STAT_HARNESS_ALLOW_NETWORK"
 
 
+def _should_block_eval_for_path(caller_path: Path | None, root_dir: Path | None) -> bool:
+    if caller_path is None or root_dir is None:
+        return False
+    raw_path = str(caller_path)
+    # CPython internal / frozen frames are not project code.
+    if raw_path.startswith("<") and raw_path.endswith(">"):
+        return False
+    try:
+        resolved_caller = caller_path.resolve()
+        resolved_root = root_dir.resolve()
+    except Exception:
+        return False
+    try:
+        relative = resolved_caller.relative_to(resolved_root)
+    except ValueError:
+        return False
+    # Only block eval from project-owned source files. Do not block third-party
+    # libraries installed in a repo-local virtual environment.
+    rel_lower = "/".join(relative.parts).lower()
+    if "/site-packages/" in f"/{rel_lower}/":
+        return False
+    if "/dist-packages/" in f"/{rel_lower}/":
+        return False
+    if ".venv/" in f"{rel_lower}/" or rel_lower.startswith(".venv/"):
+        return False
+    return True
+
+
 def _seed_runtime(run_seed: int) -> None:
     import random
 
@@ -35,24 +64,17 @@ def _seed_runtime(run_seed: int) -> None:
         pass
 
 
-def _deterministic_env(run_seed: int, cwd: Path | None = None) -> dict[str, str]:
+def _deterministic_env(run_seed: int) -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONHASHSEED"] = str(run_seed)
     env["TZ"] = "UTC"
     env["LC_ALL"] = "C"
     env["LANG"] = "C"
-
-    roots: list[str] = []
-    if cwd is not None:
-        roots.extend([str(cwd), str(cwd / "src")])
-    existing = env.get("PYTHONPATH", "")
-    parts = [part for part in existing.split(os.pathsep) if part]
-    for root in reversed(roots):
-        if root in parts:
-            parts.remove(root)
-        parts.insert(0, root)
-    if parts:
-        env["PYTHONPATH"] = os.pathsep.join(parts)
+    # Keep linear algebra libraries from spawning many threads in subprocesses.
+    env.setdefault("OPENBLAS_NUM_THREADS", "1")
+    env.setdefault("OMP_NUM_THREADS", "1")
+    env.setdefault("MKL_NUM_THREADS", "1")
+    env.setdefault("NUMEXPR_NUM_THREADS", "1")
     return env
 
 
@@ -97,12 +119,9 @@ def _install_eval_guard(root_dir: Path | None = None) -> None:
             filename = caller.f_code.co_filename
             if filename:
                 try:
-                    caller_path = Path(filename).resolve()
-                    try:
-                        caller_path.relative_to(root)
+                    caller_path = Path(filename)
+                    if _should_block_eval_for_path(caller_path, root):
                         raise RuntimeError("Eval disabled by policy")
-                    except ValueError:
-                        pass
                 except RuntimeError:
                     raise
                 except Exception:
@@ -123,53 +142,192 @@ def _install_pickle_guard() -> None:
     def blocked(*args: Any, **kwargs: Any) -> Any:
         raise RuntimeError("Pickle disabled by policy")
 
+    # Block only untrusted deserialization paths. Keep Pickler classes and
+    # dump/dumps intact so multiprocessing/joblib imports still work.
     pickle.load = blocked  # type: ignore[assignment]
     pickle.loads = blocked  # type: ignore[assignment]
-    pickle.dump = blocked  # type: ignore[assignment]
-    pickle.dumps = blocked  # type: ignore[assignment]
-    pickle.Pickler = blocked  # type: ignore[assignment]
-    pickle.Unpickler = blocked  # type: ignore[assignment]
 
 
-def _install_shell_guard() -> None:
+def _install_shell_guard(root_dir: Path | None = None) -> None:
+    import inspect
     import subprocess
+
+    def _unwrap(func: Any) -> Any:
+        return getattr(func, "__stat_harness_orig__", func)
+
+    root = root_dir.resolve() if root_dir else None
+    module_path = Path(__file__).resolve()
+
+    orig_os_system = _unwrap(os.system)
+    orig_os_popen = _unwrap(os.popen)
+    orig_run = _unwrap(subprocess.run)
+    orig_call = _unwrap(subprocess.call)
+    orig_check_call = _unwrap(subprocess.check_call)
+    orig_check_output = _unwrap(subprocess.check_output)
+    orig_popen_cls = _unwrap(subprocess.Popen)
+
+    def _is_blocked_caller() -> bool:
+        if root is None:
+            return True
+        frame = inspect.currentframe()
+        caller = frame.f_back if frame else None
+        while caller:
+            try:
+                caller_path = Path(caller.f_code.co_filename).resolve()
+            except Exception:
+                caller_path = None
+            if caller_path is None or caller_path != module_path:
+                break
+            caller = caller.f_back
+        if not caller:
+            return True
+        filename = caller.f_code.co_filename
+        if not filename:
+            return True
+        try:
+            return _should_block_eval_for_path(Path(filename), root)
+        except Exception:
+            return True
 
     def blocked(*args: Any, **kwargs: Any) -> Any:
         raise RuntimeError("Shell disabled by policy")
 
-    os.system = blocked  # type: ignore[assignment]
-    os.popen = blocked  # type: ignore[assignment]
-    subprocess.run = blocked  # type: ignore[assignment]
-    subprocess.call = blocked  # type: ignore[assignment]
-    subprocess.check_call = blocked  # type: ignore[assignment]
-    subprocess.check_output = blocked  # type: ignore[assignment]
-    subprocess.Popen = blocked  # type: ignore[assignment]
+    def guarded_os_system(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_os_system(*args, **kwargs)
+
+    def guarded_os_popen(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_os_popen(*args, **kwargs)
+
+    def guarded_run(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_run(*args, **kwargs)
+
+    def guarded_call(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_call(*args, **kwargs)
+
+    def guarded_check_call(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_check_call(*args, **kwargs)
+
+    def guarded_check_output(*args: Any, **kwargs: Any) -> Any:
+        if args:
+            cmd = args[0]
+            first = ""
+            if isinstance(cmd, (list, tuple)) and cmd:
+                first = str(cmd[0]).strip()
+            elif isinstance(cmd, str):
+                first = cmd.strip().split(" ", 1)[0]
+            if first == "fc-list":
+                return orig_check_output(*args, **kwargs)
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_check_output(*args, **kwargs)
+
+    def guarded_popen(*args: Any, **kwargs: Any) -> Any:
+        if _is_blocked_caller():
+            return blocked(*args, **kwargs)
+        return orig_popen_cls(*args, **kwargs)
+
+    os.system = guarded_os_system  # type: ignore[assignment]
+    os.popen = guarded_os_popen  # type: ignore[assignment]
+    subprocess.run = guarded_run  # type: ignore[assignment]
+    subprocess.call = guarded_call  # type: ignore[assignment]
+    subprocess.check_call = guarded_check_call  # type: ignore[assignment]
+    subprocess.check_output = guarded_check_output  # type: ignore[assignment]
+    subprocess.Popen = guarded_popen  # type: ignore[assignment]
+    guarded_os_system.__stat_harness_orig__ = orig_os_system  # type: ignore[attr-defined]
+    guarded_os_popen.__stat_harness_orig__ = orig_os_popen  # type: ignore[attr-defined]
+    guarded_run.__stat_harness_orig__ = orig_run  # type: ignore[attr-defined]
+    guarded_call.__stat_harness_orig__ = orig_call  # type: ignore[attr-defined]
+    guarded_check_call.__stat_harness_orig__ = orig_check_call  # type: ignore[attr-defined]
+    guarded_check_output.__stat_harness_orig__ = orig_check_output  # type: ignore[attr-defined]
+    guarded_popen.__stat_harness_orig__ = orig_popen_cls  # type: ignore[attr-defined]
 
 
 def _apply_resource_limits(budget: dict[str, Any]) -> None:
     cpu_limit_ms = budget.get("cpu_limit_ms")
-    if cpu_limit_ms is None:
-        return
+    mem_limit_mb = budget.get("mem_limit_mb")
     try:
-        cpu_seconds = max(1, int(math.ceil(float(cpu_limit_ms) / 1000.0)))
+        cpu_seconds = (
+            max(1, int(math.ceil(float(cpu_limit_ms) / 1000.0)))
+            if cpu_limit_ms is not None
+            else None
+        )
     except (TypeError, ValueError):
-        return
+        cpu_seconds = None
     try:
         import resource
 
-        resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+        if cpu_seconds is not None:
+            resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+
+        # Optional hard cap for address space (best-effort, Linux/WSL).
+        # This is a safety valve to prevent a single plugin subprocess from consuming
+        # most of system RAM. If set too low, the plugin may error with MemoryError.
+        if mem_limit_mb is None:
+            raw = os.environ.get("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB", "").strip()
+            if raw:
+                try:
+                    mem_limit_mb = int(raw)
+                except ValueError:
+                    mem_limit_mb = None
+        if isinstance(mem_limit_mb, int) and mem_limit_mb > 0:
+            limit_bytes = int(mem_limit_mb) * 1024 * 1024
+            try:
+                soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+                new_soft = min(soft, limit_bytes) if soft not in (-1, resource.RLIM_INFINITY) else limit_bytes
+                new_hard = min(hard, limit_bytes) if hard not in (-1, resource.RLIM_INFINITY) else limit_bytes
+                resource.setrlimit(resource.RLIMIT_AS, (new_soft, new_hard))
+            except Exception:
+                pass
     except Exception:
         pass
 
 
 class FileSandbox:
-    def __init__(self, allow_paths: Iterable[str], cwd: Path) -> None:
+    def __init__(
+        self,
+        read_allow_paths: Iterable[str],
+        write_allow_paths: Iterable[str],
+        cwd: Path,
+        *,
+        allow_tmp_writes: bool = False,
+    ) -> None:
         self._cwd = cwd
-        self._allow = [self._normalize(Path(p)) for p in allow_paths]
+        self._read_allow = [self._normalize(Path(p)) for p in read_allow_paths]
+        self._write_allow = [self._normalize(Path(p)) for p in write_allow_paths]
         self._readonly_allow = self._library_roots()
+        self._tmp_write_allow: list[Path] = []
+        if allow_tmp_writes:
+            try:
+                self._tmp_write_allow.append(Path(tempfile.gettempdir()).resolve())
+            except Exception:
+                pass
+            # Some libraries use /dev/shm for temporary state.
+            try:
+                shm = Path("/dev/shm")
+                if shm.exists():
+                    self._tmp_write_allow.append(shm.resolve())
+            except Exception:
+                pass
         self._orig_open = builtins.open
         self._orig_io_open = io.open
         self._orig_path_open = Path.open
+        self._orig_os_open = os.open
+        self._orig_os_unlink = os.unlink
+        self._orig_os_remove = os.remove
+        self._orig_os_mkdir = os.mkdir
+        self._orig_os_rmdir = os.rmdir
+        self._orig_os_rename = os.rename
+        self._orig_os_replace = os.replace
 
     def _normalize(self, path: Path) -> Path:
         if not path.is_absolute():
@@ -177,6 +335,17 @@ class FileSandbox:
         else:
             path = path.resolve()
         return path
+
+    def _coerce_path(self, value: Any) -> Path:
+        if isinstance(value, Path):
+            return value
+        if isinstance(value, (bytes, bytearray, memoryview)):
+            return Path(os.fsdecode(value))
+        if isinstance(value, os.PathLike):
+            return Path(value)
+        if isinstance(value, str):
+            return Path(value)
+        raise TypeError(f"Unsupported path type: {type(value)!r}")
 
     def _library_roots(self) -> list[Path]:
         roots: list[Path] = []
@@ -195,9 +364,24 @@ class FileSandbox:
                 continue
         return False
 
-    def _is_allowed(self, path: Path) -> bool:
+    def _is_read_allowed(self, path: Path) -> bool:
         target = self._normalize(path)
-        for allowed in self._allow:
+        for allowed in self._read_allow:
+            if allowed.is_file():
+                if target == allowed:
+                    return True
+            else:
+                try:
+                    target.relative_to(allowed)
+                    return True
+                except ValueError:
+                    continue
+        # Any path you can write, you can also read.
+        return self._is_write_allowed(path)
+
+    def _is_write_allowed(self, path: Path) -> bool:
+        target = self._normalize(path)
+        for allowed in list(self._write_allow) + list(self._tmp_write_allow):
             if allowed.is_file():
                 if target == allowed:
                     return True
@@ -210,7 +394,11 @@ class FileSandbox:
         return False
 
     def _guarded_open(self, file: Any, *args: Any, **kwargs: Any) -> Any:
-        path = Path(file) if not isinstance(file, Path) else file
+        # File-descriptor opens (int) are used by subprocess pipes and should
+        # not be path-policed here.
+        if isinstance(file, int):
+            return self._orig_open(file, *args, **kwargs)
+        path = self._coerce_path(file)
         mode = "r"
         if args:
             mode = str(args[0])
@@ -218,16 +406,84 @@ class FileSandbox:
             mode = str(kwargs["mode"])
         write_mode = any(token in mode for token in ("w", "a", "x", "+"))
         if write_mode:
-            if not self._is_allowed(path):
+            if not self._is_write_allowed(path):
                 raise PermissionError(f"File write denied: {path}")
         else:
-            if not (self._is_allowed(path) or self._is_readonly_allowed(path)):
+            if not (self._is_read_allowed(path) or self._is_readonly_allowed(path)):
                 raise PermissionError(f"File read denied: {path}")
         return self._orig_open(file, *args, **kwargs)
+
+    def _guarded_os_open(self, file: Any, flags: int, mode: int = 0o777, *args: Any, **kwargs: Any) -> Any:
+        # We intentionally reject dir_fd-based access so policy checks always see full paths.
+        if kwargs.get("dir_fd") is not None:
+            raise PermissionError("File open denied (dir_fd not permitted in sandbox)")
+        path = self._coerce_path(file)
+        write_flags = (
+            os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND
+        )
+        write_mode = bool(flags & write_flags)
+        if write_mode:
+            if not self._is_write_allowed(path):
+                raise PermissionError(f"File write denied: {path}")
+        else:
+            if not (self._is_read_allowed(path) or self._is_readonly_allowed(path)):
+                raise PermissionError(f"File read denied: {path}")
+        return self._orig_os_open(file, flags, mode, *args, **kwargs)
+
+    def _guarded_unlink(self, file: Any, *args: Any, **kwargs: Any) -> Any:
+        if kwargs.get("dir_fd") is not None:
+            raise PermissionError("File delete denied (dir_fd not permitted in sandbox)")
+        path = self._coerce_path(file)
+        if not self._is_write_allowed(path):
+            raise PermissionError(f"File delete denied: {path}")
+        return self._orig_os_unlink(file, *args, **kwargs)
+
+    def _guarded_remove(self, file: Any, *args: Any, **kwargs: Any) -> Any:
+        path = self._coerce_path(file)
+        if not self._is_write_allowed(path):
+            raise PermissionError(f"File delete denied: {path}")
+        return self._orig_os_remove(file, *args, **kwargs)
+
+    def _guarded_mkdir(self, file: Any, *args: Any, **kwargs: Any) -> Any:
+        path = self._coerce_path(file)
+        if not self._is_write_allowed(path):
+            raise PermissionError(f"Directory create denied: {path}")
+        return self._orig_os_mkdir(file, *args, **kwargs)
+
+    def _guarded_rmdir(self, file: Any, *args: Any, **kwargs: Any) -> Any:
+        path = self._coerce_path(file)
+        if not self._is_write_allowed(path):
+            raise PermissionError(f"Directory delete denied: {path}")
+        return self._orig_os_rmdir(file, *args, **kwargs)
+
+    def _guarded_rename(self, src: Any, dst: Any, *args: Any, **kwargs: Any) -> Any:
+        if kwargs.get("src_dir_fd") is not None or kwargs.get("dst_dir_fd") is not None:
+            raise PermissionError("Rename denied (dir_fd not permitted in sandbox)")
+        src_path = self._coerce_path(src)
+        dst_path = self._coerce_path(dst)
+        if not (self._is_write_allowed(src_path) and self._is_write_allowed(dst_path)):
+            raise PermissionError(f"Rename denied: {src_path} -> {dst_path}")
+        return self._orig_os_rename(src, dst, *args, **kwargs)
+
+    def _guarded_replace(self, src: Any, dst: Any, *args: Any, **kwargs: Any) -> Any:
+        if kwargs.get("src_dir_fd") is not None or kwargs.get("dst_dir_fd") is not None:
+            raise PermissionError("Replace denied (dir_fd not permitted in sandbox)")
+        src_path = self._coerce_path(src)
+        dst_path = self._coerce_path(dst)
+        if not (self._is_write_allowed(src_path) and self._is_write_allowed(dst_path)):
+            raise PermissionError(f"Replace denied: {src_path} -> {dst_path}")
+        return self._orig_os_replace(src, dst, *args, **kwargs)
 
     def __enter__(self) -> "FileSandbox":
         builtins.open = self._guarded_open  # type: ignore[assignment]
         io.open = self._guarded_open  # type: ignore[assignment]
+        os.open = self._guarded_os_open  # type: ignore[assignment]
+        os.unlink = self._guarded_unlink  # type: ignore[assignment]
+        os.remove = self._guarded_remove  # type: ignore[assignment]
+        os.mkdir = self._guarded_mkdir  # type: ignore[assignment]
+        os.rmdir = self._guarded_rmdir  # type: ignore[assignment]
+        os.rename = self._guarded_rename  # type: ignore[assignment]
+        os.replace = self._guarded_replace  # type: ignore[assignment]
         sandbox = self
 
         def _path_open(path_self: Path, *args: Any, **kwargs: Any) -> Any:
@@ -240,6 +496,63 @@ class FileSandbox:
         builtins.open = self._orig_open  # type: ignore[assignment]
         io.open = self._orig_io_open  # type: ignore[assignment]
         Path.open = self._orig_path_open  # type: ignore[assignment]
+        os.open = self._orig_os_open  # type: ignore[assignment]
+        os.unlink = self._orig_os_unlink  # type: ignore[assignment]
+        os.remove = self._orig_os_remove  # type: ignore[assignment]
+        os.mkdir = self._orig_os_mkdir  # type: ignore[assignment]
+        os.rmdir = self._orig_os_rmdir  # type: ignore[assignment]
+        os.rename = self._orig_os_rename  # type: ignore[assignment]
+        os.replace = self._orig_os_replace  # type: ignore[assignment]
+
+
+def _install_sqlite_guard(
+    allowed_state_db_path: Path,
+    scratch_db_path: Path | None = None,
+    *,
+    state_readonly: bool = False,
+) -> None:
+    import sqlite3
+
+    allowed_state = allowed_state_db_path.resolve()
+    allowed_scratch = scratch_db_path.resolve() if scratch_db_path is not None else None
+    orig_connect = sqlite3.connect
+
+    def guarded_connect(database: Any, *args: Any, **kwargs: Any):
+        if database == ":memory:":
+            return orig_connect(database, *args, **kwargs)
+        # Allow URI connections but fail-closed on unknown paths/modes.
+        db_text = str(database)
+        if db_text.startswith("file:"):
+            # Very conservative parse: only allow URIs that reference an allowed path.
+            # (We still enforce read-only for the state DB by forcing mode=ro when requested.)
+            target = db_text[5:].split("?", 1)[0]
+            try:
+                db_path = Path(target).resolve()
+            except Exception:
+                raise RuntimeError("sqlite3.connect blocked by policy")
+            if db_path == allowed_state:
+                if state_readonly:
+                    uri = f"file:{allowed_state}?mode=ro"
+                    return orig_connect(uri, uri=True, *args, **kwargs)
+                return orig_connect(f"file:{allowed_state}", uri=True, *args, **kwargs)
+            if allowed_scratch is not None and db_path == allowed_scratch:
+                return orig_connect(db_text, uri=True, *args, **kwargs)
+            raise RuntimeError(f"sqlite3.connect blocked by policy: {db_path}")
+
+        try:
+            db_path = Path(db_text).resolve()
+        except Exception:
+            raise RuntimeError("sqlite3.connect blocked by policy")
+        if db_path == allowed_state:
+            if state_readonly:
+                uri = f"file:{allowed_state}?mode=ro"
+                return orig_connect(uri, uri=True, *args, **kwargs)
+            return orig_connect(str(db_path), *args, **kwargs)
+        if allowed_scratch is not None and db_path == allowed_scratch:
+            return orig_connect(str(db_path), *args, **kwargs)
+        raise RuntimeError(f"sqlite3.connect blocked by policy: {db_path}")
+
+    sqlite3.connect = guarded_connect  # type: ignore[assignment]
 
 
 def _load_plugin(plugin_id: str, entrypoint: str) -> Any:
@@ -258,6 +571,8 @@ def _result_payload(result: PluginResult) -> dict[str, Any]:
         "metrics": result.metrics,
         "findings": result.findings,
         "artifacts": [asdict(a) for a in result.artifacts],
+        "references": result.references,
+        "debug": result.debug,
         "budget": result.budget,
         "error": asdict(result.error) if result.error else None,
     }
@@ -291,6 +606,8 @@ def _payload_result(payload: dict[str, Any]) -> PluginResult:
             "cpu_limit_ms": None,
         },
         error=error_obj,
+        references=payload.get("references", []) or [],
+        debug=payload.get("debug", {}) or {},
     )
 
 
@@ -315,6 +632,7 @@ def run_plugin_subprocess(
     write_json(request_path, request)
     start = time.perf_counter()
     run_seed = int(request.get("run_seed", 0))
+    plugin_seed = int(request.get("plugin_seed", run_seed))
     budget = request.get("budget") or {}
     timeout_ms = budget.get("time_limit_ms")
     timeout = None
@@ -332,7 +650,7 @@ def run_plugin_subprocess(
             capture_output=True,
             text=True,
             cwd=str(cwd),
-            env=_deterministic_env(run_seed, cwd=cwd),
+            env=_deterministic_env(plugin_seed),
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
@@ -412,24 +730,90 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
     warnings_count = 0
     try:
         run_seed = int(request.get("run_seed", 0))
-        os.environ.update(_deterministic_env(run_seed))
+        plugin_seed = int(request.get("plugin_seed", run_seed))
+        os.environ.update(_deterministic_env(plugin_seed))
         try:
             time.tzset()
         except AttributeError:
             pass
-        _seed_runtime(run_seed)
+        _seed_runtime(plugin_seed)
         if request.get("sandbox", {}).get("no_network") and not _network_allowed():
             _install_network_guard()
         allow_paths = request.get("allow_paths") or []
+        read_allow_paths = request.get("read_allow_paths") or allow_paths
+        write_allow_paths = request.get("write_allow_paths") or allow_paths
         cwd = Path(request.get("root_dir", ".")).resolve()
         run_dir = Path(request["run_dir"]).resolve()
-        with FileSandbox(allow_paths, cwd):
+        ensure_dir(run_dir / "tmp")
+        os.environ["TMPDIR"] = str(run_dir / "tmp")
+        os.environ["TMP"] = str(run_dir / "tmp")
+        os.environ["TEMP"] = str(run_dir / "tmp")
+        db_path = Path(request["appdata_dir"]) / "state.sqlite"
+        scratch_db_path = run_dir / "scratch.sqlite"
+        _install_sqlite_guard(db_path, scratch_db_path, state_readonly=False)
+        with FileSandbox(read_allow_paths, write_allow_paths, cwd):
+            plugin_id = str(request.get("plugin_id") or "")
+            plugin_type = str(request.get("plugin_type") or "")
+            # Enforce: normalized/raw tables are immutable for most plugins.
+            # Ingest + normalization are allowed to populate them.
+            allow_write_prefixes: list[str] = []
+            if plugin_id == "transform_normalize_mixed":
+                allow_write_prefixes.append("template_normalized_")
+            if plugin_type == "ingest":
+                allow_write_prefixes.append("data_")
+
             storage = Storage(
-                Path(request["appdata_dir"]) / "state.sqlite",
+                db_path,
                 request.get("tenant_id"),
+                mode="rw",
+                initialize=False,
+                deny_write_prefixes=["template_normalized_", "data_"],
+                allow_write_prefixes=allow_write_prefixes,
             )
+
+            # Per-run scratch DB for plugin-owned tables/materialization.
+            scratch_storage = Storage(
+                scratch_db_path,
+                request.get("tenant_id"),
+                mode="scratch",
+                initialize=False,
+            )
+
+            try:
+                from statistic_harness.core.sql_schema_snapshot import snapshot_schema
+                from statistic_harness.core.sql_assist import SqlAssist
+
+                schema = snapshot_schema(storage)
+                sql = SqlAssist(
+                    storage=storage,
+                    run_dir=run_dir,
+                    plugin_id=request["plugin_id"],
+                    schema_hash=schema.schema_hash,
+                    mode="ro",
+                )
+                sql_exec = SqlAssist(
+                    storage=storage,
+                    run_dir=run_dir,
+                    plugin_id=request["plugin_id"],
+                    schema_hash=schema.schema_hash,
+                    mode="plugin",
+                    allowed_prefix=f"plg__{request['plugin_id']}__",
+                )
+                scratch_sql = SqlAssist(
+                    storage=scratch_storage,
+                    run_dir=run_dir,
+                    plugin_id=request["plugin_id"],
+                    schema_hash=schema.schema_hash,
+                    mode="scratch",
+                )
+                schema_snapshot = {"schema_hash": schema.schema_hash, **schema.snapshot}
+            except Exception:
+                sql = None
+                sql_exec = None
+                scratch_sql = None
+                schema_snapshot = None
             dataset_version_id = request.get("dataset_version_id")
-            accessor, _ = resolve_dataset_accessor(storage, dataset_version_id)
+            accessor, _ = resolve_dataset_accessor(storage, dataset_version_id, sql=sql)
             budget = request.get("budget") or {}
 
             def dataset_loader(
@@ -440,6 +824,24 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                     limit = budget.get("row_limit")
                 return accessor.load(columns=columns, row_limit=limit)
 
+            def dataset_iter_batches(
+                *,
+                columns: list[str] | None = None,
+                batch_size: int | None = None,
+                row_limit: int | None = None,
+            ):
+                size = batch_size
+                if size is None:
+                    raw = budget.get("batch_size")
+                    if isinstance(raw, int) and raw > 0:
+                        size = raw
+                if size is None:
+                    size = 100_000
+                limit = row_limit
+                if limit is None:
+                    limit = budget.get("row_limit")
+                return accessor.iter_batches(columns=columns, batch_size=int(size), row_limit=limit)
+
             ctx = PluginContext(
                 run_id=request["run_id"],
                 run_dir=run_dir,
@@ -448,12 +850,19 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 logger=lambda msg: _write_log(run_dir, request["plugin_id"], msg),
                 storage=storage,
                 dataset_loader=dataset_loader,
+                dataset_iter_batches=dataset_iter_batches,
+                sql=sql,
+                sql_exec=sql_exec,
+                scratch_storage=scratch_storage,
+                scratch_sql=scratch_sql,
+                sql_schema_snapshot=schema_snapshot,
                 budget=budget
                 or {
                     "row_limit": None,
                     "sampled": False,
                     "time_limit_ms": None,
                     "cpu_limit_ms": None,
+                    "batch_size": None,
                 },
                 tenant_id=request.get("tenant_id"),
                 project_id=request.get("project_id"),
@@ -475,10 +884,23 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 with warnings.catch_warnings(record=True) as caught:
                     _install_eval_guard(cwd)
                     _install_pickle_guard()
-                    _install_shell_guard()
+                    _install_shell_guard(cwd)
                     _apply_resource_limits(budget)
                     plugin = _load_plugin(request["plugin_id"], request["entrypoint"])
                     result = plugin.run(ctx)
+                    try:
+                        from statistic_harness.core.stat_plugins.references import (
+                            default_references_for_plugin,
+                        )
+
+                        if not result.references:
+                            result.references = default_references_for_plugin(
+                                request["plugin_id"]
+                            )
+                    except Exception:
+                        pass
+                    if result.debug is None:
+                        result.debug = {}
                     warnings_count = len(caught)
             except Exception as exc:
                 tb = traceback.format_exc()

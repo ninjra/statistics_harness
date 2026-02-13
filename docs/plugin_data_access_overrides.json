@@ -1,0 +1,40 @@
+{
+  "contracts": {
+    "analysis_busy_period_segmentation_v2": [
+      "artifact_only"
+    ],
+    "analysis_determinism_discipline": [
+      "artifact_only"
+    ],
+    "analysis_process_counterfactuals": [
+      "artifact_only"
+    ],
+    "analysis_process_sequence_bottlenecks": [
+      "artifact_only"
+    ],
+    "analysis_user_host_savings": [
+      "artifact_only"
+    ],
+    "llm_prompt_builder": [
+      "orchestration_only"
+    ],
+    "planner_basic": [
+      "orchestration_only"
+    ],
+    "report_bundle": [
+      "artifact_only"
+    ],
+    "report_decision_bundle_v2": [
+      "artifact_only"
+    ],
+    "report_plain_english_v1": [
+      "artifact_only"
+    ],
+    "report_slide_kit_emitter_v2": [
+      "artifact_only"
+    ],
+    "transform_template": [
+      "artifact_only"
+    ]
+  }
+}
