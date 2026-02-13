@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from importlib import import_module
 from typing import Any, Callable, Iterable
 
@@ -14,7 +13,6 @@ from statistic_harness.core.stat_plugins import (
     BudgetTimer,
     bh_fdr,
     build_redactor,
-    cliffs_delta,
     cramers_v,
     deterministic_sample,
     infer_columns,
@@ -26,7 +24,7 @@ from statistic_harness.core.stat_plugins import (
 )
 from statistic_harness.core.stat_plugins.references import default_references_for_plugin
 from statistic_harness.core.types import PluginArtifact, PluginResult
-from statistic_harness.core.utils import json_dumps, write_json
+from statistic_harness.core.utils import write_json
 from statistic_harness.core.stat_plugins.topo_tda_addon import (
     HANDLERS as TOPO_TDA_ADDON_HANDLERS,
 )
@@ -2788,7 +2786,6 @@ HANDLERS: dict[str, Callable[..., PluginResult]] = {
     "analysis_evt_peaks_over_threshold": _evt_peaks_over_threshold,
     "analysis_matrix_profile_motifs_discords": _matrix_profile_discords,
     "analysis_burst_detection_kleinberg": lambda *args: _burst_detection(*args, term_mode=False),
-    "analysis_term_burst_kleinberg": lambda *args: _burst_detection(*args, term_mode=True),
     "analysis_event_count_bocpd_poisson": _event_count_bocpd_poisson,
     "analysis_hawkes_self_exciting": _hawkes_self_exciting,
     "analysis_periodicity_spectral_scan": _periodicity_spectral_scan,

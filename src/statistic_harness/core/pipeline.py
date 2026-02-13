@@ -28,6 +28,7 @@ from .utils import (
     now_iso,
     read_json,
     resolve_env_placeholders,
+    safe_join,
     stable_hash,
     write_json,
     DEFAULT_TENANT_ID,
@@ -222,6 +223,10 @@ class Pipeline:
         raw = os.environ.get(name, "").strip()
         if not raw:
             return None
+        try:
+            return int(raw)
+        except ValueError:
+            return None
 
     @staticmethod
     def _read_meminfo_kb() -> dict[str, int]:
@@ -317,10 +322,6 @@ class Pipeline:
                     pass
                 last_log = now
             time.sleep(poll_s)
-        try:
-            return int(raw)
-        except ValueError:
-            return None
 
     @staticmethod
     def _max_workers_for_stage(stage: str, layer_size: int, dataset_row_count: int | None) -> int:

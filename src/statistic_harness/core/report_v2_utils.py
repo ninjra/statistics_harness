@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any
 
 from .dataset_io import DatasetAccessor
 from .storage import Storage
-from .utils import file_sha256, json_dumps, stable_hash
+from .utils import file_sha256, stable_hash
 
 
 def load_plugin_payloads(storage: Storage, run_id: str) -> dict[str, dict[str, Any]]:

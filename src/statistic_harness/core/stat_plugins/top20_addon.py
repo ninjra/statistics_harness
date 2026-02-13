@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Top20 add-on pack (reserved module).
 
 Historical plans referenced a stat-plugin style implementation for the Top20
@@ -12,10 +10,11 @@ an obvious home if we later decide to expose Top20 algorithms as stat-plugin
 handlers.
 """
 
-from typing import Any, Callable
+from __future__ import annotations
+
+from typing import Callable
 
 from statistic_harness.core.types import PluginResult
 
 
 HANDLERS: dict[str, Callable[..., PluginResult]] = {}
-

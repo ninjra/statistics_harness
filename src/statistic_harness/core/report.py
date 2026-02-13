@@ -5,7 +5,7 @@ import json
 import re
 import os
 import math
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -17,9 +17,10 @@ from .stat_controls import confidence_from_p
 from .process_matcher import (
     compile_patterns,
     default_exclude_process_patterns,
-    merge_patterns,
     parse_exclude_patterns_env,
 )
+from .storage import Storage
+from .utils import atomic_write_text, json_dumps, now_iso, read_json, write_json
 
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
 _SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
@@ -1148,7 +1149,6 @@ def _build_discovery_recommendations(
     report: dict[str, Any], storage: Storage | None = None, run_dir: Path | None = None
 ) -> dict[str, Any]:
     items: list[dict[str, Any]] = []
-    known = report.get("known_issues") if isinstance(report.get("known_issues"), dict) else None
     # Discovery recommendations should remain visible even when a process is
     # referenced by known-issue gates; otherwise we hide the "why" behind a
     # generic pass/fail label. Only honor explicit exclusions.
@@ -3700,10 +3700,6 @@ def _load_known_issues_fallback(run_dir: Path) -> dict[str, Any] | None:
         "natural_language": [],
         "expected_findings": expected,
     }
-
-from .storage import Storage
-from .utils import atomic_write_text, json_dumps, now_iso, read_json, write_json
-
 
 def build_report(
     storage: Storage, run_id: str, run_dir: Path, schema_path: Path

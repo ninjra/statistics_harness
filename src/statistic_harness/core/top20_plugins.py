@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import json
 import math
-import os
 import random
 import re
 import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Iterable
 
 import numpy as np
@@ -41,7 +39,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore
 from sklearn.decomposition import TruncatedSVD  # type: ignore
 
 
-_NOW = lambda: datetime.now(timezone.utc).isoformat()
+def _NOW() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _import_datasketch() -> tuple[Any, Any]:
@@ -656,7 +655,6 @@ def _run_frequent_itemsets_fpgrowth(ctx, plugin_id: str, config: dict[str, Any])
     if not proc_col:
         return PluginResult("skipped", "No process column inferred (role process_name)", {}, [], [], None)
 
-    exclude_match = _exclude_matcher(ctx, config)
     min_support = float(config.get("min_support") or 0.02)
     max_itemset_size = int(config.get("max_itemset_size") or 6)
     max_item_count = int(config.get("max_item_count") or 200)
@@ -1246,8 +1244,6 @@ def _run_density_clustering_hdbscan(ctx, plugin_id: str, config: dict[str, Any])
     min_samples = int(config.get("min_samples") or 5)
     top_k = int(config.get("top_k") or 20)
 
-    ignore_re = _parse_ignore_regex(config)
-
     with ctx.storage.connection() as conn:
         # Choose most common parameter entities in this dataset.
         rows = conn.execute(
@@ -1330,7 +1326,6 @@ def _run_constrained_clustering_cop_kmeans(ctx, plugin_id: str, config: dict[str
 
     mod_col = info.role_field("module_code")
     k = int(config.get("k") or 8)
-    max_entities = int(config.get("max_entities") or 5000)
     top_k = int(config.get("top_k") or 20)
 
     if not mod_col:
@@ -1430,7 +1425,6 @@ def _run_similarity_graph_spectral_clustering(ctx, plugin_id: str, config: dict[
         return PluginResult("skipped", "Missing process column for spectral clustering", {}, [], [], None)
 
     n_clusters = int(config.get("n_clusters") or 8)
-    min_edge_weight = int(config.get("min_edge_weight") or 5)
     top_k = int(config.get("top_k") or 20)
 
     with ctx.storage.connection() as conn:
@@ -1693,7 +1687,6 @@ def _run_burst_modeling_hawkes(ctx, plugin_id: str, config: dict[str, Any]) -> P
     if not proc_col or not time_col:
         return PluginResult("skipped", "Missing process/time columns for burst model", {}, [], [], None)
 
-    bucket_minutes = int(config.get("bucket_minutes") or 60)
     top_k = int(config.get("top_k") or 20)
 
     with ctx.storage.connection() as conn:
@@ -1887,8 +1880,6 @@ def _run_action_search_simulated_annealing(ctx, plugin_id: str, config: dict[str
     # Deterministic annealing over top-N actionable ops levers.
     max_actions = int(config.get("max_actions") or 8)
     iterations = int(config.get("iterations") or 4000)
-    top_k = int(config.get("top_k") or 10)
-
     candidates = _candidate_actions_from_ops(ctx)
     if not candidates:
         return PluginResult("skipped", "No candidate actions from analysis_actionable_ops_levers_v1", {}, [], [], None)
