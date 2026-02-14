@@ -342,6 +342,7 @@ def _max_per_action_type() -> dict[str, int]:
         "reschedule": 3,
         "route_process": 3,
         "reduce_process_wait": 2,
+        "add_instrumentation": 1,
         "review": 2,
         "tune_threshold": 1,
     }
@@ -2270,10 +2271,12 @@ def _build_discovery_recommendations(
                 if isinstance(recs, list) and recs:
                     text = str(recs[0]).strip()
             if not text:
+                text = str(item.get("recommendation") or "").strip()
+            if not text:
                 continue
 
             action_type = "ideaspace_action"
-            target = None
+            target = str(item.get("process_id") or "").strip() or None
             if lever_id == "tune_schedule_qemail_frequency_v1" or "qemail" in text.lower():
                 action_type = "tune_schedule"
                 target = "qemail"
@@ -2286,6 +2289,8 @@ def _build_discovery_recommendations(
                 action_type = "orchestrate_macro"
             elif lever_id == "retry_backoff":
                 action_type = "dedupe_or_cache"
+            elif "instrumentation" in text.lower() or "trace" in text.lower():
+                action_type = "add_instrumentation"
 
             if isinstance(target, str) and target and excluded_match and excluded_match(target):
                 if action_type not in {"add_server", "tune_schedule"}:
@@ -2294,6 +2299,8 @@ def _build_discovery_recommendations(
             confidence_weight = _confidence_weight(item, {})
             controllability_weight = 0.8 if action_type in {"add_server", "tune_schedule"} else 0.6
             impact_pct = item.get("delta_value")
+            if not isinstance(impact_pct, (int, float)):
+                impact_pct = item.get("estimated_delta_pct")
             impact_hours = 0.0
             modeled_percent_hint: float | None = None
             unit = str(item.get("unit") or "").strip().lower()
@@ -2302,7 +2309,15 @@ def _build_discovery_recommendations(
                     raw_pct = float(impact_pct)
                     modeled_percent_hint = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
                 else:
-                    impact_hours = max(0.0, float(impact_pct))
+                    # Back-compat: when unit is unspecified but field name implies pct,
+                    # treat values <=1 as ratio and >1 as already-percent.
+                    raw_pct = float(impact_pct)
+                    modeled_percent_hint = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
+            if not isinstance(modeled_percent_hint, (int, float)):
+                if isinstance(item.get("estimated_delta_hours_total"), (int, float)):
+                    impact_hours = max(0.0, float(item.get("estimated_delta_hours_total")))
+                elif isinstance(item.get("estimated_delta_seconds"), (int, float)):
+                    impact_hours = max(0.0, float(item.get("estimated_delta_seconds")) / 3600.0)
             relevance_basis = (
                 float(modeled_percent_hint)
                 if isinstance(modeled_percent_hint, (int, float))
@@ -2315,12 +2330,13 @@ def _build_discovery_recommendations(
             items.append(
                 {
                     "title": str(item.get("title") or "Ideaspace action").strip(),
-                    "status": "discovered",
+                    "status": "discovery",
                     "category": "discovery",
                     "recommendation": text,
                     "plugin_id": "analysis_ideaspace_action_planner",
                     "kind": "ideaspace_action",
                     "where": where,
+                    "process_id": target,
                     "contains": None,
                     "observed_count": None,
                     "evidence": [evidence] if evidence else [],

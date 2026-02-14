@@ -3,7 +3,8 @@ name: Close Cycle Window Resolver
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-depends_on: []
+depends_on:
+  - analysis_close_cycle_start_backtrack_v1
 settings:
   description: Resolve close-cycle windows using Accounting Month roll signals and default calendar bounds.
   defaults:

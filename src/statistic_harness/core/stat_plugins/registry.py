@@ -9,6 +9,7 @@ import statistics
 import numpy as np
 import pandas as pd
 
+from statistic_harness.core.close_cycle import resolve_active_close_cycle_mask
 from statistic_harness.core.stat_plugins import (
     BudgetTimer,
     bh_fdr,
@@ -33,6 +34,12 @@ from statistic_harness.core.stat_plugins.ideaspace import (
 )
 from statistic_harness.core.stat_plugins.erp_next_wave import (
     HANDLERS as ERP_NEXT_WAVE_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.next30_addon import (
+    HANDLERS as NEXT30_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.next30b_addon import (
+    HANDLERS as NEXT30B_HANDLERS,
 )
 
 try:  # optional
@@ -129,6 +136,61 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
             debug={"warnings": ["empty_dataset"]},
         )
 
+    active_row_filter_meta = {
+        "enabled": bool(config.get("use_active_close_window_filter", True)),
+        "applied": False,
+        "source_plugin": None,
+        "rows_before": int(len(df)),
+        "rows_after": int(len(df)),
+    }
+    if active_row_filter_meta["enabled"]:
+        time_col_hint = str(config.get("time_column", "auto") or "auto")
+        if time_col_hint.lower() != "auto" and time_col_hint in df.columns:
+            active_time_col = time_col_hint
+        else:
+            inferred_time = infer_columns(df, config).get("time_column")
+            active_time_col = str(inferred_time) if inferred_time in df.columns else None
+
+        if active_time_col:
+            mask, used_dynamic, source_plugin, windows = resolve_active_close_cycle_mask(
+                df[active_time_col], ctx.run_dir
+            )
+            if used_dynamic and mask is not None:
+                mask_series = pd.Series(mask, index=df.index).fillna(False)
+                narrowed = df.loc[mask_series]
+                if not narrowed.empty:
+                    df = narrowed
+                    active_row_filter_meta.update(
+                        {
+                            "applied": True,
+                            "source_plugin": source_plugin,
+                            "time_column": active_time_col,
+                            "rows_after": int(len(df)),
+                            "windows_detected": int(len(windows)),
+                        }
+                    )
+                else:
+                    active_row_filter_meta.update(
+                        {
+                            "source_plugin": source_plugin,
+                            "time_column": active_time_col,
+                            "windows_detected": int(len(windows)),
+                            "fallback_reason": "dynamic_mask_empty",
+                        }
+                    )
+            elif source_plugin:
+                active_row_filter_meta.update(
+                    {
+                        "source_plugin": source_plugin,
+                        "time_column": active_time_col,
+                        "fallback_reason": "dynamic_windows_unusable",
+                    }
+                )
+        else:
+            active_row_filter_meta["fallback_reason"] = "time_column_not_found"
+    else:
+        active_row_filter_meta["fallback_reason"] = "disabled_by_config"
+
     max_rows = config.get("max_rows")
     allow_sampling = bool(config.get("allow_row_sampling", False))
     if not allow_sampling:
@@ -165,6 +227,7 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
     result.debug = result.debug or {}
     result.debug.setdefault("column_inference", inferred)
     result.debug.setdefault("sample", sample_meta)
+    result.debug.setdefault("active_row_filter", active_row_filter_meta)
     # Ensure report outputs can cite the effective harness budget/caps.
     try:
         budget = dict(getattr(ctx, "budget", None) or {})
@@ -2825,3 +2888,5 @@ HANDLERS: dict[str, Callable[..., PluginResult]] = {
 HANDLERS.update(TOPO_TDA_ADDON_HANDLERS)
 HANDLERS.update(IDEASPACE_HANDLERS)
 HANDLERS.update(ERP_NEXT_WAVE_HANDLERS)
+HANDLERS.update(NEXT30_HANDLERS)
+HANDLERS.update(NEXT30B_HANDLERS)

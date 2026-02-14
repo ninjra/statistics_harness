@@ -4,6 +4,7 @@ version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
+- analysis_close_cycle_window_resolver
 - ingest_tabular
 - analysis_ideaspace_normative_gap
 settings:
@@ -31,4 +32,3 @@ sandbox:
   - appdata
   - plugins
   - run_dir
-

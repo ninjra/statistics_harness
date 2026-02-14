@@ -27,6 +27,9 @@ class CloseWindow:
     default_days: float
     dynamic_days: float
     delta_days: float
+    source: str
+    confidence: float
+    fallback_reason: str | None
     indicator_processes: list[dict[str, Any]]
 
 
@@ -128,6 +131,50 @@ def _safe_date(year: int, month: int, day: int) -> datetime:
 def _close_start_from_roll(roll_month: datetime, day: int) -> datetime:
     prev_month = _previous_month_start(roll_month)
     return _safe_date(prev_month.year, prev_month.month, day)
+
+
+def _load_backtracked_windows(run_dir) -> dict[str, dict[str, Any]]:
+    path = (
+        run_dir
+        / "artifacts"
+        / "analysis_close_cycle_start_backtrack_v1"
+        / "close_windows.csv"
+    )
+    if not path.exists():
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    try:
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                month = str(row.get("accounting_month") or "").strip()
+                if not month:
+                    continue
+                out[month] = row
+    except Exception:
+        return {}
+    return out
+
+
+def _parse_iso_dt(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        dt = pd.to_datetime(value, errors="coerce")
+    except Exception:
+        return None
+    if dt is None or pd.isna(dt):
+        return None
+    return dt.to_pydatetime()
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        if value is None:
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 class Plugin:
@@ -259,6 +306,7 @@ class Plugin:
         min_indicator_months = int(ctx.settings.get("indicator_min_months") or 3)
         dominance_min_share = float(ctx.settings.get("dominance_min_share") or 0.5)
         persistence_days = int(ctx.settings.get("persistence_days") or 2)
+        backtracked_by_month = _load_backtracked_windows(ctx.run_dir)
 
         rec_df = pd.DataFrame(records)
         rec_df["month_key"] = rec_df["acct_month"].dt.strftime("%Y-%m")
@@ -319,6 +367,22 @@ class Plugin:
             )
             close_start_dynamic = close_start_default
             close_end_dynamic = roll_ts
+            source = "resolver_roll_default"
+            confidence = 0.85
+            fallback_reason = None
+
+            backtracked_row = backtracked_by_month.get(month_key)
+            if isinstance(backtracked_row, dict):
+                start_candidate = _parse_iso_dt(backtracked_row.get("close_start_dynamic"))
+                end_candidate = _parse_iso_dt(backtracked_row.get("close_end_dynamic"))
+                if start_candidate is not None:
+                    close_start_dynamic = start_candidate
+                    source = str(backtracked_row.get("source") or "backtracked_signature")
+                    confidence = _safe_float(backtracked_row.get("confidence"), 0.85)
+                    fallback_text = str(backtracked_row.get("fallback_reason") or "").strip()
+                    fallback_reason = fallback_text or None
+                if end_candidate is not None:
+                    close_end_dynamic = end_candidate
 
             default_days = (
                 close_end_default - close_start_default
@@ -364,6 +428,9 @@ class Plugin:
                     default_days=default_days,
                     dynamic_days=dynamic_days,
                     delta_days=delta_days,
+                    source=source,
+                    confidence=confidence,
+                    fallback_reason=fallback_reason,
                     indicator_processes=indicator_processes,
                 )
             )
@@ -401,9 +468,11 @@ class Plugin:
                     "close_window_days_dynamic": round(window.dynamic_days, 2),
                     "close_end_delta_days": round(window.delta_days, 2),
                     "indicator_window_hours": window_hours,
+                    "source": window.source,
+                    "fallback_reason": window.fallback_reason,
                     "indicator_processes": window.indicator_processes,
                     "measurement_type": "measured",
-                    "confidence": 0.85,
+                    "confidence": window.confidence,
                     "evidence": {
                         "dataset_id": ctx.dataset_id or "unknown",
                         "dataset_version_id": ctx.dataset_version_id or "unknown",
@@ -446,6 +515,11 @@ class Plugin:
             "default_window_days_avg": _safe_avg(default_days),
             "dynamic_window_days_avg": _safe_avg(dynamic_days),
             "close_end_delta_days_avg": _safe_avg(delta_days),
+            "backtracked_windows_available": bool(backtracked_by_month),
+            "backtracked_windows_used": sum(
+                1 for w in close_windows if str(w.source).startswith("backtracked")
+            ),
+            "resolver_fallback_windows": sum(1 for w in close_windows if w.fallback_reason),
         }
 
         summary = (
@@ -478,6 +552,9 @@ class Plugin:
                     "close_window_days_default",
                     "close_window_days_dynamic",
                     "close_end_delta_days",
+                    "source",
+                    "confidence",
+                    "fallback_reason",
                 ],
             )
             writer.writeheader()
@@ -493,6 +570,9 @@ class Plugin:
                         "close_window_days_default": round(window.default_days, 2),
                         "close_window_days_dynamic": round(window.dynamic_days, 2),
                         "close_end_delta_days": round(window.delta_days, 2),
+                        "source": window.source,
+                        "confidence": window.confidence,
+                        "fallback_reason": window.fallback_reason or "",
                     }
                 )
 

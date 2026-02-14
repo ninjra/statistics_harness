@@ -2,7 +2,7 @@
   "intent_counts": {
     "not_applicable": 44,
     "optional": 1,
-    "recommended": 127,
+    "recommended": 187,
     "required": 3
   },
   "intent_sql_coverage": {
@@ -14,10 +14,10 @@
   "intent_using_sql_counts": {
     "not_applicable": 4,
     "optional": 1,
-    "recommended": 127,
+    "recommended": 187,
     "required": 3
   },
-  "plugin_count": 175,
+  "plugin_count": 235,
   "plugins": [
     {
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
@@ -43,6 +43,17 @@
     },
     {
       "plugin_id": "analysis_actionable_ops_levers_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -86,7 +97,40 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_bayesian_point_displacement",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -109,6 +153,28 @@
     },
     {
       "plugin_id": "analysis_bocpd_gaussian",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -152,7 +218,29 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_capacity_scaling",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_cca_crossblock_association_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -175,6 +263,17 @@
     },
     {
       "plugin_id": "analysis_change_impact_pre_post",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_change_score_consensus_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -219,6 +318,17 @@
     },
     {
       "plugin_id": "analysis_chi_square_association",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -295,6 +405,17 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_close_cycle_uplift",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -318,6 +439,17 @@
     },
     {
       "plugin_id": "analysis_cluster_analysis_auto",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_competing_risks_cif_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -383,6 +515,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_control_chart_cusum",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -428,6 +571,17 @@
     },
     {
       "plugin_id": "analysis_copula_dependence",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -526,6 +680,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_discrete_event_queue_simulator_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -535,6 +700,28 @@
       "uses_sql_effective": false,
       "uses_sql_exec": false,
       "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
     },
     {
       "plugin_id": "analysis_distribution_drift_suite",
@@ -625,6 +812,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_event_count_bocpd_poisson",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -669,6 +867,28 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -678,6 +898,39 @@
       "uses_sql_effective": false,
       "uses_sql_exec": false,
       "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
     },
     {
       "plugin_id": "analysis_gaussian_copula_shift",
@@ -702,6 +955,28 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_graph_min_cut_partition_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -711,6 +986,28 @@
       "uses_sql_effective": false,
       "uses_sql_exec": false,
       "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
     },
     {
       "plugin_id": "analysis_graph_topology_curves",
@@ -735,7 +1032,40 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_hawkes_self_exciting",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -758,6 +1088,28 @@
     },
     {
       "plugin_id": "analysis_hold_time_attribution_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_ica_source_separation_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -922,7 +1274,40 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_map_permutation_test_karniski",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -977,7 +1362,29 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_multiple_testing_fdr",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1043,6 +1450,17 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_notears_linear",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -1076,6 +1494,17 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_param_near_duplicate_minhash_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -1099,6 +1528,17 @@
     },
     {
       "plugin_id": "analysis_param_variant_explosion_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1143,6 +1583,39 @@
     },
     {
       "plugin_id": "analysis_periodicity_spectral_scan",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1208,7 +1681,51 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_quantile_regression_duration",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1241,6 +1758,28 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_recommendation_dedupe_v2",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -1250,6 +1789,17 @@
       "uses_sql_effective": false,
       "uses_sql_exec": false,
       "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
     },
     {
       "plugin_id": "analysis_regression_auto",
@@ -1307,7 +1857,40 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_scan_statistics",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1373,7 +1956,62 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_state_space_kalman_residuals",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
       "sql_intent_source": "default",
@@ -1736,6 +2374,28 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_wild_binary_segmentation_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_zero_inflated_count_model_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "causal_recommendations_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -1947,7 +2607,7 @@
   ],
   "uses_sql": 3,
   "uses_sql_direct": 3,
-  "uses_sql_effective": 135,
+  "uses_sql_effective": 195,
   "uses_sql_exec": 1,
-  "uses_sql_via_loader": 129
+  "uses_sql_via_loader": 189
 }

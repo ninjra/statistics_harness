@@ -63,7 +63,7 @@ def _seed_runtime(run_seed: int) -> None:
         pass
 
 
-def _deterministic_env(run_seed: int) -> dict[str, str]:
+def _deterministic_env(run_seed: int, cwd: Path | None = None) -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONHASHSEED"] = str(run_seed)
     env["TZ"] = "UTC"
@@ -74,6 +74,16 @@ def _deterministic_env(run_seed: int) -> dict[str, str]:
     env.setdefault("OMP_NUM_THREADS", "1")
     env.setdefault("MKL_NUM_THREADS", "1")
     env.setdefault("NUMEXPR_NUM_THREADS", "1")
+    if cwd is not None:
+        repo_root = str(cwd)
+        repo_src = str(cwd / "src")
+        current = env.get("PYTHONPATH", "")
+        parts = [p for p in current.split(os.pathsep) if p] if current else []
+        merged: list[str] = []
+        for candidate in (repo_root, repo_src, *parts):
+            if candidate and candidate not in merged:
+                merged.append(candidate)
+        env["PYTHONPATH"] = os.pathsep.join(merged)
     return env
 
 
@@ -649,7 +659,7 @@ def run_plugin_subprocess(
             capture_output=True,
             text=True,
             cwd=str(cwd),
-            env=_deterministic_env(plugin_seed),
+            env=_deterministic_env(plugin_seed, cwd=cwd),
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
@@ -730,7 +740,8 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
     try:
         run_seed = int(request.get("run_seed", 0))
         plugin_seed = int(request.get("plugin_seed", run_seed))
-        os.environ.update(_deterministic_env(plugin_seed))
+        cwd = Path(request.get("root_dir", ".")).resolve()
+        os.environ.update(_deterministic_env(plugin_seed, cwd=cwd))
         try:
             time.tzset()
         except AttributeError:
@@ -741,7 +752,6 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
         allow_paths = request.get("allow_paths") or []
         read_allow_paths = request.get("read_allow_paths") or allow_paths
         write_allow_paths = request.get("write_allow_paths") or allow_paths
-        cwd = Path(request.get("root_dir", ".")).resolve()
         run_dir = Path(request["run_dir"]).resolve()
         ensure_dir(run_dir / "tmp")
         os.environ["TMPDIR"] = str(run_dir / "tmp")

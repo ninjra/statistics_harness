@@ -4,6 +4,7 @@ version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
+- analysis_close_cycle_window_resolver
 - ingest_tabular
 settings:
   description: Tiered ideaspace feature extraction + ideal frontier/baseline + gap vectors.
@@ -23,4 +24,3 @@ sandbox:
   - appdata
   - plugins
   - run_dir
-

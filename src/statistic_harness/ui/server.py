@@ -338,8 +338,13 @@ def _known_issues_paths(sha256: str) -> tuple[Path, Path]:
 
 
 def _vector_store() -> tuple[VectorStore | None, str | None]:
-    if not vector_store_enabled():
-        return None, "Vector store is disabled (set STAT_HARNESS_ENABLE_VECTOR_STORE=1)."
+    raw = os.environ.get("STAT_HARNESS_ENABLE_VECTOR_STORE", "").strip().lower()
+    explicitly_enabled = raw in {"1", "true", "yes", "on"}
+    if not explicitly_enabled or not vector_store_enabled():
+        return (
+            None,
+            "sqlite-vec extension unavailable; set STAT_HARNESS_SQLITE_VEC_PATH (or enable vector store with STAT_HARNESS_ENABLE_VECTOR_STORE=1).",
+        )
     try:
         store = VectorStore(TENANT_CTX.db_path, tenant_id=TENANT_CTX.tenant_id)
         return store, None

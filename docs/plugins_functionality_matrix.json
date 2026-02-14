@@ -1,20 +1,31 @@
 {
   "by_type_in_global_order": {
     "analysis": [
+      "analysis_aft_survival_lognormal_v1",
+      "analysis_attribution",
+      "analysis_bayesian_online_changepoint_studentt_v1",
+      "analysis_benfords_law_anomaly_v1",
+      "analysis_beta_binomial_overdispersion_v1",
+      "analysis_bootstrap_ci_effect_sizes_v1",
+      "analysis_bsts_intervention_counterfactual_v1",
+      "analysis_busy_period_segmentation_v2",
+      "analysis_capacity_frontier_envelope_v1",
+      "analysis_capacity_scaling",
+      "analysis_cca_crossblock_association_v1",
+      "analysis_chain_makespan",
+      "analysis_change_score_consensus_v1",
+      "analysis_circular_time_of_day_drift_v1",
+      "analysis_close_cycle_start_backtrack_v1",
+      "analysis_close_cycle_window_resolver",
       "analysis_actionable_ops_levers_v1",
       "analysis_anova_auto",
-      "analysis_attribution",
       "analysis_bayesian_point_displacement",
       "analysis_burst_detection_kleinberg",
-      "analysis_busy_period_segmentation_v2",
-      "analysis_capacity_scaling",
-      "analysis_chain_makespan",
       "analysis_change_impact_pre_post",
       "analysis_changepoint_energy_edivisive",
       "analysis_changepoint_method_survey_guided",
       "analysis_changepoint_pelt",
       "analysis_chi_square_association",
-      "analysis_close_cycle_window_resolver",
       "analysis_close_cycle_capacity_impact",
       "analysis_close_cycle_capacity_model",
       "analysis_close_cycle_contention",
@@ -22,28 +33,49 @@
       "analysis_close_cycle_revenue_compression",
       "analysis_close_cycle_uplift",
       "analysis_cluster_analysis_auto",
+      "analysis_competing_risks_cif_v1",
       "analysis_concurrency_reconstruction",
       "analysis_conformance_alignments",
       "analysis_conformance_checking",
+      "analysis_constraints_violation_detector_v1",
       "analysis_control_chart_cusum",
       "analysis_control_chart_ewma",
       "analysis_control_chart_individuals",
       "analysis_control_chart_suite",
       "analysis_copula_dependence",
+      "analysis_cusum_on_model_residuals_v1",
       "analysis_dependency_graph_change_detection",
       "analysis_dependency_resolution_join",
       "analysis_determinism_discipline",
+      "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "analysis_distance_correlation_screen_v1",
+      "analysis_distance_covariance_dependence_v1",
       "analysis_distribution_drift_suite",
       "analysis_drift_adwin",
       "analysis_dynamic_close_detection",
       "analysis_effect_size_report",
+      "analysis_energy_distance_two_sample_v1",
       "analysis_event_count_bocpd_poisson",
       "analysis_evt_gumbel_tail",
       "analysis_evt_peaks_over_threshold",
       "analysis_factor_analysis_auto",
+      "analysis_factor_rotation_varimax_v1",
+      "analysis_fisher_exact_enrichment_v1",
+      "analysis_fused_lasso_trend_filtering_v1",
+      "analysis_gam_spline_regression_v1",
+      "analysis_garch_volatility_shift_v1",
+      "analysis_geometric_median_multivariate_location_v1",
+      "analysis_graph_assortativity_shift_v1",
+      "analysis_graph_motif_triads_shift_v1",
+      "analysis_graph_pagerank_hotspots_v1",
       "analysis_graphical_lasso_dependency_network",
+      "analysis_haar_wavelet_transient_detector_v1",
       "analysis_hawkes_self_exciting",
+      "analysis_heavy_tail_index_hill_v1",
+      "analysis_higuchi_fractal_dimension_v1",
       "analysis_hmm_latent_state_sequences",
+      "analysis_hurst_exponent_long_memory_v1",
+      "analysis_ica_source_separation_v1",
       "analysis_isolation_forest",
       "analysis_isolation_forest_anomaly",
       "analysis_kernel_two_sample_mmd",
@@ -53,22 +85,33 @@
       "analysis_local_outlier_factor",
       "analysis_log_template_drain",
       "analysis_log_template_mining_drain",
+      "analysis_lomb_scargle_periodogram_v1",
+      "analysis_mann_kendall_trend_test_v1",
       "analysis_map_permutation_test_karniski",
+      "analysis_marked_point_process_intensity_v1",
       "analysis_markov_transition_shift",
       "analysis_matrix_profile_motifs_discords",
       "analysis_message_entropy_drift",
       "analysis_monte_carlo_surface_uncertainty",
+      "analysis_multicollinearity_vif_screen_v1",
       "analysis_multiple_testing_fdr",
+      "analysis_multiscale_entropy_mse_v1",
       "analysis_multivariate_changepoint_pelt",
       "analysis_multivariate_control_charts",
       "analysis_multivariate_ewma_control",
       "analysis_multivariate_t2_control",
       "analysis_mutual_information_screen",
+      "analysis_negative_binomial_overdispersion_v1",
       "analysis_one_class_svm",
+      "analysis_outlier_influence_cooks_distance_v1",
+      "analysis_partial_correlation_network_shift_v1",
       "analysis_pca_auto",
       "analysis_pca_control_chart",
       "analysis_percentile_analysis",
       "analysis_periodicity_spectral_scan",
+      "analysis_permutation_entropy_drift_v1",
+      "analysis_piecewise_linear_trend_changepoints_v1",
+      "analysis_poisson_regression_rate_drivers_v1",
       "analysis_process_counterfactuals",
       "analysis_process_drift_conformance_over_time",
       "analysis_process_sequence_bottlenecks",
@@ -76,16 +119,31 @@
       "analysis_action_search_simulated_annealing_v1",
       "analysis_discrete_event_queue_simulator_v1",
       "analysis_proportional_hazards_duration",
+      "analysis_quantile_loss_boosting_v1",
+      "analysis_quantile_mapping_drift_qq_v1",
       "analysis_quantile_regression_duration",
+      "analysis_quantile_regression_forest_v1",
+      "analysis_quantile_sketch_p2_streaming_v1",
       "analysis_queue_delay_decomposition",
       "analysis_queue_model_fit",
+      "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "analysis_randomization_test_median_shift_v1",
+      "analysis_recurrence_quantification_rqa_v1",
       "analysis_regression_auto",
       "analysis_robust_covariance_outliers",
       "analysis_robust_pca_pcp",
       "analysis_robust_pca_sparse_outliers",
+      "analysis_robust_regression_huber_ransac_v1",
+      "analysis_sample_entropy_irregularity_v1",
+      "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "analysis_sequence_classification",
       "analysis_sequential_patterns_prefixspan",
+      "analysis_sparse_pca_interpretable_components_v1",
+      "analysis_spectral_radius_stability_v1",
       "analysis_state_space_kalman_residuals",
+      "analysis_state_space_smoother_level_shift_v1",
+      "analysis_stl_seasonal_decompose_v1",
+      "analysis_subspace_tracking_oja_v1",
       "analysis_surface_fabric_sso_eigen",
       "analysis_surface_fractal_dimension_variogram",
       "analysis_surface_hydrology_flow_watershed",
@@ -120,6 +178,8 @@
       "analysis_recommendation_dedupe_v2",
       "analysis_issue_cards_v2",
       "analysis_traceability_manifest_v2",
+      "analysis_wild_binary_segmentation_v1",
+      "analysis_zero_inflated_count_model_v1",
       "causal_recommendations_v1",
       "changepoint_detection_v1",
       "analysis_bocpd_gaussian",
@@ -191,20 +251,31 @@
     ]
   },
   "global_toposort": [
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_attribution",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_capacity_scaling",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_chain_makespan",
+    "analysis_change_score_consensus_v1",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_window_resolver",
     "analysis_actionable_ops_levers_v1",
     "analysis_anova_auto",
-    "analysis_attribution",
     "analysis_bayesian_point_displacement",
     "analysis_burst_detection_kleinberg",
-    "analysis_busy_period_segmentation_v2",
-    "analysis_capacity_scaling",
-    "analysis_chain_makespan",
     "analysis_change_impact_pre_post",
     "analysis_changepoint_energy_edivisive",
     "analysis_changepoint_method_survey_guided",
     "analysis_changepoint_pelt",
     "analysis_chi_square_association",
-    "analysis_close_cycle_window_resolver",
     "analysis_close_cycle_capacity_impact",
     "analysis_close_cycle_capacity_model",
     "analysis_close_cycle_contention",
@@ -212,28 +283,49 @@
     "analysis_close_cycle_revenue_compression",
     "analysis_close_cycle_uplift",
     "analysis_cluster_analysis_auto",
+    "analysis_competing_risks_cif_v1",
     "analysis_concurrency_reconstruction",
     "analysis_conformance_alignments",
     "analysis_conformance_checking",
+    "analysis_constraints_violation_detector_v1",
     "analysis_control_chart_cusum",
     "analysis_control_chart_ewma",
     "analysis_control_chart_individuals",
     "analysis_control_chart_suite",
     "analysis_copula_dependence",
+    "analysis_cusum_on_model_residuals_v1",
     "analysis_dependency_graph_change_detection",
     "analysis_dependency_resolution_join",
     "analysis_determinism_discipline",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
     "analysis_distribution_drift_suite",
     "analysis_drift_adwin",
     "analysis_dynamic_close_detection",
     "analysis_effect_size_report",
+    "analysis_energy_distance_two_sample_v1",
     "analysis_event_count_bocpd_poisson",
     "analysis_evt_gumbel_tail",
     "analysis_evt_peaks_over_threshold",
     "analysis_factor_analysis_auto",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
     "analysis_graphical_lasso_dependency_network",
+    "analysis_haar_wavelet_transient_detector_v1",
     "analysis_hawkes_self_exciting",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
     "analysis_hmm_latent_state_sequences",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
     "analysis_isolation_forest",
     "analysis_isolation_forest_anomaly",
     "analysis_kernel_two_sample_mmd",
@@ -243,22 +335,33 @@
     "analysis_local_outlier_factor",
     "analysis_log_template_drain",
     "analysis_log_template_mining_drain",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
     "analysis_map_permutation_test_karniski",
+    "analysis_marked_point_process_intensity_v1",
     "analysis_markov_transition_shift",
     "analysis_matrix_profile_motifs_discords",
     "analysis_message_entropy_drift",
     "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multicollinearity_vif_screen_v1",
     "analysis_multiple_testing_fdr",
+    "analysis_multiscale_entropy_mse_v1",
     "analysis_multivariate_changepoint_pelt",
     "analysis_multivariate_control_charts",
     "analysis_multivariate_ewma_control",
     "analysis_multivariate_t2_control",
     "analysis_mutual_information_screen",
+    "analysis_negative_binomial_overdispersion_v1",
     "analysis_one_class_svm",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_partial_correlation_network_shift_v1",
     "analysis_pca_auto",
     "analysis_pca_control_chart",
     "analysis_percentile_analysis",
     "analysis_periodicity_spectral_scan",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
     "analysis_process_counterfactuals",
     "analysis_process_drift_conformance_over_time",
     "analysis_process_sequence_bottlenecks",
@@ -266,16 +369,31 @@
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
     "analysis_proportional_hazards_duration",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
     "analysis_quantile_regression_duration",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
     "analysis_queue_delay_decomposition",
     "analysis_queue_model_fit",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recurrence_quantification_rqa_v1",
     "analysis_regression_auto",
     "analysis_robust_covariance_outliers",
     "analysis_robust_pca_pcp",
     "analysis_robust_pca_sparse_outliers",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
     "analysis_sequence_classification",
     "analysis_sequential_patterns_prefixspan",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
     "analysis_state_space_kalman_residuals",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
     "analysis_surface_fabric_sso_eigen",
     "analysis_surface_fractal_dimension_variogram",
     "analysis_surface_hydrology_flow_watershed",
@@ -310,6 +428,8 @@
     "analysis_recommendation_dedupe_v2",
     "analysis_issue_cards_v2",
     "analysis_traceability_manifest_v2",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
     "causal_recommendations_v1",
     "changepoint_detection_v1",
     "ingest_tabular",
@@ -375,6 +495,9 @@
     "analysis_actionable_ops_*": [
       "analysis_actionable_ops_levers_v1"
     ],
+    "analysis_aft_survival_*": [
+      "analysis_aft_survival_lognormal_v1"
+    ],
     "analysis_anova_auto_*": [
       "analysis_anova_auto"
     ],
@@ -384,14 +507,29 @@
     "analysis_attribution": [
       "analysis_attribution"
     ],
+    "analysis_bayesian_online_*": [
+      "analysis_bayesian_online_changepoint_studentt_v1"
+    ],
     "analysis_bayesian_point_*": [
       "analysis_bayesian_point_displacement"
+    ],
+    "analysis_benfords_law_*": [
+      "analysis_benfords_law_anomaly_v1"
+    ],
+    "analysis_beta_binomial_*": [
+      "analysis_beta_binomial_overdispersion_v1"
     ],
     "analysis_biclustering_cheng_*": [
       "analysis_biclustering_cheng_church_v1"
     ],
     "analysis_bocpd_gaussian_*": [
       "analysis_bocpd_gaussian"
+    ],
+    "analysis_bootstrap_ci_*": [
+      "analysis_bootstrap_ci_effect_sizes_v1"
+    ],
+    "analysis_bsts_intervention_*": [
+      "analysis_bsts_intervention_counterfactual_v1"
     ],
     "analysis_burst_detection_*": [
       "analysis_burst_detection_kleinberg"
@@ -402,14 +540,23 @@
     "analysis_busy_period_*": [
       "analysis_busy_period_segmentation_v2"
     ],
+    "analysis_capacity_frontier_*": [
+      "analysis_capacity_frontier_envelope_v1"
+    ],
     "analysis_capacity_scaling_*": [
       "analysis_capacity_scaling"
+    ],
+    "analysis_cca_crossblock_*": [
+      "analysis_cca_crossblock_association_v1"
     ],
     "analysis_chain_makespan_*": [
       "analysis_chain_makespan"
     ],
     "analysis_change_impact_*": [
       "analysis_change_impact_pre_post"
+    ],
+    "analysis_change_score_*": [
+      "analysis_change_score_consensus_v1"
     ],
     "analysis_changepoint_energy_*": [
       "analysis_changepoint_energy_edivisive"
@@ -423,7 +570,11 @@
     "analysis_chi_square_*": [
       "analysis_chi_square_association"
     ],
+    "analysis_circular_time_*": [
+      "analysis_circular_time_of_day_drift_v1"
+    ],
     "analysis_close_cycle_*": [
+      "analysis_close_cycle_start_backtrack_v1",
       "analysis_close_cycle_window_resolver",
       "analysis_close_cycle_capacity_impact",
       "analysis_close_cycle_capacity_model",
@@ -435,6 +586,9 @@
     ],
     "analysis_cluster_analysis_*": [
       "analysis_cluster_analysis_auto"
+    ],
+    "analysis_competing_risks_*": [
+      "analysis_competing_risks_cif_v1"
     ],
     "analysis_concurrency_reconstruction_*": [
       "analysis_concurrency_reconstruction"
@@ -451,6 +605,9 @@
     "analysis_constrained_clustering_*": [
       "analysis_constrained_clustering_cop_kmeans_v1"
     ],
+    "analysis_constraints_violation_*": [
+      "analysis_constraints_violation_detector_v1"
+    ],
     "analysis_control_chart_*": [
       "analysis_control_chart_cusum",
       "analysis_control_chart_ewma",
@@ -459,6 +616,9 @@
     ],
     "analysis_copula_dependence_*": [
       "analysis_copula_dependence"
+    ],
+    "analysis_cusum_on_*": [
+      "analysis_cusum_on_model_residuals_v1"
     ],
     "analysis_daily_pattern_*": [
       "analysis_daily_pattern_alignment_dtw_v1"
@@ -482,8 +642,17 @@
     "analysis_determinism_discipline_*": [
       "analysis_determinism_discipline"
     ],
+    "analysis_dirichlet_multinomial_*": [
+      "analysis_dirichlet_multinomial_categorical_overdispersion_v1"
+    ],
     "analysis_discrete_event_*": [
       "analysis_discrete_event_queue_simulator_v1"
+    ],
+    "analysis_distance_correlation_*": [
+      "analysis_distance_correlation_screen_v1"
+    ],
+    "analysis_distance_covariance_*": [
+      "analysis_distance_covariance_dependence_v1"
     ],
     "analysis_distribution_drift_*": [
       "analysis_distribution_drift_suite"
@@ -509,6 +678,9 @@
     "analysis_empirical_bayes_*": [
       "analysis_empirical_bayes_shrinkage_v1"
     ],
+    "analysis_energy_distance_*": [
+      "analysis_energy_distance_two_sample_v1"
+    ],
     "analysis_event_count_*": [
       "analysis_event_count_bocpd_poisson"
     ],
@@ -521,8 +693,23 @@
     "analysis_factor_analysis_*": [
       "analysis_factor_analysis_auto"
     ],
+    "analysis_factor_rotation_*": [
+      "analysis_factor_rotation_varimax_v1"
+    ],
+    "analysis_fisher_exact_*": [
+      "analysis_fisher_exact_enrichment_v1"
+    ],
     "analysis_frequent_itemsets_*": [
       "analysis_frequent_itemsets_fpgrowth_v1"
+    ],
+    "analysis_fused_lasso_*": [
+      "analysis_fused_lasso_trend_filtering_v1"
+    ],
+    "analysis_gam_spline_*": [
+      "analysis_gam_spline_regression_v1"
+    ],
+    "analysis_garch_volatility_*": [
+      "analysis_garch_volatility_shift_v1"
     ],
     "analysis_gaussian_copula_*": [
       "analysis_gaussian_copula_shift"
@@ -530,8 +717,20 @@
     "analysis_gaussian_knockoffs_*": [
       "analysis_gaussian_knockoffs"
     ],
+    "analysis_geometric_median_*": [
+      "analysis_geometric_median_multivariate_location_v1"
+    ],
+    "analysis_graph_assortativity_*": [
+      "analysis_graph_assortativity_shift_v1"
+    ],
     "analysis_graph_min_*": [
       "analysis_graph_min_cut_partition_v1"
+    ],
+    "analysis_graph_motif_*": [
+      "analysis_graph_motif_triads_shift_v1"
+    ],
+    "analysis_graph_pagerank_*": [
+      "analysis_graph_pagerank_hotspots_v1"
     ],
     "analysis_graph_topology_*": [
       "analysis_graph_topology_curves"
@@ -539,14 +738,29 @@
     "analysis_graphical_lasso_*": [
       "analysis_graphical_lasso_dependency_network"
     ],
+    "analysis_haar_wavelet_*": [
+      "analysis_haar_wavelet_transient_detector_v1"
+    ],
     "analysis_hawkes_self_*": [
       "analysis_hawkes_self_exciting"
+    ],
+    "analysis_heavy_tail_*": [
+      "analysis_heavy_tail_index_hill_v1"
+    ],
+    "analysis_higuchi_fractal_*": [
+      "analysis_higuchi_fractal_dimension_v1"
     ],
     "analysis_hmm_latent_*": [
       "analysis_hmm_latent_state_sequences"
     ],
     "analysis_hold_time_*": [
       "analysis_hold_time_attribution_v1"
+    ],
+    "analysis_hurst_exponent_*": [
+      "analysis_hurst_exponent_long_memory_v1"
+    ],
+    "analysis_ica_source_*": [
+      "analysis_ica_source_separation_v1"
     ],
     "analysis_ideaspace_action_*": [
       "analysis_ideaspace_action_planner"
@@ -586,8 +800,17 @@
       "analysis_log_template_drain",
       "analysis_log_template_mining_drain"
     ],
+    "analysis_lomb_scargle_*": [
+      "analysis_lomb_scargle_periodogram_v1"
+    ],
+    "analysis_mann_kendall_*": [
+      "analysis_mann_kendall_trend_test_v1"
+    ],
     "analysis_map_permutation_*": [
       "analysis_map_permutation_test_karniski"
+    ],
+    "analysis_marked_point_*": [
+      "analysis_marked_point_process_intensity_v1"
     ],
     "analysis_markov_transition_*": [
       "analysis_markov_transition_shift"
@@ -601,8 +824,14 @@
     "analysis_monte_carlo_*": [
       "analysis_monte_carlo_surface_uncertainty"
     ],
+    "analysis_multicollinearity_vif_*": [
+      "analysis_multicollinearity_vif_screen_v1"
+    ],
     "analysis_multiple_testing_*": [
       "analysis_multiple_testing_fdr"
+    ],
+    "analysis_multiscale_entropy_*": [
+      "analysis_multiscale_entropy_mse_v1"
     ],
     "analysis_multivariate_changepoint_*": [
       "analysis_multivariate_changepoint_pelt"
@@ -619,6 +848,9 @@
     "analysis_mutual_information_*": [
       "analysis_mutual_information_screen"
     ],
+    "analysis_negative_binomial_*": [
+      "analysis_negative_binomial_overdispersion_v1"
+    ],
     "analysis_notears_linear_*": [
       "analysis_notears_linear"
     ],
@@ -628,12 +860,18 @@
     "analysis_online_conformal_*": [
       "analysis_online_conformal_changepoint"
     ],
+    "analysis_outlier_influence_*": [
+      "analysis_outlier_influence_cooks_distance_v1"
+    ],
     "analysis_param_near_*": [
       "analysis_param_near_duplicate_minhash_v1",
       "analysis_param_near_duplicate_simhash_v1"
     ],
     "analysis_param_variant_*": [
       "analysis_param_variant_explosion_v1"
+    ],
+    "analysis_partial_correlation_*": [
+      "analysis_partial_correlation_network_shift_v1"
     ],
     "analysis_pca_auto_*": [
       "analysis_pca_auto"
@@ -646,6 +884,15 @@
     ],
     "analysis_periodicity_spectral_*": [
       "analysis_periodicity_spectral_scan"
+    ],
+    "analysis_permutation_entropy_*": [
+      "analysis_permutation_entropy_drift_v1"
+    ],
+    "analysis_piecewise_linear_*": [
+      "analysis_piecewise_linear_trend_changepoints_v1"
+    ],
+    "analysis_poisson_regression_*": [
+      "analysis_poisson_regression_rate_drivers_v1"
     ],
     "analysis_process_counterfactuals_*": [
       "analysis_process_counterfactuals"
@@ -660,8 +907,18 @@
     "analysis_proportional_hazards_*": [
       "analysis_proportional_hazards_duration"
     ],
+    "analysis_quantile_loss_*": [
+      "analysis_quantile_loss_boosting_v1"
+    ],
+    "analysis_quantile_mapping_*": [
+      "analysis_quantile_mapping_drift_qq_v1"
+    ],
     "analysis_quantile_regression_*": [
-      "analysis_quantile_regression_duration"
+      "analysis_quantile_regression_duration",
+      "analysis_quantile_regression_forest_v1"
+    ],
+    "analysis_quantile_sketch_*": [
+      "analysis_quantile_sketch_p2_streaming_v1"
     ],
     "analysis_queue_delay_*": [
       "analysis_queue_delay_decomposition"
@@ -669,8 +926,17 @@
     "analysis_queue_model_*": [
       "analysis_queue_model_fit"
     ],
+    "analysis_random_matrix_*": [
+      "analysis_random_matrix_marchenko_pastur_denoise_v1"
+    ],
+    "analysis_randomization_test_*": [
+      "analysis_randomization_test_median_shift_v1"
+    ],
     "analysis_recommendation_dedupe_*": [
       "analysis_recommendation_dedupe_v2"
+    ],
+    "analysis_recurrence_quantification_*": [
+      "analysis_recurrence_quantification_rqa_v1"
     ],
     "analysis_regression_auto_*": [
       "analysis_regression_auto"
@@ -685,8 +951,17 @@
       "analysis_robust_pca_pcp",
       "analysis_robust_pca_sparse_outliers"
     ],
+    "analysis_robust_regression_*": [
+      "analysis_robust_regression_huber_ransac_v1"
+    ],
+    "analysis_sample_entropy_*": [
+      "analysis_sample_entropy_irregularity_v1"
+    ],
     "analysis_scan_statistics_*": [
       "analysis_scan_statistics"
+    ],
+    "analysis_seasonal_holt_*": [
+      "analysis_seasonal_holt_winters_forecast_residuals_v1"
     ],
     "analysis_sequence_classification_*": [
       "analysis_sequence_classification"
@@ -701,8 +976,21 @@
     "analysis_similarity_graph_*": [
       "analysis_similarity_graph_spectral_clustering_v1"
     ],
+    "analysis_sparse_pca_*": [
+      "analysis_sparse_pca_interpretable_components_v1"
+    ],
+    "analysis_spectral_radius_*": [
+      "analysis_spectral_radius_stability_v1"
+    ],
     "analysis_state_space_*": [
-      "analysis_state_space_kalman_residuals"
+      "analysis_state_space_kalman_residuals",
+      "analysis_state_space_smoother_level_shift_v1"
+    ],
+    "analysis_stl_seasonal_*": [
+      "analysis_stl_seasonal_decompose_v1"
+    ],
+    "analysis_subspace_tracking_*": [
+      "analysis_subspace_tracking_oja_v1"
     ],
     "analysis_surface_fabric_*": [
       "analysis_surface_fabric_sso_eigen"
@@ -794,6 +1082,12 @@
     "analysis_waterfall_summary_*": [
       "analysis_waterfall_summary_v2"
     ],
+    "analysis_wild_binary_*": [
+      "analysis_wild_binary_segmentation_v1"
+    ],
+    "analysis_zero_inflated_*": [
+      "analysis_zero_inflated_count_model_v1"
+    ],
     "causal_recommendations_v1_*": [
       "causal_recommendations_v1"
     ],
@@ -844,20 +1138,31 @@
     "profile_basic",
     "profile_eventlog",
     "planner_basic",
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_attribution",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_capacity_scaling",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_chain_makespan",
+    "analysis_change_score_consensus_v1",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_window_resolver",
     "analysis_actionable_ops_levers_v1",
     "analysis_anova_auto",
-    "analysis_attribution",
     "analysis_bayesian_point_displacement",
     "analysis_burst_detection_kleinberg",
-    "analysis_busy_period_segmentation_v2",
-    "analysis_capacity_scaling",
-    "analysis_chain_makespan",
     "analysis_change_impact_pre_post",
     "analysis_changepoint_energy_edivisive",
     "analysis_changepoint_method_survey_guided",
     "analysis_changepoint_pelt",
     "analysis_chi_square_association",
-    "analysis_close_cycle_window_resolver",
     "analysis_close_cycle_capacity_impact",
     "analysis_close_cycle_capacity_model",
     "analysis_close_cycle_contention",
@@ -865,28 +1170,49 @@
     "analysis_close_cycle_revenue_compression",
     "analysis_close_cycle_uplift",
     "analysis_cluster_analysis_auto",
+    "analysis_competing_risks_cif_v1",
     "analysis_concurrency_reconstruction",
     "analysis_conformance_alignments",
     "analysis_conformance_checking",
+    "analysis_constraints_violation_detector_v1",
     "analysis_control_chart_cusum",
     "analysis_control_chart_ewma",
     "analysis_control_chart_individuals",
     "analysis_control_chart_suite",
     "analysis_copula_dependence",
+    "analysis_cusum_on_model_residuals_v1",
     "analysis_dependency_graph_change_detection",
     "analysis_dependency_resolution_join",
     "analysis_determinism_discipline",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
     "analysis_distribution_drift_suite",
     "analysis_drift_adwin",
     "analysis_dynamic_close_detection",
     "analysis_effect_size_report",
+    "analysis_energy_distance_two_sample_v1",
     "analysis_event_count_bocpd_poisson",
     "analysis_evt_gumbel_tail",
     "analysis_evt_peaks_over_threshold",
     "analysis_factor_analysis_auto",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
     "analysis_graphical_lasso_dependency_network",
+    "analysis_haar_wavelet_transient_detector_v1",
     "analysis_hawkes_self_exciting",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
     "analysis_hmm_latent_state_sequences",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
     "analysis_isolation_forest",
     "analysis_isolation_forest_anomaly",
     "analysis_kernel_two_sample_mmd",
@@ -896,22 +1222,33 @@
     "analysis_local_outlier_factor",
     "analysis_log_template_drain",
     "analysis_log_template_mining_drain",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
     "analysis_map_permutation_test_karniski",
+    "analysis_marked_point_process_intensity_v1",
     "analysis_markov_transition_shift",
     "analysis_matrix_profile_motifs_discords",
     "analysis_message_entropy_drift",
     "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multicollinearity_vif_screen_v1",
     "analysis_multiple_testing_fdr",
+    "analysis_multiscale_entropy_mse_v1",
     "analysis_multivariate_changepoint_pelt",
     "analysis_multivariate_control_charts",
     "analysis_multivariate_ewma_control",
     "analysis_multivariate_t2_control",
     "analysis_mutual_information_screen",
+    "analysis_negative_binomial_overdispersion_v1",
     "analysis_one_class_svm",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_partial_correlation_network_shift_v1",
     "analysis_pca_auto",
     "analysis_pca_control_chart",
     "analysis_percentile_analysis",
     "analysis_periodicity_spectral_scan",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
     "analysis_process_counterfactuals",
     "analysis_process_drift_conformance_over_time",
     "analysis_process_sequence_bottlenecks",
@@ -919,16 +1256,31 @@
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
     "analysis_proportional_hazards_duration",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
     "analysis_quantile_regression_duration",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
     "analysis_queue_delay_decomposition",
     "analysis_queue_model_fit",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recurrence_quantification_rqa_v1",
     "analysis_regression_auto",
     "analysis_robust_covariance_outliers",
     "analysis_robust_pca_pcp",
     "analysis_robust_pca_sparse_outliers",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
     "analysis_sequence_classification",
     "analysis_sequential_patterns_prefixspan",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
     "analysis_state_space_kalman_residuals",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
     "analysis_surface_fabric_sso_eigen",
     "analysis_surface_fractal_dimension_variogram",
     "analysis_surface_hydrology_flow_watershed",
@@ -963,6 +1315,8 @@
     "analysis_recommendation_dedupe_v2",
     "analysis_issue_cards_v2",
     "analysis_traceability_manifest_v2",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
     "causal_recommendations_v1",
     "changepoint_detection_v1",
     "analysis_bocpd_gaussian",
@@ -1012,7 +1366,7 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 175,
+  "plugin_count": 235,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -1051,7 +1405,9 @@
         "needs_eventlog",
         "needs_timestamp"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "CEO-grade, process-targeted operational recommendations derived from logs.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Actionable Ops Levers (v1)",
@@ -1059,11 +1415,25 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_aft_survival_lognormal_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_aft_survival_lognormal_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_aft_survival_lognormal_v1",
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_anova_auto": {
       "capabilities": [
         "needs_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Anova Auto",
@@ -1101,16 +1471,54 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_bayesian_online_changepoint_studentt_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_bayesian_online_changepoint_studentt_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_bayesian_online_changepoint_studentt_v1",
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_bayesian_point_displacement": {
       "capabilities": [
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Bayesian Point Displacement",
       "plugin_id": "analysis_bayesian_point_displacement",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_benfords_law_anomaly_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_benfords_law_anomaly_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_benfords_law_anomaly_v1",
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_beta_binomial_overdispersion_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_beta_binomial_overdispersion_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_beta_binomial_overdispersion_v1",
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1145,9 +1553,35 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_bootstrap_ci_effect_sizes_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_bootstrap_ci_effect_sizes_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_bootstrap_ci_effect_sizes_v1",
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_bsts_intervention_counterfactual_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_bsts_intervention_counterfactual_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_bsts_intervention_counterfactual_v1",
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_burst_detection_kleinberg": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Burst Detection Kleinberg",
@@ -1184,6 +1618,18 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_capacity_frontier_envelope_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_capacity_frontier_envelope_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_capacity_frontier_envelope_v1",
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_capacity_scaling": {
       "capabilities": [
         "needs_eventlog",
@@ -1194,6 +1640,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Capacity Scaling Scenario",
       "plugin_id": "analysis_capacity_scaling",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_cca_crossblock_association_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_cca_crossblock_association_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_cca_crossblock_association_v1",
+      "plugin_id": "analysis_cca_crossblock_association_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1212,7 +1670,9 @@
     },
     "analysis_change_impact_pre_post": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Change Impact Pre Post",
@@ -1220,9 +1680,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_change_score_consensus_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_change_score_consensus_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_change_score_consensus_v1",
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_changepoint_energy_edivisive": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Changepoint Energy Edivisive",
@@ -1232,7 +1706,9 @@
     },
     "analysis_changepoint_method_survey_guided": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Changepoint Method Survey Guided",
@@ -1242,7 +1718,9 @@
     },
     "analysis_changepoint_pelt": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Changepoint Pelt",
@@ -1254,11 +1732,25 @@
       "capabilities": [
         "needs_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Chi Square Association",
       "plugin_id": "analysis_chi_square_association",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_circular_time_of_day_drift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_circular_time_of_day_drift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_circular_time_of_day_drift_v1",
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1297,6 +1789,7 @@
         "needs_time"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Heuristic change detection on queue delay/duration time series to flag close-cycle drift.",
@@ -1351,6 +1844,19 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_close_cycle_start_backtrack_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [],
+      "description": "Infer close-cycle start dynamically by backtracking recurring process signatures from accounting-month roll events.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Close Cycle Start Backtrack v1",
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_close_cycle_uplift": {
       "capabilities": [
         "needs_eventlog",
@@ -1371,7 +1877,9 @@
         "needs_eventlog",
         "needs_timestamp"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_start_backtrack_v1"
+      ],
       "description": "Resolve close-cycle windows using Accounting Month roll signals and default calendar bounds.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Close Cycle Window Resolver",
@@ -1383,11 +1891,25 @@
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Cluster Auto",
       "plugin_id": "analysis_cluster_analysis_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_competing_risks_cif_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_competing_risks_cif_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_competing_risks_cif_v1",
+      "plugin_id": "analysis_competing_risks_cif_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1420,7 +1942,9 @@
     },
     "analysis_conformance_alignments": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Conformance Alignments",
@@ -1457,9 +1981,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_constraints_violation_detector_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_constraints_violation_detector_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_constraints_violation_detector_v1",
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_control_chart_cusum": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Control Chart Cusum",
@@ -1469,7 +2007,9 @@
     },
     "analysis_control_chart_ewma": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Control Chart Ewma",
@@ -1479,7 +2019,9 @@
     },
     "analysis_control_chart_individuals": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Control Chart Individuals",
@@ -1501,11 +2043,25 @@
     },
     "analysis_copula_dependence": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Copula Dependence",
       "plugin_id": "analysis_copula_dependence",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_cusum_on_model_residuals_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_cusum_on_model_residuals_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_cusum_on_model_residuals_v1",
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1577,6 +2133,7 @@
         "needs_categorical"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Computes a dependency-chain depth proxy from parent/dependency ID columns.",
@@ -1588,7 +2145,9 @@
     },
     "analysis_dependency_graph_change_detection": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Dependency Graph Change Detection",
@@ -1619,6 +2178,18 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_discrete_event_queue_simulator_v1": {
       "capabilities": [
         "needs_eventlog"
@@ -1631,6 +2202,30 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Discrete-Event Queue Simulator",
       "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_distance_correlation_screen_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_distance_correlation_screen_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_distance_correlation_screen_v1",
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_distance_covariance_dependence_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_distance_covariance_dependence_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_distance_covariance_dependence_v1",
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1679,7 +2274,9 @@
     },
     "analysis_drift_adwin": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Drift Adwin",
@@ -1705,6 +2302,7 @@
         "needs_numeric"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "analysis_ideaspace_action_planner",
         "analysis_ideaspace_energy_ebm_v1"
       ],
@@ -1717,7 +2315,9 @@
     },
     "analysis_effect_size_report": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Effect Size Report",
@@ -1741,9 +2341,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_energy_distance_two_sample_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_energy_distance_two_sample_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_energy_distance_two_sample_v1",
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_event_count_bocpd_poisson": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Event Count Bocpd Poisson",
@@ -1753,7 +2367,9 @@
     },
     "analysis_evt_gumbel_tail": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Evt Gumbel Tail",
@@ -1763,7 +2379,9 @@
     },
     "analysis_evt_peaks_over_threshold": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Evt Peaks Over Threshold",
@@ -1775,11 +2393,37 @@
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Factor Auto",
       "plugin_id": "analysis_factor_analysis_auto",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_factor_rotation_varimax_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_factor_rotation_varimax_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_factor_rotation_varimax_v1",
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_fisher_exact_enrichment_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_fisher_exact_enrichment_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_fisher_exact_enrichment_v1",
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1797,6 +2441,42 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Frequent Param Sets (FP-Growth)",
       "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_fused_lasso_trend_filtering_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_fused_lasso_trend_filtering_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_fused_lasso_trend_filtering_v1",
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_gam_spline_regression_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_gam_spline_regression_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_gam_spline_regression_v1",
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_garch_volatility_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_garch_volatility_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_garch_volatility_shift_v1",
+      "plugin_id": "analysis_garch_volatility_shift_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1828,6 +2508,30 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_geometric_median_multivariate_location_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_geometric_median_multivariate_location_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_geometric_median_multivariate_location_v1",
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_assortativity_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_graph_assortativity_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_graph_assortativity_shift_v1",
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_graph_min_cut_partition_v1": {
       "capabilities": [
         "needs_eventlog"
@@ -1840,6 +2544,30 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Graph Minimum Cut Partition",
       "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_motif_triads_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_graph_motif_triads_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_graph_motif_triads_shift_v1",
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_graph_pagerank_hotspots_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_graph_pagerank_hotspots_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_graph_pagerank_hotspots_v1",
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -1859,7 +2587,9 @@
     },
     "analysis_graphical_lasso_dependency_network": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Graphical Lasso Dependency Network",
@@ -1867,9 +2597,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_haar_wavelet_transient_detector_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_haar_wavelet_transient_detector_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_haar_wavelet_transient_detector_v1",
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_hawkes_self_exciting": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Hawkes Self Exciting",
@@ -1877,9 +2621,35 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_heavy_tail_index_hill_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_heavy_tail_index_hill_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_heavy_tail_index_hill_v1",
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_higuchi_fractal_dimension_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_higuchi_fractal_dimension_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_higuchi_fractal_dimension_v1",
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_hmm_latent_state_sequences": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Hmm Latent State Sequences",
@@ -1893,6 +2663,7 @@
         "needs_categorical"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Attribute delay into pre-eligibility holds vs eligible-wait, per process.",
@@ -1902,11 +2673,36 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_hurst_exponent_long_memory_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_hurst_exponent_long_memory_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_hurst_exponent_long_memory_v1",
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ica_source_separation_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_ica_source_separation_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_ica_source_separation_v1",
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_ideaspace_action_planner": {
       "capabilities": [
         "needs_numeric"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "ingest_tabular",
         "analysis_ideaspace_normative_gap"
       ],
@@ -1922,6 +2718,7 @@
         "needs_numeric"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Deterministic energy-based model scoring ideaspace state vs ideal (baseline or frontier).",
@@ -1936,6 +2733,7 @@
         "needs_numeric"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "ingest_tabular"
       ],
       "description": "Tiered ideaspace feature extraction + ideal frontier/baseline + gap vectors.",
@@ -1947,7 +2745,9 @@
     },
     "analysis_isolation_forest": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Isolation Forest",
@@ -1983,7 +2783,9 @@
     },
     "analysis_kernel_two_sample_mmd": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Kernel Two Sample Mmd",
@@ -1993,7 +2795,9 @@
     },
     "analysis_kingman_vut_approx": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Kingman Vut Approx",
@@ -2017,7 +2821,9 @@
     },
     "analysis_lagged_predictability_test": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Lagged Predictability Test",
@@ -2027,7 +2833,9 @@
     },
     "analysis_littles_law_consistency": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Littles Law Consistency",
@@ -2037,7 +2845,9 @@
     },
     "analysis_local_outlier_factor": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Local Outlier Factor",
@@ -2047,7 +2857,9 @@
     },
     "analysis_log_template_drain": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Log Template Drain",
@@ -2067,11 +2879,37 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_lomb_scargle_periodogram_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_lomb_scargle_periodogram_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_lomb_scargle_periodogram_v1",
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_mann_kendall_trend_test_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_mann_kendall_trend_test_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_mann_kendall_trend_test_v1",
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_map_permutation_test_karniski": {
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Map Permutation Test Karniski",
@@ -2079,9 +2917,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_marked_point_process_intensity_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_marked_point_process_intensity_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_marked_point_process_intensity_v1",
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_markov_transition_shift": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Markov Transition Shift",
@@ -2091,7 +2943,9 @@
     },
     "analysis_matrix_profile_motifs_discords": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Matrix Profile Motifs Discords",
@@ -2101,7 +2955,9 @@
     },
     "analysis_message_entropy_drift": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Message Entropy Drift",
@@ -2114,7 +2970,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Monte Carlo Surface Uncertainty",
@@ -2122,13 +2980,39 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_multicollinearity_vif_screen_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_multicollinearity_vif_screen_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_multicollinearity_vif_screen_v1",
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_multiple_testing_fdr": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Multiple Testing Fdr",
       "plugin_id": "analysis_multiple_testing_fdr",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_multiscale_entropy_mse_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_multiscale_entropy_mse_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_multiscale_entropy_mse_v1",
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2158,7 +3042,9 @@
     },
     "analysis_multivariate_ewma_control": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Multivariate Ewma Control",
@@ -2168,7 +3054,9 @@
     },
     "analysis_multivariate_t2_control": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Multivariate T2 Control",
@@ -2178,11 +3066,25 @@
     },
     "analysis_mutual_information_screen": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Mutual Information Screen",
       "plugin_id": "analysis_mutual_information_screen",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_negative_binomial_overdispersion_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_negative_binomial_overdispersion_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_negative_binomial_overdispersion_v1",
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2202,7 +3104,9 @@
     },
     "analysis_one_class_svm": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "One Class Svm",
@@ -2221,6 +3125,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Online Conformal Changepoint",
       "plugin_id": "analysis_online_conformal_changepoint",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_outlier_influence_cooks_distance_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_outlier_influence_cooks_distance_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_outlier_influence_cooks_distance_v1",
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2264,6 +3180,7 @@
         "needs_categorical"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Detects high unique(parameter)/runs ratios per process (cache/batch opportunities).",
@@ -2273,11 +3190,25 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_partial_correlation_network_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_partial_correlation_network_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_partial_correlation_network_shift_v1",
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_pca_auto": {
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Pca Auto",
@@ -2287,7 +3218,9 @@
     },
     "analysis_pca_control_chart": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Pca Control Chart",
@@ -2310,11 +3243,49 @@
     },
     "analysis_periodicity_spectral_scan": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Periodicity Spectral Scan",
       "plugin_id": "analysis_periodicity_spectral_scan",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_permutation_entropy_drift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_permutation_entropy_drift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_permutation_entropy_drift_v1",
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_piecewise_linear_trend_changepoints_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_piecewise_linear_trend_changepoints_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_piecewise_linear_trend_changepoints_v1",
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_poisson_regression_rate_drivers_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_poisson_regression_rate_drivers_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_poisson_regression_rate_drivers_v1",
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2332,7 +3303,9 @@
     },
     "analysis_process_drift_conformance_over_time": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Process Drift Conformance Over Time",
@@ -2369,7 +3342,9 @@
     },
     "analysis_proportional_hazards_duration": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Proportional Hazards Duration",
@@ -2377,13 +3352,63 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_quantile_loss_boosting_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_quantile_loss_boosting_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_quantile_loss_boosting_v1",
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_quantile_mapping_drift_qq_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_quantile_mapping_drift_qq_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_quantile_mapping_drift_qq_v1",
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_quantile_regression_duration": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Quantile Regression Duration",
       "plugin_id": "analysis_quantile_regression_duration",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_quantile_regression_forest_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_quantile_regression_forest_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_quantile_regression_forest_v1",
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_quantile_sketch_p2_streaming_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_quantile_sketch_p2_streaming_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_quantile_sketch_p2_streaming_v1",
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2404,11 +3429,37 @@
     },
     "analysis_queue_model_fit": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Queue Model Fit",
       "plugin_id": "analysis_queue_model_fit",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_random_matrix_marchenko_pastur_denoise_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_randomization_test_median_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_randomization_test_median_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_randomization_test_median_shift_v1",
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2426,11 +3477,25 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_recurrence_quantification_rqa_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_recurrence_quantification_rqa_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_recurrence_quantification_rqa_v1",
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_regression_auto": {
       "capabilities": [
         "needs_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Regression Auto",
@@ -2444,6 +3509,7 @@
         "needs_categorical"
       ],
       "depends_on": [
+        "analysis_close_cycle_window_resolver",
         "transform_normalize_mixed"
       ],
       "description": "Identify processes with high retry/attempt rates.",
@@ -2455,7 +3521,9 @@
     },
     "analysis_robust_covariance_outliers": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Robust Covariance Outliers",
@@ -2465,7 +3533,9 @@
     },
     "analysis_robust_pca_pcp": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Robust Pca Pcp",
@@ -2485,6 +3555,30 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_robust_regression_huber_ransac_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_robust_regression_huber_ransac_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_robust_regression_huber_ransac_v1",
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_sample_entropy_irregularity_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_sample_entropy_irregularity_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_sample_entropy_irregularity_v1",
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_scan_statistics": {
       "capabilities": [
         "needs_numeric"
@@ -2496,6 +3590,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Scan Statistics",
       "plugin_id": "analysis_scan_statistics",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_seasonal_holt_winters_forecast_residuals_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2529,7 +3635,9 @@
     },
     "analysis_sequential_patterns_prefixspan": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Sequential Patterns Prefixspan",
@@ -2570,13 +3678,75 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_sparse_pca_interpretable_components_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_sparse_pca_interpretable_components_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_sparse_pca_interpretable_components_v1",
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_spectral_radius_stability_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_spectral_radius_stability_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_spectral_radius_stability_v1",
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_state_space_kalman_residuals": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "State Space Kalman Residuals",
       "plugin_id": "analysis_state_space_kalman_residuals",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_state_space_smoother_level_shift_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_state_space_smoother_level_shift_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_state_space_smoother_level_shift_v1",
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_stl_seasonal_decompose_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_stl_seasonal_decompose_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_stl_seasonal_decompose_v1",
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_subspace_tracking_oja_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_subspace_tracking_oja_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_subspace_tracking_oja_v1",
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2585,7 +3755,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Fabric Sso Eigen",
@@ -2598,7 +3770,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Fractal Dimension Variogram",
@@ -2611,7 +3785,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Hydrology Flow Watershed",
@@ -2624,7 +3800,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Multiscale Wavelet Curvature",
@@ -2637,7 +3815,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Roughness Metrics",
@@ -2650,7 +3830,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Rugosity Index",
@@ -2663,7 +3845,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Surface Terrain Position Index",
@@ -2673,7 +3857,9 @@
     },
     "analysis_survival_kaplan_meier": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Survival Kaplan Meier",
@@ -2685,7 +3871,9 @@
       "capabilities": [
         "needs_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Survival Time To Event",
@@ -2711,7 +3899,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Tda Betti Curve Changepoint",
@@ -2724,7 +3914,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Tda Mapper Graph",
@@ -2737,7 +3929,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Tda Persistence Landscapes",
@@ -2750,7 +3944,9 @@
         "topo_tda_addon",
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Tda Persistent Homology",
@@ -2760,7 +3956,9 @@
     },
     "analysis_template_drift_two_sample": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Template Drift Two Sample",
@@ -2770,7 +3968,9 @@
     },
     "analysis_term_burst_kleinberg": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Term Burst Kleinberg",
@@ -2783,7 +3983,9 @@
         "needs_numeric",
         "needs_timestamp"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Time Series Auto",
@@ -2793,7 +3995,9 @@
     },
     "analysis_topic_model_lda": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Topic Model Lda",
@@ -2806,7 +4010,9 @@
         "needs_multi_numeric",
         "needs_timestamp"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Topographic Angle Dynamics",
@@ -2818,7 +4024,9 @@
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Topographic Similarity Angle Projection",
@@ -2830,7 +4038,9 @@
       "capabilities": [
         "needs_multi_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Topographic Tanova Permutation",
@@ -2855,7 +4065,9 @@
     },
     "analysis_transfer_entropy_directional": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Transfer Entropy Directional",
@@ -2867,7 +4079,9 @@
       "capabilities": [
         "needs_numeric"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Topo/TDA addon pack plugin.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Ttests Auto",
@@ -2877,7 +4091,9 @@
     },
     "analysis_two_sample_categorical_chi2": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Two Sample Categorical Chi2",
@@ -2887,7 +4103,9 @@
     },
     "analysis_two_sample_numeric_ad": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Two Sample Numeric Ad",
@@ -2897,7 +4115,9 @@
     },
     "analysis_two_sample_numeric_ks": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Two Sample Numeric Ks",
@@ -2907,7 +4127,9 @@
     },
     "analysis_two_sample_numeric_mann_whitney": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Two Sample Numeric Mann Whitney",
@@ -2942,7 +4164,9 @@
     },
     "analysis_variant_differential": {
       "capabilities": [],
-      "depends_on": [],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver"
+      ],
       "description": "Auto-generated plugin skeleton.",
       "entrypoint": "plugin.py:Plugin",
       "name": "Variant Differential",
@@ -2962,6 +4186,30 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Waterfall Summary v2",
       "plugin_id": "analysis_waterfall_summary_v2",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_wild_binary_segmentation_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_wild_binary_segmentation_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_wild_binary_segmentation_v1",
+      "plugin_id": "analysis_wild_binary_segmentation_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_zero_inflated_count_model_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_zero_inflated_count_model_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_zero_inflated_count_model_v1",
+      "plugin_id": "analysis_zero_inflated_count_model_v1",
       "type": "analysis",
       "version": "0.1.0"
     },

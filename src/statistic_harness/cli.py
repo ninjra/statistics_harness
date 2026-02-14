@@ -35,7 +35,6 @@ from statistic_harness.core.utils import (
     vector_store_enabled,
 )
 from statistic_harness.core.vector_store import VectorStore, hash_embedding
-from statistic_harness.ui.server import app
 
 
 if is_windows_or_wsl() and "STAT_HARNESS_SAFE_RENAME" not in os.environ:
@@ -282,6 +281,8 @@ def cmd_replay(run_id: str) -> None:
 
 
 def cmd_serve(host: str, port: int) -> None:
+    from statistic_harness.ui.server import app
+
     allow_network = os.environ.get("STAT_HARNESS_ALLOW_NETWORK", "").lower() in {
         "1",
         "true",

@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "stat_plugin_config",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "seed": {
+      "type": "integer",
+      "default": 1337
+    },
+    "time_budget_ms": {
+      "type": "integer",
+      "default": 25000
+    },
+    "max_rows": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 200000
+    },
+    "max_cols": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 80
+    },
+    "max_pairs": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 2000
+    },
+    "max_windows": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 64
+    },
+    "max_findings": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 30
+    },
+    "allow_row_sampling": {
+      "type": "boolean",
+      "default": false
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enable_redaction": {
+          "type": "boolean",
+          "default": true
+        },
+        "redact_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "email",
+            "ip",
+            "uuid",
+            "credit_card",
+            "phone"
+          ]
+        },
+        "max_exemplars": {
+          "type": "integer",
+          "default": 3
+        },
+        "allow_exemplar_snippets": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "default": {}
+    },
+    "verbosity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high"
+      ],
+      "default": "normal"
+    },
+    "plugin": {
+      "type": "object",
+      "additionalProperties": true,
+      "default": {}
+    }
+  }
+}

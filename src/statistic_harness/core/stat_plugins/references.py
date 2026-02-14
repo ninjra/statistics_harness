@@ -322,6 +322,216 @@ REFERENCE_LIBRARY: dict[str, dict[str, Any]] = {
         "doi": "",
         "notes": "Shrinkage / empirical Bayes (James–Stein)",
     },
+    "beta_binomial": {
+        "title": "Beta-binomial distribution (overview)",
+        "url": "https://en.wikipedia.org/wiki/Beta-binomial_distribution",
+        "doi": "",
+        "notes": "Binary overdispersion under beta-binomial assumptions",
+    },
+    "circular_stats": {
+        "title": "Fisher (1993) Statistical Analysis of Circular Data (overview)",
+        "url": "https://en.wikipedia.org/wiki/Circular_statistics",
+        "doi": "",
+        "notes": "Circular time-of-day drift",
+    },
+    "mann_kendall": {
+        "title": "Mann-Kendall trend test (overview)",
+        "url": "https://en.wikipedia.org/wiki/Mann%E2%80%93Kendall_trend_test",
+        "doi": "",
+        "notes": "Monotone trend detection",
+    },
+    "qq_plot": {
+        "title": "Q-Q plot (overview)",
+        "url": "https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot",
+        "doi": "",
+        "notes": "Quantile mapping drift",
+    },
+    "data_quality": {
+        "title": "Data quality dimensions (overview)",
+        "url": "https://en.wikipedia.org/wiki/Data_quality",
+        "doi": "",
+        "notes": "Constraint and invariant violation diagnostics",
+    },
+    "negative_binomial": {
+        "title": "Negative binomial distribution (overview)",
+        "url": "https://en.wikipedia.org/wiki/Negative_binomial_distribution",
+        "doi": "",
+        "notes": "Count overdispersion modeling",
+    },
+    "partial_correlation": {
+        "title": "Partial correlation (overview)",
+        "url": "https://en.wikipedia.org/wiki/Partial_correlation",
+        "doi": "",
+        "notes": "Conditional dependency networks",
+    },
+    "ledoit_wolf": {
+        "title": "Ledoit-Wolf shrinkage (overview)",
+        "url": "https://en.wikipedia.org/wiki/Ledoit%E2%80%93Wolf_shrinkage",
+        "doi": "",
+        "notes": "Shrinkage covariance for precision estimation",
+    },
+    "prophet_2017": {
+        "title": "Taylor & Letham (2017) Forecasting at scale (Prophet)",
+        "url": "https://peerj.com/preprints/3190/",
+        "doi": "",
+        "notes": "Piecewise trend decomposition reference pointer",
+    },
+    "poisson_regression": {
+        "title": "Poisson regression (overview)",
+        "url": "https://en.wikipedia.org/wiki/Poisson_regression",
+        "doi": "",
+        "notes": "Count-rate modeling",
+    },
+    "glm_nelder_wedderburn": {
+        "title": "Generalized linear model (overview)",
+        "url": "https://en.wikipedia.org/wiki/Generalized_linear_model",
+        "doi": "",
+        "notes": "GLM foundations",
+    },
+    "p2_quantile": {
+        "title": "Approximate quantiles / P² algorithm pointer",
+        "url": "https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Approximate_quantiles",
+        "doi": "",
+        "notes": "Streaming quantile estimation",
+    },
+    "huber_1964": {
+        "title": "Huber loss (overview)",
+        "url": "https://en.wikipedia.org/wiki/Huber_loss",
+        "doi": "",
+        "notes": "Robust regression",
+    },
+    "ransac_1981": {
+        "title": "RANSAC (overview)",
+        "url": "https://en.wikipedia.org/wiki/Random_sample_consensus",
+        "doi": "",
+        "notes": "Outlier-robust model fitting",
+    },
+    "rts_smoother": {
+        "title": "Rauch-Tung-Striebel smoother (overview)",
+        "url": "https://en.wikipedia.org/wiki/Kalman_filter#Rauch%E2%80%93Tung%E2%80%93Striebel",
+        "doi": "",
+        "notes": "State-space smoothing",
+    },
+    "aft_survival": {
+        "title": "Accelerated failure time model (overview)",
+        "url": "https://en.wikipedia.org/wiki/Accelerated_failure_time_model",
+        "doi": "",
+        "notes": "Survival regression in log-time",
+    },
+    "competing_risks": {
+        "title": "Competing risks (overview)",
+        "url": "https://en.wikipedia.org/wiki/Competing_risks",
+        "doi": "",
+        "notes": "Competing risks cumulative incidence",
+    },
+    "fine_gray_1999": {
+        "title": "Fine-Gray model (overview pointer)",
+        "url": "https://en.wikipedia.org/wiki/Competing_risks#Fine%E2%80%93Gray_model",
+        "doi": "",
+        "notes": "Subdistribution hazard formulation pointer",
+    },
+    "haar_1910": {
+        "title": "Haar wavelet (overview)",
+        "url": "https://en.wikipedia.org/wiki/Haar_wavelet",
+        "doi": "",
+        "notes": "Wavelet transient analysis",
+    },
+    "wavelets_intro": {
+        "title": "Wavelet transform (overview)",
+        "url": "https://en.wikipedia.org/wiki/Wavelet_transform",
+        "doi": "",
+        "notes": "Multiscale signal decomposition",
+    },
+    "hurst_1951": {
+        "title": "Hurst exponent (overview)",
+        "url": "https://en.wikipedia.org/wiki/Hurst_exponent",
+        "doi": "",
+        "notes": "Long-memory diagnostics",
+    },
+    "bandt_pompe_2002": {
+        "title": "Permutation entropy (overview)",
+        "url": "https://en.wikipedia.org/wiki/Permutation_entropy",
+        "doi": "",
+        "notes": "Ordinal-pattern complexity",
+    },
+    "dea_ccr_1978": {
+        "title": "Data envelopment analysis (overview)",
+        "url": "https://en.wikipedia.org/wiki/Data_envelopment_analysis",
+        "doi": "",
+        "notes": "Frontier efficiency concepts",
+    },
+    "newman_assortativity_2002": {
+        "title": "Assortativity (overview)",
+        "url": "https://en.wikipedia.org/wiki/Assortativity",
+        "doi": "",
+        "notes": "Mixing-pattern diagnostics in graphs",
+    },
+    "pagerank_1998": {
+        "title": "PageRank (overview)",
+        "url": "https://en.wikipedia.org/wiki/PageRank",
+        "doi": "",
+        "notes": "Graph centrality ranking",
+    },
+    "higuchi_1988": {
+        "title": "Fractal dimension for time series (overview)",
+        "url": "https://en.wikipedia.org/wiki/Fractal_dimension#Time_series",
+        "doi": "",
+        "notes": "Higuchi complexity estimate",
+    },
+    "point_process_ogata_1988": {
+        "title": "Point process (overview)",
+        "url": "https://en.wikipedia.org/wiki/Point_process",
+        "doi": "",
+        "notes": "Event intensity modeling pointer",
+    },
+    "perron_frobenius": {
+        "title": "Spectral radius (overview)",
+        "url": "https://en.wikipedia.org/wiki/Spectral_radius",
+        "doi": "",
+        "notes": "Stability proxy from leading eigenvalue",
+    },
+    "efron_1979_bootstrap": {
+        "title": "Bootstrapping (overview)",
+        "url": "https://en.wikipedia.org/wiki/Bootstrapping_(statistics)",
+        "doi": "",
+        "notes": "Resampling confidence intervals",
+    },
+    "energy_distance_szekely_2004": {
+        "title": "Energy distance (overview)",
+        "url": "https://en.wikipedia.org/wiki/Energy_distance",
+        "doi": "",
+        "notes": "Distributional two-sample distance",
+    },
+    "permutation_tests_fisher_1935": {
+        "title": "Permutation test (overview)",
+        "url": "https://en.wikipedia.org/wiki/Permutation_test",
+        "doi": "",
+        "notes": "Randomization testing",
+    },
+    "distance_covariance_szekely_2007": {
+        "title": "Distance covariance/correlation (overview)",
+        "url": "https://en.wikipedia.org/wiki/Distance_correlation",
+        "doi": "",
+        "notes": "Nonlinear dependence metrics",
+    },
+    "network_motifs_milo_2002": {
+        "title": "Network motif (overview)",
+        "url": "https://en.wikipedia.org/wiki/Network_motif",
+        "doi": "",
+        "notes": "Motif-based graph structure drift",
+    },
+    "mse_costa_2002": {
+        "title": "Multiscale entropy (overview)",
+        "url": "https://en.wikipedia.org/wiki/Multiscale_entropy",
+        "doi": "",
+        "notes": "Complexity across scales",
+    },
+    "sampen_richman_moorman_2000": {
+        "title": "Sample entropy (overview)",
+        "url": "https://en.wikipedia.org/wiki/Sample_entropy",
+        "doi": "",
+        "notes": "Time-series irregularity metric",
+    },
 }
 
 
@@ -445,4 +655,66 @@ def default_references_for_plugin(plugin_id: str) -> list[dict[str, Any]]:
         refs += _collect("discrete_event")
     if "shrinkage" in pid or "empirical_bayes" in pid:
         refs += _collect("james_stein")
+    if "beta_binomial_overdispersion" in pid:
+        refs += _collect("beta_binomial")
+    if "circular_time_of_day" in pid:
+        refs += _collect("circular_stats")
+    if "mann_kendall" in pid:
+        refs += _collect("mann_kendall")
+    if "quantile_mapping" in pid or "drift_qq" in pid or "qq" in pid:
+        refs += _collect("qq_plot")
+    if "constraints_violation" in pid:
+        refs += _collect("data_quality")
+    if "negative_binomial" in pid:
+        refs += _collect("negative_binomial")
+    if "partial_correlation" in pid:
+        refs += _collect("partial_correlation", "ledoit_wolf")
+    if "piecewise_linear_trend" in pid:
+        refs += _collect("prophet_2017")
+    if "poisson_regression" in pid:
+        refs += _collect("poisson_regression", "glm_nelder_wedderburn")
+    if "quantile_sketch_p2_streaming" in pid or "p2_streaming" in pid:
+        refs += _collect("p2_quantile")
+    if "huber" in pid:
+        refs += _collect("huber_1964")
+    if "ransac" in pid:
+        refs += _collect("ransac_1981")
+    if "state_space_smoother" in pid or "rts" in pid or "smoother" in pid:
+        refs += _collect("rts_smoother", "kalman")
+    if "aft_survival" in pid:
+        refs += _collect("aft_survival")
+    if "competing_risks" in pid or "cif" in pid:
+        refs += _collect("competing_risks", "fine_gray_1999")
+    if "haar_wavelet" in pid:
+        refs += _collect("haar_1910", "wavelets_intro")
+    if "hurst_exponent" in pid:
+        refs += _collect("hurst_1951")
+    if "permutation_entropy" in pid:
+        refs += _collect("bandt_pompe_2002")
+    if "capacity_frontier" in pid or "dea" in pid:
+        refs += _collect("dea_ccr_1978")
+    if "assortativity" in pid:
+        refs += _collect("newman_assortativity_2002")
+    if "pagerank" in pid:
+        refs += _collect("pagerank_1998")
+    if "higuchi" in pid:
+        refs += _collect("higuchi_1988")
+    if "marked_point_process" in pid:
+        refs += _collect("point_process_ogata_1988")
+    if "spectral_radius" in pid:
+        refs += _collect("perron_frobenius")
+    if "bootstrap_ci" in pid:
+        refs += _collect("efron_1979_bootstrap")
+    if "energy_distance" in pid:
+        refs += _collect("energy_distance_szekely_2004")
+    if "randomization_test" in pid:
+        refs += _collect("permutation_tests_fisher_1935")
+    if "distance_covariance" in pid:
+        refs += _collect("distance_covariance_szekely_2007")
+    if "graph_motif" in pid or "triads" in pid:
+        refs += _collect("network_motifs_milo_2002")
+    if "multiscale_entropy" in pid:
+        refs += _collect("mse_costa_2002")
+    if "sample_entropy" in pid:
+        refs += _collect("sampen_richman_moorman_2000")
     return refs

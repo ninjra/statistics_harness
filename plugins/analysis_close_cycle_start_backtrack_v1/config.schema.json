@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Close Cycle Start Backtrack Config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "process_column": { "type": ["string", "null"] },
+    "params_column": { "type": ["string", "null"] },
+    "start_column": { "type": ["string", "null"] },
+    "queue_column": { "type": ["string", "null"] },
+    "close_start_day": { "type": "integer", "minimum": 1, "maximum": 28 },
+    "close_end_day": { "type": "integer", "minimum": 1, "maximum": 28 },
+    "lookback_days": { "type": "integer", "minimum": 3, "maximum": 45 },
+    "min_signature_months": { "type": "integer", "minimum": 1, "maximum": 24 },
+    "min_signature_share": { "type": "number", "minimum": 0.01, "maximum": 1.0 },
+    "min_streak_days": { "type": "integer", "minimum": 1, "maximum": 31 },
+    "max_gap_days": { "type": "integer", "minimum": 0, "maximum": 7 },
+    "indicator_window_hours": { "type": "number", "minimum": 1, "maximum": 168 },
+    "dominance_min_share": { "type": "number", "minimum": 0.1, "maximum": 1.0 },
+    "persistence_days": { "type": "integer", "minimum": 1, "maximum": 14 }
+  }
+}

@@ -4,6 +4,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+DEFAULT_CLOSE_WINDOW_PLUGIN_IDS: tuple[str, ...] = (
+    "analysis_close_cycle_window_resolver",
+    "analysis_close_cycle_start_backtrack_v1",
+)
+
 
 @dataclass(frozen=True)
 class CloseWindow:
@@ -13,6 +18,9 @@ class CloseWindow:
     dynamic_start: Any
     dynamic_end: Any
     delta_days: float | None
+    source: str | None = None
+    confidence: float | None = None
+    fallback_reason: str | None = None
 
 
 def load_close_cycle_windows(
@@ -48,9 +56,52 @@ def load_close_cycle_windows(
                 dynamic_start=getattr(row, "close_start_dynamic", None),
                 dynamic_end=getattr(row, "close_end_dynamic", None),
                 delta_days=_safe_float(getattr(row, "close_end_delta_days", None)),
+                source=getattr(row, "source", None),
+                confidence=_safe_float(getattr(row, "confidence", None)),
+                fallback_reason=getattr(row, "fallback_reason", None),
             )
         )
     return windows
+
+
+def load_preferred_close_cycle_windows(
+    run_dir: Path,
+    plugin_ids: Iterable[str] | None = None,
+) -> tuple[list[CloseWindow], str | None]:
+    ordered = list(plugin_ids or DEFAULT_CLOSE_WINDOW_PLUGIN_IDS)
+    for plugin_id in ordered:
+        windows = load_close_cycle_windows(run_dir, plugin_id=plugin_id)
+        if windows:
+            return windows, plugin_id
+    return [], None
+
+
+def resolve_active_close_cycle_mask(
+    timestamps: Any,
+    run_dir: Path,
+    plugin_ids: Iterable[str] | None = None,
+) -> tuple[Any, bool, str | None, list[CloseWindow]]:
+    try:
+        import pandas as pd  # type: ignore
+    except ImportError:
+        return None, False, None, []
+    if timestamps is None:
+        return None, False, None, []
+    series = pd.to_datetime(timestamps, errors="coerce")
+    if not hasattr(series, "dt"):
+        series = pd.Series(series)
+    if series is None or len(series) == 0:
+        return None, False, None, []
+
+    windows, source_plugin = load_preferred_close_cycle_windows(
+        run_dir, plugin_ids=plugin_ids
+    )
+    if not windows:
+        return None, False, source_plugin, []
+    mask = _mask_from_windows(series, windows, "dynamic_start", "dynamic_end")
+    if mask is None:
+        return None, False, source_plugin, windows
+    return mask, True, source_plugin, windows
 
 
 def resolve_close_cycle_masks(

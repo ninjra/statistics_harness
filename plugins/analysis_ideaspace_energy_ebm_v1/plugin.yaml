@@ -4,6 +4,7 @@ version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
+  - analysis_close_cycle_window_resolver
   - transform_normalize_mixed
 settings:
   description: Deterministic energy-based model scoring ideaspace state vs ideal (baseline or frontier).

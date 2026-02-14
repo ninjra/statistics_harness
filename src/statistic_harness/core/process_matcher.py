@@ -24,6 +24,9 @@ def parse_exclude_patterns_env(
     env_var: str = "STAT_HARNESS_EXCLUDE_PROCESSES",
 ) -> list[str]:
     raw = os.environ.get(env_var, "").strip()
+    # Back-compat alias accepted by existing tests/configs.
+    if not raw:
+        raw = os.environ.get("STAT_HARNESS_EXCLUDED_PROCESSES", "").strip()
     if not raw:
         return []
     out: list[str] = []
@@ -115,4 +118,3 @@ def compile_patterns(patterns: Iterable[str]) -> Callable[[str], bool]:
         return False
 
     return _matches
-

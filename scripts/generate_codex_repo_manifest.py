@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 from pathlib import Path
 
@@ -24,14 +25,13 @@ def _git_ls_files() -> list[str]:
 
 def _fallback_manifest() -> list[str]:
     out: list[str] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file():
-            continue
-        rel = path.relative_to(ROOT)
-        parts = set(rel.parts)
-        if ".git" in parts or ".venv" in parts or "__pycache__" in parts:
-            continue
-        out.append(str(rel).replace("\\", "/"))
+    skip_dirs = {".git", ".venv", "__pycache__", ".pytest_cache", ".mypy_cache", "appdata"}
+    for dirpath, dirnames, filenames in os.walk(ROOT, topdown=True):
+        dirnames[:] = [name for name in dirnames if name not in skip_dirs]
+        base = Path(dirpath)
+        for filename in filenames:
+            rel = (base / filename).relative_to(ROOT)
+            out.append(str(rel).replace("\\", "/"))
     return sorted(out)
 
 

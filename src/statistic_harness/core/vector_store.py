@@ -41,6 +41,7 @@ class VectorStore:
         ensure_dir(db_path.parent)
         self.db_path = db_path
         self.tenant_id = tenant_id or DEFAULT_TENANT_ID
+        self._vec_available = False
         with self.connection() as conn:
             self._ensure_meta(conn)
 
@@ -50,7 +51,7 @@ class VectorStore:
         conn.execute("PRAGMA foreign_keys = ON")
         conn.execute("PRAGMA journal_mode = WAL")
         conn.execute("PRAGMA synchronous = NORMAL")
-        self._ensure_extension(conn)
+        self._vec_available = self._ensure_extension(conn)
         return conn
 
     @contextmanager
@@ -65,25 +66,21 @@ class VectorStore:
         finally:
             conn.close()
 
-    def _ensure_extension(self, conn: sqlite3.Connection) -> None:
+    def _ensure_extension(self, conn: sqlite3.Connection) -> bool:
         try:
             conn.execute("SELECT vec_version()").fetchone()
-            return
+            return True
         except sqlite3.OperationalError:
             pass
 
         path = os.environ.get("STAT_HARNESS_SQLITE_VEC_PATH", "").strip()
         if not path:
-            raise RuntimeError(
-                "sqlite-vec extension unavailable; set STAT_HARNESS_SQLITE_VEC_PATH"
-            )
+            return False
         try:
             conn.enable_load_extension(True)
             conn.load_extension(path)
-        except (AttributeError, sqlite3.OperationalError) as exc:
-            raise RuntimeError(
-                f"Failed to load sqlite-vec extension from {path}: {exc}"
-            ) from exc
+        except (AttributeError, sqlite3.OperationalError):
+            return False
         finally:
             try:
                 conn.enable_load_extension(False)
@@ -91,8 +88,9 @@ class VectorStore:
                 pass
         try:
             conn.execute("SELECT vec_version()").fetchone()
-        except sqlite3.OperationalError as exc:
-            raise RuntimeError("sqlite-vec extension not available") from exc
+        except sqlite3.OperationalError:
+            return False
+        return True
 
     def _ensure_meta(self, conn: sqlite3.Connection) -> None:
         conn.execute(
@@ -135,18 +133,39 @@ class VectorStore:
             """,
             (self.tenant_id, name, int(dimensions), table_name, now_iso()),
         )
-        conn.execute(
-            f"""
-            CREATE VIRTUAL TABLE IF NOT EXISTS {quote_identifier(table_name)} USING vec0(
-                embedding float[{int(dimensions)}],
-                tenant_id TEXT,
-                collection TEXT,
-                item_id TEXT,
-                payload TEXT,
-                created_at TEXT
+        if self._vec_available:
+            conn.execute(
+                f"""
+                CREATE VIRTUAL TABLE IF NOT EXISTS {quote_identifier(table_name)} USING vec0(
+                    embedding float[{int(dimensions)}],
+                    tenant_id TEXT,
+                    collection TEXT,
+                    item_id TEXT,
+                    payload TEXT,
+                    created_at TEXT
+                )
+                """
             )
-            """
-        )
+        else:
+            conn.execute(
+                f"""
+                CREATE TABLE IF NOT EXISTS {quote_identifier(table_name)} (
+                    embedding_json TEXT NOT NULL,
+                    tenant_id TEXT NOT NULL,
+                    collection TEXT NOT NULL,
+                    item_id TEXT NOT NULL,
+                    payload TEXT,
+                    created_at TEXT,
+                    PRIMARY KEY (tenant_id, collection, item_id)
+                )
+                """
+            )
+            conn.execute(
+                f"""
+                CREATE INDEX IF NOT EXISTS {quote_identifier(table_name + "_lookup_idx")}
+                ON {quote_identifier(table_name)} (tenant_id, collection, created_at)
+                """
+            )
         return table_name
 
     def _has_column(self, conn: sqlite3.Connection, table_name: str, column: str) -> bool:
@@ -241,20 +260,36 @@ class VectorStore:
                     rows.append(
                         (vec_json, self.tenant_id, collection, item_id, payload_json)
                     )
-            if has_created_at:
-                columns = "(embedding, tenant_id, collection, item_id, payload, created_at)"
-                placeholders = ", ".join(["?"] * 6)
+            if self._vec_available:
+                if has_created_at:
+                    columns = "(embedding, tenant_id, collection, item_id, payload, created_at)"
+                    placeholders = ", ".join(["?"] * 6)
+                else:
+                    columns = "(embedding, tenant_id, collection, item_id, payload)"
+                    placeholders = ", ".join(["?"] * 5)
+                conn.executemany(
+                    f"""
+                    INSERT INTO {quote_identifier(table_name)}
+                    {columns}
+                    VALUES ({placeholders})
+                    """,
+                    rows,
+                )
             else:
-                columns = "(embedding, tenant_id, collection, item_id, payload)"
-                placeholders = ", ".join(["?"] * 5)
-            conn.executemany(
-                f"""
-                INSERT INTO {quote_identifier(table_name)}
-                {columns}
-                VALUES ({placeholders})
-                """,
-                rows,
-            )
+                if has_created_at:
+                    columns = "(embedding_json, tenant_id, collection, item_id, payload, created_at)"
+                    placeholders = ", ".join(["?"] * 6)
+                else:
+                    columns = "(embedding_json, tenant_id, collection, item_id, payload)"
+                    placeholders = ", ".join(["?"] * 5)
+                conn.executemany(
+                    f"""
+                    INSERT OR REPLACE INTO {quote_identifier(table_name)}
+                    {columns}
+                    VALUES ({placeholders})
+                    """,
+                    rows,
+                )
         return item_ids
 
     def query(
@@ -271,42 +306,101 @@ class VectorStore:
             table_name = self._lookup_collection(conn, collection, dimensions)
             if not table_name:
                 return []
-            vec_json = json.dumps(vector, separators=(",", ":"))
-            params: list[Any] = [vec_json, int(k)]
-            where = "WHERE embedding MATCH ? AND k = ?"
-            if as_of and self._has_column(conn, table_name, "created_at"):
-                where += " AND (created_at IS NULL OR created_at <= ?)"
-                params.append(as_of)
-            where += " AND tenant_id = ? AND collection = ?"
-            params.extend([self.tenant_id, collection])
-            cur = conn.execute(
-                f"""
-                SELECT item_id, payload, distance
-                FROM {quote_identifier(table_name)}
-                {where}
-                ORDER BY distance ASC
-                """,
-                params,
-            )
-            results = []
-            for row in cur.fetchall():
-                payload = row["payload"]
-                if payload is None or payload == "":
-                    payload = None
-                elif payload:
-                    try:
-                        payload = json.loads(payload)
-                    except json.JSONDecodeError:
-                        pass
-                results.append(
-                    {
-                        "item_id": row["item_id"],
-                        "distance": row["distance"],
-                        "payload": payload,
-                    }
+            has_created_at = self._has_column(conn, table_name, "created_at")
+            results: list[dict[str, Any]] = []
+            if self._vec_available:
+                vec_json = json.dumps(vector, separators=(",", ":"))
+                params: list[Any] = [vec_json, int(k)]
+                where = "WHERE embedding MATCH ? AND k = ?"
+                if as_of and has_created_at:
+                    where += " AND (created_at IS NULL OR created_at <= ?)"
+                    params.append(as_of)
+                where += " AND tenant_id = ? AND collection = ?"
+                params.extend([self.tenant_id, collection])
+                cur = conn.execute(
+                    f"""
+                    SELECT item_id, payload, distance
+                    FROM {quote_identifier(table_name)}
+                    {where}
+                    ORDER BY distance ASC
+                    """,
+                    params,
                 )
+                rows = cur.fetchall()
+                for row in rows:
+                    payload = row["payload"]
+                    if payload is None or payload == "":
+                        payload = None
+                    elif payload:
+                        try:
+                            payload = json.loads(payload)
+                        except json.JSONDecodeError:
+                            pass
+                    results.append(
+                        {
+                            "item_id": row["item_id"],
+                            "distance": row["distance"],
+                            "payload": payload,
+                        }
+                    )
+            else:
+                params = [self.tenant_id, collection]
+                where = "WHERE tenant_id = ? AND collection = ?"
+                if as_of and has_created_at:
+                    where += " AND (created_at IS NULL OR created_at <= ?)"
+                    params.append(as_of)
+                cur = conn.execute(
+                    f"""
+                    SELECT item_id, payload, embedding_json
+                    FROM {quote_identifier(table_name)}
+                    {where}
+                    """,
+                    params,
+                )
+                rows = cur.fetchall()
+                for row in rows:
+                    embedding_raw = row["embedding_json"]
+                    if not isinstance(embedding_raw, str) or not embedding_raw:
+                        continue
+                    try:
+                        embedding = json.loads(embedding_raw)
+                    except json.JSONDecodeError:
+                        continue
+                    if not isinstance(embedding, list) or len(embedding) != dimensions:
+                        continue
+                    try:
+                        distance = self._l2_distance(vector, embedding)
+                    except Exception:
+                        continue
+                    payload = row["payload"]
+                    if payload is None or payload == "":
+                        payload = None
+                    elif payload:
+                        try:
+                            payload = json.loads(payload)
+                        except json.JSONDecodeError:
+                            pass
+                    results.append(
+                        {
+                            "item_id": row["item_id"],
+                            "distance": distance,
+                            "payload": payload,
+                        }
+                    )
+                results = results[:]
             results.sort(key=lambda item: (item["distance"], item["item_id"]))
-            return results
+            return results[: int(k)]
+
+    def _l2_distance(self, left: list[float], right: list[float]) -> float:
+        if len(left) != len(right):
+            raise ValueError("Vector dimension mismatch")
+        total = 0.0
+        for a, b in zip(left, right):
+            af = float(a)
+            bf = float(b)
+            delta = af - bf
+            total += delta * delta
+        return float(math.sqrt(total))
 
     def delete(self, collection: str, item_ids: list[str], dimensions: int) -> int:
         if not item_ids:

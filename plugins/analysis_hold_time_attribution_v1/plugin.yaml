@@ -4,6 +4,7 @@ version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
+  - analysis_close_cycle_window_resolver
   - transform_normalize_mixed
 settings:
   description: Attribute delay into pre-eligibility holds vs eligible-wait, per process.

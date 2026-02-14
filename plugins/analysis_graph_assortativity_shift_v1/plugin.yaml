@@ -1,0 +1,32 @@
+id: analysis_graph_assortativity_shift_v1
+name: "analysis_graph_assortativity_shift_v1"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+capabilities: [analysis]
+config_schema: "config.schema.json"
+output_schema: "output.schema.json"
+settings:
+  description: "analysis_graph_assortativity_shift_v1"
+  defaults:
+    seed: 1337
+    time_budget_ms: 25000
+    max_rows: 200000
+    max_cols: 80
+    max_pairs: 2000
+    max_windows: 64
+    max_findings: 30
+    allow_row_sampling: false
+    privacy:
+      enable_redaction: true
+      redact_patterns: ["email","ip","uuid","credit_card","phone"]
+      max_exemplars: 3
+      allow_exemplar_snippets: false
+    verbosity: "normal"
+    plugin:
+      max_points_for_quadratic: 2000
+      max_resamples: 200
+sandbox:
+  no_network: true
+  fs_allowlist: [run_dir]
