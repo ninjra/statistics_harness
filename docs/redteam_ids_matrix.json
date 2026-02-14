@@ -460,6 +460,7 @@
           "tests/test_binding_implementation_matrix.py",
           "tests/test_cli_plugins_validate.py",
           "tests/test_codex_catalog_artifacts.py",
+          "tests/test_compare_run_outputs.py",
           "tests/test_config_defaults.py",
           "tests/test_crash_recovery_aborts_plugin_executions.py",
           "tests/test_dedupe_runs.py",
@@ -811,6 +812,7 @@
         "test_paths": [
           "tests/plugins/test_hdbscan_v1.py",
           "tests/test_atomic_writes.py",
+          "tests/test_compare_run_outputs.py",
           "tests/test_config_defaults.py",
           "tests/test_crash_recovery_aborts_plugin_executions.py",
           "tests/test_dataset_row_index_index.py",

@@ -8357,6 +8357,7 @@ scripts/bootstrap.sh
 scripts/build_ideaspace_baseline.py
 scripts/canonicalize_repo_improvements_catalog.py
 scripts/check_text2sql_env.py
+scripts/compare_run_outputs.py
 scripts/docs_coverage_matrix.py
 scripts/download_text2sql_models.py
 scripts/ensure_dataset_indexes.py
@@ -8934,6 +8935,7 @@ tests/test_cli_plugins_validate.py
 tests/test_close_cycle_active_mask.py
 tests/test_close_cycle_spillover.py
 tests/test_codex_catalog_artifacts.py
+tests/test_compare_run_outputs.py
 tests/test_config_defaults.py
 tests/test_crash_recovery_aborts_plugin_executions.py
 tests/test_dataset_row_index_index.py
