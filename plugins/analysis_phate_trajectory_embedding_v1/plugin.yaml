@@ -1,0 +1,28 @@
+id: analysis_phate_trajectory_embedding_v1
+name: PHATE-like Trajectory Embedding
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Diffusion-potential trajectory embedding approximation for process-state
+    progression analysis.
+  defaults:
+    max_rows: 5000
+    max_features: 10
+    n_components: 3
+    top_k: 8
+capabilities:
+- needs_eventlog
+- needs_numeric
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "exclude_processes": {
+      "default": null,
+      "items": {
+        "type": "string"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "max_features": {
+      "default": 14,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_rows": {
+      "default": 12000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "min_env_rows": {
+      "default": 100,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "target_index": {
+      "default": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "top_k": {
+      "default": 10,
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

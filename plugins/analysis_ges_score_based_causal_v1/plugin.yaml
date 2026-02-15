@@ -1,0 +1,25 @@
+id: analysis_ges_score_based_causal_v1
+name: GES-style Score-based Causal Graph
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Greedy score-based DAG edge search using BIC-like improvement criterion.
+  defaults:
+    max_rows: 9000
+    max_features: 10
+    max_edges: 18
+    top_k: 12
+capabilities:
+- needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

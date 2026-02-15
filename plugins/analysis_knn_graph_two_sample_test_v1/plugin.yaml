@@ -1,0 +1,27 @@
+id: analysis_knn_graph_two_sample_test_v1
+name: kNN Graph Two-sample Test
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Friedman-Rafsky-style kNN graph test across temporal cohorts with permutation
+    p-values.
+  defaults:
+    max_rows: 6000
+    max_features: 12
+    k: 7
+    permutations: 200
+capabilities:
+- needs_numeric
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

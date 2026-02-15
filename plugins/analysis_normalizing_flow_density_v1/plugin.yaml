@@ -1,0 +1,26 @@
+id: analysis_normalizing_flow_density_v1
+name: Normalizing Flow Density Approximation
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Flow-like monotonic transform and density scoring approximation for
+    anomaly ranking.
+  defaults:
+    max_rows: 8000
+    max_features: 8
+    quantiles: 32
+    top_k: 12
+capabilities:
+- needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

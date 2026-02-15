@@ -1,0 +1,26 @@
+id: analysis_pc_algorithm_causal_graph_v1
+name: PC Algorithm Causal Skeleton
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Constraint-based causal skeleton approximation using correlation and
+    partial-correlation pruning.
+  defaults:
+    max_rows: 9000
+    max_features: 10
+    alpha: 0.05
+    top_k: 12
+capabilities:
+- needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

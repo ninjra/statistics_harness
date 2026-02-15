@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-02-15T03:05:36.167441+00:00",
+  "run_ids": [
+    "d925e0f58fc349fb8fa485a1a6a7e308",
+    "db57fe848edc419ba66f9139ac761b61",
+    "eb325f419aa64de392bc941d09d16f02"
+  ],
+  "runs": [
+    {
+      "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+      "plugin_count": 26,
+      "requested_run_seed": 123,
+      "run_id": "d925e0f58fc349fb8fa485a1a6a7e308",
+      "run_seed": 123,
+      "status": "completed",
+      "status_counts": {
+        "ok": 25,
+        "skipped": 1
+      }
+    },
+    {
+      "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+      "plugin_count": 27,
+      "requested_run_seed": 123,
+      "run_id": "db57fe848edc419ba66f9139ac761b61",
+      "run_seed": 123,
+      "status": "partial",
+      "status_counts": {
+        "error": 1,
+        "ok": 25,
+        "skipped": 1
+      }
+    },
+    {
+      "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+      "plugin_count": 169,
+      "requested_run_seed": 123,
+      "run_id": "eb325f419aa64de392bc941d09d16f02",
+      "run_seed": 123,
+      "status": "completed",
+      "status_counts": {
+        "ok": 140,
+        "skipped": 29
+      }
+    }
+  ],
+  "schema_version": "golden_release_evidence.v1"
+}

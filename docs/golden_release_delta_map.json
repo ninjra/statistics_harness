@@ -1,0 +1,65 @@
+{
+  "items": [
+    {
+      "checks_passed": 2,
+      "checks_total": 2,
+      "paths": [
+        "src/statistic_harness/core/plugin_runner.py",
+        "tests/test_offline.py"
+      ],
+      "requirement_id": "P0.1",
+      "status": "implemented",
+      "title": "Tri-mode network policy (off|localhost|on)"
+    },
+    {
+      "checks_passed": 3,
+      "checks_total": 3,
+      "paths": [
+        "src/statistic_harness/core/dataset_io.py",
+        "tests/test_dataset_streaming.py"
+      ],
+      "requirement_id": "P0.2",
+      "status": "implemented",
+      "title": "Streaming-first full dataframe guard for large datasets"
+    },
+    {
+      "checks_passed": 3,
+      "checks_total": 3,
+      "paths": [
+        "src/statistic_harness/core/pipeline.py",
+        "tests/test_pipeline_golden_mode.py"
+      ],
+      "requirement_id": "P0.3",
+      "status": "implemented",
+      "title": "Golden execution policy modes"
+    },
+    {
+      "checks_passed": 2,
+      "checks_total": 2,
+      "paths": [
+        "src/statistic_harness/core/four_pillars.py",
+        "src/statistic_harness/core/report.py"
+      ],
+      "requirement_id": "P0.4",
+      "status": "implemented",
+      "title": "4 pillars scorecard attached to report output"
+    },
+    {
+      "checks_passed": 1,
+      "checks_total": 1,
+      "paths": [
+        "scripts/run_gauntlet.sh"
+      ],
+      "requirement_id": "DoD.1",
+      "status": "implemented",
+      "title": "Gauntlet includes plugin discovery gate"
+    }
+  ],
+  "schema_version": "golden_release_delta_map.v1",
+  "source_plan": "docs/codex_4pillars_golden_release_plan.md",
+  "summary": {
+    "implemented": 5,
+    "missing": 0,
+    "partial": 0
+  }
+}

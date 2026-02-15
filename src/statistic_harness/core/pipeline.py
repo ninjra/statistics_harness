@@ -37,6 +37,18 @@ from .utils import (
 from .report import build_report, write_report
 from .large_dataset_policy import caps_for as _large_caps_for, as_budget_dict as _large_caps_budget
 
+_GOLDEN_MODE_ENV = "STAT_HARNESS_GOLDEN_MODE"
+_GOLDEN_MODES = {"off", "default", "strict"}
+
+
+def _golden_mode() -> str:
+    raw = os.environ.get(_GOLDEN_MODE_ENV, "").strip().lower()
+    if raw in _GOLDEN_MODES:
+        return raw
+    if raw in {"1", "true", "yes", "on"}:
+        return "strict"
+    return "off"
+
 
 class Pipeline:
     def __init__(
@@ -1662,10 +1674,31 @@ class Pipeline:
         plugin_executions = self.storage.fetch_plugin_executions(run_id)
         # A run can be "completed" even if some plugins are skipped or degraded under evidence gates.
         # Treat only true failures as "partial".
+        golden_mode = _golden_mode()
+        skipped_count = sum(
+            1
+            for row in plugin_results
+            if str(row.get("status") or "").lower() == "skipped"
+        )
         any_failures = any(
             str(row.get("status") or "").lower() in {"error", "aborted"} for row in plugin_results
         )
+        strict_skip_violation = bool(golden_mode == "strict" and skipped_count > 0)
+        if strict_skip_violation:
+            any_failures = True
         final_status = "partial" if any_failures else "completed"
+        if strict_skip_violation:
+            self.storage.insert_event(
+                kind="run_policy_violation",
+                created_at=now_iso(),
+                run_id=run_id,
+                run_fingerprint=run_fingerprint,
+                payload={
+                    "policy": "golden_strict",
+                    "reason": "skipped_plugins_not_allowed",
+                    "skipped_count": int(skipped_count),
+                },
+            )
 
         # Update run status before final report synthesis so report.json/report.md reflect completion.
         self.storage.update_run_status(run_id, final_status)
@@ -1750,6 +1783,9 @@ class Pipeline:
             "artifacts": sorted(artifacts, key=lambda a: (str(a.get("plugin_id") or ""), str(a.get("path") or ""))),
             "summary": {"status": final_status},
         }
+        manifest["summary"]["golden_mode"] = golden_mode
+        manifest["summary"]["skipped_count"] = int(skipped_count)
+        manifest["summary"]["strict_skip_violation"] = bool(strict_skip_violation)
         manifest_path = run_dir / "run_manifest.json"
         write_json(manifest_path, manifest)
         manifest_sha = file_sha256(manifest_path)
@@ -1772,6 +1808,10 @@ class Pipeline:
             run_fingerprint=run_fingerprint,
             payload={"status": final_status},
         )
+        if strict_skip_violation:
+            raise RuntimeError(
+                "STAT_HARNESS_GOLDEN_MODE=strict failed: one or more plugins returned skipped"
+            )
         return run_id
 
 

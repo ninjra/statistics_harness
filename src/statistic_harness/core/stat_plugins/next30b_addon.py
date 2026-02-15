@@ -2547,6 +2547,13 @@ def _handler_multiscale_entropy_mse_v1(
     post = pd.to_numeric(split.post[col], errors="coerce").dropna().to_numpy(dtype=float)
     if len(pre) < 80 or len(post) < 80:
         return _ok_with_reason(plugin_id, ctx, df, sample_meta, "insufficient_points")
+    cap_df = pd.DataFrame({"v": np.concatenate([pre, post])})
+    cap_df, cap_meta = _cap_quadratic(cap_df, config, int(config.get("seed", 1337)), ctx)
+    half = len(cap_df) // 2
+    pre = cap_df["v"].to_numpy(dtype=float)[:half]
+    post = cap_df["v"].to_numpy(dtype=float)[half:]
+    if len(pre) < 80 or len(post) < 80:
+        return _ok_with_reason(plugin_id, ctx, df, sample_meta, "insufficient_points_after_cap")
     scales = int(config.get("plugin", {}).get("scales", 8))
     scales = max(2, min(scales, 10))
     rows = []
@@ -2583,7 +2590,7 @@ def _handler_multiscale_entropy_mse_v1(
                 confidence=0.69,
             )
         )
-    artifacts = [_artifact_json(ctx, plugin_id, "mse.json", {"column": col, "scales": scales, "rows": rows, "mse_pre": avg_pre, "mse_post": avg_post, "delta": delta}, "Multiscale entropy summary")]
+    artifacts = [_artifact_json(ctx, plugin_id, "mse.json", {"column": col, "scales": scales, "rows": rows, "mse_pre": avg_pre, "mse_post": avg_post, "delta": delta, **cap_meta}, "Multiscale entropy summary")]
     return _finalize(
         plugin_id,
         ctx,

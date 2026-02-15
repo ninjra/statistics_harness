@@ -1,0 +1,26 @@
+id: analysis_ksd_stein_discrepancy_anomaly_v1
+name: KSD Stein Discrepancy Anomaly
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Kernelized Stein discrepancy over baseline vs recent samples for fit/anomaly
+    diagnostics.
+  defaults:
+    max_rows: 6000
+    max_features: 10
+    top_k: 8
+capabilities:
+- needs_numeric
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
