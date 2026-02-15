@@ -25,6 +25,12 @@ from statistic_harness.core.utils import make_run_id
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+def _debug_stage(label: str) -> None:
+    raw = os.environ.get("STAT_HARNESS_DEBUG_STARTUP", "").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        print(f"STAGE={label}", flush=True)
+
+
 def _connect(db_path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -1022,6 +1028,7 @@ def _render_recommendations_plain_md(
 
 
 def main() -> int:
+    _debug_stage("main_start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset-version-id", default="")
     parser.add_argument("--run-seed", type=int, default=123)
@@ -1089,6 +1096,7 @@ def main() -> int:
         help="Optional denylist of plugin ids for planner auto mode (comma/space/semicolon-separated).",
     )
     args = parser.parse_args()
+    _debug_stage("args_parsed")
 
     # User-facing completeness: include known-issue recommendations in report synthesis.
     os.environ.setdefault("STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS", "1")
@@ -1096,18 +1104,26 @@ def main() -> int:
     # Default to reuse-cache for operator UX on large datasets. Still safe for "updated plugins"
     # because cache keys include plugin code hash + settings hash + dataset hash.
     os.environ.setdefault("STAT_HARNESS_REUSE_CACHE", "1")
+    # Quick integrity pragma can be extremely slow on large state DBs; operators can
+    # opt-in explicitly when needed, but full gauntlet runs should start immediately.
+    os.environ.setdefault("STAT_HARNESS_STARTUP_INTEGRITY", "off")
+    # Guard against runaway analysis plugins: fail closed per-plugin and continue.
+    os.environ.setdefault("STAT_HARNESS_DEFAULT_PLUGIN_TIMEOUT_MS", "600000")
 
     ctx = get_tenant_context()
+    _debug_stage("tenant_context_resolved")
     db_path = ctx.appdata_root / "state.sqlite"
     if not db_path.exists():
         raise SystemExit(f"Missing DB: {db_path}")
 
     requested = str(args.dataset_version_id or "").strip()
     if requested:
+        _debug_stage("dataset_lookup_specific")
         dataset = _dataset_version_row(db_path, requested)
         if not dataset:
             raise SystemExit(f"Dataset version not found: {requested}")
     else:
+        _debug_stage("dataset_lookup_latest")
         dataset = _latest_dataset_version_row(db_path)
         if not dataset:
             raise SystemExit("No dataset_version_id found. Upload data first.")
@@ -1147,6 +1163,7 @@ def main() -> int:
     if args.plugin_set == "auto":
         plugin_ids = ["auto"]
     else:
+        _debug_stage("discover_plugins_start")
         # Full harness run: execute every non-ingest plugin on the loaded dataset.
         # (Ingest is file-driven and is skipped for DB-only runs.)
         profiles = _discover_plugin_ids({"profile"})
@@ -1156,6 +1173,7 @@ def main() -> int:
         reports = _discover_plugin_ids({"report"})
         llm = _discover_plugin_ids({"llm"})
         plugin_ids = [*profiles, *planners, *transforms, *analyses, *reports, *llm]
+        _debug_stage("discover_plugins_done")
 
     planner_allow = _parse_exclude_processes(str(args.planner_allow or ""))
     planner_deny = _parse_exclude_processes(str(args.planner_deny or ""))
@@ -1168,7 +1186,10 @@ def main() -> int:
             planner_settings["deny"] = planner_deny
         run_settings["planner_basic"] = planner_settings
 
+    _debug_stage("pipeline_ctor_start")
     pipeline = Pipeline(ctx.appdata_root, Path("plugins"), tenant_id=ctx.tenant_id)
+    _debug_stage("pipeline_ctor_done")
+    _debug_stage("pipeline_run_start")
     run_id = pipeline.run(
         input_file=None,
         plugin_ids=plugin_ids,
@@ -1178,6 +1199,7 @@ def main() -> int:
         run_id=run_id,
         force=bool(args.force),
     )
+    _debug_stage("pipeline_run_done")
     run_dir = ctx.tenant_root / "runs" / run_id
     report_path = run_dir / "report.json"
     if not report_path.exists():

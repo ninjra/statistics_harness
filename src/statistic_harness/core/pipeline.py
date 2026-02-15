@@ -41,6 +41,12 @@ _GOLDEN_MODE_ENV = "STAT_HARNESS_GOLDEN_MODE"
 _GOLDEN_MODES = {"off", "default", "strict"}
 
 
+def _debug_startup_stage(label: str) -> None:
+    raw = os.environ.get("STAT_HARNESS_DEBUG_STARTUP", "").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        print(f"PIPELINE_STAGE={label}", flush=True)
+
+
 def _golden_mode() -> str:
     raw = os.environ.get(_GOLDEN_MODE_ENV, "").strip().lower()
     if raw in _GOLDEN_MODES:
@@ -64,10 +70,18 @@ class Pipeline:
         # Cache keys must reflect stat-plugin handler code, not only tiny wrapper modules in plugins/*.
         # Otherwise updates under src/statistic_harness/core/stat_plugins/* can be incorrectly reused.
         self._stat_plugin_effective_hash_cache: dict[str, str] = {}
+        _debug_startup_stage("startup_integrity_check_start")
         self._startup_integrity_check()
+        _debug_startup_stage("startup_integrity_check_done")
+        _debug_startup_stage("cleanup_upload_quarantine_start")
         self._cleanup_upload_quarantine()
+        _debug_startup_stage("cleanup_upload_quarantine_done")
+        _debug_startup_stage("apply_retention_policy_start")
         self._apply_retention_policy()
+        _debug_startup_stage("apply_retention_policy_done")
+        _debug_startup_stage("recover_incomplete_runs_start")
         self._recover_incomplete_runs()
+        _debug_startup_stage("recover_incomplete_runs_done")
 
     def _augment_code_hash_if_stat_wrapper(
         self, plugin_id: str, module_file: Path, code_hash: str | None
@@ -599,6 +613,7 @@ class Pipeline:
         # across mapping/template fixes without forcing users to "force rerun everything".
         cache_dataset_hash = str(input_hash)
 
+        _debug_startup_stage("run_create_run_start")
         self.storage.create_run(
             run_id=run_id,
             created_at=now_iso(),
@@ -615,6 +630,7 @@ class Pipeline:
             dataset_version_id=dataset_version_id,
             input_hash=input_hash,
         )
+        _debug_startup_stage("run_create_run_done")
         self.storage.insert_event(
             kind="run_started",
             created_at=now_iso(),
@@ -640,7 +656,9 @@ class Pipeline:
             else force
         )
 
+        _debug_startup_stage("run_discover_start")
         specs_all = self.manager.discover()
+        _debug_startup_stage("run_discover_done")
         disabled_plugins: set[str] = set()
         specs: list[PluginSpec] = []
         for spec in specs_all:
@@ -712,8 +730,6 @@ class Pipeline:
                 if spec.type in {"analysis", "profile", "transform", "report", "llm", "ingest"}
             }
             auto_plan = False
-        llm_selected = "llm_prompt_builder" in selected
-
         dataset_accessor, dataset_template = resolve_dataset_accessor(
             self.storage, dataset_version_id
         )
@@ -934,6 +950,16 @@ class Pipeline:
                     "max_windows": budget.get("max_windows"),
                     "max_findings": budget.get("max_findings"),
                 }
+                default_timeout_ms = self._parse_int_env(
+                    "STAT_HARNESS_DEFAULT_PLUGIN_TIMEOUT_MS"
+                )
+                if (
+                    spec.type == "analysis"
+                    and budget.get("time_limit_ms") is None
+                    and default_timeout_ms is not None
+                    and default_timeout_ms > 0
+                ):
+                    budget["time_limit_ms"] = int(default_timeout_ms)
                 # Optional: hard memory limit for plugin subprocess via RLIMIT_AS.
                 hard_mem_mb = self._parse_int_env("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB")
                 if hard_mem_mb is not None and hard_mem_mb > 0:
@@ -1663,12 +1689,14 @@ class Pipeline:
             report = build_report(self.storage, run_id, run_dir, Path("docs/report.schema.json"))
             write_report(report, run_dir)
 
-        if llm_selected:
-            llm_spec = spec_map.get("llm_prompt_builder")
-            if llm_spec:
-                run_spec(llm_spec)
-            else:
-                record_missing("llm_prompt_builder", "Missing llm plugin")
+        llm_ids = {
+            pid for pid in selected if pid in spec_map and spec_map[pid].type == "llm"
+        }
+        if llm_ids:
+            layers = self._toposort_layers(specs, llm_ids)
+            for layer in layers:
+                for spec in layer:
+                    run_spec(spec)
 
         plugin_results = self.storage.fetch_plugin_results(run_id)
         plugin_executions = self.storage.fetch_plugin_executions(run_id)
