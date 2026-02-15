@@ -202,25 +202,45 @@
       "analysis_burst_modeling_hawkes_v1",
       "analysis_close_cycle_change_point_v1",
       "analysis_constrained_clustering_cop_kmeans_v1",
+      "analysis_cur_decomposition_explain_v1",
       "analysis_daily_pattern_alignment_dtw_v1",
       "analysis_density_clustering_hdbscan_v1",
       "analysis_dependency_community_leiden_v1",
       "analysis_dependency_community_louvain_v1",
       "analysis_dependency_critical_path_v1",
+      "analysis_diffusion_maps_manifold_v1",
       "analysis_distribution_shift_wasserstein_v1",
+      "analysis_dmd_koopman_modes_v1",
       "analysis_empirical_bayes_shrinkage_v1",
+      "analysis_frequent_directions_cov_sketch_v1",
       "analysis_frequent_itemsets_fpgrowth_v1",
+      "analysis_ges_score_based_causal_v1",
       "analysis_graph_min_cut_partition_v1",
       "analysis_hold_time_attribution_v1",
+      "analysis_hsic_independence_screen_v1",
+      "analysis_icp_invariant_causal_prediction_v1",
       "analysis_ideaspace_energy_ebm_v1",
       "analysis_ebm_action_verifier_v1",
+      "analysis_knn_graph_two_sample_test_v1",
+      "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "analysis_lingam_causal_discovery_v1",
+      "analysis_neural_additive_model_nam_v1",
+      "analysis_node2vec_graph_embedding_drift_v1",
+      "analysis_normalizing_flow_density_v1",
       "analysis_param_near_duplicate_minhash_v1",
       "analysis_param_near_duplicate_simhash_v1",
       "analysis_param_variant_explosion_v1",
+      "analysis_pc_algorithm_causal_graph_v1",
+      "analysis_phate_trajectory_embedding_v1",
       "analysis_retry_rate_hotspots_v1",
       "analysis_sequence_grammar_sequitur_v1",
       "analysis_sequential_patterns_prefixspan_v1",
-      "analysis_similarity_graph_spectral_clustering_v1"
+      "analysis_similarity_graph_spectral_clustering_v1",
+      "analysis_sinkhorn_ot_drift_v1",
+      "analysis_ssa_decomposition_changepoint_v1",
+      "analysis_symbolic_regression_gp_v1",
+      "analysis_tabpfn_foundation_tabular_v1",
+      "analysis_tensor_cp_parafac_decomp_v1"
     ],
     "ingest": [
       "ingest_tabular"
@@ -462,25 +482,45 @@
     "analysis_burst_modeling_hawkes_v1",
     "analysis_close_cycle_change_point_v1",
     "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_cur_decomposition_explain_v1",
     "analysis_daily_pattern_alignment_dtw_v1",
     "analysis_density_clustering_hdbscan_v1",
     "analysis_dependency_community_leiden_v1",
     "analysis_dependency_community_louvain_v1",
     "analysis_dependency_critical_path_v1",
+    "analysis_diffusion_maps_manifold_v1",
     "analysis_distribution_shift_wasserstein_v1",
+    "analysis_dmd_koopman_modes_v1",
     "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_directions_cov_sketch_v1",
     "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_ges_score_based_causal_v1",
     "analysis_graph_min_cut_partition_v1",
     "analysis_hold_time_attribution_v1",
+    "analysis_hsic_independence_screen_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
     "analysis_ideaspace_energy_ebm_v1",
     "analysis_ebm_action_verifier_v1",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_ksd_stein_discrepancy_anomaly_v1",
+    "analysis_lingam_causal_discovery_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_normalizing_flow_density_v1",
     "analysis_param_near_duplicate_minhash_v1",
     "analysis_param_near_duplicate_simhash_v1",
     "analysis_param_variant_explosion_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_phate_trajectory_embedding_v1",
     "analysis_retry_rate_hotspots_v1",
     "analysis_sequence_grammar_sequitur_v1",
     "analysis_sequential_patterns_prefixspan_v1",
     "analysis_similarity_graph_spectral_clustering_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tensor_cp_parafac_decomp_v1",
     "report_payout_report_v1",
     "transform_sql_intents_pack_v1",
     "llm_text2sql_local_generate_v1",
@@ -617,6 +657,9 @@
     "analysis_copula_dependence_*": [
       "analysis_copula_dependence"
     ],
+    "analysis_cur_decomposition_*": [
+      "analysis_cur_decomposition_explain_v1"
+    ],
     "analysis_cusum_on_*": [
       "analysis_cusum_on_model_residuals_v1"
     ],
@@ -642,6 +685,9 @@
     "analysis_determinism_discipline_*": [
       "analysis_determinism_discipline"
     ],
+    "analysis_diffusion_maps_*": [
+      "analysis_diffusion_maps_manifold_v1"
+    ],
     "analysis_dirichlet_multinomial_*": [
       "analysis_dirichlet_multinomial_categorical_overdispersion_v1"
     ],
@@ -659,6 +705,9 @@
     ],
     "analysis_distribution_shift_*": [
       "analysis_distribution_shift_wasserstein_v1"
+    ],
+    "analysis_dmd_koopman_*": [
+      "analysis_dmd_koopman_modes_v1"
     ],
     "analysis_dp_gmm_*": [
       "analysis_dp_gmm"
@@ -699,6 +748,9 @@
     "analysis_fisher_exact_*": [
       "analysis_fisher_exact_enrichment_v1"
     ],
+    "analysis_frequent_directions_*": [
+      "analysis_frequent_directions_cov_sketch_v1"
+    ],
     "analysis_frequent_itemsets_*": [
       "analysis_frequent_itemsets_fpgrowth_v1"
     ],
@@ -719,6 +771,9 @@
     ],
     "analysis_geometric_median_*": [
       "analysis_geometric_median_multivariate_location_v1"
+    ],
+    "analysis_ges_score_*": [
+      "analysis_ges_score_based_causal_v1"
     ],
     "analysis_graph_assortativity_*": [
       "analysis_graph_assortativity_shift_v1"
@@ -756,11 +811,17 @@
     "analysis_hold_time_*": [
       "analysis_hold_time_attribution_v1"
     ],
+    "analysis_hsic_independence_*": [
+      "analysis_hsic_independence_screen_v1"
+    ],
     "analysis_hurst_exponent_*": [
       "analysis_hurst_exponent_long_memory_v1"
     ],
     "analysis_ica_source_*": [
       "analysis_ica_source_separation_v1"
+    ],
+    "analysis_icp_invariant_*": [
+      "analysis_icp_invariant_causal_prediction_v1"
     ],
     "analysis_ideaspace_action_*": [
       "analysis_ideaspace_action_planner"
@@ -784,11 +845,20 @@
     "analysis_kingman_vut_*": [
       "analysis_kingman_vut_approx"
     ],
+    "analysis_knn_graph_*": [
+      "analysis_knn_graph_two_sample_test_v1"
+    ],
     "analysis_knockoff_wrapper_*": [
       "analysis_knockoff_wrapper_rf"
     ],
+    "analysis_ksd_stein_*": [
+      "analysis_ksd_stein_discrepancy_anomaly_v1"
+    ],
     "analysis_lagged_predictability_*": [
       "analysis_lagged_predictability_test"
+    ],
+    "analysis_lingam_causal_*": [
+      "analysis_lingam_causal_discovery_v1"
     ],
     "analysis_littles_law_*": [
       "analysis_littles_law_consistency"
@@ -851,6 +921,15 @@
     "analysis_negative_binomial_*": [
       "analysis_negative_binomial_overdispersion_v1"
     ],
+    "analysis_neural_additive_*": [
+      "analysis_neural_additive_model_nam_v1"
+    ],
+    "analysis_node2vec_graph_*": [
+      "analysis_node2vec_graph_embedding_drift_v1"
+    ],
+    "analysis_normalizing_flow_*": [
+      "analysis_normalizing_flow_density_v1"
+    ],
     "analysis_notears_linear_*": [
       "analysis_notears_linear"
     ],
@@ -873,6 +952,9 @@
     "analysis_partial_correlation_*": [
       "analysis_partial_correlation_network_shift_v1"
     ],
+    "analysis_pc_algorithm_*": [
+      "analysis_pc_algorithm_causal_graph_v1"
+    ],
     "analysis_pca_auto_*": [
       "analysis_pca_auto"
     ],
@@ -887,6 +969,9 @@
     ],
     "analysis_permutation_entropy_*": [
       "analysis_permutation_entropy_drift_v1"
+    ],
+    "analysis_phate_trajectory_*": [
+      "analysis_phate_trajectory_embedding_v1"
     ],
     "analysis_piecewise_linear_*": [
       "analysis_piecewise_linear_trend_changepoints_v1"
@@ -976,11 +1061,17 @@
     "analysis_similarity_graph_*": [
       "analysis_similarity_graph_spectral_clustering_v1"
     ],
+    "analysis_sinkhorn_ot_*": [
+      "analysis_sinkhorn_ot_drift_v1"
+    ],
     "analysis_sparse_pca_*": [
       "analysis_sparse_pca_interpretable_components_v1"
     ],
     "analysis_spectral_radius_*": [
       "analysis_spectral_radius_stability_v1"
+    ],
+    "analysis_ssa_decomposition_*": [
+      "analysis_ssa_decomposition_changepoint_v1"
     ],
     "analysis_state_space_*": [
       "analysis_state_space_kalman_residuals",
@@ -1019,6 +1110,12 @@
     "analysis_survival_time_*": [
       "analysis_survival_time_to_event"
     ],
+    "analysis_symbolic_regression_*": [
+      "analysis_symbolic_regression_gp_v1"
+    ],
+    "analysis_tabpfn_foundation_*": [
+      "analysis_tabpfn_foundation_tabular_v1"
+    ],
     "analysis_tail_isolation_*": [
       "analysis_tail_isolation"
     ],
@@ -1036,6 +1133,9 @@
     ],
     "analysis_template_drift_*": [
       "analysis_template_drift_two_sample"
+    ],
+    "analysis_tensor_cp_*": [
+      "analysis_tensor_cp_parafac_decomp_v1"
     ],
     "analysis_term_burst_*": [
       "analysis_term_burst_kleinberg"
@@ -1339,25 +1439,45 @@
     "analysis_burst_modeling_hawkes_v1",
     "analysis_close_cycle_change_point_v1",
     "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_cur_decomposition_explain_v1",
     "analysis_daily_pattern_alignment_dtw_v1",
     "analysis_density_clustering_hdbscan_v1",
     "analysis_dependency_community_leiden_v1",
     "analysis_dependency_community_louvain_v1",
     "analysis_dependency_critical_path_v1",
+    "analysis_diffusion_maps_manifold_v1",
     "analysis_distribution_shift_wasserstein_v1",
+    "analysis_dmd_koopman_modes_v1",
     "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_frequent_directions_cov_sketch_v1",
     "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_ges_score_based_causal_v1",
     "analysis_graph_min_cut_partition_v1",
     "analysis_hold_time_attribution_v1",
+    "analysis_hsic_independence_screen_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
     "analysis_ideaspace_energy_ebm_v1",
     "analysis_ebm_action_verifier_v1",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_ksd_stein_discrepancy_anomaly_v1",
+    "analysis_lingam_causal_discovery_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_normalizing_flow_density_v1",
     "analysis_param_near_duplicate_minhash_v1",
     "analysis_param_near_duplicate_simhash_v1",
     "analysis_param_variant_explosion_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_phate_trajectory_embedding_v1",
     "analysis_retry_rate_hotspots_v1",
     "analysis_sequence_grammar_sequitur_v1",
     "analysis_sequential_patterns_prefixspan_v1",
     "analysis_similarity_graph_spectral_clustering_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tensor_cp_parafac_decomp_v1",
     "report_plain_english_v1",
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
@@ -1366,7 +1486,7 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 235,
+  "plugin_count": 255,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -2053,6 +2173,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_cur_decomposition_explain_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "CUR-style row/column subset selection to explain low-rank structure with interpretable exemplars.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "CUR Decomposition Explainability",
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_cusum_on_model_residuals_v1": {
       "capabilities": [
         "analysis"
@@ -2178,6 +2315,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_diffusion_maps_manifold_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Diffusion map embedding and eigengap diagnostics for manifold drift and structure changes.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Diffusion Maps Manifold Drift",
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_dirichlet_multinomial_categorical_overdispersion_v1": {
       "capabilities": [
         "analysis"
@@ -2255,6 +2408,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Distribution Shift (Wasserstein/EMD)",
       "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_dmd_koopman_modes_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "DMD decomposition over multivariate trajectories to expose dominant temporal modes and drift rates.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dynamic Mode Decomposition Koopman Modes",
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2427,6 +2597,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_frequent_directions_cov_sketch_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Streaming covariance sketch to track dominant covariance directions with bounded memory.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Frequent Directions Covariance Sketch",
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_frequent_itemsets_fpgrowth_v1": {
       "capabilities": [
         "needs_eventlog",
@@ -2517,6 +2703,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_geometric_median_multivariate_location_v1",
       "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ges_score_based_causal_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Greedy score-based DAG edge search using BIC-like improvement criterion.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "GES-style Score-based Causal Graph",
+      "plugin_id": "analysis_ges_score_based_causal_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2673,6 +2874,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_hsic_independence_screen_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_basic",
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Kernel HSIC dependence screening across numeric feature pairs for nonlinear signal discovery.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "HSIC Nonlinear Dependence Screen",
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_hurst_exponent_long_memory_v1": {
       "capabilities": [
         "analysis"
@@ -2694,6 +2911,22 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_ica_source_separation_v1",
       "plugin_id": "analysis_ica_source_separation_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_icp_invariant_causal_prediction_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Environment-invariance screening to identify candidate causal parent variables with stable effects.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Invariant Causal Prediction Screen",
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2805,6 +3038,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_knn_graph_two_sample_test_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Friedman-Rafsky-style kNN graph test across temporal cohorts with permutation p-values.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "kNN Graph Two-sample Test",
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_knockoff_wrapper_rf": {
       "capabilities": [
         "needs_multi_numeric"
@@ -2819,6 +3068,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_ksd_stein_discrepancy_anomaly_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Kernelized Stein discrepancy over baseline vs recent samples for fit/anomaly diagnostics.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "KSD Stein Discrepancy Anomaly",
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_lagged_predictability_test": {
       "capabilities": [],
       "depends_on": [
@@ -2828,6 +3093,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Lagged Predictability Test",
       "plugin_id": "analysis_lagged_predictability_test",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_lingam_causal_discovery_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "ICA-based linear non-Gaussian causal proxy graph with ranked directional edges.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "LiNGAM-style Causal Discovery",
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -3088,6 +3368,52 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_neural_additive_model_nam_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Additive nonlinear effect modeling approximation with per-feature contribution curves.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Neural Additive Model Approximation",
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_node2vec_graph_embedding_drift_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Random-walk graph embedding approximation to detect role and hotspot drift in process transition graphs.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Node2Vec-style Graph Embedding Drift",
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_normalizing_flow_density_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Flow-like monotonic transform and density scoring approximation for anomaly ranking.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Normalizing Flow Density Approximation",
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_notears_linear": {
       "capabilities": [
         "needs_multi_numeric"
@@ -3202,6 +3528,21 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_pc_algorithm_causal_graph_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Constraint-based causal skeleton approximation using correlation and partial-correlation pruning.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "PC Algorithm Causal Skeleton",
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_pca_auto": {
       "capabilities": [
         "needs_multi_numeric"
@@ -3262,6 +3603,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_permutation_entropy_drift_v1",
       "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_phate_trajectory_embedding_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Diffusion-potential trajectory embedding approximation for process-state progression analysis.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "PHATE-like Trajectory Embedding",
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -3678,6 +4036,22 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_sinkhorn_ot_drift_v1": {
+      "capabilities": [
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Entropic OT/Sinkhorn divergence between temporal windows to quantify distribution shift.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Sinkhorn OT Drift",
+      "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_sparse_pca_interpretable_components_v1": {
       "capabilities": [
         "analysis"
@@ -3699,6 +4073,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_spectral_radius_stability_v1",
       "plugin_id": "analysis_spectral_radius_stability_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_ssa_decomposition_changepoint_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Singular spectrum analysis decomposition with changepoint candidates over dominant temporal components.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "SSA Decomposition and Changepoint",
+      "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -3881,6 +4272,36 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_symbolic_regression_gp_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Symbolic expression search approximation for interpretable formula candidates over key targets.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Symbolic Regression GP Approximation",
+      "plugin_id": "analysis_symbolic_regression_gp_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tabpfn_foundation_tabular_v1": {
+      "capabilities": [
+        "needs_numeric"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "Foundation-style few-shot tabular prediction proxy using deterministic ensemble baselines and uncertainty spread.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "TabPFN-style Few-shot Tabular Baseline",
+      "plugin_id": "analysis_tabpfn_foundation_tabular_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_tail_isolation": {
       "capabilities": [
         "needs_eventlog",
@@ -3963,6 +4384,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Template Drift Two Sample",
       "plugin_id": "analysis_template_drift_two_sample",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_tensor_cp_parafac_decomp_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_numeric",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "profile_eventlog",
+        "transform_normalize_mixed"
+      ],
+      "description": "CP/PARAFAC tensor decomposition over time-process-feature cube for latent factor diagnostics.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Tensor CP PARAFAC Decomposition",
+      "plugin_id": "analysis_tensor_cp_parafac_decomp_v1",
       "type": "analysis",
       "version": "0.1.0"
     },

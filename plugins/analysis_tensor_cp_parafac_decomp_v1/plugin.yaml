@@ -1,0 +1,28 @@
+id: analysis_tensor_cp_parafac_decomp_v1
+name: Tensor CP PARAFAC Decomposition
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: CP/PARAFAC tensor decomposition over time-process-feature cube for
+    latent factor diagnostics.
+  defaults:
+    max_rows: 12000
+    rank: 3
+    iterations: 40
+    top_k: 10
+capabilities:
+- needs_eventlog
+- needs_numeric
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

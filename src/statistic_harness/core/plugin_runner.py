@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import builtins
 import io
+import ipaddress
 import os
 import tempfile
 import subprocess
@@ -20,7 +21,9 @@ from .types import PluginArtifact, PluginContext, PluginError, PluginResult
 from .utils import ensure_dir, now_iso, read_json, write_json
 
 
-_NETWORK_ENV = "STAT_HARNESS_ALLOW_NETWORK"
+_NETWORK_ALLOW_ENV = "STAT_HARNESS_ALLOW_NETWORK"
+_NETWORK_MODE_ENV = "STAT_HARNESS_NETWORK_MODE"
+_NETWORK_MODES = {"off", "localhost", "on"}
 
 
 def _should_block_eval_for_path(caller_path: Path | None, root_dir: Path | None) -> bool:
@@ -87,30 +90,95 @@ def _deterministic_env(run_seed: int, cwd: Path | None = None) -> dict[str, str]
     return env
 
 
+def _network_mode() -> str:
+    raw_mode = os.environ.get(_NETWORK_MODE_ENV, "").strip().lower()
+    if raw_mode in _NETWORK_MODES:
+        return raw_mode
+    if raw_mode:
+        return "off"
+    # Backward compatibility for legacy binary switch.
+    if os.environ.get(_NETWORK_ALLOW_ENV, "").strip().lower() in {"1", "true", "yes", "on"}:
+        return "on"
+    return "off"
+
+
 def _network_allowed() -> bool:
-    return os.environ.get(_NETWORK_ENV, "").lower() in {"1", "true", "yes"}
+    return _network_mode() == "on"
 
 
-def _install_network_guard() -> None:
+def _is_loopback_destination(address: Any) -> bool:
+    host: Any = None
+    if isinstance(address, (tuple, list)) and address:
+        host = address[0]
+    elif isinstance(address, str):
+        # Unix domain sockets are local IPC, not network egress.
+        return True
+    if host is None:
+        return False
+    if isinstance(host, bytes):
+        host = host.decode("utf-8", "ignore")
+    host_text = str(host).strip().lower()
+    if host_text in {"localhost"}:
+        return True
+    if host_text.startswith("[") and host_text.endswith("]"):
+        host_text = host_text[1:-1]
+    try:
+        return bool(ipaddress.ip_address(host_text).is_loopback)
+    except ValueError:
+        return False
+
+
+def _install_network_guard(mode: str | None = None) -> None:
     import socket
 
+    resolved_mode = mode or _network_mode()
+    if resolved_mode not in _NETWORK_MODES:
+        resolved_mode = "off"
+    if resolved_mode == "on":
+        return
+
     def blocked(*args: Any, **kwargs: Any) -> Any:
-        raise RuntimeError("Network disabled by STAT_HARNESS_ALLOW_NETWORK=0")
+        if resolved_mode == "localhost":
+            raise RuntimeError(
+                "Network disabled by STAT_HARNESS_NETWORK_MODE=localhost (loopback only)"
+            )
+        raise RuntimeError("Network disabled by STAT_HARNESS_NETWORK_MODE=off")
 
     base_socket = socket.socket
+    original_create_connection = socket.create_connection
 
     class GuardedSocket(base_socket):
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
-            blocked(*args, **kwargs)
+            if resolved_mode == "off":
+                blocked(*args, **kwargs)
+            super().__init__(*args, **kwargs)
+
+        def _guard(self, address: Any) -> None:
+            if resolved_mode == "off":
+                blocked(address)
+            if resolved_mode == "localhost" and not _is_loopback_destination(address):
+                blocked(address)
 
         def connect(self, *args: Any, **kwargs: Any) -> Any:  # type: ignore[override]
-            return blocked(*args, **kwargs)
+            address = args[0] if args else kwargs.get("address")
+            self._guard(address)
+            return super().connect(*args, **kwargs)
 
         def connect_ex(self, *args: Any, **kwargs: Any) -> Any:  # type: ignore[override]
-            return blocked(*args, **kwargs)
+            address = args[0] if args else kwargs.get("address")
+            self._guard(address)
+            return super().connect_ex(*args, **kwargs)
+
+    def guarded_create_connection(*args: Any, **kwargs: Any) -> Any:
+        address = args[0] if args else kwargs.get("address")
+        if resolved_mode == "off":
+            blocked(address)
+        if resolved_mode == "localhost" and not _is_loopback_destination(address):
+            blocked(address)
+        return original_create_connection(*args, **kwargs)
 
     socket.socket = GuardedSocket  # type: ignore[assignment]
-    socket.create_connection = blocked  # type: ignore[assignment]
+    socket.create_connection = guarded_create_connection  # type: ignore[assignment]
 
 
 def _install_eval_guard(root_dir: Path | None = None) -> None:
@@ -747,8 +815,10 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
         except AttributeError:
             pass
         _seed_runtime(plugin_seed)
-        if request.get("sandbox", {}).get("no_network") and not _network_allowed():
-            _install_network_guard()
+        if request.get("sandbox", {}).get("no_network"):
+            network_mode = _network_mode()
+            if network_mode != "on":
+                _install_network_guard(mode=network_mode)
         allow_paths = request.get("allow_paths") or []
         read_allow_paths = request.get("read_allow_paths") or allow_paths
         write_allow_paths = request.get("write_allow_paths") or allow_paths
@@ -831,7 +901,21 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 limit = row_limit
                 if limit is None:
                     limit = budget.get("row_limit")
-                return accessor.load(columns=columns, row_limit=limit)
+                try:
+                    return accessor.load(columns=columns, row_limit=limit)
+                except RuntimeError as exc:
+                    message = str(exc)
+                    if "Refusing to load full dataset into memory" not in message:
+                        raise
+                    row_count = None
+                    try:
+                        row_count = int((accessor.info() or {}).get("rows") or 0)
+                    except Exception:
+                        row_count = None
+                    suffix = f"; plugin_id={request['plugin_id']}"
+                    if isinstance(row_count, int) and row_count > 0:
+                        suffix += f"; dataset_rows={row_count}"
+                    raise RuntimeError(message + suffix) from exc
 
             def dataset_iter_batches(
                 *,

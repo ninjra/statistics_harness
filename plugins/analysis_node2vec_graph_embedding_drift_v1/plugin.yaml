@@ -1,0 +1,28 @@
+id: analysis_node2vec_graph_embedding_drift_v1
+name: Node2Vec-style Graph Embedding Drift
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Random-walk graph embedding approximation to detect role and hotspot
+    drift in process transition graphs.
+  defaults:
+    max_nodes: 120
+    walk_length: 12
+    walks_per_node: 16
+    embedding_dim: 8
+    top_k: 12
+capabilities:
+- needs_eventlog
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

@@ -72,7 +72,9 @@ def test_file_sandbox_accepts_bytes_paths(tmp_path):
             assert handle.read() == b"ok"
 
 
-def test_network_guard_blocks_socket():
+def test_network_guard_blocks_socket(monkeypatch):
+    monkeypatch.setenv("STAT_HARNESS_NETWORK_MODE", "off")
+    monkeypatch.delenv("STAT_HARNESS_ALLOW_NETWORK", raising=False)
     orig_socket = socket.socket
     orig_create = socket.create_connection
     try:

@@ -95,21 +95,20 @@ class DatasetAccessor:
     def load(
         self, columns: list[str] | None = None, row_limit: int | None = None
     ) -> pd.DataFrame:
-        if columns is None and row_limit is None:
+        if row_limit is None:
             # Guard against accidental full-table loads on huge datasets.
             allow_full = (
                 os.environ.get("STAT_HARNESS_ALLOW_FULL_DF", "").strip().lower()
                 in {"1", "true", "yes", "on"}
             )
             max_rows_raw = os.environ.get("STAT_HARNESS_MAX_FULL_DF_ROWS", "").strip()
-            # Default allows "typical large" datasets (~2M rows) while still failing closed
-            # for truly huge loads. Override per environment as needed.
-            max_rows = 3_000_000
+            # Golden default: force streaming for >=1M rows unless explicitly overridden.
+            max_rows = 1_000_000
             if max_rows_raw:
                 try:
                     max_rows = max(1, int(max_rows_raw))
                 except ValueError:
-                    max_rows = 3_000_000
+                    max_rows = 1_000_000
             if not allow_full:
                 info = self.info()
                 if int(info.get("rows") or 0) > max_rows:
@@ -117,6 +116,7 @@ class DatasetAccessor:
                         f"Refusing to load full dataset into memory (rows>{max_rows}); "
                         "use iter_batches() (or ctx.dataset_iter_batches()) or set STAT_HARNESS_ALLOW_FULL_DF=1"
                     )
+        if columns is None and row_limit is None:
             if self._df is None:
                 self._df = self._load_df()
             return self._df.copy()

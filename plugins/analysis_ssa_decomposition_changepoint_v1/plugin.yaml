@@ -1,0 +1,28 @@
+id: analysis_ssa_decomposition_changepoint_v1
+name: SSA Decomposition and Changepoint
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Singular spectrum analysis decomposition with changepoint candidates
+    over dominant temporal components.
+  defaults:
+    max_rows: 15000
+    window: 48
+    components: 5
+    top_k: 10
+capabilities:
+- needs_eventlog
+- needs_numeric
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

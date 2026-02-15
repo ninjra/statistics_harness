@@ -1,0 +1,25 @@
+id: analysis_symbolic_regression_gp_v1
+name: Symbolic Regression GP Approximation
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- profile_eventlog
+- transform_normalize_mixed
+settings:
+  description: Symbolic expression search approximation for interpretable formula
+    candidates over key targets.
+  defaults:
+    max_rows: 8000
+    max_features: 8
+    top_k: 8
+capabilities:
+- needs_numeric
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

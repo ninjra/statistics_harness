@@ -1,6 +1,6 @@
 # Codex Plugin Catalog
 
-- Total plugins: 235
+- Total plugins: 255
 
 ## analysis
 
@@ -57,6 +57,7 @@
 | `analysis_control_chart_individuals` | Control Chart Individuals | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_control_chart_suite` | Control Chart Suite | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_copula_dependence` | Copula Dependence | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_cur_decomposition_explain_v1` | CUR Decomposition Explainability | `plugin.py:Plugin` | 3 | 2 |
 | `analysis_cusum_on_model_residuals_v1` | analysis_cusum_on_model_residuals_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_daily_pattern_alignment_dtw_v1` | Daily Pattern Alignment (DTW) | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_density_clustering_hdbscan_v1` | Density Clustering (HDBSCAN) | `plugin.py:Plugin` | 3 | 2 |
@@ -66,12 +67,14 @@
 | `analysis_dependency_graph_change_detection` | Dependency Graph Change Detection | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_dependency_resolution_join` | Dependency Resolution Join | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_determinism_discipline` | Determinism Discipline | `plugin.py:Plugin` | 0 | 0 |
+| `analysis_diffusion_maps_manifold_v1` | Diffusion Maps Manifold Drift | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_dirichlet_multinomial_categorical_overdispersion_v1` | analysis_dirichlet_multinomial_categorical_overdispersion_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_discrete_event_queue_simulator_v1` | Discrete-Event Queue Simulator | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_distance_correlation_screen_v1` | analysis_distance_correlation_screen_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_distance_covariance_dependence_v1` | analysis_distance_covariance_dependence_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_distribution_drift_suite` | Distribution Drift Suite | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_distribution_shift_wasserstein_v1` | Distribution Shift (Wasserstein/EMD) | `plugin.py:Plugin` | 2 | 3 |
+| `analysis_dmd_koopman_modes_v1` | Dynamic Mode Decomposition Koopman Modes | `plugin.py:Plugin` | 2 | 3 |
 | `analysis_dp_gmm` | DP GMM | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_drift_adwin` | Drift Adwin | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_dynamic_close_detection` | Dynamic Close Window Detection | `plugin.py:Plugin` | 0 | 2 |
@@ -85,6 +88,7 @@
 | `analysis_factor_analysis_auto` | Factor Auto | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_factor_rotation_varimax_v1` | analysis_factor_rotation_varimax_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_fisher_exact_enrichment_v1` | analysis_fisher_exact_enrichment_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_frequent_directions_cov_sketch_v1` | Frequent Directions Covariance Sketch | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_frequent_itemsets_fpgrowth_v1` | Frequent Param Sets (FP-Growth) | `plugin.py:Plugin` | 3 | 2 |
 | `analysis_fused_lasso_trend_filtering_v1` | analysis_fused_lasso_trend_filtering_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_gam_spline_regression_v1` | analysis_gam_spline_regression_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -92,6 +96,7 @@
 | `analysis_gaussian_copula_shift` | Gaussian Copula Shift | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_gaussian_knockoffs` | Gaussian Knockoffs | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_geometric_median_multivariate_location_v1` | analysis_geometric_median_multivariate_location_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_ges_score_based_causal_v1` | GES-style Score-based Causal Graph | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_graph_assortativity_shift_v1` | analysis_graph_assortativity_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_graph_min_cut_partition_v1` | Graph Minimum Cut Partition | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_graph_motif_triads_shift_v1` | analysis_graph_motif_triads_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -104,8 +109,10 @@
 | `analysis_higuchi_fractal_dimension_v1` | analysis_higuchi_fractal_dimension_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_hmm_latent_state_sequences` | Hmm Latent State Sequences | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_hold_time_attribution_v1` | Hold Time Attribution | `plugin.py:Plugin` | 2 | 2 |
+| `analysis_hsic_independence_screen_v1` | HSIC Nonlinear Dependence Screen | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_hurst_exponent_long_memory_v1` | analysis_hurst_exponent_long_memory_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_ica_source_separation_v1` | analysis_ica_source_separation_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_icp_invariant_causal_prediction_v1` | Invariant Causal Prediction Screen | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_ideaspace_action_planner` | Ideaspace Action Planner | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_ideaspace_energy_ebm_v1` | Ideaspace Energy EBM (Kona Layer) | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_ideaspace_normative_gap` | Ideaspace Normative Gap | `plugin.py:Plugin` | 2 | 1 |
@@ -114,8 +121,11 @@
 | `analysis_issue_cards_v2` | Issue Cards v2 | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_kernel_two_sample_mmd` | Kernel Two Sample Mmd | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_kingman_vut_approx` | Kingman Vut Approx | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_knn_graph_two_sample_test_v1` | kNN Graph Two-sample Test | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_knockoff_wrapper_rf` | Knockoff Wrapper RF | `plugin.py:Plugin` | 1 | 1 |
+| `analysis_ksd_stein_discrepancy_anomaly_v1` | KSD Stein Discrepancy Anomaly | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_lagged_predictability_test` | Lagged Predictability Test | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_lingam_causal_discovery_v1` | LiNGAM-style Causal Discovery | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_littles_law_consistency` | Littles Law Consistency | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_local_outlier_factor` | Local Outlier Factor | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_log_template_drain` | Log Template Drain | `plugin.py:Plugin` | 1 | 0 |
@@ -137,6 +147,9 @@
 | `analysis_multivariate_t2_control` | Multivariate T2 Control | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_mutual_information_screen` | Mutual Information Screen | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_negative_binomial_overdispersion_v1` | analysis_negative_binomial_overdispersion_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_neural_additive_model_nam_v1` | Neural Additive Model Approximation | `plugin.py:Plugin` | 2 | 1 |
+| `analysis_node2vec_graph_embedding_drift_v1` | Node2Vec-style Graph Embedding Drift | `plugin.py:Plugin` | 2 | 2 |
+| `analysis_normalizing_flow_density_v1` | Normalizing Flow Density Approximation | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_notears_linear` | NOTEARS Linear | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_one_class_svm` | One Class Svm | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_online_conformal_changepoint` | Online Conformal Changepoint | `plugin.py:Plugin` | 1 | 1 |
@@ -145,11 +158,13 @@
 | `analysis_param_near_duplicate_simhash_v1` | Param Near-Duplicate Detection (SimHash) | `plugin.py:Plugin` | 3 | 2 |
 | `analysis_param_variant_explosion_v1` | Param Variant Explosion | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_partial_correlation_network_shift_v1` | analysis_partial_correlation_network_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_pc_algorithm_causal_graph_v1` | PC Algorithm Causal Skeleton | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_pca_auto` | Pca Auto | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_pca_control_chart` | Pca Control Chart | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_percentile_analysis` | Percentile Analysis | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_periodicity_spectral_scan` | Periodicity Spectral Scan | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_permutation_entropy_drift_v1` | analysis_permutation_entropy_drift_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_phate_trajectory_embedding_v1` | PHATE-like Trajectory Embedding | `plugin.py:Plugin` | 2 | 3 |
 | `analysis_piecewise_linear_trend_changepoints_v1` | analysis_piecewise_linear_trend_changepoints_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_poisson_regression_rate_drivers_v1` | analysis_poisson_regression_rate_drivers_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_process_counterfactuals` | Process Counterfactuals | `plugin.py:Plugin` | 0 | 1 |
@@ -182,8 +197,10 @@
 | `analysis_sequential_patterns_prefixspan` | Sequential Patterns Prefixspan | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_sequential_patterns_prefixspan_v1` | Sequential Patterns (PrefixSpan) | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_similarity_graph_spectral_clustering_v1` | Similarity Graph Spectral Clustering | `plugin.py:Plugin` | 3 | 2 |
+| `analysis_sinkhorn_ot_drift_v1` | Sinkhorn OT Drift | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_sparse_pca_interpretable_components_v1` | analysis_sparse_pca_interpretable_components_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_spectral_radius_stability_v1` | analysis_spectral_radius_stability_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_ssa_decomposition_changepoint_v1` | SSA Decomposition and Changepoint | `plugin.py:Plugin` | 2 | 3 |
 | `analysis_state_space_kalman_residuals` | State Space Kalman Residuals | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_state_space_smoother_level_shift_v1` | analysis_state_space_smoother_level_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_stl_seasonal_decompose_v1` | analysis_stl_seasonal_decompose_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -197,12 +214,15 @@
 | `analysis_surface_terrain_position_index` | Surface Terrain Position Index | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_survival_kaplan_meier` | Survival Kaplan Meier | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_survival_time_to_event` | Survival Time To Event | `plugin.py:Plugin` | 1 | 1 |
+| `analysis_symbolic_regression_gp_v1` | Symbolic Regression GP Approximation | `plugin.py:Plugin` | 2 | 1 |
+| `analysis_tabpfn_foundation_tabular_v1` | TabPFN-style Few-shot Tabular Baseline | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_tail_isolation` | Tail Isolation | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_tda_betti_curve_changepoint` | Tda Betti Curve Changepoint | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_tda_mapper_graph` | Tda Mapper Graph | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_tda_persistence_landscapes` | Tda Persistence Landscapes | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_tda_persistent_homology` | Tda Persistent Homology | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_template_drift_two_sample` | Template Drift Two Sample | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_tensor_cp_parafac_decomp_v1` | Tensor CP PARAFAC Decomposition | `plugin.py:Plugin` | 2 | 3 |
 | `analysis_term_burst_kleinberg` | Term Burst Kleinberg | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_time_series_analysis_auto` | Time Series Auto | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_topic_model_lda` | Topic Model Lda | `plugin.py:Plugin` | 1 | 0 |
