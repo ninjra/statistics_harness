@@ -1,0 +1,704 @@
+{
+  "added_plugins": [
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_change_score_consensus_v1",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_competing_risks_cif_v1",
+    "analysis_constraints_violation_detector_v1",
+    "analysis_cur_decomposition_explain_v1",
+    "analysis_cusum_on_model_residuals_v1",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
+    "analysis_energy_distance_two_sample_v1",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
+    "analysis_haar_wavelet_transient_detector_v1",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
+    "analysis_marked_point_process_intensity_v1",
+    "analysis_multicollinearity_vif_screen_v1",
+    "analysis_multiscale_entropy_mse_v1",
+    "analysis_negative_binomial_overdispersion_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_normalizing_flow_density_v1",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_partial_correlation_network_shift_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_phate_trajectory_embedding_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recurrence_quantification_rqa_v1",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tensor_cp_parafac_decomp_v1",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
+    "process_mining_discovery_v1"
+  ],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "906dea60e619f5d6bdac2154e4389c30d4b1f8cbeb4287987679919f8fa80d56",
+      "signature_before": "5aee31fb5a5a969f7734c18bb9c0dd5cac1554cf3788a7e699140e6ed8c6586f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Attributed eligible wait by dimension",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "3b0b9b3f0b21d29a1358cec755c603277345bda744705e49abbdb6eb4bcfa05d",
+      "signature_before": "7275209cd97cdde3ba90a495f4a23b69df6eefb47891307faeceecc1d4be154b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed BOCPD changepoints",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "7f8523b1a59753092e93b432574acf7ee21ff2042c7a28a0ae08c9bb42feff14",
+      "signature_before": "3288b8bc0b28c6e81c924af08d9b0b20b56cc2bc088a25ffa4ffe27fd4c14848",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Modeled capacity scaling impact",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "eab9a23eb73de627039048228531a419ef447b5b1e823b86097f2bb60a6b3d7e",
+      "signature_before": "62ca3b9ec3283c5a26e08f72fe4394e31d926db490e2abfd914065a7ac831f04",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed chain makespan statistics",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "0f43466e82e4d8b8360218d9ee0adec7d36ddf5133f59f1030411774561c358b",
+      "signature_before": "77322fbdbbe26450eec9950f730035db3b3b4fb7323f891ab090b631e22ae9b7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Reconstructed concurrency timeline",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "488e5b5bc892a543e542f9da9b593b8639b4ec3f0d8b23b98bf0c96a5f7700de",
+      "signature_before": "81cc04485e52399cbb18d895dc3346816e7094f5c4a22f8a2e4b61a97efa8d19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed conformal anomalies",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "22fdaec18c9c736cf7110ec993a623deba19e826d45b7e795b3eae0718ba46cb",
+      "signature_before": "11fc664100b5a8740c463888925c8ec1d569dea652d97194bf32c393caa6c696",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 control-chart alarms.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "e508eb1604c1b941ef5518c4a86c156f84b8c7c4f4adc1c4c99b537ad33baf67",
+      "signature_before": "7fbe8a5070fcbfbcea6993cc0a4d98f68f6733f57a1cec96d2eb499d4230f389",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "HDBSCAN clustered 5000 entities into 110 clusters",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "65b2a6a497a345a262760737990d8589db153dfe5e47955a4f46fc7f417d315b",
+      "signature_before": "26b7030ddf10ff98f6c3f94def13fc5b6e2f97e5ac9c275b664e0b5dcb3556ea",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed dependency lag distribution",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "f48ae9c861cf3c9e8af28694146c4b746148ef12bb0cd05d0a0685ef298b9b3f",
+      "signature_before": "a88e2e3cf637f3ffea8de3b015a3b902c0a31a7fc3b93b68b07a09693b8e07f3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Checked measurement_type discipline",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "da0ce05cb5901639b009f8ee40c3aadd7ec8df6b666c1fa8da7b647c0832ff2b",
+      "signature_before": "1791c34114a0ba5edc6acc55218978561659181d327642b14186dd0a6eba2d96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 22 drift findings.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "0c87cbd071a08c981507d89dad100d3f50c870b6ab0d91d7bf18afcc1912bcc9",
+      "signature_before": "2cf681897b3212fbb439283c2e7e39f1245f2278c869ebf1f5d1dd636c1277ef",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed DP GMM clusters",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "5b7437e5eb971ab1c35d24175b39d6f4cba984d9b40b67c5aa7f76b0a3e7d27c",
+      "signature_before": "f98b0a796922afb1cfaac3a85f5126e917349e1266339471886bd55e754fed97",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 6 accounting-month roll events using Accounting Month params.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "52bc6cfa0935771f46260cbeb554b55b49a36d17461a8c2d53101a4f080c52ac",
+      "signature_before": "ef3ea26fef9ef91f2c1da3ae3a5983d3b3862adaee1ea9df13d99441bed2ad78",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed copula shift",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "d4559455eaad63c6046767f3448fe5dd28634e6af06626dd0a26d6e42309a755",
+      "signature_before": "892b7086cce99cef3d371c299a49702403c112323bd47544cf5f1f8ae0cc23d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed knockoff selection",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "722b7a78c6e34a2be898fc079522ebbd07c924a958729f800d92b1194d5b79f5",
+      "signature_before": "2224d6c8713342ff946974de63a7e57e6709dac7b87384b8b559679af865ca81",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed topology curves (sampled 2000 of 435616)",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "bd8641012811aff588115774c6da3050df28a2cefd3a2a4eeda7f6500c481390",
+      "signature_before": "68b161a34bdf6cb6c4e33dde39e64dd41e4434f53793c73755b29b44a43e4d3d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 anomalies.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "dc3d0b3ce519777f166682dc8a938801bcabc82dd50cead59de2f47e13d88a3a",
+      "signature_before": "48e74552adaee26325f78a4778141c270f787c0b3e7f51ad87d01524a229e787",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed RF knockoff selection",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "ac9de8cd0af285f2c75a82b9943e4c5f0524b5b277fc9e620ac8ffab79d2b70c",
+      "signature_before": "ece5092a46923688be9d2166b5c70f99f4c78ead77b26185954cebd6f8b80843",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Extracted 4392 templates.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "967263cf37ef2a2be3d9f718fd9e725feabf1719ff832857f176ba223a23050e",
+      "signature_before": "7fbe941129ada4e317a158b8537043e98f13ae6b7dedbeb6c349dbbdf5cd1e37",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 4 changepoints.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "1ff401bd15a12a59148926954dcee8c0f2ccfcea2c3f9ddb9f3e0ef0589a61f3",
+      "signature_before": "42fec28784d2a540299eb63886530ae732ef52f3ecbe2e9c2ff314a4e42739d2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 multivariate shifts.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "44a8dcf1e4522a214013007a281602c153833f851aca3313215346ab03fd1eca",
+      "signature_before": "831f40b18cce6806c4eaa675dcfe9bafdd6857666f88eb8d5986989123246d62",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Estimated graph",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "90e77a07f119a88141e914c324eab9e831197d3a363557879b56b363d1ac2ed4",
+      "signature_before": "23583027f8a99ff7ecf6b9d9e08f1846afe2105e9fccc82110142213eda3ccc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected changepoints",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "c466bd1f10fb15cbc604664f15d0f0b857b3c3ae52300e70e3503f4c1a912e94",
+      "signature_before": "91f477d8437bee3ae393c9a66f8827b7d65f0757a406178311085cf980f7a59b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed percentile statistics",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "95804ba16d84578d19c66082debc54b7ac4f668897b1355fde73f402ac1bbdc3",
+      "signature_before": "ac20f869a90061ac921593b189c137f6bf62c491756a58a73e552c096c3616fb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed process sequence variants",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "9196e1398af0e3374210ad8cad81752776b9e5d96f7e07313052b15f1a858fb2",
+      "signature_before": "5ea45cdcfa5d4be5a9395887b0f0990ed01f55a20ced3b32837f1b7232dce925",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 sparse outliers.",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "d55f37145e379ce010289c4bb2f62a3413e853dfc769ac962cb5e255419b3d7e",
+      "signature_before": "77978142eed6727af51cfcbc87aa671e3ea21844e8700ad68cd7b87b9bb2d9c2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed scan statistics",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "5b59b369798815da97f6967de695c7a5f632cf45227f98be93da7b10fb829671",
+      "signature_before": "523a437bc91aa7b8e0f6725e28b856aafbefdcc4fc8ba01a08930b43884c48d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Classified standalone vs sequence-linked runs",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_tail_isolation",
+      "signature_after": "596d18a594dd40b29aaecea6e3652deb0a32f9a0ead894a4120e824d48b57905",
+      "signature_before": "2db58aff8ca874af9d2c753708192b127ef5c2fd0019fde63ca3a033035b1249",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Isolated tail-eligible wait segments",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_upload_linkage",
+      "signature_after": "90758b9a9feb096a1d8cb5041522533909d4bc0f0d2a4d7422a255a6e519d9be",
+      "signature_before": "5c8f056acbfd3a6577c83374a39aa42661918a88cd2ffb9d8d20a4623c241cb2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Matched 42 of 3396 BKRVNU rows to an XLSX upload by user +48h window (1.2% coverage).",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "planner_basic",
+      "signature_after": "3010d68f672d53dda0e137565bd4b7e2c49441e22f0607c82b7a153d978048bc",
+      "signature_before": "23771baa3b223328181c272f6fb3daf442a22cde7314c505c412b8ff4c5c60dd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Planned plugin selection",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "profile_basic",
+      "signature_after": "6c31e0a8e5433e774ce410083f5dc88bfe43ead1cda6ecb9769f3862dcb86064",
+      "signature_before": "b882282168cd7714946c0f412e78d619a6f7988dd278e10424e54c0d7dafc5a1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Profiled dataset",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "profile_eventlog",
+      "signature_after": "d35fdcbd1bc847f5ae4dfec67824b31ba8e8d5d176fbc06f7757586e24aa340a",
+      "signature_before": "57ac5f3705708c7305830da6f26cddbf1be2ff60a7e682c4545b187636cd55ec",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Inferred roles for 15 columns",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "transform_normalize_mixed",
+      "signature_after": "efb07b045445789fa3782a2e666429337c97f5daebdae981f2fbf059735262e3",
+      "signature_before": "8b5b3ebe6903bda256ce6aad2dd5b2c9d66a801238938257f52399357d1db490",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 14c0f57034b645cb8750399ce2f79add",
+      "summary_before": "REUSED from 15d4a175a0194e19b93320f00a8ce644"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 0,
+    "budget_json": 0,
+    "debug_json": 34,
+    "error_json": 0,
+    "findings_json": 5,
+    "metrics_json": 2,
+    "references_json": 1,
+    "summary": 34
+  },
+  "material_changed_plugins": [
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_determinism_discipline",
+    "analysis_distribution_drift_suite",
+    "analysis_isolation_forest_anomaly",
+    "analysis_multivariate_control_charts",
+    "planner_basic"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 76,
+    "after": 134,
+    "before": 169,
+    "material_payload_changed": 6,
+    "payload_changed": 34,
+    "removed": 111,
+    "status_changed": 0
+  },
+  "removed_plugins": [
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_actionable_ops_levers_v1",
+    "analysis_anova_auto",
+    "analysis_bayesian_point_displacement",
+    "analysis_burst_detection_kleinberg",
+    "analysis_change_impact_pre_post",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_uplift",
+    "analysis_close_cycle_window_resolver",
+    "analysis_cluster_analysis_auto",
+    "analysis_conformance_alignments",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_copula_dependence",
+    "analysis_dependency_critical_path_v1",
+    "analysis_dependency_graph_change_detection",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_drift_adwin",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_effect_size_report",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_hawkes_self_exciting",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_hold_time_attribution_v1",
+    "analysis_ideaspace_action_planner",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ideaspace_normative_gap",
+    "analysis_isolation_forest",
+    "analysis_issue_cards_v2",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_lagged_predictability_test",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_map_permutation_test_karniski",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multiple_testing_fdr",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_one_class_svm",
+    "analysis_param_variant_explosion_v1",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_periodicity_spectral_scan",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_regression_duration",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_regression_auto",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_state_space_kalman_residuals",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_traceability_manifest_v2",
+    "analysis_transfer_entropy_directional",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_variant_differential",
+    "analysis_waterfall_summary_v2",
+    "llm_prompt_builder",
+    "report_bundle",
+    "report_decision_bundle_v2",
+    "report_payout_report_v1",
+    "report_plain_english_v1",
+    "report_slide_kit_emitter_v2"
+  ],
+  "run_after": {
+    "completed_at": "2026-02-15T03:13:19.029666+00:00",
+    "created_at": "2026-02-14T23:25:24.763047+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "9dbfb94944614fa5a20b7fbe450506fa",
+    "run_seed": 123,
+    "status": "aborted"
+  },
+  "run_before": {
+    "completed_at": "2026-02-12T23:11:22.006353+00:00",
+    "created_at": "2026-02-12T23:02:13.495042+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "eb325f419aa64de392bc941d09d16f02",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "degraded": 2,
+      "error": 21,
+      "ok": 86,
+      "skipped": 25
+    },
+    "before": {
+      "ok": 140,
+      "skipped": 29
+    }
+  }
+}

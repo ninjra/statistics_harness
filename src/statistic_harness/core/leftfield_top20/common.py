@@ -111,7 +111,9 @@ def prepare_data(ctx, config: dict[str, Any]) -> PreparedData | PluginResult:
     if df is None or df.empty:
         return degraded("leftfield", "Empty dataset", {"rows_seen": 0})
 
-    max_rows = int(config.get("max_rows") or 10000)
+    # Leftfield methods include O(n^2)/O(n^3) kernels/eigensolvers; keep
+    # deterministic subsampling bounded for full baseline runs.
+    max_rows = int(config.get("max_rows") or 2000)
     max_features = int(config.get("max_features") or 12)
     local_rng = rng(ctx, config)
     if len(df) > max_rows:
