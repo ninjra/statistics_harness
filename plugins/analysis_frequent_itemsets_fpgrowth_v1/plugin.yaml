@@ -13,7 +13,8 @@ settings:
   defaults:
     min_support: 0.02
     max_itemset_size: 6
-    max_item_count: 200
+    max_item_count: 120
+    max_entities: 120000
 capabilities:
 - needs_eventlog
 - needs_text

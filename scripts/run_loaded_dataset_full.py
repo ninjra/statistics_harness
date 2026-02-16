@@ -7,6 +7,7 @@ import os
 import re
 import sqlite3
 import statistics
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -23,6 +24,69 @@ from statistic_harness.core.utils import make_run_id
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+ROLE_GROUP_PROCESS = ("process_name", "process", "process_id")
+ROLE_GROUP_TIME = ("queue_time", "start_time", "end_time")
+ROLE_GROUP_CASE = ("master_id",)
+ROLE_GROUP_USER = ("user_id",)
+ROLE_GROUP_HOST = ("host_id",)
+
+_STRUCTURAL_ROLE_REQUIREMENTS: dict[str, tuple[tuple[str, ...], ...]] = {
+    "analysis_association_rules_apriori_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_biclustering_cheng_church_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_burst_modeling_hawkes_v1": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_busy_period_segmentation_v2": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_constrained_clustering_cop_kmeans_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_daily_pattern_alignment_dtw_v1": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_dependency_community_leiden_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_dependency_community_louvain_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_dependency_critical_path_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_distribution_shift_wasserstein_v1": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_frequent_itemsets_fpgrowth_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_graph_min_cut_partition_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_param_near_duplicate_minhash_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_param_near_duplicate_simhash_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_process_counterfactuals": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_process_sequence_bottlenecks": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_retry_rate_hotspots_v1": (ROLE_GROUP_PROCESS, ROLE_GROUP_TIME),
+    "analysis_sequence_grammar_sequitur_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_sequential_patterns_prefixspan_v1": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_CASE,
+    ),
+    "analysis_similarity_graph_spectral_clustering_v1": (ROLE_GROUP_PROCESS,),
+    "analysis_user_host_savings": (
+        ROLE_GROUP_PROCESS,
+        ROLE_GROUP_TIME,
+        ROLE_GROUP_USER,
+        ROLE_GROUP_HOST,
+    ),
+}
 
 
 def _debug_stage(label: str) -> None:
@@ -48,6 +112,201 @@ def _parse_ts(value: Any) -> datetime | None:
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt
+
+
+def _infer_structural_role(field_name: str) -> str | None:
+    name = str(field_name or "").strip().lower()
+    if not name:
+        return None
+    tokenized = re.sub(r"[^a-z0-9]+", "_", name).strip("_")
+    tokens = [tok for tok in tokenized.split("_") if tok]
+    token_set = set(tokens)
+
+    def has_any(values: set[str]) -> bool:
+        return any(v in token_set for v in values)
+
+    if has_any({"queue"}) and has_any({"dt", "time", "date", "ts", "timestamp"}):
+        return "queue_time"
+    if has_any({"start", "begin", "started"}) and has_any({"dt", "time", "date", "ts", "timestamp"}):
+        return "start_time"
+    if has_any({"end", "finish", "finished", "complete", "completed", "stop"}) and has_any(
+        {"dt", "time", "date", "ts", "timestamp"}
+    ):
+        return "end_time"
+    if tokenized == "process_id":
+        return "process_name"
+    if has_any({"dependency", "dep", "parent", "prereq", "precede"}):
+        return "dependency_id"
+    if has_any({"master", "workflow", "case", "trace"}):
+        return "master_id"
+    if tokenized == "process_queue_id" or (has_any({"queue"}) and has_any({"process"}) and has_any({"id"})):
+        return "master_id"
+    if has_any({"module", "mod"}):
+        return "module_code"
+    if has_any({"user", "operator", "owner"}):
+        return "user_id"
+    if has_any({"host", "server", "node", "machine", "worker"}):
+        return "host_id"
+    if has_any({"status", "state", "result", "outcome"}):
+        return "status"
+    if has_any({"process", "activity", "task", "job", "step", "action", "proc"}):
+        return "process_name"
+    return None
+
+
+def _resolve_structural_roles(conn: sqlite3.Connection, dataset_version_id: str) -> dict[str, str]:
+    safe_to_role: dict[str, str] = {}
+    rows = conn.execute(
+        """
+        SELECT safe_name, original_name, role
+        FROM dataset_columns
+        WHERE dataset_version_id = ?
+        ORDER BY column_id
+        """,
+        (dataset_version_id,),
+    ).fetchall()
+    for row in rows:
+        safe = str(row["safe_name"] or "").strip()
+        if not safe:
+            continue
+        role = str(row["role"] or "").strip()
+        if role:
+            safe_to_role[safe] = role
+
+    template_row = conn.execute(
+        """
+        SELECT template_id, mapping_json
+        FROM dataset_templates
+        WHERE dataset_version_id = ?
+        ORDER BY updated_at DESC
+        LIMIT 1
+        """,
+        (dataset_version_id,),
+    ).fetchone()
+    if not template_row:
+        for row in rows:
+            safe = str(row["safe_name"] or "").strip()
+            if not safe or safe in safe_to_role:
+                continue
+            inferred = _infer_structural_role(str(row["original_name"] or ""))
+            if inferred:
+                safe_to_role[safe] = inferred
+        return safe_to_role
+
+    mapping_json = str(template_row["mapping_json"] or "").strip()
+    template_id = template_row["template_id"]
+    name_to_safe: dict[str, str] = {}
+    if template_id is not None:
+        tf_rows = conn.execute(
+            """
+            SELECT name, safe_name
+            FROM template_fields
+            WHERE template_id = ?
+            ORDER BY field_id
+            """,
+            (int(template_id),),
+        ).fetchall()
+        for row in tf_rows:
+            name = str(row["name"] or "").strip()
+            safe = str(row["safe_name"] or "").strip()
+            if name and safe:
+                name_to_safe[name] = safe
+
+    try:
+        payload = json.loads(mapping_json) if mapping_json else {}
+    except json.JSONDecodeError:
+        payload = {}
+    mapping = payload.get("mapping") if isinstance(payload, dict) else {}
+    if not isinstance(mapping, dict):
+        mapping = {}
+
+    for field_name, meta in mapping.items():
+        if not isinstance(field_name, str) or not field_name.strip():
+            continue
+        field_name = field_name.strip()
+        template_safe = name_to_safe.get(field_name)
+        if not template_safe and isinstance(meta, dict):
+            candidate = str(meta.get("safe_name") or "").strip()
+            if candidate:
+                template_safe = candidate
+        if not template_safe:
+            continue
+        source_safe = None
+        if isinstance(meta, dict):
+            source_safe = str(meta.get("safe_name") or "").strip() or None
+        current = safe_to_role.get(source_safe or template_safe)
+        inferred = _infer_structural_role(field_name)
+        temporal_roles = {"queue_time", "start_time", "end_time"}
+        chosen = current
+        if inferred and (
+            not current
+            or current in {"id", "numeric", "parameter"}
+            or (inferred in temporal_roles and current in temporal_roles and current != inferred)
+            or (inferred == "process_name" and current == "process_id")
+        ):
+            chosen = inferred
+        if not chosen:
+            chosen = inferred
+        if chosen:
+            safe_to_role[template_safe] = chosen
+
+    for row in rows:
+        safe = str(row["safe_name"] or "").strip()
+        if not safe or safe in safe_to_role:
+            continue
+        inferred = _infer_structural_role(str(row["original_name"] or ""))
+        if inferred:
+            safe_to_role[safe] = inferred
+    return safe_to_role
+
+
+def _group_satisfied(roles_present: set[str], group: tuple[str, ...]) -> bool:
+    return any(role in roles_present for role in group)
+
+
+def _structural_preflight(
+    db_path: Path,
+    dataset_version_id: str,
+    plugin_ids: list[str],
+    output_dir: Path,
+) -> dict[str, Any]:
+    conn = _connect(db_path)
+    try:
+        safe_to_role = _resolve_structural_roles(conn, dataset_version_id)
+    finally:
+        conn.close()
+
+    roles_present = {str(v).strip().lower() for v in safe_to_role.values() if str(v).strip()}
+    blockers: list[dict[str, Any]] = []
+    checked = sorted(set(plugin_ids) & set(_STRUCTURAL_ROLE_REQUIREMENTS.keys()))
+    for plugin_id in checked:
+        groups = _STRUCTURAL_ROLE_REQUIREMENTS[plugin_id]
+        missing: list[list[str]] = []
+        for group in groups:
+            if not _group_satisfied(roles_present, group):
+                missing.append(list(group))
+        if missing:
+            blockers.append(
+                {
+                    "plugin_id": plugin_id,
+                    "missing_role_groups": missing,
+                }
+            )
+
+    report = {
+        "dataset_version_id": dataset_version_id,
+        "checked_plugins": checked,
+        "checked_count": len(checked),
+        "blocking_count": len(blockers),
+        "blockers": blockers,
+        "roles_present": sorted(roles_present),
+        "safe_to_role_count": len(safe_to_role),
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "structural_preflight.json").write_text(
+        json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    return report
 
 
 def _runtime_trend(db_path: Path, dataset_version_id: str, run_id: str) -> dict[str, Any]:
@@ -1095,6 +1354,11 @@ def main() -> int:
         default="",
         help="Optional denylist of plugin ids for planner auto mode (comma/space/semicolon-separated).",
     )
+    parser.add_argument(
+        "--allow-structural-not-applicable",
+        action="store_true",
+        help="Allow gauntlet execution when structural preflight predicts role/column blockers.",
+    )
     args = parser.parse_args()
     _debug_stage("args_parsed")
 
@@ -1175,6 +1439,25 @@ def main() -> int:
         plugin_ids = [*profiles, *planners, *transforms, *analyses, *reports, *llm]
         _debug_stage("discover_plugins_done")
 
+    preflight_dir = ctx.tenant_root / "tmp" / "preflight" / run_id
+    preflight = _structural_preflight(
+        db_path=db_path,
+        dataset_version_id=dataset_version_id,
+        plugin_ids=plugin_ids,
+        output_dir=preflight_dir,
+    )
+    print(
+        "STRUCTURAL_PREFLIGHT="
+        f"checked:{int(preflight.get('checked_count') or 0)},"
+        f"blocking:{int(preflight.get('blocking_count') or 0)}",
+        flush=True,
+    )
+    if int(preflight.get("blocking_count") or 0) > 0 and not bool(args.allow_structural_not_applicable):
+        raise SystemExit(
+            "Structural preflight failed; resolve missing roles/columns first "
+            "(or use --allow-structural-not-applicable to override)."
+        )
+
     planner_allow = _parse_exclude_processes(str(args.planner_allow or ""))
     planner_deny = _parse_exclude_processes(str(args.planner_deny or ""))
     run_settings: dict[str, Any] = {"exclude_processes": exclude_processes}
@@ -1201,6 +1484,9 @@ def main() -> int:
     )
     _debug_stage("pipeline_run_done")
     run_dir = ctx.tenant_root / "runs" / run_id
+    preflight_report_path = preflight_dir / "structural_preflight.json"
+    if preflight_report_path.exists():
+        shutil.copy2(preflight_report_path, run_dir / "structural_preflight.json")
     report_path = run_dir / "report.json"
     if not report_path.exists():
         raise SystemExit(f"report.json not found for run: {run_id}")

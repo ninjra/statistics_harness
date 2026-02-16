@@ -7206,6 +7206,8 @@ docs/plugin_data_access_matrix.json
 docs/plugin_data_access_matrix.md
 docs/plugin_data_access_overrides.json
 docs/plugin_dev_guide.md
+docs/plugin_intent_library.json
+docs/plugin_intent_library.md
 docs/plugin_manifest.schema.json
 docs/plugins_functionality_matrix.json
 docs/plugins_functionality_matrix.md
@@ -7214,6 +7216,8 @@ docs/proc_log_synth_custom_issues_8mo_sheet_v4_2.xlsx
 docs/redteam_ids_matrix.json
 docs/redteam_ids_matrix.md
 docs/references.md
+docs/release_evidence/baseline_before_after_leftfield_diff.json
+docs/release_evidence/baseline_before_vs_fullset_after.json
 docs/release_evidence/golden_release_summary.json
 docs/release_evidence/golden_release_summary.md
 docs/repo_improvements_capability_map_v1.json
@@ -8440,6 +8444,7 @@ queue-delay-plugins-evaluation-plan.md
 r
 repo-improvements-catalog-v3-implementation-path-plan.md
 repomix-output.md
+running
 s
 scripts/api_smoke.py
 scripts/backfill_stat_plugin_cache_keys.py
@@ -8467,6 +8472,7 @@ scripts/gen_next30_scaffold.py
 scripts/gen_next30b_scaffold.py
 scripts/generate_codex_plugin_catalog.py
 scripts/generate_codex_repo_manifest.py
+scripts/generate_plugin_intent_library.py
 scripts/generate_sql_pack_with_vllm.py
 scripts/golden_release_delta_map.py
 scripts/ingest_repo_scorecard.py
@@ -9095,11 +9101,13 @@ tests/test_performance_smoke.py
 tests/test_pipeline_env_parsing.py
 tests/test_pipeline_golden_mode.py
 tests/test_pipeline_integration.py
+tests/test_pipeline_validation_fallback_status.py
 tests/test_plain_recommendations_output.py
 tests/test_planner_features.py
 tests/test_plugin_dag_validation.py
 tests/test_plugin_data_access_matrix.py
 tests/test_plugin_discovery.py
+tests/test_plugin_intent_library.py
 tests/test_plugin_manifest_schema.py
 tests/test_plugin_runner_env.py
 tests/test_plugins_functionality_matrix.py
@@ -9134,6 +9142,7 @@ tests/test_sql_adoption_partition_matrix.py
 tests/test_sql_assist_adoption_matrix.py
 tests/test_sql_assist_and_storage_guards.py
 tests/test_stat_plugin_active_row_filter.py
+tests/test_storage_plugin_executions_bytes.py
 tests/test_surface_builder.py
 tests/test_template_combined_run.py
 tests/test_template_conversion.py

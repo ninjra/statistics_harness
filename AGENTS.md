@@ -41,3 +41,7 @@
   - plugin errors do not crash the pipeline
   - pipeline still generates a report that includes error summaries.
 Always provide a single short one-line command with no line breaks and keep it under terminal width; create any needed script/cmd to implement the command and provide a short full-path command to run that script.
+
+## Mandatory Workflow Gates
+- `MUST`: Use short one-line commands only (no multi-line shell commands).
+- `MUST`: Before any file/code change, output the full available skills list and the selected-skill rationale for the current task.

@@ -779,6 +779,12 @@ def run_plugin_subprocess(
         result = _payload_result(payload.get("result", {}))
         execution.update(payload.get("execution", {}))
     else:
+        err_msg = f"Missing response for {spec.plugin_id} (exit_code={proc.returncode})"
+        err_type = "RunnerError"
+        if isinstance(proc.returncode, int) and proc.returncode < 0:
+            sig = -int(proc.returncode)
+            err_type = "ProcessTerminated"
+            err_msg = f"{spec.plugin_id} terminated by signal {sig}; no response payload emitted"
         result = PluginResult(
             status="error",
             summary=f"{spec.plugin_id} failed to execute",
@@ -786,8 +792,8 @@ def run_plugin_subprocess(
             findings=[],
             artifacts=[],
             error=PluginError(
-                type="RunnerError",
-                message=f"Missing response for {spec.plugin_id}",
+                type=err_type,
+                message=err_msg,
                 traceback=stderr or "",
             ),
         )

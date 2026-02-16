@@ -571,14 +571,20 @@ def _regression_auto(
     rows.sort(key=lambda r: abs(float(r.get("coef") or 0.0)), reverse=True)
     top = rows[: int(config.get("max_drivers", 12))]
 
-    findings = [
-        {
-            "kind": "regression_auto_drivers",
-            "measurement_type": "modeled" if HAS_SCIPY else "measured",
-            "metric": value_col,
-            "drivers": top,
-        }
-    ]
+    measurement_type = "modeled" if HAS_SCIPY else "measured"
+    finding: dict[str, Any] = {
+        "kind": "regression_auto_drivers",
+        "measurement_type": measurement_type,
+        "metric": value_col,
+        "drivers": top,
+    }
+    if measurement_type == "modeled":
+        finding["scope"] = {"plugin_id": plugin_id, "metric": value_col}
+        finding["assumptions"] = [
+            "Predictor effects are approximately linear in the selected feature space.",
+            "Observed historical relationships remain directionally stable over the modeled horizon.",
+        ]
+    findings = [finding]
     artifacts = [_artifact(ctx, plugin_id, "regression_auto.json", {"target": value_col, "drivers": rows}, "json")]
     summary = f"Regression drivers for '{value_col}': top={len(top)}"
     return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)

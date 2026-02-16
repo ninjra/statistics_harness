@@ -487,6 +487,7 @@
           "tests/test_parameter_normalization.py",
           "tests/test_performance_smoke.py",
           "tests/test_pipeline_integration.py",
+          "tests/test_pipeline_validation_fallback_status.py",
           "tests/test_plugin_dag_validation.py",
           "tests/test_plugin_data_access_matrix.py",
           "tests/test_plugin_discovery.py",

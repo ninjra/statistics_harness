@@ -13,7 +13,7 @@ try:
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import roc_auc_score
-    from sklearn.model_selection import KFold
+    from sklearn.model_selection import KFold, StratifiedKFold
     from sklearn.neighbors import NearestNeighbors
 
     HAS_SKLEARN = True
@@ -22,6 +22,7 @@ except Exception:  # pragma: no cover - optional dependency guard
     LogisticRegression = None
     roc_auc_score = None
     KFold = None
+    StratifiedKFold = None
     NearestNeighbors = None
     HAS_SKLEARN = False
 
