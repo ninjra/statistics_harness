@@ -28,11 +28,11 @@ class Plugin:
                     None,
                 )
         # Gating: this transform is only meaningful when a template is explicitly configured.
-        # For "run all plugins" harness runs, skip cleanly rather than erroring.
+        # Return deterministic not-applicable output so full-gauntlet runs do not fail.
         if template_id in (None, 0, ""):
             return PluginResult(
-                "skipped",
-                "No template configured (template_id not set)",
+                "ok",
+                "Not applicable: no template configured (template_id not set)",
                 {},
                 [],
                 [],

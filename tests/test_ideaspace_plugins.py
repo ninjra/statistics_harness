@@ -179,6 +179,38 @@ def test_reco_batch_split_triggered(run_dir: Path):
     assert any(r.lever_id == "split_batches" for r in recos)
 
 
+def test_reco_batch_split_includes_specific_targets(run_dir: Path):
+    df = pd.DataFrame(
+        {
+            "process": (["qemail"] * 220) + (["postwkfl"] * 180),
+            "batch_size": ([5] * 170) + ([120] * 50) + ([4] * 140) + ([90] * 40),
+            "duration": ([30.0] * 170) + ([600.0] * 50) + ([25.0] * 140) + ([500.0] * 40),
+            "host": (["h1", "h2"] * 200),
+            "case_id": [f"c{i%40}" for i in range(400)],
+        }
+    )
+    inferred = infer_columns(df, {"time_column": "auto", "group_by": "auto", "value_columns": "auto"})
+    cols = pick_columns(df, inferred, {})
+    recos = build_default_lever_recommendations(
+        df,
+        cols,
+        {
+            "ideaspace_batch_tail_multiplier_trigger": 1.5,
+            "ideaspace_min_rows_for_reco": 200,
+            "ideaspace_split_batches_max_targets": 3,
+        },
+    )
+    split = next((r for r in recos if r.lever_id == "split_batches"), None)
+    assert split is not None
+    assert "when batch_size >=" in split.action
+    assert "qemail" in split.action
+    metrics = (split.evidence or {}).get("metrics") or {}
+    assert isinstance(metrics.get("focus_processes"), list)
+    assert "qemail" in metrics.get("focus_processes")
+    assert isinstance(metrics.get("batch_p90_trigger"), (int, float))
+    assert isinstance(metrics.get("batch_p50_target"), (int, float))
+
+
 def test_reco_retry_backoff_triggered(run_dir: Path):
     n = 250
     ts = pd.Series(["2026-01-01T00:00:00Z"] * n)

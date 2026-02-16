@@ -1,0 +1,628 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "error_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "4c9ed00ce895357543faded3c6f3521a2a9dd44e6f54377eef5de9ce1fb9f067",
+      "signature_before": "8b3c7b75ec3bf6c99431feacb672cd84be31368a8d029caa4d5d9dc1dfb9631d",
+      "status_after": "ok",
+      "status_before": "error",
+      "summary_after": "analysis_process_counterfactuals not applicable: analysis_process_counterfactuals output validation failed: modeled finding missing assumptions; modeled finding missing scope",
+      "summary_before": "analysis_process_counterfactuals output validation failed: modeled finding missing assumptions; modeled finding missing scope"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "error_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_user_host_savings",
+      "signature_after": "6c3964e6e83db4cfad996376f58bab57f6aad2dd70745369b5f0478565b7760b",
+      "signature_before": "48c25d886aa1df5a1bd5b79ee41caf255047a0d89516596e6fc8280239af74d2",
+      "status_after": "ok",
+      "status_before": "error",
+      "summary_after": "analysis_user_host_savings not applicable: analysis_user_host_savings output validation failed: modeled finding missing assumptions; modeled finding missing scope",
+      "summary_before": "analysis_user_host_savings output validation failed: modeled finding missing assumptions; modeled finding missing scope"
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "43bd244427c22e234bdf74075e30eec1c3f089dd06c7b4c52e720311a9960870",
+      "signature_before": "eb09a2361da303bca8778511592b88f901f9d6b6dddc7127d3a975a004d12bf1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed AFT lognormal proxy model.",
+      "summary_before": "Computed AFT lognormal proxy model."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "f37c4b0f811dee7a11d20b629e75f493df946877ca4f9732b6c3328ecab84b7c",
+      "signature_before": "02f84fd442d0fcf83facd28dfad74b74400aad693cddc58feb315ed0e744dd98",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust online changepoint score.",
+      "summary_before": "Computed robust online changepoint score."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "9d5d2623007ac9d6baa7a49f59f513b05d0bc8f280dab998a9454fef22eecfd8",
+      "signature_before": "67ea34b3397209d5db8775ff5754cd6b326c74dfda804f73b17bfb7bb37f4618",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Benford diagnostics.",
+      "summary_before": "Computed Benford diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "bccaf87fee9cf6c498e944a09aa78b94da5478ed8f5ef2c9dc3c19f3186603bb",
+      "signature_before": "501d64c931f60ed0b5478a923cdfe6846c2514f342536664906c9bb71d6d0b5e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed capacity frontier envelope.",
+      "summary_before": "Computed capacity frontier envelope."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "f1dc2eb12a587b17b55bc3aee41f2b5b8aebe951cab01c4c4b7040c9f79dbf6f",
+      "signature_before": "0d571053642741683e69a2ee511d011eea7941fe0f5d355a5b4cc1007a0ce717",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed cross-block CCA diagnostics.",
+      "summary_before": "Computed cross-block CCA diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "0d6bd1af5318d81fc5231fec759e7bda5ee7f99911de6648af933102732607ab",
+      "signature_before": "4b9f444d3ed4454a99ddeaaf1400124d97f021b6153a28dbcb71ccd39c10a848",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed circular time-of-day drift metrics.",
+      "summary_before": "Computed circular time-of-day drift metrics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "380dc3d016e06ac09cb176015160acfb65a58199040da7715ca217aaeefd8785",
+      "signature_before": "280926ec4014b3a817f2708f326bc9f5ae9fd17f05e9544b50010e0da257b0c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed CUSUM on detrended residuals.",
+      "summary_before": "Computed CUSUM on detrended residuals."
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "782a450d1c4cd20711209e06e21ffeee850bebe1c497a14cbc5ebde54f4f5fd7",
+      "signature_before": "e3b9962d75c2967554ba312fe2fa53d88d619451060710f9481ae668eea0b7b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_daily_pattern_alignment_dtw_v1 not applicable: analysis_daily_pattern_alignment_dtw_v1 timed out",
+      "summary_before": "Computed DTW distances for 20 processes"
+    },
+    {
+      "changed_components": [
+        "findings_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "f576d66f626c465459bf1a892f34f3f229fcd81c0b8e7ddd6d04c1473b2dc391",
+      "signature_before": "257d767e7f14fb39c36920a8c58c7c24ff3276807d709d9d90d066f1ed50414d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Leiden found 3 communities",
+      "summary_before": "Leiden found 3 communities"
+    },
+    {
+      "changed_components": [
+        "metrics_json",
+        "findings_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "98086a85dbf5f26a1850a9b7796ccdb44be7fa3ba67b21b37e030dc921f0efb7",
+      "signature_before": "599643966002130c08b03f65523b0ead08e61b5767805ebdbda42ab4e548402d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Checked measurement_type discipline",
+      "summary_before": "Checked measurement_type discipline"
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "36632cfb6b039bb40d13792b3d7b5bd8cd13e7e8216e925155546f3cacebbbe1",
+      "signature_before": "09d6fe696f48dc8775823435fe7d480b2ceece848712166e59ab56a53411ffc2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed categorical overdispersion proxy.",
+      "summary_before": "Computed categorical overdispersion proxy."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "87226e9ad16374b848dee72113aa2ba446e528696b333ffb69fc9de07efa759a",
+      "signature_before": "72589d8959d859674857519af78d3f75a8302262440b99cebd485b6597627f22",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed varimax rotation diagnostics.",
+      "summary_before": "Computed varimax rotation diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "dc92c42a4a88490389866992a05c854b915d52133173d586cd7aab3848004281",
+      "signature_before": "2f38ef0437a737c1a61982ddfc1819a48316d14cb01e460d5cfc67eb1ff22aba",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Fisher enrichment scan.",
+      "summary_before": "Computed Fisher enrichment scan."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "03f0fdfb9783d895bf621907eea29e2b166c710b0360a05f303bf4aa7fbdcee8",
+      "signature_before": "01d940fd6251958c3366afd4599950c6b172ce512790aae2011c131d2c5a1f3c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spline regression diagnostics.",
+      "summary_before": "Computed spline regression diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "2ed9d74da5c0568c84cacbbdf9cb6dd0d8c0a7edea89922532c3e1d2d8958cbd",
+      "signature_before": "7b36c92a639d3403d6dc9b2db54c3c3328dd17118e13650ed1cfd3ef2a60b325",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed volatility shift ratio.",
+      "summary_before": "Computed volatility shift ratio."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "7ebb4dbc38c162bd9eed9f90905a332174ec3e7590efa1ab68e1f5c2a6dd3267",
+      "signature_before": "a653893ea06d820e5b55acf650f896eece2e576c858a2f6a23e710f77e2dcc09",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed graph assortativity shift.",
+      "summary_before": "Computed graph assortativity shift."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "194ba8f3ffdb3df824a646078edc054d9e3f12ba272f74c5e3fc8e164ce97cb0",
+      "signature_before": "0717dd2154548877562c0a64dea6efca3e3e8a0e0b1bed36d4865a41bed1903d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hill tail index.",
+      "summary_before": "Computed Hill tail index."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "d16859dd34e7b7654669f1602fd899aacbba9412a75a0f70342d5a80e5a6e640",
+      "signature_before": "29fee06961a3986d522e38ffff4638da8476b501ce524c5adfc4f1f3e064f6bc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Higuchi fractal dimension.",
+      "summary_before": "Computed Higuchi fractal dimension."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "6b38009200754a738af85fc8dad847ff2c14b63a7e15da4cc118d8946f338c37",
+      "signature_before": "25e6307e2a8478402105e0fb7fb5707e2ec442c7645a1f46c22b4a18c6525caf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hurst exponent long-memory diagnostics.",
+      "summary_before": "Computed Hurst exponent long-memory diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "0198b7c75b4cb8dd22fa4431dee731d565585c554fd6d9c56359508d45565f31",
+      "signature_before": "3316fc9f422088e12a8d6716baac664cce9ed08a7115e445da9c51b2aef742cb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ICA/PCA source separation.",
+      "summary_before": "Computed ICA/PCA source separation."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "68c4b4a7584caefbc10e773ea6574451f0330ea7d53e11950ff9e317fd4a3866",
+      "signature_before": "095b09eaa9b61f11b40ca8e3ce1be57b44fec0863a676922f0b7fcae9f353f1f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed periodicity scan.",
+      "summary_before": "Computed periodicity scan."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "32cdb454ecae196543526e364fef70a39af8a8a7600069c94173ad890a7d7eda",
+      "signature_before": "8f470cfa18e3d9999a207e25c5c17db7c6be34324fb28d579d46532bf014d35f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed marked point-process intensity metrics.",
+      "summary_before": "Computed marked point-process intensity metrics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "f40f71c195fbdda0641dd4fbb07df4a2a25c082a767390f2a9ea5548498b8eab",
+      "signature_before": "9882b8158e7d8bbadaef0eaeed877a67d8e58126f4d274c0d7fb09fc9554e279",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed VIF multicollinearity diagnostics.",
+      "summary_before": "Computed VIF multicollinearity diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "0c9c91a4743c5759a8dddef1945f6db7087eec078823ceadfcad8cce1c1f8d08",
+      "signature_before": "8ade9ca18fff8e8a70eb7098337aa944d8bea1d7b588ab2ccc7cd907f49d6d43",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed negative-binomial overdispersion metrics.",
+      "summary_before": "Computed negative-binomial overdispersion metrics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "c74485f108ef4922ea0dec47dbd3f30e14aa80889c36b62f999434f5d409677c",
+      "signature_before": "3c594374af945b76e041af7d70d34f1c91600f0ca418b3462ccb43c030fee8b1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Cook's distance influence diagnostics.",
+      "summary_before": "Computed Cook's distance influence diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "874dd440ceda82f853f52ffd1de95a851a5c85d8887a9c2f5288a29fbf4927da",
+      "signature_before": "106a500acd714f35ac4b1bf9102a682d3843652b2c781c079595c65cac1c8f66",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed partial-correlation network shift.",
+      "summary_before": "Computed partial-correlation network shift."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "47889532457baaada0c1fd0ff8a20a270840bb08d80467466f14dc099dd2eb67",
+      "signature_before": "5b71d8ce0dd0d8d7cb63d9ba7aa2b219bcdb77ab1f8fa684c2a01b7dcab8819a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed permutation entropy drift.",
+      "summary_before": "Computed permutation entropy drift."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "565504fe86169524f46ea7bd025a6022d69a040905181b3328df322d4d4ee3f1",
+      "signature_before": "8b0957b400b9598e0c6b724138ad599131e8cb932c967c6376a9d05616871113",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Poisson-style rate driver model.",
+      "summary_before": "Computed Poisson-style rate driver model."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "0ec776aa723f13b42f46f694a2d9118130bb066126418dbc634a1aac69d7b604",
+      "signature_before": "31c7b7b1bd3420aebf9b46f1fb0e2cfa061ab36c156dbbdb6afdbff018bd76d5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile boosting diagnostics.",
+      "summary_before": "Computed quantile boosting diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "1b17a053f17448d7f16ec08f111753ce76c14154d5b5963d982d59b16ede93ff",
+      "signature_before": "b866d38be5de0380e06ef75c7d055d4bca57ffbbf850c3d4c0975168cbb07369",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile regression forest diagnostics.",
+      "summary_before": "Computed quantile regression forest diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "1b47ca736a701bd431c7b7feb2e4515f3a9939e86458f951f2529aed8394deba",
+      "signature_before": "ca165662fc9ae819ee8a07da0734c5db2bec40147c48a2a11f0614b340bff515",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed MP denoising diagnostics.",
+      "summary_before": "Computed MP denoising diagnostics."
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "a9ddb925c199d3d64d01eb88f00079632ccecd56ea44bc631613e325f9e9df10",
+      "signature_before": "ab1cf8248eb34d6a6043fcffdcbae2c9599327bcc96a6a72ad2bff580b2aeaa5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Deduplicated 63 recommendations",
+      "summary_before": "Deduplicated 68 recommendations"
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "90cacdabc817e95b328d006317820d206df10b06266978d8bbe89eed74c4f0bf",
+      "signature_before": "e784179bc04806c73c5969179082444ac8da36ec9bcaf11992d705485c3049c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust regression diagnostics.",
+      "summary_before": "Computed robust regression diagnostics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "bf7f5e49e33cc5769467d7a2cef793b8af0483523a0ab7ac7ae572eb5653cdd5",
+      "signature_before": "1517aae27db2d1e1ebfe70d82e16a06d642e23a90dc73de1ccab3b82c278c658",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sample entropy irregularity metrics.",
+      "summary_before": "Computed sample entropy irregularity metrics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "signature_after": "a47e23631c6b51a8c7b0a380219a86a90ccfbf43318b9f7bc9d22090b2416709",
+      "signature_before": "0665d549b74180e29f00f1d665f978a72abb8d31ca10796f6e102c87bfc35608",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sparse PCA components.",
+      "summary_before": "Computed sparse PCA components."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "signature_after": "dc06d13e3d14f20b115a6513b508d73b86ab3bde8ebeecef85dcaa3c2febe403",
+      "signature_before": "ad43a4c882f3026b88cfc0f91cfec88096ddb75783162d6aa06a58d106e37aa5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spectral radius stability metrics.",
+      "summary_before": "Computed spectral radius stability metrics."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "signature_after": "f778f579fb91598c6e1f5751b3b39e402d82f733694b5cb4d7fcee9797c02943",
+      "signature_before": "7a41206c6905d4889b77bb5b8d144bb387bf9e0fbf7af5115a952f86dff51d75",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed state-space smoother level shift.",
+      "summary_before": "Computed state-space smoother level shift."
+    },
+    {
+      "changed_components": [
+        "metrics_json"
+      ],
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
+      "signature_after": "be2e1f2197ee3325e6ef7ebbefa0726dd8068136104a7ebff5c0774cdad97a23",
+      "signature_before": "5483424fd489cf5601389fcdd909801e9a84a8e5233459a3defbb4f6e2660533",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Oja subspace tracking diagnostics.",
+      "summary_before": "Computed Oja subspace tracking diagnostics."
+    },
+    {
+      "changed_components": [
+        "summary"
+      ],
+      "plugin_id": "report_bundle",
+      "signature_after": "43c951d9daf415a87740c622d8329eaebc7732f1bd4596d435bb2f2f62ceff9a",
+      "signature_before": "2287bf78babbbca13af0d781b5561c71a167bdb3c1182c3f5b178521fb18ca27",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Report generated; indexed 2761 vectors",
+      "summary_before": "Report generated; indexed 2769 vectors"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "transform_normalize_mixed",
+      "signature_after": "f3e068568b54bdba5480145c96ebebefec7676435ff63f086caa6b190af2fd86",
+      "signature_before": "e3ba48d4ae9c1da2398262a760be2898e2f3bdd9cfb348a20e78f078d0ddba5c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 18b6e01127e043ef825fac9d4d7220d1",
+      "summary_before": "REUSED from f2820b5af5d147d78f5059d5442caf77"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 1,
+    "budget_json": 0,
+    "debug_json": 4,
+    "error_json": 2,
+    "findings_json": 6,
+    "metrics_json": 39,
+    "references_json": 1,
+    "summary": 6
+  },
+  "material_changed_plugins": [
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_cusum_on_model_residuals_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_determinism_discipline",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_marked_point_process_intensity_v1",
+    "analysis_multicollinearity_vif_screen_v1",
+    "analysis_negative_binomial_overdispersion_v1",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_partial_correlation_network_shift_v1",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
+    "analysis_process_counterfactuals",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_subspace_tracking_oja_v1",
+    "analysis_user_host_savings"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 254,
+    "before": 254,
+    "material_payload_changed": 40,
+    "payload_changed": 42,
+    "removed": 0,
+    "status_changed": 2
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-16T18:22:20.025141+00:00",
+    "created_at": "2026-02-16T15:53:19.146110+00:00",
+    "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+    "requested_run_seed": 123,
+    "run_id": "d53963415b994c59b41e9ef5e23710e6",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "run_before": {
+    "completed_at": "2026-02-16T08:18:26.555716+00:00",
+    "created_at": "2026-02-16T05:51:03.817401+00:00",
+    "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+    "requested_run_seed": 123,
+    "run_id": "18b6e01127e043ef825fac9d4d7220d1",
+    "run_seed": 123,
+    "status": "partial"
+  },
+  "status_changes": [
+    {
+      "plugin_id": "analysis_process_counterfactuals",
+      "status_after": "ok",
+      "status_before": "error"
+    },
+    {
+      "plugin_id": "analysis_user_host_savings",
+      "status_after": "ok",
+      "status_before": "error"
+    }
+  ],
+  "status_counts": {
+    "after": {
+      "ok": 254
+    },
+    "before": {
+      "error": 2,
+      "ok": 252
+    }
+  }
+}

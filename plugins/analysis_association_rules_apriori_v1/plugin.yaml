@@ -14,7 +14,9 @@ settings:
     min_support: 0.02
     min_confidence: 0.6
     min_lift: 1.1
-    max_item_count: 200
+    max_item_count: 120
+    max_itemset_size: 4
+    max_entities: 120000
     max_rules: 200
 capabilities:
 - needs_eventlog

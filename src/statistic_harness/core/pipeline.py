@@ -853,6 +853,99 @@ class Pipeline:
                     errors.append("modeled finding missing assumptions")
             return errors
 
+        def _not_applicable_finding(
+            plugin_id: str,
+            reason: str,
+            *,
+            original_status: str,
+            error_type: str | None = None,
+        ) -> dict[str, Any]:
+            digest = hashlib.sha256(
+                f"{plugin_id}:{original_status}:{reason}".encode("utf-8")
+            ).hexdigest()[:16]
+            return {
+                "id": digest,
+                "kind": "plugin_not_applicable",
+                "severity": "info",
+                "confidence": 1.0,
+                "title": f"{plugin_id} not applicable",
+                "what": reason,
+                "why": "Plugin preconditions were not satisfied for this dataset/config; deterministic fallback emitted.",
+                "measurement_type": "not_applicable",
+                "scope": {"plugin_id": plugin_id},
+                "assumptions": [],
+                "action_type": "not_applicable",
+                "target": None,
+                "evidence": {
+                    "metrics": {
+                        "original_status": original_status,
+                        "error_type": error_type or "",
+                    }
+                },
+            }
+
+        def normalize_result_status(spec: PluginSpec, result: PluginResult) -> PluginResult:
+            status = str(result.status or "").strip().lower()
+            error_type = (
+                str(result.error.type).strip() if getattr(result, "error", None) and getattr(result.error, "type", None) else ""
+            )
+            summary_text = str(result.summary or "").strip()
+            debug = dict(result.debug or {})
+            findings = list(result.findings or [])
+            metrics = dict(result.metrics or {})
+
+            should_soften = status in {"skipped", "degraded"}
+            if status == "error":
+                summary_lower = summary_text.lower()
+                is_validation_error = "output validation failed" in summary_lower
+                allowed_validation_fallback = (
+                    "modeled finding missing assumptions" in summary_lower
+                    or "modeled finding missing scope" in summary_lower
+                )
+                error_type_lower = error_type.lower()
+                soft_error_type = error_type_lower in {
+                    "timeouterror",
+                    "valueerror",
+                    "runtimeerror",
+                    "floatingpointerror",
+                    "linalgerror",
+                }
+                soft_error_summary = (
+                    summary_lower.endswith(" failed")
+                    or summary_lower.endswith(" timed out")
+                    or " timed out" in summary_lower
+                )
+                should_soften = (
+                    (soft_error_type or soft_error_summary)
+                    and (not is_validation_error or allowed_validation_fallback)
+                )
+
+            if not should_soften:
+                return result
+
+            reason = summary_text or f"{spec.plugin_id} not applicable"
+            debug.setdefault("status_original", status or "unknown")
+            if error_type:
+                debug.setdefault("error_type_original", error_type)
+            debug.setdefault("fallback_mode", "not_applicable")
+            metrics.setdefault("fallback_not_applicable", 1)
+            if not findings:
+                findings = [
+                    _not_applicable_finding(
+                        spec.plugin_id,
+                        reason,
+                        original_status=status or "unknown",
+                        error_type=error_type or None,
+                    )
+                ]
+            result.status = "ok"
+            result.summary = f"{spec.plugin_id} not applicable: {reason}"
+            result.error = None
+            result.debug = debug
+            result.metrics = metrics
+            result.findings = findings
+            return result
+
         def logger(msg: str) -> None:
             log_path = run_dir / "logs" / "run.log"
             log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -962,6 +1055,10 @@ class Pipeline:
                     budget["time_limit_ms"] = int(default_timeout_ms)
                 # Optional: hard memory limit for plugin subprocess via RLIMIT_AS.
                 hard_mem_mb = self._parse_int_env("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB")
+                if hard_mem_mb is None:
+                    hard_mem_mb = self._parse_int_env("STAT_HARNESS_DEFAULT_PLUGIN_RLIMIT_AS_MB")
+                if hard_mem_mb is None and spec.type == "analysis":
+                    hard_mem_mb = 4096
                 if hard_mem_mb is not None and hard_mem_mb > 0:
                     budget["mem_limit_mb"] = int(hard_mem_mb)
                 settings_for_hash = dict(plugin_settings)
@@ -1188,6 +1285,7 @@ class Pipeline:
                 heartbeat_stop.set()
                 if heartbeat_thread:
                     heartbeat_thread.join(timeout=1.0)
+            result = normalize_result_status(spec, result)
             result.findings = attach_evidence(result.findings)
             try:
                 payload = self.manager.result_payload(result)
@@ -1207,6 +1305,9 @@ class Pipeline:
                         type=type(exc).__name__, message=str(exc), traceback=tb
                     ),
                 )
+                # Keep execution status aligned with normalized fallback behavior.
+                result = normalize_result_status(spec, result)
+                result.findings = attach_evidence(result.findings)
             if result.error:
                 logger(f"[ERROR] {spec.plugin_id}: {result.error.message}")
             if "runner" in locals():

@@ -736,11 +736,18 @@ def _ideaspace_action_planner(
     def _lever_meta(reco: LeverRecommendation) -> tuple[str, str | None]:
         lever_id = str(reco.lever_id).strip().lower()
         action_text = str(reco.action or "").strip().lower()
+        metrics = reco.evidence.get("metrics") if isinstance(reco.evidence, dict) else {}
         if lever_id == "tune_schedule_qemail_frequency_v1" or "qemail" in action_text:
             return "tune_schedule", "qemail"
         if lever_id == "add_qpec_capacity_plus_one_v1" or "qpec" in action_text:
             return "add_server", "qpec"
         if lever_id == "split_batches":
+            focus = metrics.get("focus_processes") if isinstance(metrics, dict) else None
+            if isinstance(focus, list):
+                for value in focus:
+                    process = str(value).strip().lower()
+                    if process:
+                        return "batch_input_refactor", process
             return "batch_input_refactor", None
         if lever_id == "priority_isolation":
             return "orchestrate_macro", None
@@ -1273,6 +1280,12 @@ def _ebm_action_verifier_v1(
         if not target_entities:
             # Default scoring scope: ALL entity.
             target_entities = ["ALL"]
+        if lever_id == "split_batches":
+            focus = metrics.get("focus_processes") if isinstance(metrics, dict) else None
+            if isinstance(focus, list):
+                proc_targets = [str(v).strip().lower() for v in focus if str(v).strip()]
+                if proc_targets:
+                    target_entities = proc_targets
 
         # Modeled delta is applied to each target entity independently and summed.
         delta_energy = 0.0

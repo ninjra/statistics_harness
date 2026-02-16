@@ -13,7 +13,14 @@
       ]
     },
     "max_item_count": {
-      "default": 200,
+      "default": 120,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_entities": {
+      "default": 120000,
       "type": [
         "integer",
         "null"

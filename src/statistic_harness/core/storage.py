@@ -613,7 +613,16 @@ class Storage:
                 """,
                 (run_id, tenant_id),
             )
-            return [dict(row) for row in cur.fetchall()]
+            rows: list[dict[str, Any]] = []
+            for row in cur.fetchall():
+                item = dict(row)
+                for key, value in list(item.items()):
+                    if isinstance(value, bytes):
+                        item[key] = value.decode("utf-8", errors="replace")
+                    elif isinstance(value, memoryview):
+                        item[key] = bytes(value).decode("utf-8", errors="replace")
+                rows.append(item)
+            return rows
 
     def fetch_plugin_results(self, run_id: str) -> list[dict[str, Any]]:
         tenant_id = self._tenant_id()

@@ -193,20 +193,99 @@ def recommend_split_batches(
     if b.size < int(config.get("ideaspace_min_rows_for_reco", 200)):
         return None
     # Tail amplification heuristic: compare p95 duration in top decile batches vs median batches.
-    thresh = float(np.nanpercentile(b, 90))
-    top = d[b >= thresh]
-    mid = d[b <= float(np.nanpercentile(b, 50))]
+    batch_p90 = float(np.nanpercentile(b, 90))
+    batch_p50 = float(np.nanpercentile(b, 50))
+    top = d[b >= batch_p90]
+    mid = d[b <= batch_p50]
     if top.size < 20 or mid.size < 20:
         return None
     p95_top = float(np.nanpercentile(top, 95))
     p95_mid = float(np.nanpercentile(mid, 95))
     if p95_top <= p95_mid * float(config.get("ideaspace_batch_tail_multiplier_trigger", 1.5)):
         return None
-    evidence = {"metrics": {"batch_col": cols.batch_col, "p95_top": p95_top, "p95_mid": p95_mid}}
+
+    process_col = _pick_process_col(df, cols)
+    hotspots: list[dict[str, Any]] = []
+    if process_col and process_col in df.columns:
+        proc_series = (
+            df.loc[ok, process_col]
+            .astype(str)
+            .str.strip()
+            .str.lower()
+        )
+        work = pd.DataFrame({"process_norm": proc_series, "batch": b, "duration_s": d})
+        work = work.loc[work["process_norm"] != ""]
+        min_rows_per_process = int(config.get("ideaspace_split_batches_min_rows_per_process", 50))
+        for proc, sub in work.groupby("process_norm", dropna=False):
+            if len(sub) < min_rows_per_process:
+                continue
+            sub_top = sub.loc[sub["batch"] >= batch_p90, "duration_s"].to_numpy(dtype=float)
+            sub_mid = sub.loc[sub["batch"] <= batch_p50, "duration_s"].to_numpy(dtype=float)
+            if sub_top.size < 10 or sub_mid.size < 10:
+                continue
+            sub_p95_top = float(np.nanpercentile(sub_top, 95))
+            sub_p95_mid = float(np.nanpercentile(sub_mid, 95))
+            if sub_p95_mid <= 0.0:
+                continue
+            slowdown_ratio = float(sub_p95_top / max(sub_p95_mid, 1e-9))
+            if not math.isfinite(slowdown_ratio) or slowdown_ratio <= 1.0:
+                continue
+            rows_oversized = int((sub["batch"] >= batch_p90).sum())
+            hotspots.append(
+                {
+                    "process_norm": str(proc),
+                    "rows_total": int(len(sub)),
+                    "rows_oversized": rows_oversized,
+                    "p95_top_s": sub_p95_top,
+                    "p95_mid_s": sub_p95_mid,
+                    "slowdown_ratio": slowdown_ratio,
+                }
+            )
+    hotspots.sort(
+        key=lambda h: (
+            -float(h.get("rows_oversized", 0)) * float(h.get("slowdown_ratio", 0.0)),
+            str(h.get("process_norm", "")),
+        )
+    )
+    max_targets = int(config.get("ideaspace_split_batches_max_targets", 3))
+    hotspots = hotspots[:max_targets]
+    focus_processes = [str(h.get("process_norm") or "") for h in hotspots if str(h.get("process_norm") or "")]
+
+    key_candidates: list[str] = []
+    for col in [cols.case_col, cols.host_col, *list(cols.group_cols)]:
+        if not col or col == cols.batch_col or col == process_col or col not in df.columns:
+            continue
+        key_candidates.append(str(col))
+    key_candidates = list(dict.fromkeys(key_candidates))[:3]
+
+    if focus_processes:
+        process_text = ", ".join(focus_processes)
+    else:
+        process_text = "highest-volume processes"
+    key_text = f" using keys {', '.join(key_candidates)}" if key_candidates else ""
+    action = (
+        f"Split {cols.batch_col} heavy runs for {process_text}: "
+        f"when {cols.batch_col} >= {batch_p90:.0f}, split into chunks targeting ~{batch_p50:.0f}{key_text} "
+        "to reduce tail latency amplification."
+    )
+
+    evidence = {
+        "metrics": {
+            "batch_col": cols.batch_col,
+            "process_col": process_col,
+            "batch_p90_trigger": batch_p90,
+            "batch_p50_target": batch_p50,
+            "p95_top": p95_top,
+            "p95_mid": p95_mid,
+            "focus_processes": focus_processes,
+            "key_candidates": key_candidates,
+            "hotspots": hotspots,
+        }
+    }
     return LeverRecommendation(
         lever_id="split_batches",
         title="Split oversized batches / transactions",
-        action="Split oversized batches to reduce tail latency amplification.",
+        action=action,
         estimated_improvement_pct=float(max(0.0, min(0.9, (p95_top - p95_mid) / max(p95_top, 1e-9))) * 100.0),
         confidence=0.6,
         evidence=evidence,

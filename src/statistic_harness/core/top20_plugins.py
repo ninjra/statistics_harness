@@ -74,17 +74,64 @@ class TemplateInfo:
         """
 
         role_l = role.lower()
+        role_aliases: dict[str, tuple[str, ...]] = {
+            # Event logs commonly encode "activity" as PROCESS_ID. Treat that as a
+            # valid process-name fallback for top20 structure/mining plugins.
+            "process_name": ("process_name", "process", "process_id"),
+            "process": ("process", "process_name", "process_id"),
+        }
+        want = set(role_aliases.get(role_l, (role_l,)))
         # Preferred: safe_name is the actual column name in the normalized template.
         for safe, r in self.safe_to_role.items():
-            if isinstance(safe, str) and isinstance(r, str) and r.lower() == role_l:
+            if isinstance(safe, str) and isinstance(r, str) and r.lower() in want:
                 return safe
 
         # Legacy fallback: attempt to route through field_to_safe if present.
         for _field, safe in self.field_to_safe.items():
             r = self.safe_to_role.get(safe)
-            if isinstance(r, str) and r.lower() == role_l:
+            if isinstance(r, str) and r.lower() in want:
                 return safe
         return None
+
+
+def _infer_role_from_template_field_name(field_name: str) -> str | None:
+    name = str(field_name or "").strip().lower()
+    if not name:
+        return None
+    tokenized = re.sub(r"[^a-z0-9]+", "_", name).strip("_")
+    tokens = [tok for tok in tokenized.split("_") if tok]
+    token_set = set(tokens)
+
+    has_any = lambda vals: any(v in token_set for v in vals)
+
+    if has_any({"queue"}) and has_any({"dt", "time", "date", "ts", "timestamp"}):
+        return "queue_time"
+    if has_any({"start", "begin", "started"}) and has_any({"dt", "time", "date", "ts", "timestamp"}):
+        return "start_time"
+    if has_any({"end", "finish", "finished", "complete", "completed", "stop"}) and has_any(
+        {"dt", "time", "date", "ts", "timestamp"}
+    ):
+        return "end_time"
+
+    if tokenized == "process_id":
+        return "process_name"
+    if has_any({"dependency", "dep", "parent", "prereq", "precede"}):
+        return "dependency_id"
+    if has_any({"master", "workflow", "case", "trace"}):
+        return "master_id"
+    if tokenized == "process_queue_id" or (has_any({"queue"}) and has_any({"process"}) and has_any({"id"})):
+        return "master_id"
+    if has_any({"module", "mod"}):
+        return "module_code"
+    if has_any({"user", "operator", "owner"}):
+        return "user_id"
+    if has_any({"host", "server", "node", "machine", "worker"}):
+        return "host_id"
+    if has_any({"status", "state", "result", "outcome"}):
+        return "status"
+    if has_any({"process", "activity", "task", "job", "step", "action", "proc"}):
+        return "process_name"
+    return None
 
 
 def _load_template_info(ctx) -> TemplateInfo | None:
@@ -160,8 +207,37 @@ def _load_template_info(ctx) -> TemplateInfo | None:
             if not (isinstance(d_safe, str) and d_safe.strip()):
                 continue
             role = dataset_safe_to_role.get(d_safe.strip())
+            inferred_role = _infer_role_from_template_field_name(field.strip())
+            # Prefer semantic template-field inference over generic profile roles.
+            temporal_roles = {"queue_time", "start_time", "end_time"}
+            if inferred_role and (
+                not role
+                or role in {"id", "numeric", "parameter"}
+                or (inferred_role in temporal_roles and role in temporal_roles and role != inferred_role)
+                or (inferred_role == "process_name" and role == "process_id")
+            ):
+                role = inferred_role
             if isinstance(role, str) and role.strip() and isinstance(t_safe, str) and t_safe.strip():
                 safe_to_role[t_safe.strip()] = role.strip()
+
+            # If role mapping is still absent for this template field, keep the
+            # inferred semantic role as a final fallback.
+            if (
+                isinstance(inferred_role, str)
+                and inferred_role.strip()
+                and isinstance(t_safe, str)
+                and t_safe.strip()
+                and t_safe.strip() not in safe_to_role
+            ):
+                safe_to_role[t_safe.strip()] = inferred_role.strip()
+
+    # Fallback: many normalized template tables reuse dataset safe_name columns directly.
+    # If explicit field mapping is missing, infer template-safe roles via direct safe-name join.
+    if not safe_to_role and dataset_safe_to_role:
+        for safe in template_name_to_safe.values():
+            role = dataset_safe_to_role.get(str(safe).strip())
+            if isinstance(role, str) and role.strip():
+                safe_to_role[str(safe).strip()] = role.strip()
 
     return TemplateInfo(table_name=table, field_to_safe=field_to_safe, safe_to_role=safe_to_role)
 
@@ -644,6 +720,101 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
     return PluginResult("ok", "No near-duplicate clusters found (SimHash)", {"candidates": 0}, [], [], None)
 
 
+def _fetch_limited_entity_key_rows(
+    conn: Any,
+    top_keys: list[str],
+    *,
+    max_entities: int,
+) -> tuple[list[Any], int]:
+    if not top_keys:
+        return [], 0
+    placeholders = ",".join("?" for _ in top_keys)
+    total_entities = int(
+        conn.execute(
+            f"SELECT COUNT(DISTINCT entity_id) AS c FROM parameter_kv WHERE key IN ({placeholders})",
+            tuple(top_keys),
+        ).fetchone()["c"]
+        or 0
+    )
+    if total_entities <= 0:
+        return [], 0
+    limit = int(max_entities) if int(max_entities) > 0 else total_entities
+    limit = min(limit, total_entities)
+    sql = (
+        f"""
+        WITH ranked AS (
+            SELECT entity_id, COUNT(*) AS n
+            FROM parameter_kv
+            WHERE key IN ({placeholders})
+            GROUP BY entity_id
+            ORDER BY n DESC, entity_id ASC
+            LIMIT ?
+        )
+        SELECT pk.entity_id AS entity_id, pk.key AS key
+        FROM parameter_kv pk
+        JOIN ranked r ON r.entity_id = pk.entity_id
+        WHERE pk.key IN ({placeholders})
+        ORDER BY pk.entity_id ASC
+        """
+    )
+    params = tuple([*top_keys, int(limit), *top_keys])
+    rows = conn.execute(sql, params).fetchall()
+    return rows, total_entities
+
+
+def _boolean_item_matrix(ent_rows: list[Any], items: list[str]) -> tuple[pd.DataFrame, int]:
+    item_idx = {k: i for i, k in enumerate(items)}
+    ent_ids = sorted({int(r["entity_id"]) for r in ent_rows})
+    ent_idx = {eid: i for i, eid in enumerate(ent_ids)}
+    mat = np.zeros((len(ent_ids), len(items)), dtype=bool)
+    for row in ent_rows:
+        eid = int(row["entity_id"])
+        key = str(row["key"])
+        i = ent_idx.get(eid)
+        j = item_idx.get(key)
+        if i is None or j is None:
+            continue
+        mat[i, j] = True
+    return pd.DataFrame(mat, columns=items), len(ent_ids)
+
+
+def _iter_entity_key_sets(ent_rows: list[Any], *, max_keys_per_entity: int) -> Iterable[list[str]]:
+    current_eid: int | None = None
+    keys: set[str] = set()
+    for row in ent_rows:
+        eid = int(row["entity_id"])
+        key = str(row["key"])
+        if current_eid is None:
+            current_eid = eid
+        if eid != current_eid:
+            if keys:
+                yield sorted(keys)[:max(1, int(max_keys_per_entity))]
+            current_eid = eid
+            keys = set()
+        keys.add(key)
+    if keys:
+        yield sorted(keys)[:max(1, int(max_keys_per_entity))]
+
+
+def _pair_stats_from_entity_rows(
+    ent_rows: list[Any],
+    *,
+    max_keys_per_entity: int = 24,
+) -> tuple[int, Counter[str], Counter[tuple[str, str]]]:
+    entity_count = 0
+    item_counts: Counter[str] = Counter()
+    pair_counts: Counter[tuple[str, str]] = Counter()
+    for keys in _iter_entity_key_sets(ent_rows, max_keys_per_entity=max_keys_per_entity):
+        if not keys:
+            continue
+        entity_count += 1
+        item_counts.update(keys)
+        for i, a in enumerate(keys):
+            for b in keys[i + 1 :]:
+                pair_counts[(a, b)] += 1
+    return entity_count, item_counts, pair_counts
+
+
 def _run_frequent_itemsets_fpgrowth(ctx, plugin_id: str, config: dict[str, Any]) -> PluginResult:
     info = _load_template_info(ctx)
     req = _require_template(info, plugin_id)
@@ -653,11 +824,12 @@ def _run_frequent_itemsets_fpgrowth(ctx, plugin_id: str, config: dict[str, Any])
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process") or None
     if not proc_col:
-        return PluginResult("skipped", "No process column inferred (role process_name)", {}, [], [], None)
+        return PluginResult("ok", "Not applicable: no process column inferred (role process_name)", {"itemsets": 0}, [], [], None)
 
     min_support = float(config.get("min_support") or 0.02)
     max_itemset_size = int(config.get("max_itemset_size") or 6)
-    max_item_count = int(config.get("max_item_count") or 200)
+    max_item_count = int(config.get("max_item_count") or 120)
+    max_entities = int(config.get("max_entities") or 120_000)
 
     with ctx.storage.connection() as conn:
         # Global most common keys (weighted by run occurrences via rpl join).
@@ -678,34 +850,71 @@ def _run_frequent_itemsets_fpgrowth(ctx, plugin_id: str, config: dict[str, Any])
         key_rows = conn.execute(sql, (dataset_version_id, int(max_item_count))).fetchall()
         top_keys = [str(r["key"]) for r in key_rows if r["key"]]
         if not top_keys:
-            return PluginResult("skipped", "No parameter keys found in parameter_kv", {}, [], [], None)
-        placeholders = ",".join("?" for _ in top_keys)
-        # Transactions at entity_id granularity: entity_id -> set(keys).
-        ent_rows = conn.execute(
-            f"SELECT entity_id, key FROM parameter_kv WHERE key IN ({placeholders})",
-            tuple(top_keys),
-        ).fetchall()
+            return PluginResult("ok", "Not applicable: no parameter keys found in parameter_kv", {"itemsets": 0}, [], [], None)
+        ent_rows, total_entities = _fetch_limited_entity_key_rows(
+            conn,
+            top_keys,
+            max_entities=max_entities,
+        )
 
-    by_ent: dict[int, set[str]] = defaultdict(set)
-    for r in ent_rows:
-        by_ent[int(r["entity_id"])].add(str(r["key"]))
-
-    if len(by_ent) < 50:
-        return PluginResult("skipped", "Insufficient parameter entities for itemset mining", {"entities": len(by_ent)}, [], [], None)
+    if not ent_rows:
+        return PluginResult("ok", "Not applicable: no parameter entities matched selected keys", {"itemsets": 0}, [], [], None)
 
     items = sorted(top_keys)
-    mat = np.zeros((len(by_ent), len(items)), dtype=bool)
-    ent_ids = list(by_ent.keys())
-    for i, eid in enumerate(ent_ids):
-        keys = by_ent[eid]
-        for j, k in enumerate(items):
-            if k in keys:
-                mat[i, j] = True
-    df = pd.DataFrame(mat, columns=items)
-    freq = fpgrowth(df, min_support=min_support, use_colnames=True, max_len=max_itemset_size)
-    freq = freq.sort_values("support", ascending=False).head(50)
+    df, entities_used = _boolean_item_matrix(ent_rows, items)
+    if entities_used < 50:
+        return PluginResult("ok", "Not applicable: insufficient parameter entities for itemset mining", {"itemsets": 0}, [], [], None)
+    fallback_reason = ""
+    use_fallback = entities_used > 100_000 or len(items) > 100
+    if use_fallback:
+        fallback_reason = (
+            f"matrix too large for exact fpgrowth (entities={entities_used}, items={len(items)}); "
+            "using deterministic pair-support fallback"
+        )
+        freq = pd.DataFrame(columns=["itemsets", "support"])
+    else:
+        try:
+            freq = fpgrowth(df, min_support=min_support, use_colnames=True, max_len=max_itemset_size)
+            freq = freq.sort_values("support", ascending=False).head(50)
+        except MemoryError as exc:
+            fallback_reason = (
+                "fpgrowth exhausted memory; "
+                f"using deterministic pair-support fallback ({type(exc).__name__})"
+            )
+            freq = pd.DataFrame(columns=["itemsets", "support"])
     findings: list[dict[str, Any]] = []
     artifact_rows: list[dict[str, Any]] = []
+    if fallback_reason:
+        entity_count, _item_counts, pair_counts = _pair_stats_from_entity_rows(
+            ent_rows, max_keys_per_entity=24
+        )
+        if entity_count > 0:
+            for (a, b), c in pair_counts.most_common(200):
+                support = float(c) / float(max(1, entity_count))
+                if support < min_support:
+                    continue
+                itemset = [a, b]
+                artifact_rows.append({"itemset": itemset, "support": support, "mode": "pair_fallback"})
+                title = "Create a preset job for a frequent parameter bundle"
+                rec = (
+                    f"These parameter keys frequently occur together ({', '.join(itemset)}; support ~{support*100:.1f}%). "
+                    "Consider a single preset job/API that accepts this bundle explicitly to reduce variant sprawl and repeated launches."
+                )
+                findings.append(
+                    _make_actionable_lever(
+                        plugin_id=plugin_id,
+                        process_norm="(multiple)",
+                        title=title,
+                        recommendation=rec,
+                        action_type="preset_job_candidate",
+                        expected_delta_seconds=None,
+                        confidence=min(0.9, 0.4 + support),
+                        evidence={"itemset": itemset, "support": support, "mode": "pair_fallback"},
+                        measurement_type="measured",
+                    )
+                )
+                if len(findings) >= 10:
+                    break
     for _, row in freq.iterrows():
         itemset = sorted(list(row["itemsets"]))
         support = float(row["support"])
@@ -733,9 +942,42 @@ def _run_frequent_itemsets_fpgrowth(ctx, plugin_id: str, config: dict[str, Any])
         if len(findings) >= 10:
             break
 
-    artifacts = [_artifact(ctx, plugin_id, "fpgrowth_itemsets.json", {"itemsets": artifact_rows}, "json")]
-    summary = f"Mined {len(artifact_rows)} frequent itemsets"
-    return PluginResult("ok", summary, {"itemsets": len(artifact_rows)}, findings, artifacts, None)
+    sampled = bool(total_entities > entities_used)
+    artifacts = [
+        _artifact(
+            ctx,
+            plugin_id,
+            "fpgrowth_itemsets.json",
+            {
+                "itemsets": artifact_rows,
+                "entities_total": int(total_entities),
+                "entities_used": int(entities_used),
+                "sampled_entities": sampled,
+                "mode": "pair_fallback" if fallback_reason else "fpgrowth",
+                "reason": fallback_reason,
+            },
+            "json",
+        )
+    ]
+    summary = (
+        f"Mined {len(artifact_rows)} frequent itemsets"
+        if not fallback_reason
+        else f"Computed fallback frequent pair itemsets ({len(artifact_rows)} rows) because {fallback_reason}"
+    )
+    return PluginResult(
+        "ok",
+        summary,
+        {
+            "itemsets": len(artifact_rows),
+            "entities_used": int(entities_used),
+            "entities_total": int(total_entities),
+            "sampled_entities": sampled,
+            "fallback_used": bool(fallback_reason),
+        },
+        findings,
+        artifacts,
+        None,
+    )
 
 
 def _run_association_rules_apriori(ctx, plugin_id: str, config: dict[str, Any]) -> PluginResult:
@@ -747,12 +989,14 @@ def _run_association_rules_apriori(ctx, plugin_id: str, config: dict[str, Any]) 
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process") or None
     if not proc_col:
-        return PluginResult("skipped", "No process column inferred (role process_name)", {}, [], [], None)
+        return PluginResult("ok", "Not applicable: no process column inferred (role process_name)", {"rules": 0}, [], [], None)
 
     min_support = float(config.get("min_support") or 0.02)
     min_conf = float(config.get("min_confidence") or 0.6)
     min_lift = float(config.get("min_lift") or 1.1)
-    max_item_count = int(config.get("max_item_count") or 200)
+    max_item_count = int(config.get("max_item_count") or 120)
+    max_itemset_size = int(config.get("max_itemset_size") or 4)
+    max_entities = int(config.get("max_entities") or 120_000)
     max_rules = int(config.get("max_rules") or 200)
 
     with ctx.storage.connection() as conn:
@@ -773,42 +1017,104 @@ def _run_association_rules_apriori(ctx, plugin_id: str, config: dict[str, Any]) 
         key_rows = conn.execute(sql, (dataset_version_id, int(max_item_count))).fetchall()
         top_keys = [str(r["key"]) for r in key_rows if r["key"]]
         if not top_keys:
-            return PluginResult("skipped", "No parameter keys found in parameter_kv", {}, [], [], None)
-        placeholders = ",".join("?" for _ in top_keys)
-        ent_rows = conn.execute(
-            f"SELECT entity_id, key FROM parameter_kv WHERE key IN ({placeholders})",
-            tuple(top_keys),
-        ).fetchall()
+            return PluginResult("ok", "Not applicable: no parameter keys found in parameter_kv", {"rules": 0}, [], [], None)
+        ent_rows, total_entities = _fetch_limited_entity_key_rows(
+            conn,
+            top_keys,
+            max_entities=max_entities,
+        )
 
-    by_ent: dict[int, set[str]] = defaultdict(set)
-    for r in ent_rows:
-        by_ent[int(r["entity_id"])].add(str(r["key"]))
-    if len(by_ent) < 100:
-        return PluginResult("skipped", "Insufficient entities for association-rule mining", {"entities": len(by_ent)}, [], [], None)
+    if not ent_rows:
+        return PluginResult("ok", "Not applicable: no parameter entities matched selected keys", {"rules": 0}, [], [], None)
 
     items = sorted(top_keys)
-    mat = np.zeros((len(by_ent), len(items)), dtype=bool)
-    ent_ids = list(by_ent.keys())
-    for i, eid in enumerate(ent_ids):
-        keys = by_ent[eid]
-        for j, k in enumerate(items):
-            if k in keys:
-                mat[i, j] = True
-    df = pd.DataFrame(mat, columns=items)
-    freq = apriori(df, min_support=min_support, use_colnames=True, max_len=4)
-    if freq.empty:
-        return PluginResult("ok", "No frequent itemsets found for Apriori", {"rules": 0}, [], [], None)
-    rules = association_rules(freq, metric="confidence", min_threshold=min_conf)
-    if not rules.empty:
-        rules = rules[rules["lift"] >= min_lift].sort_values(["lift", "confidence"], ascending=False).head(max_rules)
+    df, entities_used = _boolean_item_matrix(ent_rows, items)
+    if entities_used < 100:
+        return PluginResult("ok", "Not applicable: insufficient entities for association-rule mining", {"rules": 0}, [], [], None)
+    fallback_reason = ""
+    rules = pd.DataFrame()
+    use_fallback = entities_used > 50_000 or len(items) > 80
+    if use_fallback:
+        fallback_reason = (
+            f"matrix too large for exact apriori (entities={entities_used}, items={len(items)}); "
+            "using deterministic pair-rule fallback"
+        )
+    else:
+        try:
+            freq = apriori(df, min_support=min_support, use_colnames=True, max_len=max(2, max_itemset_size))
+            if not freq.empty:
+                rules = association_rules(freq, metric="confidence", min_threshold=min_conf)
+                if not rules.empty:
+                    rules = rules[rules["lift"] >= min_lift].sort_values(
+                        ["lift", "confidence"], ascending=False
+                    ).head(max_rules)
+        except MemoryError as exc:
+            fallback_reason = (
+                "apriori exhausted memory; "
+                f"using deterministic pair-rule fallback ({type(exc).__name__})"
+            )
     findings: list[dict[str, Any]] = []
     rules_out: list[dict[str, Any]] = []
-    for _, row in rules.iterrows():
-        ant = sorted(list(row["antecedents"]))
-        con = sorted(list(row["consequents"]))
+    if fallback_reason:
+        entity_count, item_counts, pair_counts = _pair_stats_from_entity_rows(
+            ent_rows, max_keys_per_entity=24
+        )
+        scored: list[dict[str, Any]] = []
+        if entity_count > 0:
+            for (a, b), pair_n in pair_counts.items():
+                support = float(pair_n) / float(entity_count)
+                if support < min_support:
+                    continue
+                count_a = float(item_counts.get(a, 0))
+                count_b = float(item_counts.get(b, 0))
+                if count_a > 0:
+                    conf_ab = float(pair_n) / count_a
+                    base_b = count_b / float(entity_count)
+                    lift_ab = conf_ab / max(base_b, 1e-9)
+                    if conf_ab >= min_conf and lift_ab >= min_lift:
+                        scored.append(
+                            {
+                                "antecedents": [a],
+                                "consequents": [b],
+                                "confidence": conf_ab,
+                                "lift": lift_ab,
+                                "support": support,
+                            }
+                        )
+                if count_b > 0:
+                    conf_ba = float(pair_n) / count_b
+                    base_a = count_a / float(entity_count)
+                    lift_ba = conf_ba / max(base_a, 1e-9)
+                    if conf_ba >= min_conf and lift_ba >= min_lift:
+                        scored.append(
+                            {
+                                "antecedents": [b],
+                                "consequents": [a],
+                                "confidence": conf_ba,
+                                "lift": lift_ba,
+                                "support": support,
+                            }
+                        )
+        scored.sort(
+            key=lambda r: (-float(r["lift"]), -float(r["confidence"]), -float(r["support"]))
+        )
+        rules_out = scored[: max(1, int(max_rules))]
+    else:
+        if rules.empty:
+            return PluginResult("ok", "No frequent itemsets found for Apriori", {"rules": 0}, [], [], None)
+        for _, row in rules.iterrows():
+            ant = sorted(list(row["antecedents"]))
+            con = sorted(list(row["consequents"]))
+            conf = float(row["confidence"])
+            lift = float(row["lift"])
+            rules_out.append({"antecedents": ant, "consequents": con, "confidence": conf, "lift": lift})
+            if len(rules_out) >= max(1, int(max_rules)):
+                break
+    for row in rules_out:
+        ant = sorted([str(x) for x in row["antecedents"]])
+        con = sorted([str(x) for x in row["consequents"]])
         conf = float(row["confidence"])
         lift = float(row["lift"])
-        rules_out.append({"antecedents": ant, "consequents": con, "confidence": conf, "lift": lift})
         title = "Simplify variants using a consistent parameter rule"
         rec = (
             f"When {', '.join(ant)} is present, {', '.join(con)} is usually also present "
@@ -829,8 +1135,41 @@ def _run_association_rules_apriori(ctx, plugin_id: str, config: dict[str, Any]) 
         )
         if len(findings) >= 10:
             break
-    artifacts = [_artifact(ctx, plugin_id, "apriori_rules.json", {"rules": rules_out}, "json")]
-    return PluginResult("ok", f"Mined {len(rules_out)} association rules", {"rules": len(rules_out)}, findings, artifacts, None)
+    sampled = bool(total_entities > entities_used)
+    artifacts = [
+        _artifact(
+            ctx,
+            plugin_id,
+            "apriori_rules.json",
+            {
+                "rules": rules_out,
+                "entities_total": int(total_entities),
+                "entities_used": int(entities_used),
+                "sampled_entities": sampled,
+                "mode": "pair_fallback" if fallback_reason else "apriori",
+                "reason": fallback_reason,
+            },
+            "json",
+        )
+    ]
+    return PluginResult(
+        "ok",
+        (
+            f"Mined {len(rules_out)} association rules"
+            if not fallback_reason
+            else f"Computed fallback pair-based association rules ({len(rules_out)} rules) because {fallback_reason}"
+        ),
+        {
+            "rules": len(rules_out),
+            "entities_used": int(entities_used),
+            "entities_total": int(total_entities),
+            "sampled_entities": sampled,
+            "fallback_used": bool(fallback_reason),
+        },
+        findings,
+        artifacts,
+        None,
+    )
 
 
 def _case_sequences(conn, template_table: str, dataset_version_id: str, case_col: str, time_col: str, process_col: str, *, max_cases: int) -> list[list[str]]:
