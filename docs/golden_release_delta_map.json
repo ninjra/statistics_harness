@@ -56,7 +56,7 @@
     }
   ],
   "schema_version": "golden_release_delta_map.v1",
-  "source_plan": "docs/codex_4pillars_golden_release_plan.md",
+  "source_plan": "docs/deprecated/completed_plans/docs/codex_4pillars_golden_release_plan.md",
   "summary": {
     "implemented": 5,
     "missing": 0,

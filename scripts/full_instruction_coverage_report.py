@@ -14,6 +14,8 @@ DOCS = ROOT / "docs"
 PLUGINS = ROOT / "plugins"
 EXCLUDED_GENERATED_NAMES = {
     "repomix-output.md",
+    "implementation_matrix.md",
+    "binding_implementation_matrix.md",
     "full_instruction_coverage_report.json",
     "full_instruction_coverage_report.md",
     "full_repo_misses.json",
@@ -51,6 +53,11 @@ def _collect_sources() -> list[Path]:
     files: list[Path] = []
     for p in DOCS.rglob("*"):
         if p.is_file() and p.suffix.lower() in {".md", ".txt"}:
+            rel = str(p.relative_to(ROOT)).replace("\\", "/")
+            # Archived docs are intentionally retained for history and should not
+            # influence active instruction coverage status.
+            if rel.startswith("docs/deprecated/"):
+                continue
             files.append(p)
     for p in ROOT.glob("*.md"):
         files.append(p)

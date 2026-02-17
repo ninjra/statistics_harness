@@ -170,6 +170,9 @@ def _iter_binding_docs(
         if not p.is_file():
             continue
         rel = _normalize_doc_rel_path(p)
+        # Archived docs are historical context and should not gate active binding coverage.
+        if rel.startswith("docs/deprecated/"):
+            continue
         if rel in exclude_paths:
             continue
         files.append(p)
