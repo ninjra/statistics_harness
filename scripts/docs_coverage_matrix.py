@@ -186,7 +186,10 @@ def as_json(scans: list[DocScan]) -> dict[str, Any]:
         (s.doc_kind == "normative") and (s.unresolved_plugin_tokens or s.missing_paths)
         for s in scans
     )
-    missing_any = any(s.unresolved_plugin_tokens or s.missing_paths for s in scans)
+    missing_any = any(
+        (s.doc_kind != "archived") and (s.unresolved_plugin_tokens or s.missing_paths)
+        for s in scans
+    )
     return {
         "docs_root": "docs",
         "scanned_docs": [s.doc_path for s in scans],
