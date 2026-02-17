@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -34,10 +35,12 @@ class PluginAccess:
     plugin_id: str
     plugin_type: str
     uses_dataset_loader: bool
+    uses_dataset_loader_bounded: bool
     uses_dataset_loader_unbounded: bool
     uses_dataset_iter_batches: bool
     uses_sql_direct: bool
     uses_sql_assist: bool
+    dataset_loader_mode: str
     access_contracts: tuple[str, ...]
     contract_sources: tuple[str, ...]
     unclassified: bool
@@ -71,7 +74,7 @@ def _plugin_depends_on(manifest_payload: dict[str, Any]) -> list[str]:
     return out
 
 
-def _scan_plugin_py(text: str) -> tuple[bool, bool, bool, bool, bool]:
+def _scan_plugin_py(text: str) -> tuple[bool, bool, bool, bool, bool, bool]:
     uses_loader = "ctx.dataset_loader" in text
     uses_batches = "ctx.dataset_iter_batches" in text
     uses_sql_assist = ("ctx.sql" in text) or ("ctx.sql_exec" in text)
@@ -85,8 +88,10 @@ def _scan_plugin_py(text: str) -> tuple[bool, bool, bool, bool, bool]:
         uses_loader = True
         # Registry currently calls ctx.dataset_loader() unbounded unless settings pass row_limit.
         unbounded = True
+        bounded = False
     else:
         unbounded = False
+        bounded = False
 
     # Heuristic "unbounded": `ctx.dataset_loader()` with no args.
     if uses_loader:
@@ -107,13 +112,65 @@ def _scan_plugin_py(text: str) -> tuple[bool, bool, bool, bool, bool]:
                 if j < len(text) and text[j] == ")":
                     unbounded = True
                     break
+                if j < len(text) and text[j] != ")":
+                    bounded = True
                 idx = j
 
     # Direct SQL: look for storage.connection() and SELECT/INSERT patterns.
     uses_sql = "storage.connection" in text or "ctx.storage.connection" in text
     uses_sql = uses_sql and ("SELECT " in text or "INSERT " in text or "DELETE " in text or "UPDATE " in text)
 
-    return uses_loader, unbounded, uses_batches, uses_sql, uses_sql_assist
+    return uses_loader, bounded, unbounded, uses_batches, uses_sql, uses_sql_assist
+
+
+def _dataset_loader_mode(uses_loader: bool, bounded: bool, unbounded: bool) -> str:
+    if not uses_loader:
+        return "none"
+    if bounded and unbounded:
+        return "mixed"
+    if unbounded:
+        return "unbounded"
+    if bounded:
+        return "bounded"
+    return "unknown"
+
+
+def _verify_plugin_catalog_sync(plugins_root: Path) -> tuple[bool, str]:
+    try:
+        import importlib.util
+        import sys as _sys
+
+        module_path = ROOT / "scripts" / "generate_codex_plugin_catalog.py"
+        spec = importlib.util.spec_from_file_location("generate_codex_plugin_catalog", module_path)
+        if spec is None or spec.loader is None:
+            return False, f"catalog_sync_import_error=unable_to_load_spec:{module_path}"
+        module = importlib.util.module_from_spec(spec)
+        _sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        build_rows = getattr(module, "build_rows", None)
+        build_markdown = getattr(module, "build_markdown", None)
+        if not callable(build_rows) or not callable(build_markdown):
+            return False, "catalog_sync_import_error=missing_build_rows_or_build_markdown"
+    except Exception as exc:
+        return False, f"catalog_sync_import_error={exc}"
+
+    catalog_path = ROOT / "docs" / "_codex_plugin_catalog.md"
+    if not catalog_path.exists():
+        return False, f"missing_catalog={catalog_path}"
+
+    try:
+        rows = build_rows(plugins_root)
+        expected_text = build_markdown(rows)
+        actual_text = catalog_path.read_text(encoding="utf-8")
+    except Exception as exc:
+        return False, f"catalog_sync_generation_error={exc}"
+
+    if expected_text != actual_text:
+        return False, (
+            "plugin catalog out of sync; regenerate docs/_codex_plugin_catalog.md via "
+            "scripts/generate_codex_plugin_catalog.py before running data-access matrix"
+        )
+    return True, ""
 
 
 def _load_contract_overrides(path: Path) -> dict[str, list[str]]:
@@ -195,7 +252,8 @@ def generate(plugins_root: Path) -> list[PluginAccess]:
         ptype = _plugin_type(manifest_payload)
         depends_on = _plugin_depends_on(manifest_payload)
         text = _read_text(entry)
-        uses_loader, unbounded, uses_batches, uses_sql, uses_sql_assist = _scan_plugin_py(text)
+        uses_loader, bounded, unbounded, uses_batches, uses_sql, uses_sql_assist = _scan_plugin_py(text)
+        loader_mode = _dataset_loader_mode(uses_loader, bounded, unbounded)
         contracts, sources = _infer_contracts(
             plugin_type=ptype,
             depends_on=depends_on,
@@ -217,10 +275,12 @@ def generate(plugins_root: Path) -> list[PluginAccess]:
                 plugin_id=pdir.name,
                 plugin_type=ptype,
                 uses_dataset_loader=uses_loader,
+                uses_dataset_loader_bounded=bounded,
                 uses_dataset_loader_unbounded=unbounded,
                 uses_dataset_iter_batches=uses_batches,
                 uses_sql_direct=uses_sql,
                 uses_sql_assist=uses_sql_assist,
+                dataset_loader_mode=loader_mode,
                 access_contracts=tuple(contracts),
                 contract_sources=tuple(sources),
                 unclassified=(len(contracts) == 0),
@@ -247,7 +307,9 @@ def _as_json(items: list[PluginAccess]) -> dict[str, Any]:
                 "plugin_id": i.plugin_id,
                 "plugin_type": i.plugin_type,
                 "uses_dataset_loader": i.uses_dataset_loader,
+                "uses_dataset_loader_bounded": i.uses_dataset_loader_bounded,
                 "uses_dataset_loader_unbounded": i.uses_dataset_loader_unbounded,
+                "dataset_loader_mode": i.dataset_loader_mode,
                 "uses_dataset_iter_batches": i.uses_dataset_iter_batches,
                 "uses_sql_direct": i.uses_sql_direct,
                 "uses_sql_assist": i.uses_sql_assist,
@@ -266,8 +328,8 @@ def _as_md(items: list[PluginAccess]) -> str:
     lines.append("")
     lines.append("Generated by `scripts/plugin_data_access_matrix.py`.")
     lines.append("")
-    lines.append("| Plugin | Type | Contracts | contract_sources | dataset_loader | loader_unbounded | iter_batches | direct_sql | sql_assist |")
-    lines.append("|---|---|---|---|---:|---:|---:|---:|---:|")
+    lines.append("| Plugin | Type | Contracts | contract_sources | dataset_loader | loader_bounded | loader_unbounded | loader_mode | iter_batches | direct_sql | sql_assist |")
+    lines.append("|---|---|---|---|---:|---:|---:|---|---:|---:|---:|")
     for i in items:
         lines.append(
             "| "
@@ -278,7 +340,9 @@ def _as_md(items: list[PluginAccess]) -> str:
                     ", ".join(i.access_contracts),
                     ", ".join(i.contract_sources),
                     str(int(i.uses_dataset_loader)),
+                    str(int(i.uses_dataset_loader_bounded)),
                     str(int(i.uses_dataset_loader_unbounded)),
+                    i.dataset_loader_mode,
                     str(int(i.uses_dataset_iter_batches)),
                     str(int(i.uses_sql_direct)),
                     str(int(i.uses_sql_assist)),
@@ -298,7 +362,13 @@ def main() -> int:
     ap.add_argument("--verify", action="store_true")
     args = ap.parse_args()
 
-    items = generate((ROOT / args.plugins_root).resolve())
+    plugins_root = (ROOT / args.plugins_root).resolve()
+    synced, reason = _verify_plugin_catalog_sync(plugins_root)
+    if not synced:
+        print(reason, file=sys.stderr)
+        return 2
+
+    items = generate(plugins_root)
     payload = _as_json(items)
     out_json = (ROOT / args.out_json).resolve()
     out_md = (ROOT / args.out_md).resolve()

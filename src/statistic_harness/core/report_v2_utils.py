@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .dataset_io import DatasetAccessor
+from .known_issues_mode import known_issues_enabled
 from .storage import Storage
 from .utils import file_sha256, stable_hash
 
@@ -91,6 +92,9 @@ def load_known_issues(
     project_id: str | None = None,
     dataset_version_id: str | None = None,
 ) -> dict[str, Any] | None:
+    if not known_issues_enabled():
+        return None
+
     run_row = storage.fetch_run(run_id) if run_id else None
     project_row = storage.fetch_project(project_id) if project_id else None
     if not project_row and run_row and run_row.get("project_id"):

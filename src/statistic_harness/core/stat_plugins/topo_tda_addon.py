@@ -3066,6 +3066,15 @@ def _actionable_ops_levers_v1(
                 mean_coverage = float(
                     sum(float(r.get("coverage") or 0.0) for r in top_rows) / float(len(top_rows))
                 )
+                sequence_id = stable_id(
+                    [
+                        "batch_group_candidate",
+                        close_month,
+                        strongest_key,
+                        ",".join(target_process_ids),
+                    ],
+                    prefix="batchseq",
+                )
                 primary_process = target_process_ids[0]
                 emit(
                     title=f"Batch payout-report chain for close month {close_month}",
@@ -3081,19 +3090,25 @@ def _actionable_ops_levers_v1(
                     ],
                     evidence={
                         "method": "payout_chain_batch_group",
+                        "sequence_id": sequence_id,
                         "close_month": close_month,
                         "key": strongest_key,
                         "target_process_ids": target_process_ids,
                         "runs_with_key_total": total_runs,
+                        "estimated_calls_reduced": max(total_runs - 1, 0),
+                        "estimated_delta_seconds_upper": total_delta if total_delta > 0.0 else None,
                         "mean_unique_ratio": mean_unique_ratio,
                         "mean_coverage": mean_coverage,
                         "batch_input_candidates_artifact": str(artifacts[-1].path) if artifacts else None,
                     },
                     extra={
+                        "sequence_id": sequence_id,
                         "key": strongest_key,
                         "best_close_month": close_month,
                         "target_process_ids": target_process_ids,
                         "runs_with_key": total_runs,
+                        "estimated_calls_reduced": max(total_runs - 1, 0),
+                        "estimated_delta_seconds_upper": total_delta if total_delta > 0.0 else None,
                         "unique_ratio": mean_unique_ratio,
                         "coverage": mean_coverage,
                         "validation_steps": [

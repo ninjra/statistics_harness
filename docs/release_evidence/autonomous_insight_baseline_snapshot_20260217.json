@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-02-17T17:00:00Z",
+  "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+  "before_run_id": "full_loaded_3246cc7c_20260217T161835Z",
+  "after_run_id": "full_loaded_3246cc7c_20260217T165636Z",
+  "known_issues_mode_before": "on",
+  "known_issues_mode_after": "off",
+  "before_counts": {
+    "recommendation_item_count": 12,
+    "known_recommendation_count": 1,
+    "discovery_recommendation_count": 11
+  },
+  "after_counts": {
+    "recommendation_item_count": 11,
+    "known_recommendation_count": 0,
+    "discovery_recommendation_count": 11
+  },
+  "delta": {
+    "known_removed": 1,
+    "discovery_delta": 0,
+    "autonomous_discovery_jaccard": 1.0
+  },
+  "before_known_signatures": [
+    {
+      "plugin_id": "analysis_close_cycle_contention",
+      "kind": "close_cycle_contention",
+      "action_type": "",
+      "recommendation_hash": "16c558241276"
+    }
+  ],
+  "shared_discovery_signatures": [
+    {
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "kind": "ideaspace_action",
+      "action_type": "add_server",
+      "recommendation_hash": "686ecf5a9c12"
+    },
+    {
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "kind": "verified_action",
+      "action_type": "add_server",
+      "recommendation_hash": "7588e56088e8"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_or_cache",
+      "recommendation_hash": "b924b2781c7d"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "0c7ec34b54c2"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "a655c703e9eb"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "12de7b48a479"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "67a9259b00cb"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "a37af2640231"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_input",
+      "recommendation_hash": "e0632d9e5fcc"
+    },
+    {
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "kind": "actionable_ops_lever",
+      "action_type": "batch_or_cache",
+      "recommendation_hash": "87c3fbd6404a"
+    },
+    {
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "kind": "ideaspace_action",
+      "action_type": "tune_schedule",
+      "recommendation_hash": "3501aec0242d"
+    }
+  ]
+}

@@ -16,11 +16,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -32,11 +34,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_action_search_simulated_annealing_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -48,11 +52,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_actionable_ops_levers_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -64,11 +70,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_aft_survival_lognormal_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -80,11 +88,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_anova_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -96,11 +106,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_association_rules_apriori_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -112,11 +124,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_attribution",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -128,11 +142,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -144,11 +160,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_bayesian_point_displacement",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -160,11 +178,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_benfords_law_anomaly_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -176,11 +196,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_beta_binomial_overdispersion_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -192,11 +214,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_biclustering_cheng_church_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -208,11 +232,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_bocpd_gaussian",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -224,11 +250,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -240,11 +268,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -256,11 +286,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_burst_detection_kleinberg",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -272,11 +304,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_burst_modeling_hawkes_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -289,11 +323,13 @@
         "inferred:default",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_busy_period_segmentation_v2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -305,11 +341,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_capacity_frontier_envelope_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -321,11 +359,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_capacity_scaling",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -337,11 +377,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_cca_crossblock_association_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -353,11 +395,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_chain_makespan",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -369,11 +413,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_change_impact_pre_post",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -385,11 +431,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_change_score_consensus_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -401,11 +449,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_changepoint_energy_edivisive",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -417,11 +467,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_changepoint_method_survey_guided",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -433,11 +485,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_changepoint_pelt",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -449,11 +503,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_chi_square_association",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -465,11 +521,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_circular_time_of_day_drift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -481,11 +539,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_capacity_impact",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -497,11 +557,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_capacity_model",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -513,11 +575,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_change_point_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -529,11 +593,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_contention",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -545,11 +611,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_duration_shift",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -561,11 +629,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_revenue_compression",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -577,11 +647,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_start_backtrack_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -593,11 +665,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_uplift",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -609,11 +683,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_close_cycle_window_resolver",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -625,11 +701,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_cluster_analysis_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -641,11 +719,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_competing_risks_cif_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -657,11 +737,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_concurrency_reconstruction",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -673,11 +755,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_conformal_feature_prediction",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -689,11 +773,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_conformance_alignments",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -705,11 +791,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_conformance_checking",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -721,11 +809,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -737,11 +827,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_constraints_violation_detector_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -753,11 +845,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_control_chart_cusum",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -769,11 +863,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_control_chart_ewma",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -785,11 +881,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_control_chart_individuals",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -801,11 +899,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_control_chart_suite",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -817,11 +917,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_copula_dependence",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -833,11 +935,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_cur_decomposition_explain_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -849,11 +953,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_cusum_on_model_residuals_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -865,11 +971,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -881,11 +989,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_density_clustering_hdbscan_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -897,11 +1007,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_dependency_community_leiden_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -913,11 +1025,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_dependency_community_louvain_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -929,11 +1043,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dependency_critical_path_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -945,11 +1061,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dependency_graph_change_detection",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -961,11 +1079,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dependency_resolution_join",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -978,11 +1098,13 @@
         "inferred:default",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_determinism_discipline",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -994,11 +1116,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_diffusion_maps_manifold_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1010,11 +1134,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1026,11 +1152,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_discrete_event_queue_simulator_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1042,11 +1170,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_distance_correlation_screen_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1058,11 +1188,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_distance_covariance_dependence_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1074,11 +1206,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_distribution_drift_suite",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1090,11 +1224,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_distribution_shift_wasserstein_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1106,11 +1242,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_dmd_koopman_modes_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1122,11 +1260,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dp_gmm",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1138,11 +1278,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_drift_adwin",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1154,11 +1296,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_dynamic_close_detection",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1170,11 +1314,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ebm_action_verifier_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1186,11 +1332,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_effect_size_report",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1202,11 +1350,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1218,11 +1368,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_energy_distance_two_sample_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1234,11 +1386,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_event_count_bocpd_poisson",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1250,11 +1404,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_evt_gumbel_tail",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1266,11 +1422,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_evt_peaks_over_threshold",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1282,11 +1440,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_factor_analysis_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1298,11 +1458,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_factor_rotation_varimax_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1314,11 +1476,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_fisher_exact_enrichment_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1330,11 +1494,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1346,11 +1512,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1362,11 +1530,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1378,11 +1548,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_gam_spline_regression_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1394,11 +1566,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_garch_volatility_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1410,11 +1584,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_gaussian_copula_shift",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1426,11 +1602,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_gaussian_knockoffs",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1442,11 +1620,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_geometric_median_multivariate_location_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1458,11 +1638,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_ges_score_based_causal_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1474,11 +1656,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_graph_assortativity_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1490,11 +1674,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_graph_min_cut_partition_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1506,11 +1692,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_graph_motif_triads_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1522,11 +1710,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_graph_pagerank_hotspots_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1538,11 +1728,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_graph_topology_curves",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1554,11 +1746,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_graphical_lasso_dependency_network",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1570,11 +1764,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1586,11 +1782,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_hawkes_self_exciting",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1602,11 +1800,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_heavy_tail_index_hill_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1618,11 +1818,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_higuchi_fractal_dimension_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1634,11 +1836,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_hmm_latent_state_sequences",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1650,11 +1854,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_hold_time_attribution_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1666,11 +1872,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_hsic_independence_screen_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1682,11 +1890,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_hurst_exponent_long_memory_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1698,11 +1908,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ica_source_separation_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1714,11 +1926,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1730,11 +1944,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ideaspace_action_planner",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1746,11 +1962,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ideaspace_energy_ebm_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1762,11 +1980,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ideaspace_normative_gap",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1778,11 +1998,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_isolation_forest",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1794,11 +2016,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_isolation_forest_anomaly",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1810,11 +2034,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_issue_cards_v2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1826,11 +2052,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_kernel_two_sample_mmd",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1842,11 +2070,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_kingman_vut_approx",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1858,11 +2088,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_knn_graph_two_sample_test_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1874,11 +2106,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_knockoff_wrapper_rf",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1890,11 +2124,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1906,11 +2142,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_lagged_predictability_test",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1922,11 +2160,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_lingam_causal_discovery_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1938,11 +2178,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_littles_law_consistency",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1954,11 +2196,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_local_outlier_factor",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1970,11 +2214,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_log_template_drain",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -1986,11 +2232,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_log_template_mining_drain",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2002,11 +2250,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_lomb_scargle_periodogram_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2018,11 +2268,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_mann_kendall_trend_test_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2034,11 +2286,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_map_permutation_test_karniski",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2050,11 +2304,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_marked_point_process_intensity_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2066,11 +2322,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_markov_transition_shift",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2082,11 +2340,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_matrix_profile_motifs_discords",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2098,11 +2358,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_message_entropy_drift",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2114,11 +2376,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_monte_carlo_surface_uncertainty",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2130,11 +2394,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multicollinearity_vif_screen_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2146,11 +2412,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multiple_testing_fdr",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2162,11 +2430,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multiscale_entropy_mse_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2178,11 +2448,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multivariate_changepoint_pelt",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2194,11 +2466,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multivariate_control_charts",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2210,11 +2484,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multivariate_ewma_control",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2226,11 +2502,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_multivariate_t2_control",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2242,11 +2520,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_mutual_information_screen",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2258,11 +2538,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_negative_binomial_overdispersion_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2274,11 +2556,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_neural_additive_model_nam_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2290,11 +2574,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2306,11 +2592,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_normalizing_flow_density_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2322,11 +2610,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_notears_linear",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2338,11 +2628,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_one_class_svm",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2354,11 +2646,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_online_conformal_changepoint",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2370,11 +2664,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2386,11 +2682,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_param_near_duplicate_minhash_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2402,11 +2700,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_param_near_duplicate_simhash_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2418,11 +2718,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_param_variant_explosion_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2434,11 +2736,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_partial_correlation_network_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2450,11 +2754,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2466,11 +2772,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_pca_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2482,11 +2790,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_pca_control_chart",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2498,11 +2808,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_percentile_analysis",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2514,11 +2826,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_periodicity_spectral_scan",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2530,11 +2844,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_permutation_entropy_drift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2546,11 +2862,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_phate_trajectory_embedding_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2562,11 +2880,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2578,11 +2898,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2595,11 +2917,13 @@
         "inferred:default",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_process_counterfactuals",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2611,11 +2935,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_process_drift_conformance_over_time",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2627,11 +2953,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_process_sequence",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2644,11 +2972,13 @@
         "inferred:default",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_process_sequence_bottlenecks",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2660,11 +2990,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_proportional_hazards_duration",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2676,11 +3008,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_quantile_loss_boosting_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2692,11 +3026,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2708,11 +3044,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_quantile_regression_duration",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2724,11 +3062,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_quantile_regression_forest_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2740,11 +3080,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2756,11 +3098,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_queue_delay_decomposition",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2772,11 +3116,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_queue_model_fit",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2788,11 +3134,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2804,11 +3152,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_randomization_test_median_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2820,11 +3170,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_recommendation_dedupe_v2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2836,11 +3188,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_recurrence_quantification_rqa_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2852,11 +3206,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_regression_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2868,11 +3224,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_retry_rate_hotspots_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2884,11 +3242,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_robust_covariance_outliers",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2900,11 +3260,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_robust_pca_pcp",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2916,11 +3278,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_robust_pca_sparse_outliers",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2932,11 +3296,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_robust_regression_huber_ransac_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2948,11 +3314,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_sample_entropy_irregularity_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2964,11 +3332,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_scan_statistics",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2980,11 +3350,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -2996,11 +3368,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_sequence_classification",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3012,11 +3386,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_sequence_grammar_sequitur_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3028,11 +3404,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_sequential_patterns_prefixspan",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3044,11 +3422,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3060,11 +3440,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3076,11 +3458,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_sinkhorn_ot_drift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3092,11 +3476,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3108,11 +3494,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_spectral_radius_stability_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3124,11 +3512,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3140,11 +3530,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_state_space_kalman_residuals",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3156,11 +3548,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_state_space_smoother_level_shift_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3172,11 +3566,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_stl_seasonal_decompose_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3188,11 +3584,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_subspace_tracking_oja_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3204,11 +3602,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_fabric_sso_eigen",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3220,11 +3620,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_fractal_dimension_variogram",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3236,11 +3638,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_hydrology_flow_watershed",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3252,11 +3656,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3268,11 +3674,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_roughness_metrics",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3284,11 +3692,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_rugosity_index",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3300,11 +3710,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_surface_terrain_position_index",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3316,11 +3728,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_survival_kaplan_meier",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3332,11 +3746,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_survival_time_to_event",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3348,11 +3764,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_symbolic_regression_gp_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3364,11 +3782,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_tabpfn_foundation_tabular_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3380,11 +3800,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_tail_isolation",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3396,11 +3818,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_tda_betti_curve_changepoint",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3412,11 +3836,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_tda_mapper_graph",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3428,11 +3854,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_tda_persistence_landscapes",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3444,11 +3872,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_tda_persistent_homology",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3460,11 +3890,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_template_drift_two_sample",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3476,11 +3908,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_tensor_cp_parafac_decomp_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3492,11 +3926,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_term_burst_kleinberg",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3508,11 +3944,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_time_series_analysis_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3524,11 +3962,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_topic_model_lda",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3540,11 +3980,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_topographic_angle_dynamics",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3556,11 +3998,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_topographic_similarity_angle_projection",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3572,11 +4016,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_topographic_tanova_permutation",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3588,11 +4034,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_traceability_manifest_v2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3604,11 +4052,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_transfer_entropy_directional",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3620,11 +4070,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_ttests_auto",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3636,11 +4088,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_two_sample_categorical_chi2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3652,11 +4106,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_two_sample_numeric_ad",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3668,11 +4124,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_two_sample_numeric_ks",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3684,11 +4142,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_two_sample_numeric_mann_whitney",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3700,11 +4160,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_upload_linkage",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3717,11 +4179,13 @@
         "inferred:default",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_user_host_savings",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3733,11 +4197,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_variant_differential",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3749,11 +4215,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "analysis_waterfall_summary_v2",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3765,11 +4233,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_wild_binary_segmentation_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3781,11 +4251,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "analysis_zero_inflated_count_model_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3797,11 +4269,13 @@
       "contract_sources": [
         "inferred:default"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "causal_recommendations_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3813,11 +4287,13 @@
       "contract_sources": [
         "inferred:default"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "changepoint_detection_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3829,11 +4305,13 @@
       "contract_sources": [
         "detected:sql_direct"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "ingest_tabular",
       "plugin_type": "ingest",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": true
@@ -3846,11 +4324,13 @@
         "inferred:type_orchestration",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "llm_prompt_builder",
       "plugin_type": "llm",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3862,11 +4342,13 @@
       "contract_sources": [
         "detected:sql_assist"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "llm_text2sql_local_generate_v1",
       "plugin_type": "llm",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": true,
       "uses_sql_direct": false
@@ -3879,11 +4361,13 @@
         "inferred:type_orchestration",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "planner_basic",
       "plugin_type": "planner",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3895,11 +4379,13 @@
       "contract_sources": [
         "inferred:depends_on"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "process_mining_conformance_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3911,11 +4397,13 @@
       "contract_sources": [
         "inferred:default"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "process_mining_discovery_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3927,11 +4415,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "profile_basic",
       "plugin_type": "profile",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3943,11 +4433,13 @@
       "contract_sources": [
         "detected:sql_direct"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "profile_eventlog",
       "plugin_type": "profile",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": true
@@ -3960,11 +4452,13 @@
         "inferred:type_report",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "report_bundle",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3977,11 +4471,13 @@
         "inferred:type_report",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "report_decision_bundle_v2",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -3993,11 +4489,13 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
+      "dataset_loader_mode": "unbounded",
       "plugin_id": "report_payout_report_v1",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -4010,11 +4508,13 @@
         "inferred:type_report",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "report_plain_english_v1",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -4027,11 +4527,13 @@
         "inferred:type_report",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "report_slide_kit_emitter_v2",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
@@ -4043,11 +4545,13 @@
       "contract_sources": [
         "detected:sql_direct"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "transform_normalize_mixed",
       "plugin_type": "transform",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": true
@@ -4059,11 +4563,13 @@
       "contract_sources": [
         "detected:sql_assist"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "transform_sql_intents_pack_v1",
       "plugin_type": "transform",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": true,
       "uses_sql_direct": false
@@ -4075,11 +4581,13 @@
       "contract_sources": [
         "detected:sql_assist"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "transform_sqlpack_materialize_v1",
       "plugin_type": "transform",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": true,
       "uses_sql_direct": false
@@ -4092,11 +4600,13 @@
         "inferred:type_transform",
         "override:contracts"
       ],
+      "dataset_loader_mode": "none",
       "plugin_id": "transform_template",
       "plugin_type": "transform",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false

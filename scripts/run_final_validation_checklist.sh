@@ -11,8 +11,14 @@ export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 DATASET_VERSION_ID="${1:-3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a}"
 RUN_SEED="${2:-1337}"
 INTERVAL_SECONDS="${3:-30}"
+KNOWN_ISSUES_MODE="${4:-${STAT_HARNESS_KNOWN_ISSUES_MODE:-on}}"
+ORCHESTRATOR_MODE="${5:-${STAT_HARNESS_ORCHESTRATOR_MODE:-two_lane_strict}}"
 D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_D_STATE_STREAK_THRESHOLD:-8}"
 PYTEST_D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_PYTEST_D_STATE_STREAK_THRESHOLD:-8}"
+AUTONOMOUS_NOVELTY_MIN="${STAT_HARNESS_AUTONOMOUS_NOVELTY_MIN:-1}"
+AUTONOMOUS_NOVELTY_MAX_JACCARD="${STAT_HARNESS_AUTONOMOUS_NOVELTY_MAX_JACCARD:-0.95}"
+STREAMING_POLICY_STRICT="${STAT_HARNESS_STREAMING_POLICY_STRICT:-0}"
+REQUIRE_NOVELTY_REFERENCE="${STAT_HARNESS_REQUIRE_NOVELTY_REFERENCE:-1}"
 CHECK_ID="final_validation_$(date -u +%Y%m%dT%H%M%SZ)"
 CHECK_DIR="$ROOT_DIR/appdata/final_validation/$CHECK_ID"
 mkdir -p "$CHECK_DIR"
@@ -22,10 +28,25 @@ echo "CHECK_DIR=$CHECK_DIR"
 echo "DATASET_VERSION_ID=$DATASET_VERSION_ID"
 echo "RUN_SEED=$RUN_SEED"
 echo "INTERVAL_SECONDS=$INTERVAL_SECONDS"
+echo "KNOWN_ISSUES_MODE=$KNOWN_ISSUES_MODE"
+echo "ORCHESTRATOR_MODE=$ORCHESTRATOR_MODE"
 echo "PYTEST_D_STATE_STREAK_THRESHOLD=$PYTEST_D_STATE_STREAK_THRESHOLD"
+echo "AUTONOMOUS_NOVELTY_MIN=$AUTONOMOUS_NOVELTY_MIN"
+echo "AUTONOMOUS_NOVELTY_MAX_JACCARD=$AUTONOMOUS_NOVELTY_MAX_JACCARD"
+echo "STREAMING_POLICY_STRICT=$STREAMING_POLICY_STRICT"
+
+if [[ "$KNOWN_ISSUES_MODE" != "on" && "$KNOWN_ISSUES_MODE" != "off" ]]; then
+  echo "KNOWN_ISSUES_MODE_INVALID=$KNOWN_ISSUES_MODE (expected on|off)"
+  exit 2
+fi
+if [[ "$ORCHESTRATOR_MODE" != "legacy" && "$ORCHESTRATOR_MODE" != "two_lane_strict" ]]; then
+  echo "ORCHESTRATOR_MODE_INVALID=$ORCHESTRATOR_MODE (expected legacy|two_lane_strict)"
+  exit 2
+fi
 
 echo "STEP=verify_docs_and_plugin_matrices"
 verify_steps=(
+  "scripts/generate_codex_plugin_catalog.py --verify"
   "scripts/run_repo_improvements_pipeline.py --verify"
   "scripts/binding_implementation_matrix.py --verify"
   "scripts/docs_coverage_matrix.py --verify"
@@ -33,6 +54,8 @@ verify_steps=(
   "scripts/plugins_functionality_matrix.py --verify"
   "scripts/sql_assist_adoption_matrix.py --verify"
   "scripts/redteam_ids_matrix.py --verify"
+  "scripts/build_plugin_class_actionability_matrix.py --verify"
+  "scripts/generate_plugin_example_cards.py --verify"
 )
 verify_rc=0
 verify_fail_step=""
@@ -114,7 +137,7 @@ if [[ "$pytest_hung" -ne 0 || "$pytest_rc" -ne 0 ]]; then
 fi
 
 echo "STEP=start_full_loaded_dataset_bg"
-START_OUT="$(bash scripts/start_full_loaded_dataset_bg.sh "$DATASET_VERSION_ID" "$RUN_SEED")"
+START_OUT="$(bash scripts/start_full_loaded_dataset_bg.sh "$DATASET_VERSION_ID" "$RUN_SEED" "$KNOWN_ISSUES_MODE" "$ORCHESTRATOR_MODE")"
 printf '%s\n' "$START_OUT" | tee "$CHECK_DIR/start_full_loaded_dataset_bg.log"
 RUN_ID="$(printf '%s\n' "$START_OUT" | awk -F= '/^RUN_ID=/{print $2}' | tail -n 1)"
 if [[ -z "$RUN_ID" ]]; then
@@ -185,6 +208,12 @@ unexplained_plugin_count="$(python -c "import json,sys; from pathlib import Path
 blank_kind_findings_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('blank_kind_findings_count') or 0))" "$CHECK_DIR/summary.json")"
 explanations_missing_plain_text_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('explanations_missing_plain_text_count') or 0))" "$CHECK_DIR/summary.json")"
 non_decision_explanations_missing_downstream_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('non_decision_explanations_missing_downstream_count') or 0))" "$CHECK_DIR/summary.json")"
+summary_known_issues_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('known_issues_mode') or 'on'))" "$CHECK_DIR/summary.json")"
+recommendation_item_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('recommendation_item_count') or 0))" "$CHECK_DIR/summary.json")"
+discovery_recommendation_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('discovery_recommendation_count') or 0))" "$CHECK_DIR/summary.json")"
+actionable_plugin_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('actionable_plugin_count') or 0))" "$CHECK_DIR/summary.json")"
+runtime_contract_mismatch_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('runtime_contract_mismatch_count') or 0))" "$CHECK_DIR/summary.json")"
+summary_orchestrator_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('orchestrator_mode') or ''))" "$CHECK_DIR/summary.json")"
 
 ok=true
 if [[ "$hang_aborted" -ne 0 ]]; then ok=false; fi
@@ -199,6 +228,35 @@ if [[ "$unexplained_plugin_count" -ne 0 ]]; then ok=false; fi
 if [[ "$blank_kind_findings_count" -ne 0 ]]; then ok=false; fi
 if [[ "$explanations_missing_plain_text_count" -ne 0 ]]; then ok=false; fi
 if [[ "$non_decision_explanations_missing_downstream_count" -ne 0 ]]; then ok=false; fi
+if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" == "1" ]]; then ok=false; fi
+if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" != "1" ]]; then
+  echo "STREAMING_POLICY_WARNING runtime_contract_mismatch_count=$runtime_contract_mismatch_count (set STAT_HARNESS_STREAMING_POLICY_STRICT=1 to fail)"
+fi
+if [[ -n "$summary_orchestrator_mode" && "$summary_orchestrator_mode" != "$ORCHESTRATOR_MODE" ]]; then ok=false; fi
+if [[ "$KNOWN_ISSUES_MODE" == "off" || "$summary_known_issues_mode" == "off" ]]; then
+  if [[ "$recommendation_item_count" -le 0 ]]; then ok=false; fi
+  if [[ "$discovery_recommendation_count" -le 0 ]]; then ok=false; fi
+  if [[ "$actionable_plugin_count" -le 0 ]]; then ok=false; fi
+  reference_run_id="${STAT_HARNESS_REFERENCE_RUN_ID:-}"
+  if [[ -z "$reference_run_id" ]]; then
+    reference_run_id="$(python -c "import sqlite3,sys; rid=sys.argv[1]; conn=sqlite3.connect('appdata/state.sqlite'); row=conn.execute('select dataset_version_id,created_at from runs where run_id=?',(rid,)).fetchone(); out=''; out=((conn.execute(\"select run_id from runs where dataset_version_id=? and status='completed' and run_id<>? and created_at<? order by created_at desc limit 1\",(row[0], rid, row[1] or '')).fetchone() or [''])[0] if row and row[0] else ''); print(out); conn.close()" "$RUN_ID")"
+  fi
+  echo "AUTONOMOUS_REFERENCE_RUN_ID=${reference_run_id:-none}"
+  if [[ -n "$reference_run_id" ]]; then
+    ./.venv/bin/python scripts/compare_plugin_actionability_runs.py --before-run-id "$reference_run_id" --after-run-id "$RUN_ID" --out "$CHECK_DIR/novelty_compare.json" | tee "$CHECK_DIR/novelty_compare_console.log"
+    novelty_new_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int((((d.get('novelty') or {}).get('discovery') or {}).get('new_count')) or 0))" "$CHECK_DIR/novelty_compare.json")"
+    novelty_jaccard="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(float((((d.get('novelty') or {}).get('discovery') or {}).get('jaccard')) or 1.0))" "$CHECK_DIR/novelty_compare.json")"
+    novelty_gate_pass="$(python -c "import sys; new_count=float(sys.argv[1]); j=float(sys.argv[2]); min_new=float(sys.argv[3]); max_j=float(sys.argv[4]); print('1' if (new_count>=min_new or j<=max_j) else '0')" "$novelty_new_count" "$novelty_jaccard" "$AUTONOMOUS_NOVELTY_MIN" "$AUTONOMOUS_NOVELTY_MAX_JACCARD")"
+    echo "AUTONOMOUS_NOVELTY discovery_new_count=$novelty_new_count discovery_jaccard=$novelty_jaccard gate_pass=$novelty_gate_pass"
+    if [[ "$novelty_gate_pass" != "1" ]]; then ok=false; fi
+  else
+    echo "AUTONOMOUS_NOVELTY reference_run_missing=true"
+    if [[ "$REQUIRE_NOVELTY_REFERENCE" == "1" ]]; then ok=false; fi
+  fi
+fi
+
+echo "STEP=validate_report_schema"
+python -c "import json; from pathlib import Path; from jsonschema import validate; rid=Path('$CHECK_DIR/run_id.txt').read_text(encoding='utf-8').strip(); report=Path('appdata/runs')/rid/'report.json'; schema=Path('docs/report.schema.json'); payload=json.loads(report.read_text(encoding='utf-8')); spec=json.loads(schema.read_text(encoding='utf-8')); validate(instance=payload, schema=spec); print('REPORT_SCHEMA_OK=1')"
 
 echo "FINAL_VALIDATION_OK=$ok"
 echo "FINAL_VALIDATION_RUN_ID=$RUN_ID"

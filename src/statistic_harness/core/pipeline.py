@@ -40,6 +40,8 @@ from .large_dataset_policy import caps_for as _large_caps_for, as_budget_dict as
 
 _GOLDEN_MODE_ENV = "STAT_HARNESS_GOLDEN_MODE"
 _GOLDEN_MODES = {"off", "default", "strict"}
+_ORCHESTRATOR_MODE_ENV = "STAT_HARNESS_ORCHESTRATOR_MODE"
+_ORCHESTRATOR_MODES = {"legacy", "two_lane_strict"}
 
 
 def _debug_startup_stage(label: str) -> None:
@@ -55,6 +57,16 @@ def _golden_mode() -> str:
     if raw in {"1", "true", "yes", "on"}:
         return "strict"
     return "off"
+
+
+def _orchestrator_mode(raw: str | None = None) -> str:
+    text = str(raw or os.environ.get(_ORCHESTRATOR_MODE_ENV, "")).strip().lower()
+    if text in _ORCHESTRATOR_MODES:
+        return text
+    if text in {"strict", "two-lane", "two_lane"}:
+        return "two_lane_strict"
+    # Default to strict two-lane orchestration for deterministic decision-first behavior.
+    return "two_lane_strict"
 
 
 class Pipeline:
@@ -430,6 +442,101 @@ class Pipeline:
                     indegree[pid] -= len(deps[pid].intersection(ready))
         return layers
 
+    @staticmethod
+    def _analysis_lane_for_spec(spec: PluginSpec | None) -> str:
+        if not spec:
+            return "explanation"
+        lane = str(getattr(spec, "lane", "") or "").strip().lower()
+        if lane in {"decision", "explanation"}:
+            return lane
+        caps = {str(v).strip() for v in (spec.capabilities or [])}
+        if str(spec.type or "") == "analysis" and "diagnostic_only" not in caps:
+            return "decision"
+        return "explanation"
+
+    def _plan_analysis_execution(
+        self,
+        specs: list[PluginSpec],
+        analysis_ids: set[str],
+        orchestrator_mode: str,
+    ) -> dict[str, Any]:
+        mode = _orchestrator_mode(orchestrator_mode)
+        if not analysis_ids:
+            return {
+                "mode_requested": mode,
+                "mode_effective": mode,
+                "fallback_reason": "",
+                "decision_ids": [],
+                "explanation_ids": [],
+                "decision_layers": [],
+                "explanation_layers": [],
+                "mixed_layers": [],
+            }
+
+        spec_map = {spec.plugin_id: spec for spec in specs}
+        decision_ids = sorted(
+            pid
+            for pid in analysis_ids
+            if self._analysis_lane_for_spec(spec_map.get(pid)) == "decision"
+        )
+        explanation_ids = sorted(
+            pid
+            for pid in analysis_ids
+            if self._analysis_lane_for_spec(spec_map.get(pid)) != "decision"
+        )
+
+        mixed_layers = self._toposort_layers(specs, analysis_ids)
+        if mode == "legacy":
+            return {
+                "mode_requested": mode,
+                "mode_effective": "legacy",
+                "fallback_reason": "",
+                "decision_ids": decision_ids,
+                "explanation_ids": explanation_ids,
+                "decision_layers": [],
+                "explanation_layers": [],
+                "mixed_layers": [[s.plugin_id for s in layer] for layer in mixed_layers],
+            }
+
+        blocked_edges: list[str] = []
+        explanation_set = set(explanation_ids)
+        for pid in decision_ids:
+            spec = spec_map.get(pid)
+            if not spec:
+                continue
+            for dep in (spec.depends_on or []):
+                if dep in explanation_set:
+                    blocked_edges.append(f"{pid}->{dep}")
+        if blocked_edges:
+            return {
+                "mode_requested": mode,
+                "mode_effective": "legacy",
+                "fallback_reason": "decision_depends_on_explanation",
+                "fallback_edges": sorted(set(blocked_edges)),
+                "decision_ids": decision_ids,
+                "explanation_ids": explanation_ids,
+                "decision_layers": [],
+                "explanation_layers": [],
+                "mixed_layers": [[s.plugin_id for s in layer] for layer in mixed_layers],
+            }
+
+        decision_layers = (
+            self._toposort_layers(specs, set(decision_ids)) if decision_ids else []
+        )
+        explanation_layers = (
+            self._toposort_layers(specs, set(explanation_ids)) if explanation_ids else []
+        )
+        return {
+            "mode_requested": mode,
+            "mode_effective": "two_lane_strict",
+            "fallback_reason": "",
+            "decision_ids": decision_ids,
+            "explanation_ids": explanation_ids,
+            "decision_layers": [[s.plugin_id for s in layer] for layer in decision_layers],
+            "explanation_layers": [[s.plugin_id for s in layer] for layer in explanation_layers],
+            "mixed_layers": [],
+        }
+
     def _expand_selected_with_deps(
         self, specs: dict[str, PluginSpec], selected: set[str]
     ) -> tuple[set[str], list[str], list[str]]:
@@ -473,6 +580,15 @@ class Pipeline:
         force: bool | None = None,
     ) -> str:
         run_id = run_id or make_run_id()
+        settings = dict(settings or {})
+        system_settings = (
+            dict(settings.get("_system") or {})
+            if isinstance(settings.get("_system"), dict)
+            else {}
+        )
+        orchestrator_mode = _orchestrator_mode(system_settings.get("orchestrator_mode"))
+        system_settings["orchestrator_mode"] = orchestrator_mode
+        settings["_system"] = system_settings
         requested_run_seed = int(run_seed)
         tenant_id = self.tenant_id
 
@@ -642,6 +758,7 @@ class Pipeline:
                 "run_seed": run_seed,
                 "input_hash": input_hash,
                 "upload_id": upload_id,
+                "orchestrator_mode": orchestrator_mode,
             },
         )
         if reuse_cache is None:
@@ -1182,6 +1299,16 @@ class Pipeline:
                     and default_timeout_ms > 0
                 ):
                     budget["time_limit_ms"] = int(default_timeout_ms)
+                if spec.plugin_id == "report_bundle" and budget.get("time_limit_ms") is None:
+                    report_timeout_ms = self._parse_int_env(
+                        "STAT_HARNESS_REPORT_BUNDLE_TIMEOUT_MS"
+                    )
+                    if report_timeout_ms is None:
+                        # Keep report generation bounded so a stuck filesystem write cannot
+                        # block the entire gauntlet indefinitely.
+                        report_timeout_ms = 15 * 60 * 1000
+                    if report_timeout_ms > 0:
+                        budget["time_limit_ms"] = int(report_timeout_ms)
                 # Optional: hard memory limit for plugin subprocess via RLIMIT_AS.
                 hard_mem_mb = self._parse_int_env("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB")
                 if hard_mem_mb is None:
@@ -1741,6 +1868,7 @@ class Pipeline:
                 in {"1", "true", "yes"},
                 "vector_store_enabled": os.environ.get("STAT_HARNESS_ENABLE_VECTOR_STORE", "").lower()
                 in {"1", "true", "yes", "on"},
+                "orchestrator_mode": orchestrator_mode,
             },
         }
         for pid in executed_ids:
@@ -1830,20 +1958,57 @@ class Pipeline:
             for pid in selected
             if pid in spec_map and spec_map[pid].type == "analysis"
         }
-        layers = self._toposort_layers(specs, analysis_ids)
-        for layer in layers:
-            if len(layer) == 1:
-                run_spec(layer[0])
-                continue
+        analysis_execution_plan = self._plan_analysis_execution(
+            specs, analysis_ids, orchestrator_mode
+        )
+        if analysis_execution_plan.get("fallback_reason"):
+            self.storage.insert_event(
+                kind="run_policy_violation",
+                created_at=now_iso(),
+                run_id=run_id,
+                run_fingerprint=run_fingerprint,
+                payload={
+                    "policy": "orchestrator_two_lane",
+                    "reason": str(analysis_execution_plan.get("fallback_reason") or ""),
+                    "mode_requested": str(analysis_execution_plan.get("mode_requested") or ""),
+                    "mode_effective": str(analysis_execution_plan.get("mode_effective") or ""),
+                    "edges": list(analysis_execution_plan.get("fallback_edges") or []),
+                },
+            )
+
+        def _run_analysis_layer(layer_specs: list[PluginSpec]) -> None:
+            if len(layer_specs) == 1:
+                run_spec(layer_specs[0])
+                return
             max_workers = self._max_workers_for_stage(
-                "analysis", len(layer), dataset_row_count
+                "analysis", len(layer_specs), dataset_row_count
             )
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = [
-                    executor.submit(run_spec, spec, False, False) for spec in layer
+                    executor.submit(run_spec, spec, False, False)
+                    for spec in layer_specs
                 ]
                 for future in futures:
                     future.result()
+
+        mode_effective = str(analysis_execution_plan.get("mode_effective") or "legacy")
+        if mode_effective == "two_lane_strict":
+            decision_layers_ids = list(analysis_execution_plan.get("decision_layers") or [])
+            explanation_layers_ids = list(analysis_execution_plan.get("explanation_layers") or [])
+            for layer_ids in decision_layers_ids:
+                layer_specs = [spec_map[pid] for pid in layer_ids if pid in spec_map]
+                if layer_specs:
+                    _run_analysis_layer(layer_specs)
+            for layer_ids in explanation_layers_ids:
+                layer_specs = [spec_map[pid] for pid in layer_ids if pid in spec_map]
+                if layer_specs:
+                    _run_analysis_layer(layer_specs)
+        else:
+            mixed_layers_ids = list(analysis_execution_plan.get("mixed_layers") or [])
+            for layer_ids in mixed_layers_ids:
+                layer_specs = [spec_map[pid] for pid in layer_ids if pid in spec_map]
+                if layer_specs:
+                    _run_analysis_layer(layer_specs)
 
         # Report stage:
         # - Always produce report.md/report.json (required by project policy).
@@ -1907,6 +2072,36 @@ class Pipeline:
 
         plugin_results = self.storage.fetch_plugin_results(run_id)
         plugin_executions = self.storage.fetch_plugin_executions(run_id)
+        lane_plugin_counts: dict[str, int] = {"decision": 0, "explanation": 0}
+        lane_status_counts: dict[str, dict[str, int]] = {
+            "decision": {},
+            "explanation": {},
+        }
+        lane_runtime_ms: dict[str, int] = {"decision": 0, "explanation": 0}
+        for row in plugin_results:
+            plugin_id = str(row.get("plugin_id") or "")
+            spec = spec_map.get(plugin_id)
+            if not spec or str(spec.type or "") != "analysis":
+                continue
+            lane = self._analysis_lane_for_spec(spec)
+            if lane not in lane_plugin_counts:
+                lane = "explanation"
+            lane_plugin_counts[lane] += 1
+            status = str(row.get("status") or "unknown").strip().lower() or "unknown"
+            lane_status_counts[lane][status] = int(lane_status_counts[lane].get(status, 0)) + 1
+        for row in plugin_executions:
+            plugin_id = str(row.get("plugin_id") or "")
+            spec = spec_map.get(plugin_id)
+            if not spec or str(spec.type or "") != "analysis":
+                continue
+            lane = self._analysis_lane_for_spec(spec)
+            if lane not in lane_runtime_ms:
+                lane = "explanation"
+            try:
+                duration = int(row.get("duration_ms") or 0)
+            except (TypeError, ValueError):
+                duration = 0
+            lane_runtime_ms[lane] += max(0, duration)
         # A run is completed only when plugins are either ok or deterministic n/a.
         golden_mode = _golden_mode()
         analysis_empty_ok: list[str] = []
@@ -1963,6 +2158,7 @@ class Pipeline:
             golden_mode == "strict" and analysis_empty_ok_count > 0
         )
         final_status = "partial" if any_failures else "completed"
+        overall_outcome = "failed" if any_failures else "passed"
         if legacy_nonterminal_count > 0:
             self.storage.insert_event(
                 kind="run_policy_violation",
@@ -2075,12 +2271,23 @@ class Pipeline:
             "summary": {"status": final_status},
         }
         manifest["summary"]["golden_mode"] = golden_mode
+        manifest["summary"]["orchestrator_mode"] = orchestrator_mode
+        manifest["summary"]["orchestrator_mode_effective"] = str(
+            analysis_execution_plan.get("mode_effective") or orchestrator_mode
+        )
+        manifest["summary"]["orchestrator_fallback_reason"] = str(
+            analysis_execution_plan.get("fallback_reason") or ""
+        )
+        manifest["summary"]["overall_outcome"] = overall_outcome
         manifest["summary"]["skipped_count"] = int(skipped_count)
         manifest["summary"]["degraded_count"] = int(degraded_count)
         manifest["summary"]["na_count"] = int(na_count)
         manifest["summary"]["legacy_nonterminal_count"] = int(legacy_nonterminal_count)
         manifest["summary"]["analysis_ok_without_findings_count"] = int(analysis_empty_ok_count)
         manifest["summary"]["analysis_ok_without_findings_plugins"] = analysis_empty_ok[:50]
+        manifest["summary"]["analysis_lane_plugin_counts"] = lane_plugin_counts
+        manifest["summary"]["analysis_lane_status_counts"] = lane_status_counts
+        manifest["summary"]["analysis_lane_runtime_ms"] = lane_runtime_ms
         manifest["summary"]["strict_skip_violation"] = bool(strict_skip_violation)
         manifest["summary"]["strict_result_quality_violation"] = bool(
             strict_result_quality_violation
@@ -2105,7 +2312,7 @@ class Pipeline:
             created_at=now_iso(),
             run_id=run_id,
             run_fingerprint=run_fingerprint,
-            payload={"status": final_status},
+            payload={"status": final_status, "overall_outcome": overall_outcome},
         )
         if strict_skip_violation:
             raise RuntimeError(

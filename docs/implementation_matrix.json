@@ -26,6 +26,42 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "normative",
+      "doc_path": "docs/autonomous-plugin-insights-normalized-audit-plan.md",
+      "missing_paths": [],
+      "plugin_ids": [
+        "analysis_actionable_ops_levers_v1"
+      ],
+      "referenced_paths": [
+        "docs/_codex_plugin_catalog.md",
+        "docs/insight_quality_contract.md",
+        "docs/operator_playbook_autonomous_insights.md",
+        "docs/plugin_class_actionability_matrix.json",
+        "docs/plugin_class_actionability_matrix.md",
+        "docs/plugin_class_taxonomy.yaml",
+        "docs/plugin_data_access_matrix.json",
+        "docs/plugins_functionality_matrix.json",
+        "docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json",
+        "docs/report.schema.json",
+        "docs/sql_assist_adoption_matrix.json",
+        "scripts/build_final_validation_summary.py",
+        "scripts/build_plugin_class_actionability_matrix.py",
+        "scripts/compare_plugin_actionability_runs.py",
+        "scripts/generate_batch_sequence_validation_checklist.py",
+        "scripts/generate_codex_plugin_catalog.py",
+        "scripts/generate_plugin_example_cards.py",
+        "scripts/plugin_data_access_matrix.py",
+        "scripts/run_loaded_dataset_full.py",
+        "scripts/show_actionable_results.py",
+        "src/statistic_harness/core/plugin_runner.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/stat_plugins/topo_tda_addon.py",
+        "tests/test_report_outputs.py",
+        "tests/test_report_schema.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "generated",
       "doc_path": "docs/binding_implementation_matrix.json",
       "missing_paths": [],
@@ -728,6 +764,14 @@
     },
     {
       "doc_kind": "normative",
+      "doc_path": "docs/insight_quality_contract.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
       "doc_path": "docs/kona_energy_ideaspace_architecture.md",
       "missing_paths": [],
       "plugin_ids": [
@@ -760,6 +804,21 @@
         "src/statistic_harness/core/stat_plugins/ideaspace.py",
         "src/statistic_harness/core/stat_plugins/registry.py",
         "src/statistic_harness/core/types.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/operator_playbook_autonomous_insights.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [
+        "docs/plugin_class_actionability_matrix.json",
+        "docs/plugin_example_cards/index.json",
+        "scripts/build_plugin_class_actionability_matrix.py",
+        "scripts/compare_plugin_actionability_runs.py",
+        "scripts/generate_plugin_example_cards.py",
+        "scripts/show_actionable_results.py"
       ],
       "unresolved_plugin_tokens": []
     },
@@ -811,6 +870,44 @@
         "src/statistic_harness/core/top20_plugins.py",
         "src/statistic_harness/core/types.py"
       ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_class_actionability_matrix.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_class_actionability_matrix.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/plugin_class_taxonomy.yaml",
+      "missing_paths": [],
+      "plugin_ids": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_close_cycle_capacity_impact",
+        "analysis_close_cycle_capacity_model",
+        "analysis_close_cycle_uplift",
+        "analysis_ebm_action_verifier_v1",
+        "analysis_ideaspace_action_planner",
+        "analysis_issue_cards_v2",
+        "analysis_recommendation_dedupe_v2",
+        "analysis_traceability_manifest_v2",
+        "analysis_waterfall_summary_v2",
+        "report_decision_bundle_v2",
+        "report_plain_english_v1",
+        "report_slide_kit_emitter_v2"
+      ],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
@@ -1364,6 +1461,54 @@
       "referenced_paths": [
         "docs/deprecated/plugin_dev_guide.md"
       ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/direct_action_generators.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/index.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/ingest_profile_transform.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/reporting_llm_post_processing.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/supporting_signal_detectors.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin_example_cards/synthesis_verification.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
@@ -2717,6 +2862,19 @@
       "referenced_paths": [
         "docs/deprecated/references.md"
       ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json",
+      "missing_paths": [],
+      "plugin_ids": [
+        "analysis_actionable_ops_levers_v1",
+        "analysis_close_cycle_contention",
+        "analysis_ebm_action_verifier_v1",
+        "analysis_ideaspace_action_planner"
+      ],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
@@ -4651,6 +4809,7 @@
     "docs/4_pillars_scoring_spec.md",
     "docs/_codex_plugin_catalog.md",
     "docs/_codex_repo_manifest.txt",
+    "docs/autonomous-plugin-insights-normalized-audit-plan.md",
     "docs/binding_implementation_matrix.json",
     "docs/binding_implementation_matrix.md",
     "docs/codex_4pillars_golden_release_plan.md",
@@ -4684,14 +4843,25 @@
     "docs/implementation-matrix-incomplete-items-plan.md",
     "docs/implementation_matrix.json",
     "docs/implementation_matrix.md",
+    "docs/insight_quality_contract.md",
     "docs/kona_energy_ideaspace_architecture.md",
+    "docs/operator_playbook_autonomous_insights.md",
     "docs/optimal-matrix-implementation-order-plan.md",
     "docs/perf_hotspots.md",
     "docs/plugin-actionability-full-remediation-plan.md",
+    "docs/plugin_class_actionability_matrix.json",
+    "docs/plugin_class_actionability_matrix.md",
+    "docs/plugin_class_taxonomy.yaml",
     "docs/plugin_data_access_matrix.json",
     "docs/plugin_data_access_matrix.md",
     "docs/plugin_data_access_overrides.json",
     "docs/plugin_dev_guide.md",
+    "docs/plugin_example_cards/direct_action_generators.md",
+    "docs/plugin_example_cards/index.json",
+    "docs/plugin_example_cards/ingest_profile_transform.md",
+    "docs/plugin_example_cards/reporting_llm_post_processing.md",
+    "docs/plugin_example_cards/supporting_signal_detectors.md",
+    "docs/plugin_example_cards/synthesis_verification.md",
     "docs/plugin_intent_library.json",
     "docs/plugin_intent_library.md",
     "docs/plugin_manifest.schema.json",
@@ -4702,6 +4872,7 @@
     "docs/redteam_ids_matrix.json",
     "docs/redteam_ids_matrix.md",
     "docs/references.md",
+    "docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json",
     "docs/release_evidence/baseline_before_after_leftfield_diff.json",
     "docs/release_evidence/baseline_before_vs_fullset_after.json",
     "docs/release_evidence/diff_18b6_to_d539.json",

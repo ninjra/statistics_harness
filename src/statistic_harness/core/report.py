@@ -19,6 +19,7 @@ from .actionability_explanations import (
     plain_english_explanation,
     recommended_next_step,
 )
+from .known_issues_mode import known_issues_enabled, known_issues_mode_label
 from .stat_controls import confidence_from_p
 from .process_matcher import (
     compile_patterns,
@@ -39,6 +40,9 @@ _MAX_OBVIOUSNESS_ENV = "STAT_HARNESS_MAX_OBVIOUSNESS"
 _RECENCY_UNKNOWN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_UNKNOWN_WEIGHT"
 _RECENCY_DECAY_PER_MONTH_ENV = "STAT_HARNESS_RECENCY_DECAY_PER_MONTH"
 _RECENCY_MIN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_MIN_WEIGHT"
+_REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV = "STAT_HARNESS_REPORT_MD_MAX_FINDINGS_PER_PLUGIN"
+_REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
+_REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
 
 
 def _include_known_recommendations() -> bool:
@@ -47,6 +51,83 @@ def _include_known_recommendations() -> bool:
         "true",
         "yes",
     }
+
+
+def _read_positive_int_env(name: str, default: int) -> int:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return int(default)
+    try:
+        value = int(raw)
+    except ValueError:
+        return int(default)
+    return int(value) if value > 0 else int(default)
+
+
+def _trim_long_text(value: Any, *, max_chars: int) -> Any:
+    if isinstance(value, str) and len(value) > max_chars:
+        suffix = f"... [truncated {len(value) - max_chars} chars]"
+        return value[:max_chars] + suffix
+    return value
+
+
+def _trim_finding_for_markdown(
+    finding: Any,
+    *,
+    max_chars: int,
+    max_evidence_ids: int,
+) -> Any:
+    if not isinstance(finding, dict):
+        return _trim_long_text(finding, max_chars=max_chars)
+    out: dict[str, Any] = {}
+    for key, value in finding.items():
+        if isinstance(value, str):
+            out[key] = _trim_long_text(value, max_chars=max_chars)
+            continue
+        if key == "evidence" and isinstance(value, dict):
+            ev = dict(value)
+            for id_key in ("row_ids", "column_ids"):
+                ids = ev.get(id_key)
+                if isinstance(ids, list) and len(ids) > max_evidence_ids:
+                    omitted = len(ids) - max_evidence_ids
+                    ev[id_key] = list(ids[:max_evidence_ids]) + [f"... ({omitted} more)"]
+            out[key] = ev
+            continue
+        out[key] = value
+    return out
+
+
+def _trim_plugin_dump_for_markdown(plugin_payload: Any) -> Any:
+    if not isinstance(plugin_payload, dict):
+        return plugin_payload
+    max_findings = _read_positive_int_env(_REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV, 120)
+    max_chars = _read_positive_int_env(_REPORT_MD_MAX_STRING_LEN_ENV, 500)
+    max_evidence_ids = _read_positive_int_env(_REPORT_MD_MAX_EVIDENCE_IDS_ENV, 20)
+
+    out = dict(plugin_payload)
+    findings = plugin_payload.get("findings")
+    if isinstance(findings, list):
+        trimmed_findings = [
+            _trim_finding_for_markdown(
+                item,
+                max_chars=max_chars,
+                max_evidence_ids=max_evidence_ids,
+            )
+            for item in findings[:max_findings]
+        ]
+        if len(findings) > max_findings:
+            trimmed_findings.append(
+                {
+                    "kind": "report_dump_truncated",
+                    "reason": f"trimmed to first {max_findings} findings for report.md",
+                    "omitted_findings": len(findings) - max_findings,
+                }
+            )
+        out["findings"] = trimmed_findings
+    summary = out.get("summary")
+    if isinstance(summary, str):
+        out["summary"] = _trim_long_text(summary, max_chars=max_chars)
+    return out
 
 
 def _infer_ideaspace_roles(columns_index: list[dict[str, Any]]) -> dict[str, Any]:
@@ -4191,61 +4272,78 @@ def build_report(
         if dataset_template.get("template_version"):
             template_block["template_version"] = dataset_template["template_version"]
 
-    known_block = None
-    known_scope_type = ""
-    known_scope_value = ""
-    if project_row and project_row.get("erp_type"):
-        known_scope_type = "erp_type"
-        known_scope_value = str(project_row.get("erp_type") or "unknown").strip() or "unknown"
-        known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
-    if not known_block and upload_row and upload_row.get("sha256"):
-        known_scope_type = "sha256"
-        known_scope_value = str(upload_row.get("sha256") or "")
-        if known_scope_value:
-            known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
-    if not known_block and dataset_block.get("data_hash"):
-        data_hash = str(dataset_block.get("data_hash") or "")
-        if re.fullmatch(r"[a-f0-9]{64}", data_hash):
-            known_scope_type = "sha256"
-            known_scope_value = data_hash
-            known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
-
     known_payload = None
-    if known_block:
-        known_payload = {
-            "scope_type": known_block.get("scope_type") or known_scope_type,
-            "scope_value": known_block.get("scope_value") or known_scope_value,
-            "strict": bool(known_block.get("strict", True)),
-            "notes": known_block.get("notes") or "",
-            "natural_language": known_block.get("natural_language") or [],
-            "expected_findings": known_block.get("expected_findings") or [],
-        }
-    if project_row and str(project_row.get("erp_type") or "").strip().lower() == "quorum":
-        if not known_payload:
+    if known_issues_enabled():
+        known_block = None
+        known_scope_type = ""
+        known_scope_value = ""
+        if project_row and project_row.get("erp_type"):
+            known_scope_type = "erp_type"
+            known_scope_value = str(project_row.get("erp_type") or "unknown").strip() or "unknown"
+            known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+        if not known_block and upload_row and upload_row.get("sha256"):
+            known_scope_type = "sha256"
+            known_scope_value = str(upload_row.get("sha256") or "")
+            if known_scope_value:
+                known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+        if not known_block and dataset_block.get("data_hash"):
+            data_hash = str(dataset_block.get("data_hash") or "")
+            if re.fullmatch(r"[a-f0-9]{64}", data_hash):
+                known_scope_type = "sha256"
+                known_scope_value = data_hash
+                known_block = storage.fetch_known_issues(known_scope_value, known_scope_type)
+
+        if known_block:
             known_payload = {
-                "scope_type": "erp_type",
-                "scope_value": "quorum",
-                "strict": False,
-                "notes": "",
-                "natural_language": [],
-                "expected_findings": [],
+                "scope_type": known_block.get("scope_type") or known_scope_type,
+                "scope_value": known_block.get("scope_value") or known_scope_value,
+                "strict": bool(known_block.get("strict", True)),
+                "notes": known_block.get("notes") or "",
+                "natural_language": known_block.get("natural_language") or [],
+                "expected_findings": known_block.get("expected_findings") or [],
             }
-        exclusions = known_payload.get("recommendation_exclusions")
-        if not isinstance(exclusions, dict):
-            exclusions = {}
-        processes = exclusions.get("processes")
-        if not isinstance(processes, list):
-            processes = []
-        quorum_exclusions = {"postwkfl", "bkrvnu", "cwowfndrls"}
-        merged = sorted({*(str(p).strip() for p in processes if str(p).strip()), *quorum_exclusions})
-        exclusions["processes"] = merged
-        known_payload["recommendation_exclusions"] = exclusions
+        if project_row and str(project_row.get("erp_type") or "").strip().lower() == "quorum":
+            if not known_payload:
+                known_payload = {
+                    "scope_type": "erp_type",
+                    "scope_value": "quorum",
+                    "strict": False,
+                    "notes": "",
+                    "natural_language": [],
+                    "expected_findings": [],
+                }
+            exclusions = known_payload.get("recommendation_exclusions")
+            if not isinstance(exclusions, dict):
+                exclusions = {}
+            processes = exclusions.get("processes")
+            if not isinstance(processes, list):
+                processes = []
+            quorum_exclusions = {"postwkfl", "bkrvnu", "cwowfndrls"}
+            merged = sorted({*(str(p).strip() for p in processes if str(p).strip()), *quorum_exclusions})
+            exclusions["processes"] = merged
+            known_payload["recommendation_exclusions"] = exclusions
+
+    orchestrator_mode = "two_lane_strict"
+    try:
+        settings_raw = run_row.get("settings_json")
+        settings_payload = json.loads(settings_raw) if isinstance(settings_raw, str) and settings_raw.strip() else {}
+        if isinstance(settings_payload, dict):
+            sys_payload = settings_payload.get("_system")
+            if isinstance(sys_payload, dict):
+                mode_raw = str(sys_payload.get("orchestrator_mode") or "").strip().lower()
+                if mode_raw:
+                    orchestrator_mode = mode_raw
+    except Exception:
+        orchestrator_mode = "two_lane_strict"
+    overall_outcome = "passed" if str(run_row.get("status") or "").strip().lower() == "completed" else "failed"
 
     report = {
         "run_id": run_id,
         "created_at": now_iso(),
         "status": run_row.get("status") or "completed",
         "run_fingerprint": run_row.get("run_fingerprint") or "",
+        "known_issues_mode": known_issues_mode_label(),
+        "orchestrator_mode": orchestrator_mode,
         "hotspots": hotspots_block,
         "input": {
             "filename": run_row.get("input_filename") or "unknown",
@@ -4256,6 +4354,8 @@ def build_report(
                 "run_id": run_id,
                 "created_at": run_row.get("created_at") or "",
                 "status": run_row.get("status") or "",
+                "overall_outcome": overall_outcome,
+                "orchestrator_mode": orchestrator_mode,
                 "run_seed": int(run_row.get("run_seed") or 0),
                 "run_fingerprint": run_row.get("run_fingerprint") or "",
             },
@@ -4276,7 +4376,7 @@ def build_report(
         },
         "plugins": plugins,
     }
-    if not known_payload:
+    if known_issues_enabled() and not known_payload:
         known_payload = _load_known_issues_fallback(run_dir)
     if known_payload:
         report["known_issues"] = known_payload
@@ -4684,7 +4784,7 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
 
     lines.append("### Plugin Dumps")
     for plugin_id in sorted(report.get("plugins", {}).keys()):
-        data = report["plugins"][plugin_id]
+        data = _trim_plugin_dump_for_markdown(report["plugins"][plugin_id])
         lines.append(f"#### {plugin_id}")
         lines.append("```json")
         lines.append(json_dumps(data))

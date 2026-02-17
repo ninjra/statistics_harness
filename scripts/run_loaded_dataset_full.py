@@ -1339,6 +1339,9 @@ def _render_recommendations_plain_md(
 
 def main() -> int:
     _debug_stage("main_start")
+    env_known_mode = str(os.environ.get("STAT_HARNESS_KNOWN_ISSUES_MODE", "on")).strip().lower()
+    if env_known_mode not in {"on", "off"}:
+        env_known_mode = "on"
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset-version-id", default="")
     parser.add_argument("--run-seed", type=int, default=123)
@@ -1410,11 +1413,30 @@ def main() -> int:
         action="store_true",
         help="Allow gauntlet execution when structural preflight predicts role/column blockers.",
     )
+    parser.add_argument(
+        "--known-issues-mode",
+        choices=["on", "off"],
+        default=env_known_mode,
+        help="on=load known issues; off=disable known-issue loading/evaluation for this run.",
+    )
+    parser.add_argument(
+        "--orchestrator-mode",
+        choices=["legacy", "two_lane_strict"],
+        default=str(os.environ.get("STAT_HARNESS_ORCHESTRATOR_MODE", "two_lane_strict") or "two_lane_strict"),
+        help="legacy=mixed analysis DAG, two_lane_strict=decision lane first then explanation lane.",
+    )
     args = parser.parse_args()
     _debug_stage("args_parsed")
 
-    # User-facing completeness: include known-issue recommendations in report synthesis.
-    os.environ.setdefault("STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS", "1")
+    known_issues_mode = "off" if str(args.known_issues_mode).strip().lower() == "off" else "on"
+    orchestrator_mode = (
+        "legacy"
+        if str(args.orchestrator_mode).strip().lower() == "legacy"
+        else "two_lane_strict"
+    )
+    os.environ["STAT_HARNESS_KNOWN_ISSUES_MODE"] = known_issues_mode
+    os.environ["STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"] = "0" if known_issues_mode == "off" else "1"
+    os.environ["STAT_HARNESS_ORCHESTRATOR_MODE"] = orchestrator_mode
     os.environ.setdefault("STAT_HARNESS_CLI_PROGRESS", "1")
     # Default to reuse-cache for operator UX on large datasets. Still safe for "updated plugins"
     # because cache keys include plugin code hash + settings hash + dataset hash.
@@ -1511,7 +1533,10 @@ def main() -> int:
 
     planner_allow = _parse_exclude_processes(str(args.planner_allow or ""))
     planner_deny = _parse_exclude_processes(str(args.planner_deny or ""))
-    run_settings: dict[str, Any] = {"exclude_processes": exclude_processes}
+    run_settings: dict[str, Any] = {
+        "exclude_processes": exclude_processes,
+        "_system": {"orchestrator_mode": orchestrator_mode},
+    }
     if planner_allow or planner_deny:
         planner_settings: dict[str, Any] = {}
         if planner_allow:
@@ -1590,6 +1615,8 @@ def main() -> int:
     )
 
     print(f"DATASET_VERSION_ID={dataset_version_id}")
+    print(f"KNOWN_ISSUES_MODE={known_issues_mode}")
+    print(f"ORCHESTRATOR_MODE={orchestrator_mode}")
     print(f"ROWS={int(dataset.get('row_count') or 0)} COLS={int(dataset.get('column_count') or 0)}")
     print(f"RUN_ID={run_id}")
     if runtime_trend:

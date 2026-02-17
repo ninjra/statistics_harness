@@ -26,6 +26,9 @@ class PluginSpec:
     config_schema: Path
     output_schema: Path
     sandbox: dict[str, Any]
+    lane: str = "explanation"
+    decision_capable: bool = False
+    requires_downstream_mapping: bool = False
 
 
 @dataclass(frozen=True)
@@ -113,6 +116,31 @@ class PluginManager:
                         f"Invalid config defaults: {exc.message}",
                     )
                     continue
+            capabilities = [str(v).strip() for v in list(data.get("capabilities", []))]
+            lane_raw = str(data.get("lane") or "").strip().lower()
+            if lane_raw and lane_raw not in {"decision", "explanation"}:
+                self._record_discovery_error(
+                    plugin_id,
+                    manifest,
+                    f"Invalid lane value: {lane_raw}",
+                )
+                continue
+            inferred_lane = lane_raw
+            if not inferred_lane:
+                if data["type"] == "analysis" and "diagnostic_only" not in set(capabilities):
+                    inferred_lane = "decision"
+                else:
+                    inferred_lane = "explanation"
+            decision_capable_raw = data.get("decision_capable")
+            if decision_capable_raw is None:
+                decision_capable = inferred_lane == "decision"
+            else:
+                decision_capable = bool(decision_capable_raw)
+            requires_downstream_raw = data.get("requires_downstream_mapping")
+            if requires_downstream_raw is None:
+                requires_downstream_mapping = inferred_lane != "decision"
+            else:
+                requires_downstream_mapping = bool(requires_downstream_raw)
             seen.add(plugin_id)
             specs.append(
                 PluginSpec(
@@ -124,7 +152,10 @@ class PluginManager:
                     depends_on=data.get("depends_on", []),
                     settings=data.get("settings", {}),
                     path=manifest.parent,
-                    capabilities=list(data.get("capabilities", [])),
+                    capabilities=capabilities,
+                    lane=inferred_lane,
+                    decision_capable=decision_capable,
+                    requires_downstream_mapping=requires_downstream_mapping,
                     config_schema=config_schema_path,
                     output_schema=output_schema_path,
                     sandbox=dict(data.get("sandbox", {})),
