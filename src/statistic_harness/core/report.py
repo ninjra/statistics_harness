@@ -91,7 +91,7 @@ def _infer_ideaspace_roles(columns_index: list[dict[str, Any]]) -> dict[str, Any
 
 
 def _ideaspace_families_summary(plugins: dict[str, Any]) -> list[dict[str, Any]]:
-    """Summarize applicability (ok/skipped/degraded) of idea families A-F."""
+    """Summarize applicability (ok/na) of idea families A-F."""
 
     families: dict[str, list[str]] = {
         "A_tda": [
@@ -150,17 +150,17 @@ def _ideaspace_families_summary(plugins: dict[str, Any]) -> list[dict[str, Any]]
         if not present:
             continue
         statuses = [str(p.get("status") or "") for p in present]
-        applicable = any(s in {"ok", "degraded"} for s in statuses)
-        skipped = all(s == "skipped" for s in statuses)
+        applicable = any(s == "ok" for s in statuses)
+        all_na = all(s in {"na", "not_applicable"} for s in statuses)
         reason = None
-        if skipped:
+        if all_na:
             reason = next((p.get("summary") for p in present if isinstance(p.get("summary"), str)), None)
         out.append(
             {
                 "family": family,
                 "plugins": present,
                 "applicable": bool(applicable),
-                "all_skipped": bool(skipped),
+                "all_not_applicable": bool(all_na),
                 "reason": reason,
             }
         )
@@ -3990,7 +3990,7 @@ def build_report(
             exec_payload,
             key=lambda x: (str(x.get("status") or ""), str(x.get("plugin_id") or "")),
         )
-        if (str(item.get("status") or "") not in {"ok", "skipped"})
+        if (str(item.get("status") or "") not in {"ok", "na"})
         or (item.get("exit_code") not in {None, 0})
     ][:25]
 

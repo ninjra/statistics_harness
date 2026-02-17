@@ -16,10 +16,16 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         if not bool(ctx.settings.get("enabled", False)):
             return PluginResult(
-                "skipped",
+                "na",
                 "SQL pack materialization disabled (set enabled=true for this plugin)",
                 metrics={},
-                findings=[],
+                findings=[
+                    {
+                        "kind": "sqlpack_materialize_disabled",
+                        "measurement_type": "not_applicable",
+                        "reason_code": "FEATURE_DISABLED",
+                    }
+                ],
                 artifacts=[],
                 error=None,
             )
@@ -105,15 +111,16 @@ class Plugin:
 
         if errors:
             return PluginResult(
-                "degraded",
-                f"Materialized {len(created)} table(s) with {len(errors)} error(s)",
+                "error",
+                f"Materialization failed for {len(errors)} query(ies) after creating {len(created)} table(s)",
                 metrics={"tables_created": len(created), "errors": len(errors)},
                 findings=[
                     {
                         "kind": "sqlpack_materialize_errors",
                         "tables_created": len(created),
                         "errors": errors[:10],
-                        "measurement_type": "measured",
+                        "measurement_type": "error",
+                        "reason_code": "SQLPACK_MATERIALIZATION_FAILED",
                     }
                 ],
                 artifacts=artifacts,
@@ -134,4 +141,3 @@ class Plugin:
             artifacts=artifacts,
             error=None,
         )
-

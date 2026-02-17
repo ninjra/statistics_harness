@@ -10,6 +10,7 @@ export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 
 DATASET_VERSION_ID="${1:-3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a}"
 RUN_SEED="${2:-123}"
+RUN_ID="${STAT_HARNESS_RUN_ID:-full_loaded_${DATASET_VERSION_ID:0:8}_$(date -u +%Y%m%dT%H%M%SZ)}"
 
 # Default: 2 analysis workers (user-requested). Override by exporting STAT_HARNESS_MAX_WORKERS_ANALYSIS.
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-2}"
@@ -34,7 +35,7 @@ export STAT_HARNESS_PLUGIN_RLIMIT_AS_MB="${STAT_HARNESS_PLUGIN_RLIMIT_AS_MB:-409
 
 LOG_PATH="$ROOT_DIR/appdata/full_run_${DATASET_VERSION_ID:0:8}_$(date -u +%Y%m%dT%H%M%SZ).log"
 
-nohup python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" >"$LOG_PATH" 2>&1 &
+nohup python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" >"$LOG_PATH" 2>&1 &
 PID="$!"
 
 sleep 0.5
@@ -46,19 +47,23 @@ if ! kill -0 "$PID" 2>/dev/null; then
   exit 1
 fi
 
-RUN_ID=""
 for _ in {1..60}; do
   if [[ "${STAT_HARNESS_WATCH_REPAIR:-0}" == "1" ]]; then
     python scripts/repair_stale_running_runs.py >/dev/null 2>&1 || true
   fi
-  RUN_ID="$(
-  python -c "import sqlite3; from pathlib import Path; db=Path('appdata/state.sqlite'); con=sqlite3.connect(db); con.row_factory=sqlite3.Row; row=con.execute(\"select run_id from runs where status='running' and dataset_version_id=? order by created_at desc limit 1\", ('${DATASET_VERSION_ID}',)).fetchone(); print(row['run_id'] if row else ''); con.close()"
-  )"
-  if [[ -n "$RUN_ID" ]]; then
+  if python -c "import sqlite3; from pathlib import Path; db=Path('appdata/state.sqlite'); con=sqlite3.connect(db); con.row_factory=sqlite3.Row; row=con.execute(\"select run_id from runs where run_id=?\", ('${RUN_ID}',)).fetchone(); print('1' if row else '0'); con.close()" | grep -q "^1$"; then
     break
   fi
   sleep 1
 done
+
+if ! python -c "import sqlite3; from pathlib import Path; db=Path('appdata/state.sqlite'); con=sqlite3.connect(db); con.row_factory=sqlite3.Row; row=con.execute(\"select run_id from runs where run_id=?\", ('${RUN_ID}',)).fetchone(); print('1' if row else '0'); con.close()" | grep -q "^1$"; then
+  echo "ERROR: run_id_not_registered run_id=$RUN_ID"
+  if [[ -f "$LOG_PATH" ]]; then
+    tail -n 100 "$LOG_PATH" || true
+  fi
+  exit 1
+fi
 
 echo "PID=$PID"
 echo "RUN_ID=$RUN_ID"

@@ -288,6 +288,6 @@
 | plugin_id | name | entrypoint | depends_on | capabilities |
 |---|---|---|---:|---:|
 | `transform_normalize_mixed` | Normalize Mixed Types | `plugin.py:Plugin` | 0 | 0 |
-| `transform_sql_intents_pack_v1` | SQL Intents Pack (v1) | `plugin.py:Plugin` | 0 | 1 |
-| `transform_sqlpack_materialize_v1` | SQL Pack Materializer (v1) | `plugin.py:Plugin` | 1 | 1 |
+| `transform_sql_intents_pack_v1` | SQL Intents Pack (v1) | `plugin.py:Plugin` | 0 | 2 |
+| `transform_sqlpack_materialize_v1` | SQL Pack Materializer (v1) | `plugin.py:Plugin` | 1 | 2 |
 | `transform_template` | Template Transformer | `plugin.py:Plugin` | 0 | 0 |

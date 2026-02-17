@@ -44,7 +44,21 @@ def snapshot_schema(storage) -> SchemaSnapshot:
 
         table_blocks: list[dict[str, Any]] = []
         for t in tables:
-            cols = conn.execute(f"PRAGMA table_info({json.dumps(t)})").fetchall()
+            try:
+                cols = conn.execute(f"PRAGMA table_info({json.dumps(t)})").fetchall()
+            except Exception as exc:
+                # Some virtual tables (for example, vec0-backed objects) may be present in sqlite_master
+                # without the extension loaded in this runtime. Keep snapshot generation fail-closed by
+                # recording the table and skipping column/index introspection for that table.
+                table_blocks.append(
+                    {
+                        "name": t,
+                        "columns": [],
+                        "indexes": [],
+                        "snapshot_error": f"{type(exc).__name__}: {exc}",
+                    }
+                )
+                continue
             col_payload = [
                 {
                     "cid": int(c["cid"]),
@@ -56,11 +70,17 @@ def snapshot_schema(storage) -> SchemaSnapshot:
                 }
                 for c in cols
             ]
-            idxs = conn.execute(f"PRAGMA index_list({json.dumps(t)})").fetchall()
+            try:
+                idxs = conn.execute(f"PRAGMA index_list({json.dumps(t)})").fetchall()
+            except Exception:
+                idxs = []
             idx_payload: list[dict[str, Any]] = []
             for i in idxs:
                 iname = str(i["name"])
-                info = conn.execute(f"PRAGMA index_info({json.dumps(iname)})").fetchall()
+                try:
+                    info = conn.execute(f"PRAGMA index_info({json.dumps(iname)})").fetchall()
+                except Exception:
+                    info = []
                 idx_payload.append(
                     {
                         "name": iname,
@@ -90,4 +110,3 @@ def write_schema_snapshot(path: Path, storage) -> SchemaSnapshot:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(_stable_json({"schema_hash": snap.schema_hash, **snap.snapshot}), encoding="utf-8")
     return snap
-

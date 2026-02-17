@@ -12,10 +12,10 @@ config_schema: config.schema.json
 output_schema: output.schema.json
 capabilities:
   - needs_artifacts
+  - sql_assist_required
 sandbox:
   no_network: true
   fs_allowlist:
     - appdata
     - plugins
     - run_dir
-

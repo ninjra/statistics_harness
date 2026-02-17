@@ -6,6 +6,7 @@ import threading
 import time
 import traceback
 import shutil
+import json
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -853,6 +854,28 @@ class Pipeline:
                     errors.append("modeled finding missing assumptions")
             return errors
 
+        def _reason_code_from_text(text: str) -> str:
+            lowered = str(text or "").strip().lower()
+            if "schema snapshot unavailable" in lowered or "sql assist not wired" in lowered:
+                return "SQL_ASSIST_SCHEMA_UNAVAILABLE"
+            if "disabled" in lowered:
+                return "FEATURE_DISABLED"
+            if "quadratic_cap_exceeded" in lowered:
+                return "QUADRATIC_CAP_EXCEEDED"
+            if "insufficient_positive_samples" in lowered:
+                return "INSUFFICIENT_POSITIVE_SAMPLES"
+            if "no eligible" in lowered:
+                return "NO_ELIGIBLE_SLICE"
+            if "0 features" in lowered:
+                return "NO_FEATURES_ELIGIBLE"
+            if "significant=0" in lowered or "no significant" in lowered:
+                return "NO_SIGNIFICANT_EFFECT"
+            if "missing" in lowered:
+                return "MISSING_PREREQUISITE"
+            if "not applicable" in lowered or "n/a" in lowered:
+                return "NOT_APPLICABLE"
+            return "NO_ACTIONABLE_RESULT"
+
         def _not_applicable_finding(
             plugin_id: str,
             reason: str,
@@ -860,6 +883,7 @@ class Pipeline:
             original_status: str,
             error_type: str | None = None,
         ) -> dict[str, Any]:
+            reason_code = _reason_code_from_text(reason)
             digest = hashlib.sha256(
                 f"{plugin_id}:{original_status}:{reason}".encode("utf-8")
             ).hexdigest()[:16]
@@ -872,6 +896,7 @@ class Pipeline:
                 "what": reason,
                 "why": "Plugin preconditions were not satisfied for this dataset/config; deterministic fallback emitted.",
                 "measurement_type": "not_applicable",
+                "reason_code": reason_code,
                 "scope": {"plugin_id": plugin_id},
                 "assumptions": [],
                 "action_type": "not_applicable",
@@ -894,56 +919,137 @@ class Pipeline:
             findings = list(result.findings or [])
             metrics = dict(result.metrics or {})
 
-            should_soften = status in {"skipped", "degraded"}
-            if status == "error":
-                summary_lower = summary_text.lower()
-                is_validation_error = "output validation failed" in summary_lower
-                allowed_validation_fallback = (
-                    "modeled finding missing assumptions" in summary_lower
-                    or "modeled finding missing scope" in summary_lower
-                )
-                error_type_lower = error_type.lower()
-                soft_error_type = error_type_lower in {
-                    "timeouterror",
-                    "valueerror",
-                    "runtimeerror",
-                    "floatingpointerror",
-                    "linalgerror",
-                }
-                soft_error_summary = (
-                    summary_lower.endswith(" failed")
-                    or summary_lower.endswith(" timed out")
-                    or " timed out" in summary_lower
-                )
-                should_soften = (
-                    (soft_error_type or soft_error_summary)
-                    and (not is_validation_error or allowed_validation_fallback)
-                )
-
-            if not should_soften:
+            if status in {"ok", "error", "aborted", "na"}:
                 return result
 
-            reason = summary_text or f"{spec.plugin_id} not applicable"
-            debug.setdefault("status_original", status or "unknown")
-            if error_type:
-                debug.setdefault("error_type_original", error_type)
-            debug.setdefault("fallback_mode", "not_applicable")
-            metrics.setdefault("fallback_not_applicable", 1)
-            if not findings:
-                findings = [
-                    _not_applicable_finding(
-                        spec.plugin_id,
-                        reason,
-                        original_status=status or "unknown",
-                        error_type=error_type or None,
-                    )
-                ]
-            result.status = "ok"
-            result.summary = f"{spec.plugin_id} not applicable: {reason}"
-            result.error = None
+            if status in {"skipped", "degraded", "not_applicable"}:
+                reason = summary_text or f"{spec.plugin_id} not applicable"
+                reason_code = _reason_code_from_text(reason)
+                debug.setdefault("status_original", status or "unknown")
+                if error_type:
+                    debug.setdefault("error_type_original", error_type)
+                debug.setdefault("fallback_mode", "na")
+                debug.setdefault("fallback_not_applicable", 1)
+                debug.setdefault("reason_code", reason_code)
+                if not findings:
+                    findings = [
+                        _not_applicable_finding(
+                            spec.plugin_id,
+                            reason,
+                            original_status=status or "unknown",
+                            error_type=error_type or None,
+                        )
+                    ]
+                result.status = "na"
+                result.summary = f"{spec.plugin_id} n/a [{reason_code}]: {reason}"
+                result.error = None
+                result.debug = debug
+                result.metrics = metrics
+                result.findings = findings
+                return result
+
+            result.status = "error"
+            result.summary = f"{spec.plugin_id} returned invalid status: {status or 'unknown'}"
+            result.error = PluginError(
+                type="InvalidPluginStatus",
+                message=f"Unsupported plugin status '{status or 'unknown'}'",
+                traceback="",
+            )
             result.debug = debug
             result.metrics = metrics
             result.findings = findings
+            return result
+
+        def enforce_result_quality(spec: PluginSpec, result: PluginResult) -> PluginResult:
+            status = str(result.status or "").strip().lower()
+            summary_text = str(result.summary or "").strip()
+            if status in {"na", "error"}:
+                reason_code = _reason_code_from_text(summary_text)
+                findings = list(result.findings or [])
+                if not findings and status == "na":
+                    findings = [
+                        _not_applicable_finding(
+                            spec.plugin_id,
+                            summary_text or f"{spec.plugin_id} not applicable",
+                            original_status="na",
+                            error_type=str(getattr(result.error, "type", "") or "") or None,
+                        )
+                    ]
+                patched: list[dict[str, Any]] = []
+                for item in findings:
+                    if isinstance(item, dict):
+                        entry = dict(item)
+                    else:
+                        entry = {"value": item}
+                    if not str(entry.get("reason_code") or "").strip():
+                        entry["reason_code"] = reason_code
+                    patched.append(entry)
+                result.findings = patched
+                debug = dict(result.debug or {})
+                debug.setdefault("reason_code", reason_code)
+                result.debug = debug
+                return result
+            if status != "ok":
+                return result
+            if str(spec.type or "") != "analysis":
+                return result
+            capabilities = {str(v).strip() for v in (spec.capabilities or [])}
+            if "diagnostic_only" in capabilities:
+                return result
+            findings = list(result.findings or [])
+            if findings:
+                return result
+            reason_code = _reason_code_from_text(summary_text)
+            digest = hashlib.sha256(
+                f"{spec.plugin_id}:{summary_text or 'no_summary'}:{reason_code}".encode("utf-8")
+            ).hexdigest()[:16]
+            findings.append(
+                {
+                    "id": digest,
+                    "kind": "analysis_no_action_diagnostic",
+                    "severity": "info",
+                    "confidence": 1.0,
+                    "title": f"{spec.plugin_id} completed with no actionable signal",
+                    "what": summary_text or "No actionable signal found.",
+                    "why": "Computation completed; plugin emitted a deterministic diagnostic finding for result-quality compliance.",
+                    "measurement_type": "measured",
+                    "reason_code": reason_code,
+                    "scope": {"plugin_id": spec.plugin_id},
+                    "assumptions": [],
+                }
+            )
+            debug = dict(result.debug or {})
+            debug.setdefault("result_quality_autofill", 1)
+            debug.setdefault("reason_code", reason_code)
+            result.findings = findings
+            result.debug = debug
+            return result
+
+        def finalize_result_contract(spec: PluginSpec, result: PluginResult) -> PluginResult:
+            result = normalize_result_status(spec, result)
+            result.findings = attach_evidence(result.findings)
+            result = enforce_result_quality(spec, result)
+            result.findings = attach_evidence(result.findings)
+            try:
+                payload = self.manager.result_payload(result)
+                self.manager.validate_output(spec, payload)
+                modeled_errors = validate_modeled_findings(result.findings)
+                if modeled_errors:
+                    raise ValueError("; ".join(sorted(set(modeled_errors))))
+            except Exception as exc:  # pragma: no cover - error flow
+                tb = traceback.format_exc()
+                result = PluginResult(
+                    status="error",
+                    summary=f"{spec.plugin_id} output validation failed: {exc}",
+                    metrics={},
+                    findings=[],
+                    artifacts=[],
+                    error=PluginError(
+                        type=type(exc).__name__, message=str(exc), traceback=tb
+                    ),
+                )
+                result = normalize_result_status(spec, result)
+                result.findings = attach_evidence(result.findings)
             return result
 
         def logger(msg: str) -> None:
@@ -1176,6 +1282,7 @@ class Pipeline:
                             "cpu_limit_ms": None,
                         },
                     )
+                    result = finalize_result_contract(spec, result)
                     exec_info = {
                         "completed_at": now_iso(),
                         "duration_ms": 0,
@@ -1188,7 +1295,7 @@ class Pipeline:
                         execution_id=execution_id,
                         completed_at=exec_info.get("completed_at"),
                         duration_ms=0,
-                        status="ok",
+                        status=result.status,
                         exit_code=0,
                         cpu_user=None,
                         cpu_system=None,
@@ -1285,29 +1392,7 @@ class Pipeline:
                 heartbeat_stop.set()
                 if heartbeat_thread:
                     heartbeat_thread.join(timeout=1.0)
-            result = normalize_result_status(spec, result)
-            result.findings = attach_evidence(result.findings)
-            try:
-                payload = self.manager.result_payload(result)
-                self.manager.validate_output(spec, payload)
-                modeled_errors = validate_modeled_findings(result.findings)
-                if modeled_errors:
-                    raise ValueError("; ".join(sorted(set(modeled_errors))))
-            except Exception as exc:  # pragma: no cover - error flow
-                tb = traceback.format_exc()
-                result = PluginResult(
-                    status="error",
-                    summary=f"{spec.plugin_id} output validation failed: {exc}",
-                    metrics={},
-                    findings=[],
-                    artifacts=[],
-                    error=PluginError(
-                        type=type(exc).__name__, message=str(exc), traceback=tb
-                    ),
-                )
-                # Keep execution status aligned with normalized fallback behavior.
-                result = normalize_result_status(spec, result)
-                result.findings = attach_evidence(result.findings)
+            result = finalize_result_contract(spec, result)
             if result.error:
                 logger(f"[ERROR] {spec.plugin_id}: {result.error.message}")
             if "runner" in locals():
@@ -1348,10 +1433,8 @@ class Pipeline:
                 duration_s = duration_ms / 1000.0
                 if result.status == "ok":
                     status_tag = "OK"
-                elif result.status == "skipped":
-                    status_tag = "SKIP"
-                elif result.status == "degraded":
-                    status_tag = "DEG"
+                elif result.status == "na":
+                    status_tag = "NA"
                 else:
                     status_tag = "ERR"
                 print(f"[{status_tag}] {spec.plugin_id} ({duration_s:.1f}s)")
@@ -1367,7 +1450,7 @@ class Pipeline:
                 now_iso(),
                 code_hash,
                 settings_hash,
-                input_hash,
+                cache_dataset_hash,
                 result,
                 execution_fingerprint=execution_fingerprint,
             )
@@ -1801,31 +1884,87 @@ class Pipeline:
 
         plugin_results = self.storage.fetch_plugin_results(run_id)
         plugin_executions = self.storage.fetch_plugin_executions(run_id)
-        # A run can be "completed" even if some plugins are skipped or degraded under evidence gates.
-        # Treat only true failures as "partial".
+        # A run is completed only when plugins are either ok or deterministic n/a.
         golden_mode = _golden_mode()
+        analysis_empty_ok: list[str] = []
+        for row in plugin_results:
+            plugin_id = str(row.get("plugin_id") or "")
+            spec = spec_map.get(plugin_id)
+            if not spec or str(spec.type or "") != "analysis":
+                continue
+            if "diagnostic_only" in {str(v).strip() for v in (spec.capabilities or [])}:
+                continue
+            status = str(row.get("status") or "").lower()
+            if status != "ok":
+                continue
+            findings_payload = row.get("findings_json")
+            findings_count = 0
+            if isinstance(findings_payload, str):
+                try:
+                    loaded = json.loads(findings_payload)
+                    if isinstance(loaded, list):
+                        findings_count = len(loaded)
+                except Exception:
+                    findings_count = 0
+            elif isinstance(findings_payload, list):
+                findings_count = len(findings_payload)
+            if findings_count == 0:
+                analysis_empty_ok.append(plugin_id)
+        analysis_empty_ok = sorted(set(analysis_empty_ok))
+        analysis_empty_ok_count = len(analysis_empty_ok)
         skipped_count = sum(
             1
             for row in plugin_results
             if str(row.get("status") or "").lower() == "skipped"
         )
+        degraded_count = sum(
+            1
+            for row in plugin_results
+            if str(row.get("status") or "").lower() == "degraded"
+        )
+        na_count = sum(
+            1
+            for row in plugin_results
+            if str(row.get("status") or "").lower() == "na"
+        )
+        legacy_nonterminal_count = int(skipped_count + degraded_count)
         any_failures = any(
             str(row.get("status") or "").lower() in {"error", "aborted"} for row in plugin_results
         )
-        strict_skip_violation = bool(golden_mode == "strict" and skipped_count > 0)
-        if strict_skip_violation:
+        if legacy_nonterminal_count > 0:
             any_failures = True
+        if analysis_empty_ok_count > 0:
+            any_failures = True
+        strict_skip_violation = bool(golden_mode == "strict" and legacy_nonterminal_count > 0)
+        strict_result_quality_violation = bool(
+            golden_mode == "strict" and analysis_empty_ok_count > 0
+        )
         final_status = "partial" if any_failures else "completed"
-        if strict_skip_violation:
+        if legacy_nonterminal_count > 0:
             self.storage.insert_event(
                 kind="run_policy_violation",
                 created_at=now_iso(),
                 run_id=run_id,
                 run_fingerprint=run_fingerprint,
                 payload={
-                    "policy": "golden_strict",
-                    "reason": "skipped_plugins_not_allowed",
+                    "policy": "terminal_status_contract",
+                    "reason": "legacy_nonterminal_status_detected",
                     "skipped_count": int(skipped_count),
+                    "degraded_count": int(degraded_count),
+                    "legacy_nonterminal_count": int(legacy_nonterminal_count),
+                },
+            )
+        if analysis_empty_ok_count > 0:
+            self.storage.insert_event(
+                kind="run_policy_violation",
+                created_at=now_iso(),
+                run_id=run_id,
+                run_fingerprint=run_fingerprint,
+                payload={
+                    "policy": "result_quality_contract",
+                    "reason": "analysis_ok_without_findings",
+                    "analysis_ok_without_findings_count": int(analysis_empty_ok_count),
+                    "plugins": analysis_empty_ok[:50],
                 },
             )
 
@@ -1914,7 +2053,15 @@ class Pipeline:
         }
         manifest["summary"]["golden_mode"] = golden_mode
         manifest["summary"]["skipped_count"] = int(skipped_count)
+        manifest["summary"]["degraded_count"] = int(degraded_count)
+        manifest["summary"]["na_count"] = int(na_count)
+        manifest["summary"]["legacy_nonterminal_count"] = int(legacy_nonterminal_count)
+        manifest["summary"]["analysis_ok_without_findings_count"] = int(analysis_empty_ok_count)
+        manifest["summary"]["analysis_ok_without_findings_plugins"] = analysis_empty_ok[:50]
         manifest["summary"]["strict_skip_violation"] = bool(strict_skip_violation)
+        manifest["summary"]["strict_result_quality_violation"] = bool(
+            strict_result_quality_violation
+        )
         manifest_path = run_dir / "run_manifest.json"
         write_json(manifest_path, manifest)
         manifest_sha = file_sha256(manifest_path)
@@ -1939,7 +2086,11 @@ class Pipeline:
         )
         if strict_skip_violation:
             raise RuntimeError(
-                "STAT_HARNESS_GOLDEN_MODE=strict failed: one or more plugins returned skipped"
+                "STAT_HARNESS_GOLDEN_MODE=strict failed: one or more plugins returned legacy nonterminal statuses"
+            )
+        if strict_result_quality_violation:
+            raise RuntimeError(
+                "STAT_HARNESS_GOLDEN_MODE=strict failed: one or more analysis plugins returned ok without findings"
             )
         return run_id
 

@@ -7218,6 +7218,8 @@ docs/redteam_ids_matrix.md
 docs/references.md
 docs/release_evidence/baseline_before_after_leftfield_diff.json
 docs/release_evidence/baseline_before_vs_fullset_after.json
+docs/release_evidence/diff_18b6_to_d539.json
+docs/release_evidence/diff_eb325f_to_a8fdd_baseline.json
 docs/release_evidence/golden_release_summary.json
 docs/release_evidence/golden_release_summary.md
 docs/repo_improvements_capability_map_v1.json
@@ -7236,6 +7238,7 @@ docs/repo_improvements_status.json
 docs/repo_improvements_status.md
 docs/repo_improvements_touchpoint_map.json
 docs/report.schema.json
+docs/result_quality_contract.md
 docs/rich-useful-plugin-all-plugins-functioning-plan.md
 docs/run_manifest.schema.json
 docs/schemas/causal.schema.json
@@ -7268,6 +7271,7 @@ leftfield-top20-methods-implementation-plan.md
 local-sqlcoder-sql-assist-plan.md
 modeled-improvement-general-close-qemail-removal-plan.md
 parallel-plugin-orchestrator-plan.md
+plugin-result-integrity-sqlassist-hardfail-plan.md
 plugins/__init__.py
 plugins/analysis_action_search_mip_batched_scheduler_v1/config.schema.json
 plugins/analysis_action_search_mip_batched_scheduler_v1/output.schema.json
@@ -8444,13 +8448,13 @@ queue-delay-plugins-evaluation-plan.md
 r
 repo-improvements-catalog-v3-implementation-path-plan.md
 repomix-output.md
-running
 s
 scripts/api_smoke.py
 scripts/backfill_stat_plugin_cache_keys.py
 scripts/binding_implementation_matrix.py
 scripts/bootstrap.ps1
 scripts/bootstrap.sh
+scripts/build_final_validation_summary.py
 scripts/build_golden_release_evidence_pack.py
 scripts/build_ideaspace_baseline.py
 scripts/canonicalize_repo_improvements_catalog.py
@@ -8508,6 +8512,7 @@ scripts/reset_baseline.sh
 scripts/run_analysis.ps1
 scripts/run_cli_example.ps1
 scripts/run_cli_example.sh
+scripts/run_final_validation_checklist.sh
 scripts/run_fixture_recommendations.py
 scripts/run_full_and_show.sh
 scripts/run_full_test_dataset.sh
@@ -9048,6 +9053,7 @@ tests/plugins/test_spectral_clustering_v1.py
 tests/plugins/test_tail_isolation.py
 tests/plugins/test_traceability_manifest_v2.py
 tests/plugins/test_transform_normalize_mixed.py
+tests/plugins/test_transform_sql_intents_pack_v1.py
 tests/plugins/test_user_host_savings.py
 tests/plugins/test_wasserstein_shift_v1.py
 tests/plugins/test_waterfall_summary_v2.py
@@ -9098,9 +9104,11 @@ tests/test_normalization_reuse.py
 tests/test_offline.py
 tests/test_parameter_normalization.py
 tests/test_performance_smoke.py
+tests/test_pipeline_analysis_no_findings_policy.py
 tests/test_pipeline_env_parsing.py
 tests/test_pipeline_golden_mode.py
 tests/test_pipeline_integration.py
+tests/test_pipeline_na_status_normalization.py
 tests/test_pipeline_validation_fallback_status.py
 tests/test_plain_recommendations_output.py
 tests/test_planner_features.py
@@ -9110,6 +9118,7 @@ tests/test_plugin_discovery.py
 tests/test_plugin_intent_library.py
 tests/test_plugin_manifest_schema.py
 tests/test_plugin_runner_env.py
+tests/test_plugin_runner_subprocess_termination.py
 tests/test_plugins_functionality_matrix.py
 tests/test_process_filters.py
 tests/test_process_matcher.py
@@ -9141,16 +9150,20 @@ tests/test_source_classification.py
 tests/test_sql_adoption_partition_matrix.py
 tests/test_sql_assist_adoption_matrix.py
 tests/test_sql_assist_and_storage_guards.py
+tests/test_sqlpack_materialize_defaults.py
 tests/test_stat_plugin_active_row_filter.py
 tests/test_storage_plugin_executions_bytes.py
+tests/test_structural_preflight_gate.py
 tests/test_surface_builder.py
 tests/test_template_combined_run.py
 tests/test_template_conversion.py
 tests/test_template_filters.py
 tests/test_tenant_isolation.py
 tests/test_tokenize_params.py
+tests/test_top20_itemset_bounds.py
 tests/test_top20_methods_matrix.py
 tests/test_top20_plugins_smoke.py
+tests/test_top20_role_resolution.py
 tests/test_top20_scaffold_integrity.py
 tests/test_ui_sampling_controls.py
 tests/test_ui_security_headers_unit.py
