@@ -187,7 +187,24 @@ class PluginManager:
 
     def validate_output(self, spec: PluginSpec, payload: dict[str, Any]) -> None:
         schema = self._load_schema(spec.output_schema)
-        validate(instance=payload, schema=schema)
+        try:
+            validate(instance=payload, schema=schema)
+            return
+        except ValidationError as exc:
+            # Back-compat: many plugin output schemas still enumerate "skipped" while
+            # runtime now persists deterministic not-applicable as status="na".
+            status = str(payload.get("status") or "").strip().lower()
+            if status != "na":
+                raise
+            for alias in ("skipped", "degraded", "not_applicable"):
+                probe = dict(payload)
+                probe["status"] = alias
+                try:
+                    validate(instance=probe, schema=schema)
+                    return
+                except ValidationError:
+                    continue
+            raise exc
 
     @staticmethod
     def result_payload(result: Any) -> dict[str, Any]:

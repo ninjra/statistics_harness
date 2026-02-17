@@ -153,11 +153,13 @@ class SqlAssist:
 
         # Very conservative name extraction; if we can't prove it is prefixed, deny.
         if kw == "create":
-            name = _extract_name(r"\bcreate\s+(?:table|view|index)\s+([a-z0-9_]+)")
+            name = _extract_name(
+                r"\bcreate\s+(?:table|view|index)\s+(?:if\s+not\s+exists\s+)?([a-z0-9_]+)"
+            )
             if not name or not name.startswith(prefix):
                 raise ValueError(f"Plugin SQL must create prefixed objects: {self._allowed_prefix}*")
         if kw == "drop":
-            name = _extract_name(r"\bdrop\s+(?:table|view|index)\s+([a-z0-9_]+)")
+            name = _extract_name(r"\bdrop\s+(?:table|view|index)\s+(?:if\s+exists\s+)?([a-z0-9_]+)")
             if not name or not name.startswith(prefix):
                 raise ValueError(f"Plugin SQL must drop prefixed objects: {self._allowed_prefix}*")
         if kw == "insert":

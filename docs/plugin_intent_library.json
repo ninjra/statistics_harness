@@ -5408,7 +5408,8 @@
         "sql_assist"
       ],
       "capabilities": [
-        "needs_artifacts"
+        "needs_artifacts",
+        "sql_assist_required"
       ],
       "config_schema_path": "plugins/transform_sql_intents_pack_v1/config.schema.json",
       "depends_on": [],
@@ -5428,11 +5429,12 @@
         "sql_assist"
       ],
       "capabilities": [
-        "needs_artifacts"
+        "needs_artifacts",
+        "sql_assist_required"
       ],
       "config_schema_path": "plugins/transform_sqlpack_materialize_v1/config.schema.json",
       "depends_on": [
-        "llm_text2sql_local_generate_v1"
+        "transform_sql_intents_pack_v1"
       ],
       "description": "Materialize (CREATE TABLE/VIEW) plugin-owned derived objects from a validated SQL pack.",
       "entrypoint": "plugin.py:Plugin",

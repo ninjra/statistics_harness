@@ -65,6 +65,7 @@ def test_sql_assist_exec_plugin_requires_prefix(tmp_path: Path) -> None:
 
     # Allowed (prefixed).
     sql.exec_plugin("CREATE TABLE plg__demo__t(x INTEGER)", query_id="create_ok")
+    sql.exec_plugin("DROP TABLE IF EXISTS plg__demo__t", query_id="drop_ok")
 
     # Denied (unprefixed).
     with pytest.raises(ValueError):

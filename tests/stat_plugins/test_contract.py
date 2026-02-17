@@ -43,6 +43,13 @@ def test_validate_contract_invalid_status():
     assert "invalid_status" in errors
 
 
+def test_validate_contract_na_status():
+    result = _base_result()
+    result["status"] = "na"
+    errors = validate_contract(result)
+    assert errors == []
+
+
 def test_validate_contract_findings_not_list():
     result = _base_result()
     result["findings"] = "oops"

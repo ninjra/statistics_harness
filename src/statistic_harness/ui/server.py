@@ -9,6 +9,7 @@ import re
 import sqlite3
 import shutil
 import struct
+import threading
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -103,10 +104,39 @@ def _apply_security_headers(headers) -> None:
 
 TENANT_CTX = get_tenant_context()
 APPDATA_DIR = TENANT_CTX.tenant_root
-pipeline = Pipeline(TENANT_CTX.appdata_root, Path("plugins"), tenant_id=TENANT_CTX.tenant_id)
 KNOWN_ISSUES_DIR = APPDATA_DIR / "known_issues"
 AUTH_ENABLED = auth_enabled()
 SESSION_COOKIE_NAME = "stat_harness_session"
+
+
+class _LazyPipeline:
+    """Lazily initialize Pipeline to avoid heavy startup at import/collection time."""
+
+    def __init__(self, base_dir: Path, plugins_dir: Path, tenant_id: str | None) -> None:
+        self._base_dir = base_dir
+        self._plugins_dir = plugins_dir
+        self._tenant_id = tenant_id
+        self._instance: Pipeline | None = None
+        self._lock = threading.Lock()
+
+    def _get(self) -> Pipeline:
+        inst = self._instance
+        if inst is not None:
+            return inst
+        with self._lock:
+            if self._instance is None:
+                self._instance = Pipeline(
+                    self._base_dir,
+                    self._plugins_dir,
+                    tenant_id=self._tenant_id,
+                )
+            return self._instance
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._get(), name)
+
+
+pipeline = _LazyPipeline(TENANT_CTX.appdata_root, Path("plugins"), TENANT_CTX.tenant_id)
 
 
 def _session_ttl_hours() -> int:

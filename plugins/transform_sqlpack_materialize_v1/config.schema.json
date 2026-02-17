@@ -4,10 +4,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "enabled": { "type": "boolean", "default": false },
+    "enabled": { "type": "boolean", "default": true },
     "source_relpath": {
       "type": "string",
-      "default": "artifacts/llm_text2sql_local_generate_v1/sql_pack.json"
+      "default": "artifacts/transform_sql_intents_pack_v1/sql_pack_bootstrap.json"
     },
     "table_prefix": {
       "type": "string",
@@ -15,4 +15,3 @@
     }
   }
 }
-

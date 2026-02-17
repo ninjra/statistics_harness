@@ -184,7 +184,7 @@ def _traceability_signal(report: dict[str, Any]) -> float:
         "analysis_recommendation_dedupe_v2",
     ):
         payload = plugins.get(pid)
-        checks.append(isinstance(payload, dict) and str(payload.get("status") or "") in {"ok", "degraded"})
+        checks.append(isinstance(payload, dict) and str(payload.get("status") or "") in {"ok", "na"})
     return float(sum(1 for v in checks if v)) / float(len(checks)) if checks else 0.0
 
 
@@ -231,7 +231,7 @@ def _security_signals(report: dict[str, Any]) -> tuple[int, int]:
                 if "security" in kind or "policy" in kind or "pii" in kind:
                     violation_count += 1
         # "File read denied" and similar are evidence of fail-closed policy in action.
-        if status in {"error", "degraded"} and (
+        if status in {"error", "na"} and (
             "file read denied" in summary
             or "permission denied" in summary
             or "sandbox" in summary
@@ -258,6 +258,7 @@ def _performant_score(report: dict[str, Any], run_row: dict[str, Any] | None = N
     total_plugins = max(1, sum(status_counts.values()))
     ok_weighted = (
         float(status_counts.get("ok", 0))
+        + float(status_counts.get("na", 0)) * 0.8
         + float(status_counts.get("skipped", 0)) * 0.8
         + float(status_counts.get("degraded", 0)) * 0.4
     ) / float(total_plugins)
@@ -308,6 +309,7 @@ def _accurate_score(report: dict[str, Any]) -> PillarScore:
     total_plugins = max(1, sum(status_counts.values()))
     quality_ratio = (
         float(status_counts.get("ok", 0))
+        + float(status_counts.get("na", 0)) * 0.85
         + float(status_counts.get("skipped", 0)) * 0.85
         + float(status_counts.get("degraded", 0)) * 0.45
     ) / float(total_plugins)
@@ -486,4 +488,3 @@ def build_four_pillars_scorecard(
             "Balance policy rejects one-pillar gains that materially degrade another pillar.",
         ],
     }
-

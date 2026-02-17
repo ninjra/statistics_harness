@@ -31,10 +31,16 @@ class Plugin:
         # Return deterministic not-applicable output so full-gauntlet runs do not fail.
         if template_id in (None, 0, ""):
             return PluginResult(
-                "ok",
-                "Not applicable: no template configured (template_id not set)",
+                "na",
+                "Template mapping not applicable (template_id not set)",
                 {},
-                [],
+                [
+                    {
+                        "kind": "template_not_configured",
+                        "measurement_type": "not_applicable",
+                        "reason_code": "TEMPLATE_ID_MISSING",
+                    }
+                ],
                 [],
                 None,
                 debug={"gating_reason": "template_id_missing"},
@@ -68,7 +74,13 @@ class Plugin:
             "ok",
             "Template mapping applied",
             {"row_count": int(row_count)},
-            [],
+            [
+                {
+                    "kind": "template_mapping_applied",
+                    "measurement_type": "measured",
+                    "reason_code": "TEMPLATE_MAPPING_APPLIED",
+                }
+            ],
             artifacts,
             None,
         )
