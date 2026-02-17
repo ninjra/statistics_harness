@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from collections import Counter, deque
 import json
 import re
 import os
@@ -13,6 +14,11 @@ from jsonschema import validate
 import yaml
 
 from .four_pillars import build_four_pillars_scorecard
+from .actionability_explanations import (
+    derive_reason_code,
+    plain_english_explanation,
+    recommended_next_step,
+)
 from .stat_controls import confidence_from_p
 from .process_matcher import (
     compile_patterns,
@@ -2663,6 +2669,162 @@ def _build_discovery_recommendations(
     return {"status": status, "summary": summary, "items": deduped}
 
 
+def _manifest_index() -> dict[str, dict[str, Any]]:
+    plugins_root = Path(__file__).resolve().parents[3] / "plugins"
+    index: dict[str, dict[str, Any]] = {}
+    for manifest in sorted(plugins_root.glob("*/plugin.yaml")):
+        try:
+            payload = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+        plugin_id = str(payload.get("id") or manifest.parent.name)
+        deps = payload.get("depends_on")
+        depends_on = [str(v).strip() for v in deps] if isinstance(deps, list) else []
+        index[plugin_id] = {
+            "type": str(payload.get("type") or "").strip().lower(),
+            "depends_on": [v for v in depends_on if v],
+        }
+    return index
+
+
+def _downstream_consumers(plugin_ids: set[str], manifest_index: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
+    reverse: dict[str, set[str]] = {pid: set() for pid in plugin_ids}
+    for pid in plugin_ids:
+        meta = manifest_index.get(pid) or {}
+        deps = meta.get("depends_on") if isinstance(meta.get("depends_on"), list) else []
+        for dep in deps:
+            dep_id = str(dep or "").strip()
+            if dep_id and dep_id in reverse:
+                reverse[dep_id].add(pid)
+    out: dict[str, list[str]] = {}
+    for pid in sorted(plugin_ids):
+        seen: set[str] = set()
+        queue: deque[str] = deque(sorted(reverse.get(pid) or []))
+        while queue:
+            cur = queue.popleft()
+            if cur in seen:
+                continue
+            seen.add(cur)
+            for nxt in sorted(reverse.get(cur) or []):
+                if nxt not in seen:
+                    queue.append(nxt)
+        out[pid] = sorted(seen)
+    return out
+
+
+def _actionable_plugin_ids(items: list[dict[str, Any]]) -> set[str]:
+    out: set[str] = set()
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        pid = str(item.get("plugin_id") or "").strip()
+        if pid:
+            out.add(pid)
+    return out
+
+
+def _reason_code_for_non_actionable(
+    status: str, finding_count: int, blank_kind_count: int, payload: dict[str, Any]
+) -> str:
+    debug = payload.get("debug") if isinstance(payload.get("debug"), dict) else {}
+    findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
+    return derive_reason_code(
+        status=status,
+        finding_count=int(finding_count or 0),
+        blank_kind_count=int(blank_kind_count or 0),
+        debug=debug if isinstance(debug, dict) else {},
+        findings=[f for f in findings if isinstance(f, dict)],
+    )
+
+
+def _build_non_actionable_explanations(
+    report: dict[str, Any], recommendation_items: list[dict[str, Any]]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    plugins = report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
+    plugin_ids = {str(pid) for pid in plugins.keys()}
+    actionable_ids = _actionable_plugin_ids(recommendation_items)
+    manifest_index = _manifest_index()
+    downstream_map = _downstream_consumers(plugin_ids, manifest_index)
+    items: list[dict[str, Any]] = []
+    explained_ids: set[str] = set()
+    for pid in sorted(plugin_ids):
+        if pid in actionable_ids:
+            continue
+        payload = plugins.get(pid) if isinstance(plugins.get(pid), dict) else {}
+        plugin_type = str((manifest_index.get(pid) or {}).get("type") or "unknown").strip().lower()
+        status = str(payload.get("status") or "unknown").strip().lower()
+        summary = str(payload.get("summary") or "").strip()
+        findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
+        finding_count = int(len([f for f in findings if isinstance(f, dict)]))
+        blank_kind_count = int(
+            sum(
+                1
+                for f in findings
+                if isinstance(f, dict) and not str(f.get("kind") or "").strip()
+            )
+        )
+        top_kinds = Counter(
+            str(f.get("kind") or "").strip()
+            for f in findings
+            if isinstance(f, dict) and str(f.get("kind") or "").strip()
+        ).most_common(8)
+        kind_preview = [k for k, _ in top_kinds]
+        reason_code = _reason_code_for_non_actionable(status, finding_count, blank_kind_count, payload)
+        downstream = downstream_map.get(pid) or []
+        explanation = plain_english_explanation(
+            plugin_id=pid,
+            plugin_type=plugin_type,
+            status=status,
+            summary=summary,
+            finding_count=int(finding_count),
+            blank_kind_count=int(blank_kind_count),
+            downstream_plugins=downstream,
+        )
+        next_step = recommended_next_step(
+            plugin_type=plugin_type,
+            status=status,
+            finding_count=int(finding_count),
+            blank_kind_count=int(blank_kind_count),
+            downstream_plugins=downstream,
+        )
+
+        items.append(
+            {
+                "status": "explained_non_actionable",
+                "plugin_id": pid,
+                "plugin_type": plugin_type or "unknown",
+                "plugin_status": status or "unknown",
+                "kind": "non_actionable_explanation",
+                "reason_code": reason_code,
+                "plain_english_explanation": explanation,
+                "recommended_next_step": next_step,
+                "downstream_plugins": downstream,
+                "downstream_plugin_count": int(len(downstream)),
+                "finding_count": int(finding_count),
+                "finding_kind_preview": kind_preview,
+                "summary": summary,
+            }
+        )
+        explained_ids.add(pid)
+
+    lane_status = "ok" if items else "none"
+    lane_summary = (
+        f"Generated plain-English non-actionable explanations for {len(items)} plugin(s)."
+        if items
+        else "No non-actionable explanation entries were needed."
+    )
+    coverage = {
+        "total_plugins": int(len(plugin_ids)),
+        "actionable_plugin_count": int(len(actionable_ids)),
+        "explained_non_actionable_count": int(len(explained_ids)),
+        "unexplained_plugin_count": int(len(plugin_ids - actionable_ids - explained_ids)),
+        "unexplained_plugins": sorted(plugin_ids - actionable_ids - explained_ids),
+    }
+    return {"status": lane_status, "summary": lane_summary, "items": items}, coverage
+
+
 def _build_recommendations(
     report: dict[str, Any], storage: Storage | None = None, run_dir: Path | None = None
 ) -> dict[str, Any]:
@@ -2744,7 +2906,16 @@ def _build_recommendations(
         if include_known
         else "Discovery recommendations only (known-issue landmarks excluded by policy)."
     )
-    return {"status": "ok", "summary": summary, "known": known, "discovery": discovery, "items": combined}
+    explanations, coverage = _build_non_actionable_explanations(report, combined)
+    return {
+        "status": "ok",
+        "summary": summary,
+        "known": known,
+        "discovery": discovery,
+        "items": combined,
+        "explanations": explanations,
+        "actionability_coverage": coverage,
+    }
 
 
 def _build_executive_summary(report: dict[str, Any]) -> list[str]:
@@ -4408,6 +4579,41 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
                 lines.append(f"| {status} | {rec} |")
     else:
         lines.append("No discovery recommendations available.")
+    lines.append("")
+
+    explanations_block = (
+        recommendations.get("explanations")
+        if isinstance(recommendations, dict)
+        else None
+    )
+    explanation_items = (
+        explanations_block.get("items")
+        if isinstance(explanations_block, dict)
+        and isinstance(explanations_block.get("items"), list)
+        else []
+    )
+    lines.append("#### Non-Actionable Explanations")
+    if isinstance(explanations_block, dict):
+        summary_text = str(explanations_block.get("summary") or "").strip()
+        if summary_text:
+            lines.append(summary_text)
+    if explanation_items:
+        lines.append("| Plugin | Reason | Explanation |")
+        lines.append("|---|---|---|")
+        for item in explanation_items:
+            if not isinstance(item, dict):
+                continue
+            plugin_id = str(item.get("plugin_id") or "unknown")
+            reason = str(item.get("reason_code") or "unspecified")
+            text = str(item.get("plain_english_explanation") or "").strip() or "No explanation provided."
+            downstream = item.get("downstream_plugins")
+            if isinstance(downstream, list) and downstream:
+                sample = ", ".join(str(v) for v in downstream[:5])
+                suffix = ", ..." if len(downstream) > 5 else ""
+                text = f"{text} Downstream: {sample}{suffix}."
+            lines.append(f"| {plugin_id} | {reason} | {text} |")
+    else:
+        lines.append("No non-actionable explanations available.")
     lines.append("")
 
     if _include_known_recommendations():

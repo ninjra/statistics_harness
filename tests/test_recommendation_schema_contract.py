@@ -31,6 +31,7 @@ def _base_report_payload() -> dict:
             "known": {"status": "ok", "summary": "known", "items": []},
             "discovery": {"status": "ok", "summary": "discovery", "items": []},
             "items": [],
+            "explanations": {"status": "ok", "summary": "explanations", "items": []},
         },
     }
 

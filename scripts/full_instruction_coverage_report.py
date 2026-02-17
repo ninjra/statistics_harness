@@ -12,6 +12,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 PLUGINS = ROOT / "plugins"
+EXCLUDED_GENERATED_NAMES = {
+    "repomix-output.md",
+    "full_instruction_coverage_report.json",
+    "full_instruction_coverage_report.md",
+    "full_repo_misses.json",
+    "full_repo_misses.md",
+}
 
 PATH_RE = re.compile(
     r"(?P<path>"
@@ -51,8 +58,8 @@ def _collect_sources() -> list[Path]:
         p = ROOT / name
         if p.exists():
             files.append(p)
-    # Exclude generated bundles that mirror all repo text.
-    files = [p for p in files if p.name.lower() not in {"repomix-output.md"}]
+    # Exclude generated bundles/reports that can create self-referential drift.
+    files = [p for p in files if p.name.lower() not in EXCLUDED_GENERATED_NAMES]
     return sorted({p.resolve() for p in files}, key=lambda x: str(x).lower())
 
 

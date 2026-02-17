@@ -1303,6 +1303,29 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/plugin-actionability-full-remediation-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [
+        "docs/report.schema.json",
+        "docs/result_quality_contract.md",
+        "scripts/build_final_validation_summary.py",
+        "scripts/compare_plugin_actionability_runs.py",
+        "scripts/validate_plugin_finding_quality.py",
+        "src/statistic_harness/core/actionability_explanations.py",
+        "src/statistic_harness/core/pipeline.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/report_v2_utils.py",
+        "src/statistic_harness/core/top20_plugins.py",
+        "src/statistic_harness/core/types.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/plugin_data_access_matrix.json",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -5862,6 +5885,7 @@
     "docs/kona_energy_ideaspace_architecture.md",
     "docs/optimal-matrix-implementation-order-plan.md",
     "docs/perf_hotspots.md",
+    "docs/plugin-actionability-full-remediation-plan.md",
     "docs/plugin_data_access_matrix.json",
     "docs/plugin_data_access_matrix.md",
     "docs/plugin_data_access_overrides.json",

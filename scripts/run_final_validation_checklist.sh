@@ -181,6 +181,10 @@ error_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.
 missing_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); m=d.get('missing_plugin_results'); print(int(m or 0))" "$CHECK_DIR/summary.json")"
 analysis_ok_without_findings_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('analysis_ok_without_findings_count') or 0))" "$CHECK_DIR/summary.json")"
 sql_assist_required_failure_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('sql_assist_required_failure_count') or 0))" "$CHECK_DIR/summary.json")"
+unexplained_plugin_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('unexplained_plugin_count') or 0))" "$CHECK_DIR/summary.json")"
+blank_kind_findings_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('blank_kind_findings_count') or 0))" "$CHECK_DIR/summary.json")"
+explanations_missing_plain_text_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('explanations_missing_plain_text_count') or 0))" "$CHECK_DIR/summary.json")"
+non_decision_explanations_missing_downstream_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('non_decision_explanations_missing_downstream_count') or 0))" "$CHECK_DIR/summary.json")"
 
 ok=true
 if [[ "$hang_aborted" -ne 0 ]]; then ok=false; fi
@@ -191,6 +195,10 @@ if [[ "$error_count" -ne 0 ]]; then ok=false; fi
 if [[ "$missing_count" -ne 0 ]]; then ok=false; fi
 if [[ "$analysis_ok_without_findings_count" -ne 0 ]]; then ok=false; fi
 if [[ "$sql_assist_required_failure_count" -ne 0 ]]; then ok=false; fi
+if [[ "$unexplained_plugin_count" -ne 0 ]]; then ok=false; fi
+if [[ "$blank_kind_findings_count" -ne 0 ]]; then ok=false; fi
+if [[ "$explanations_missing_plain_text_count" -ne 0 ]]; then ok=false; fi
+if [[ "$non_decision_explanations_missing_downstream_count" -ne 0 ]]; then ok=false; fi
 
 echo "FINAL_VALIDATION_OK=$ok"
 echo "FINAL_VALIDATION_RUN_ID=$RUN_ID"
