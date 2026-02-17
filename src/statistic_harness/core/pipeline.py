@@ -963,6 +963,29 @@ class Pipeline:
         def enforce_result_quality(spec: PluginSpec, result: PluginResult) -> PluginResult:
             status = str(result.status or "").strip().lower()
             summary_text = str(result.summary or "").strip()
+            findings_raw = list(result.findings or [])
+            normalized_findings: list[dict[str, Any]] = []
+            normalized_count = 0
+            for item in findings_raw:
+                if isinstance(item, dict):
+                    entry = dict(item)
+                else:
+                    entry = {"value": item}
+                kind = str(entry.get("kind") or "").strip()
+                if not kind:
+                    if status == "na":
+                        entry["kind"] = "plugin_not_applicable"
+                    elif status in {"error", "aborted"}:
+                        entry["kind"] = "plugin_error"
+                    else:
+                        entry["kind"] = "plugin_observation"
+                    normalized_count += 1
+                normalized_findings.append(entry)
+            result.findings = normalized_findings
+            if normalized_count > 0:
+                debug = dict(result.debug or {})
+                debug.setdefault("finding_kind_autofill_count", int(normalized_count))
+                result.debug = debug
             if status in {"na", "error"}:
                 reason_code = _reason_code_from_text(summary_text)
                 findings = list(result.findings or [])

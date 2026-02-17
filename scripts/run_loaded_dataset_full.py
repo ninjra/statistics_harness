@@ -882,6 +882,9 @@ def _render_recommendations_md(
     known = _as_items(recs.get("known"))
     discovery = _as_items(recs.get("discovery"))
     flat = _as_items(recs.get("items"))
+    explanations = _as_items(recs.get("explanations"))
+    explanations = _as_items(recs.get("explanations"))
+    explanations = _as_items(recs.get("explanations"))
 
     sections: list[tuple[str, list[dict[str, Any]]]] = []
     if known or discovery:
@@ -958,6 +961,29 @@ def _render_recommendations_md(
             if isinstance(plugin_id, str) and plugin_id:
                 src = f"{plugin_id}" + (f":{kind}" if isinstance(kind, str) and kind else "")
                 lines.append(f"  Source: {src}")
+
+    if explanations:
+        lines.append("")
+        lines.append("## Non-Actionable Explanations")
+        for item in explanations[: max_items * 2]:
+            if not isinstance(item, dict):
+                continue
+            plugin_id = str(item.get("plugin_id") or "unknown").strip() or "unknown"
+            reason = str(item.get("reason_code") or "unspecified").strip() or "unspecified"
+            explanation = str(item.get("plain_english_explanation") or "").strip()
+            next_step = str(item.get("recommended_next_step") or "").strip()
+            lines.append(f"- `{plugin_id}` ({reason})")
+            if explanation:
+                lines.append(f"  - explanation: {explanation}")
+            if next_step:
+                lines.append(f"  - next_step: {next_step}")
+            downstream = item.get("downstream_plugins")
+            if isinstance(downstream, list):
+                rendered = [str(v).strip() for v in downstream if str(v).strip()]
+                lines.append(
+                    "  - downstream_plugins: "
+                    + (", ".join(rendered) if rendered else "(none)")
+                )
 
     if isinstance(route_map, dict) and bool(route_map.get("available")):
         lines.append("")
@@ -1200,6 +1226,7 @@ def _render_recommendations_plain_md(
     known = _as_items(recs.get("known"))
     discovery = _as_items(recs.get("discovery"))
     flat = _as_items(recs.get("items"))
+    explanations = _as_items(recs.get("explanations"))
     sections: list[tuple[str, list[dict[str, Any]]]] = []
     if known or discovery:
         discovery_close = [
@@ -1246,6 +1273,30 @@ def _render_recommendations_plain_md(
             if plugin_id:
                 src = plugin_id + (f":{kind}" if kind else "")
                 lines.append(f"   Source: {src}")
+
+    if explanations:
+        lines.append("")
+        lines.append("## Non-Actionable Explanations (Plain)")
+        for idx, item in enumerate(explanations[: max_items * 2], start=1):
+            if not isinstance(item, dict):
+                continue
+            plugin_id = str(item.get("plugin_id") or "unknown").strip() or "unknown"
+            reason = str(item.get("reason_code") or "unspecified").strip() or "unspecified"
+            explanation = str(item.get("plain_english_explanation") or "").strip()
+            next_step = str(item.get("recommended_next_step") or "").strip()
+            lines.append(f"{idx}. Plugin: `{plugin_id}`")
+            lines.append(f"   Why not actionable: {reason}")
+            if explanation:
+                lines.append(f"   Explanation: {explanation}")
+            if next_step:
+                lines.append(f"   Next step: {next_step}")
+            downstream = item.get("downstream_plugins")
+            if isinstance(downstream, list):
+                rendered = [str(v).strip() for v in downstream if str(v).strip()]
+                lines.append(
+                    "   Downstream plugins: "
+                    + (", ".join(rendered) if rendered else "(none)")
+                )
 
     if isinstance(route_map, dict) and bool(route_map.get("available")):
         lines.append("")

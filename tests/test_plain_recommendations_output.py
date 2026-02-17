@@ -29,6 +29,7 @@ def test_plain_recommendations_includes_simple_sections() -> None:
             ]
         },
         "known": {"items": []},
+        "explanations": {"items": []},
     }
     known_checks = {"totals": {"total": 1, "confirmed": 1, "failing": 0}}
     out = _render_recommendations_plain_md(recs, known_checks)
@@ -37,4 +38,3 @@ def test_plain_recommendations_includes_simple_sections() -> None:
     assert "Convert these process_ids to batch input first:" in out
     assert "rpt_por002" in out
     assert "Known-Issue Detection" in out
-

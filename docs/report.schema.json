@@ -57,6 +57,31 @@
         }
       ],
       "additionalProperties": true
+    },
+    "non_actionable_explanation_item": {
+      "type": "object",
+      "required": [
+        "status",
+        "plugin_id",
+        "reason_code",
+        "plain_english_explanation"
+      ],
+      "properties": {
+        "status": {"type": "string"},
+        "plugin_id": {"type": "string"},
+        "plugin_type": {"type": "string"},
+        "plugin_status": {"type": "string"},
+        "kind": {"type": "string"},
+        "reason_code": {"type": "string"},
+        "plain_english_explanation": {"type": "string", "minLength": 1},
+        "recommended_next_step": {"type": "string"},
+        "downstream_plugins": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "downstream_plugin_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
     }
   },
   "properties": {
@@ -281,7 +306,7 @@
     },
     "recommendations": {
       "type": "object",
-      "required": ["status", "summary", "known", "discovery", "items"],
+      "required": ["status", "summary", "known", "discovery", "items", "explanations"],
       "properties": {
         "status": {"type": "string"},
         "summary": {"type": "string"},
@@ -314,6 +339,19 @@
         "items": {
           "type": "array",
           "items": {"$ref": "#/definitions/recommendation_item"}
+        },
+        "explanations": {
+          "type": "object",
+          "required": ["status", "summary", "items"],
+          "properties": {
+            "status": {"type": "string"},
+            "summary": {"type": "string"},
+            "items": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/non_actionable_explanation_item"}
+            }
+          },
+          "additionalProperties": true
         }
       },
       "additionalProperties": true

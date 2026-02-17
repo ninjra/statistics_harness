@@ -7202,6 +7202,7 @@ docs/implementation_matrix.md
 docs/kona_energy_ideaspace_architecture.md
 docs/optimal-matrix-implementation-order-plan.md
 docs/perf_hotspots.md
+docs/plugin-actionability-full-remediation-plan.md
 docs/plugin_data_access_matrix.json
 docs/plugin_data_access_matrix.md
 docs/plugin_data_access_overrides.json
@@ -8460,6 +8461,7 @@ scripts/build_ideaspace_baseline.py
 scripts/canonicalize_repo_improvements_catalog.py
 scripts/check_text2sql_env.py
 scripts/compare_dataset_runs.py
+scripts/compare_plugin_actionability_runs.py
 scripts/compare_run_outputs.py
 scripts/docs_coverage_matrix.py
 scripts/download_text2sql_models.py
@@ -8552,6 +8554,7 @@ scripts/start_full_test_dataset_bg.sh
 scripts/top20_methods_matrix.py
 scripts/ui_smoke.py
 scripts/update_docs_and_plugin_matrices.py
+scripts/validate_plugin_finding_quality.py
 scripts/validate_repo_improvement_dependencies.py
 scripts/verify_docs_and_plugin_matrices.py
 scripts/verify_network_dns.sh
@@ -8572,6 +8575,7 @@ src/statistic_harness.egg-info/top_level.txt
 src/statistic_harness/__init__.py
 src/statistic_harness/cli.py
 src/statistic_harness/core/__init__.py
+src/statistic_harness/core/actionability_explanations.py
 src/statistic_harness/core/auth.py
 src/statistic_harness/core/baselines.py
 src/statistic_harness/core/cli.py
@@ -9137,6 +9141,7 @@ tests/test_repo_improvement_dependencies.py
 tests/test_repo_improvements_catalog.py
 tests/test_repo_improvements_catalog_canonicalization.py
 tests/test_report_discovery_recommendations.py
+tests/test_report_explanations_lane.py
 tests/test_report_outputs.py
 tests/test_report_plugins_stage.py
 tests/test_report_schema.py
