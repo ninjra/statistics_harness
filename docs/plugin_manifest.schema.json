@@ -53,6 +53,16 @@
       "items": { "type": "string" },
       "default": []
     },
+    "lane": {
+      "type": "string",
+      "enum": ["decision", "explanation"]
+    },
+    "decision_capable": {
+      "type": "boolean"
+    },
+    "requires_downstream_mapping": {
+      "type": "boolean"
+    },
     "config_schema": {
       "type": "string",
       "minLength": 1

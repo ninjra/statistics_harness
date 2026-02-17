@@ -1,0 +1,39 @@
+version: 1
+classes:
+  direct_action_generators:
+    rationale: "Plugins expected to emit direct recommendations with concrete changes."
+    expected_output_type: "recommendation_items"
+  supporting_signal_detectors:
+    rationale: "Plugins that produce measurable signals feeding downstream decision plugins."
+    expected_output_type: "findings_or_metrics"
+  synthesis_verification:
+    rationale: "Plugins that aggregate, verify, dedupe, or validate outputs from other plugins."
+    expected_output_type: "derived_findings_or_validation"
+  reporting_llm_post_processing:
+    rationale: "Presentation/report/planner/LLM orchestration plugins."
+    expected_output_type: "report_or_prompt_artifacts"
+  ingest_profile_transform:
+    rationale: "Data ingestion, profiling, and normalization plugins."
+    expected_output_type: "dataset_or_schema_artifacts"
+plugin_type_default_class:
+  analysis: supporting_signal_detectors
+  report: reporting_llm_post_processing
+  llm: reporting_llm_post_processing
+  planner: reporting_llm_post_processing
+  ingest: ingest_profile_transform
+  profile: ingest_profile_transform
+  transform: ingest_profile_transform
+plugin_overrides:
+  analysis_actionable_ops_levers_v1: direct_action_generators
+  analysis_ideaspace_action_planner: direct_action_generators
+  analysis_ebm_action_verifier_v1: direct_action_generators
+  analysis_close_cycle_capacity_model: direct_action_generators
+  analysis_close_cycle_capacity_impact: direct_action_generators
+  analysis_close_cycle_uplift: direct_action_generators
+  analysis_recommendation_dedupe_v2: synthesis_verification
+  analysis_traceability_manifest_v2: synthesis_verification
+  analysis_issue_cards_v2: synthesis_verification
+  analysis_waterfall_summary_v2: synthesis_verification
+  report_decision_bundle_v2: reporting_llm_post_processing
+  report_plain_english_v1: reporting_llm_post_processing
+  report_slide_kit_emitter_v2: reporting_llm_post_processing

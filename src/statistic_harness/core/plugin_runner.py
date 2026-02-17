@@ -715,25 +715,61 @@ def run_plugin_subprocess(
     timeout = None
     if isinstance(timeout_ms, (int, float)) and timeout_ms > 0:
         timeout = float(timeout_ms) / 1000.0
+    command = [
+        sys.executable,
+        "-m",
+        "statistic_harness.core.plugin_runner",
+        str(request_path),
+        str(response_path),
+    ]
+    popen: subprocess.Popen[str] | None = None
+    stdout_text = ""
+    stderr_text = ""
+    exit_code = -1
     try:
-        proc = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "statistic_harness.core.plugin_runner",
-                str(request_path),
-                str(response_path),
-            ],
-            capture_output=True,
+        popen = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             cwd=str(cwd),
             env=_deterministic_env(plugin_seed, cwd=cwd),
-            timeout=timeout,
         )
+        stdout_text, stderr_text = popen.communicate(timeout=timeout)
+        exit_code = int(popen.returncode or 0)
     except subprocess.TimeoutExpired as exc:
+        if popen is not None:
+            try:
+                popen.kill()
+            except Exception:
+                pass
+            # Avoid hanging forever if the child is stuck in uninterruptible I/O.
+            # If it does not exit quickly after SIGKILL, detach and fail closed.
+            try:
+                kill_out, kill_err = popen.communicate(timeout=1.0)
+                stdout_text = kill_out if isinstance(kill_out, str) else ""
+                stderr_text = kill_err if isinstance(kill_err, str) else ""
+                exit_code = int(popen.returncode or -1)
+            except subprocess.TimeoutExpired:
+                stdout_text = exc.stdout if isinstance(exc.stdout, str) else ""
+                stderr_text = exc.stderr if isinstance(exc.stderr, str) else ""
+                stderr_text = (
+                    f"{stderr_text}\n[runner] Process did not exit after timeout+SIGKILL; detached to avoid pipeline hang."
+                ).strip()
+                exit_code = -1
+                try:
+                    if popen.stdout is not None:
+                        popen.stdout.close()
+                except Exception:
+                    pass
+                try:
+                    if popen.stderr is not None:
+                        popen.stderr.close()
+                except Exception:
+                    pass
         duration_ms = int((time.perf_counter() - start) * 1000)
-        stdout = (exc.stdout or "")[:4000]
-        stderr = (exc.stderr or "")[:4000]
+        stdout = (stdout_text or "")[:4000]
+        stderr = (stderr_text or "")[:4000]
         result = PluginResult(
             status="error",
             summary=f"{spec.plugin_id} timed out",
@@ -760,11 +796,11 @@ def run_plugin_subprocess(
             execution=execution,
             stdout=stdout,
             stderr=stderr,
-            exit_code=-1,
+            exit_code=exit_code,
         )
     duration_ms = int((time.perf_counter() - start) * 1000)
-    stdout = (proc.stdout or "")[:4000]
-    stderr = (proc.stderr or "")[:4000]
+    stdout = (stdout_text or "")[:4000]
+    stderr = (stderr_text or "")[:4000]
     execution = {
         "started_at": request.get("started_at"),
         "completed_at": now_iso(),
@@ -779,10 +815,10 @@ def run_plugin_subprocess(
         result = _payload_result(payload.get("result", {}))
         execution.update(payload.get("execution", {}))
     else:
-        err_msg = f"Missing response for {spec.plugin_id} (exit_code={proc.returncode})"
+        err_msg = f"Missing response for {spec.plugin_id} (exit_code={exit_code})"
         err_type = "RunnerError"
-        if isinstance(proc.returncode, int) and proc.returncode < 0:
-            sig = -int(proc.returncode)
+        if isinstance(exit_code, int) and exit_code < 0:
+            sig = -int(exit_code)
             err_type = "ProcessTerminated"
             err_msg = f"{spec.plugin_id} terminated by signal {sig}; no response payload emitted"
         result = PluginResult(
@@ -802,7 +838,7 @@ def run_plugin_subprocess(
         execution=execution,
         stdout=stdout,
         stderr=stderr,
-        exit_code=proc.returncode,
+        exit_code=exit_code,
     )
 
 
@@ -900,6 +936,26 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
             dataset_version_id = request.get("dataset_version_id")
             accessor, _ = resolve_dataset_accessor(storage, dataset_version_id, sql=sql)
             budget = request.get("budget") or {}
+            dataset_rows: int | None = None
+            try:
+                dataset_rows = int((accessor.info() or {}).get("rows") or 0)
+            except Exception:
+                dataset_rows = None
+            access_stats: dict[str, Any] = {
+                "dataset_rows": dataset_rows,
+                "dataset_loader_calls": 0,
+                "dataset_loader_bounded_calls": 0,
+                "dataset_loader_unbounded_calls": 0,
+                "dataset_loader_rows_loaded": 0,
+                "dataset_loader_max_row_limit": None,
+                "iter_batches_calls": 0,
+                "iter_batches_bounded_calls": 0,
+                "iter_batches_unbounded_calls": 0,
+                "iter_batches_batch_size_max": None,
+                "iter_batches_rows_requested_total": 0,
+                "iter_batches_rows_emitted_total": 0,
+                "iter_batches_batches_emitted": 0,
+            }
 
             def dataset_loader(
                 columns: list[str] | None = None, row_limit: int | None = None
@@ -907,8 +963,15 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 limit = row_limit
                 if limit is None:
                     limit = budget.get("row_limit")
+                access_stats["dataset_loader_calls"] = int(access_stats.get("dataset_loader_calls") or 0) + 1
+                if isinstance(limit, int) and limit > 0:
+                    access_stats["dataset_loader_bounded_calls"] = int(access_stats.get("dataset_loader_bounded_calls") or 0) + 1
+                    prev = access_stats.get("dataset_loader_max_row_limit")
+                    access_stats["dataset_loader_max_row_limit"] = int(limit) if not isinstance(prev, int) else max(int(prev), int(limit))
+                else:
+                    access_stats["dataset_loader_unbounded_calls"] = int(access_stats.get("dataset_loader_unbounded_calls") or 0) + 1
                 try:
-                    return accessor.load(columns=columns, row_limit=limit)
+                    frame = accessor.load(columns=columns, row_limit=limit)
                 except RuntimeError as exc:
                     message = str(exc)
                     if "Refusing to load full dataset into memory" not in message:
@@ -922,6 +985,11 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                     if isinstance(row_count, int) and row_count > 0:
                         suffix += f"; dataset_rows={row_count}"
                     raise RuntimeError(message + suffix) from exc
+                try:
+                    access_stats["dataset_loader_rows_loaded"] = int(access_stats.get("dataset_loader_rows_loaded") or 0) + int(len(getattr(frame, "index", [])))
+                except Exception:
+                    pass
+                return frame
 
             def dataset_iter_batches(
                 *,
@@ -939,7 +1007,25 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 limit = row_limit
                 if limit is None:
                     limit = budget.get("row_limit")
-                return accessor.iter_batches(columns=columns, batch_size=int(size), row_limit=limit)
+                access_stats["iter_batches_calls"] = int(access_stats.get("iter_batches_calls") or 0) + 1
+                if isinstance(limit, int) and limit > 0:
+                    access_stats["iter_batches_bounded_calls"] = int(access_stats.get("iter_batches_bounded_calls") or 0) + 1
+                    access_stats["iter_batches_rows_requested_total"] = int(access_stats.get("iter_batches_rows_requested_total") or 0) + int(limit)
+                else:
+                    access_stats["iter_batches_unbounded_calls"] = int(access_stats.get("iter_batches_unbounded_calls") or 0) + 1
+                prev_bs = access_stats.get("iter_batches_batch_size_max")
+                access_stats["iter_batches_batch_size_max"] = int(size) if not isinstance(prev_bs, int) else max(int(prev_bs), int(size))
+
+                def _iter():
+                    for batch in accessor.iter_batches(columns=columns, batch_size=int(size), row_limit=limit):
+                        access_stats["iter_batches_batches_emitted"] = int(access_stats.get("iter_batches_batches_emitted") or 0) + 1
+                        try:
+                            access_stats["iter_batches_rows_emitted_total"] = int(access_stats.get("iter_batches_rows_emitted_total") or 0) + int(len(getattr(batch, "index", [])))
+                        except Exception:
+                            pass
+                        yield batch
+
+                return _iter()
 
             ctx = PluginContext(
                 run_id=request["run_id"],
@@ -1035,6 +1121,20 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                         }
                     )
             except Exception:  # pragma: no cover - platform specific
+                pass
+            execution["data_access"] = dict(access_stats)
+            try:
+                artifact_dir = run_dir / "artifacts" / str(request.get("plugin_id") or "")
+                ensure_dir(artifact_dir)
+                write_json(
+                    artifact_dir / "runtime_access.json",
+                    {
+                        "run_id": str(request.get("run_id") or ""),
+                        "plugin_id": str(request.get("plugin_id") or ""),
+                        "data_access": dict(access_stats),
+                    },
+                )
+            except Exception:
                 pass
     except Exception as exc:  # pragma: no cover - runner failure
         tb = traceback.format_exc()

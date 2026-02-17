@@ -35,6 +35,11 @@ except Exception:
     _render_recommendations_md_loaded = None
     _render_recommendations_plain_md_loaded = None
 
+try:
+    from scripts.generate_batch_sequence_validation_checklist import generate_for_run_dir
+except Exception:
+    generate_for_run_dir = None
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 APPDATA = REPO_ROOT / "appdata"
@@ -452,8 +457,16 @@ def _ensure_answer_artifacts(
     summary_path = run_dir / "answers_summary.json"
     md_path = run_dir / "answers_recommendations.md"
     plain_path = run_dir / "answers_recommendations_plain.md"
+    batch_checklist_json = run_dir / "batch_sequence_validation_checklist.json"
+    batch_checklist_md = run_dir / "batch_sequence_validation_checklist.md"
 
-    if summary_path.exists() and md_path.exists() and plain_path.exists():
+    if (
+        summary_path.exists()
+        and md_path.exists()
+        and plain_path.exists()
+        and batch_checklist_json.exists()
+        and batch_checklist_md.exists()
+    ):
         return
 
     recs_dict = recs if isinstance(recs, dict) else {"summary": "No recommendations block found.", "items": []}
@@ -503,6 +516,14 @@ def _ensure_answer_artifacts(
         else:
             text = "# Recommendations (Plain Language)\n\nRecommendations were recovered from report.json.\n"
         plain_path.write_text(text, encoding="utf-8")
+
+    if (not batch_checklist_json.exists() or not batch_checklist_md.exists()) and callable(generate_for_run_dir):
+        try:
+            payload, markdown = generate_for_run_dir(run_dir)
+            batch_checklist_json.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+            batch_checklist_md.write_text(markdown, encoding="utf-8")
+        except Exception:
+            pass
 
 
 def _collapse_known_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -854,10 +875,16 @@ def main() -> int:
         raise SystemExit(f"Missing report.json: {report_path}")
 
     report = _read_json(report_path)
+    known_issues_mode = str(report.get("known_issues_mode") or "on").strip().lower()
+    if known_issues_mode not in {"on", "off"}:
+        known_issues_mode = "on"
     recs = report.get("recommendations") if isinstance(report, dict) else None
     known_items, disc_items = _items_from_recs(recs)
-    known_items = _augment_known_issue_landmarks(report, known_items, disc_items)
-    known_items = _collapse_known_items(known_items)
+    if known_issues_mode != "off":
+        known_items = _augment_known_issue_landmarks(report, known_items, disc_items)
+        known_items = _collapse_known_items(known_items)
+    else:
+        known_items = []
     _ensure_answer_artifacts(run_id, run_dir, recs, known_items)
     route_map = _route_map_for_run(run_dir)
     ranked = _ranked_actionables(disc_items)
@@ -876,7 +903,11 @@ def main() -> int:
     print("")
     print(f"- run_id: {run_id}")
     print(f"- run_dir: {run_dir}")
+    print(f"- known_issues_mode: {known_issues_mode}")
     for rel in ("report.md", "answers_recommendations.md", "answers_recommendations_plain.md", "answers_summary.json"):
+        p = run_dir / rel
+        print(f"- {rel}: {p if p.exists() else '(missing)'}")
+    for rel in ("batch_sequence_validation_checklist.json", "batch_sequence_validation_checklist.md"):
         p = run_dir / rel
         print(f"- {rel}: {p if p.exists() else '(missing)'}")
     print("- audience_levels: report.md=technical | answers_recommendations.md=ops | answers_recommendations_plain.md=plain")
