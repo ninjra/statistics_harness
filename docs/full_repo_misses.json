@@ -3,37 +3,19 @@
   "hard_gaps": {
     "binding_missing_any": false,
     "docs_missing_any_normative": false,
-    "instruction_coverage_items": [
-      {
-        "has_todo_marker": false,
-        "item_type": "reference_text",
-        "line_no": 71,
-        "missing_paths": [
-          "src/statistic_harness/core/accounting_windows.py"
-        ],
-        "plugin_tokens": [],
-        "referenced_paths": [
-          "src/statistic_harness/core/accounting_windows.py",
-          "src/statistic_harness/core/close_cycle.py"
-        ],
-        "requirement_ids": [],
-        "source": "docs/accounting-month-global-windows-golden-implementation-plan.md",
-        "text": "- **Location**: `src/statistic_harness/core/accounting_windows.py` (new), `src/statistic_harness/core/close_cycle.py`",
-        "unresolved_plugin_tokens": []
-      }
-    ],
+    "instruction_coverage_items": [],
     "plugin_data_access_unclassified": [],
     "plugin_missing_dep_edges": {},
     "redteam_missing_required_ids": []
   },
-  "has_hard_gaps": true,
+  "has_hard_gaps": false,
   "soft_gaps": {
     "optional_sql_not_using": [],
     "recommended_sql_not_using": [],
     "required_sql_not_using": []
   },
   "summary": {
-    "hard_gap_count": 1,
+    "hard_gap_count": 0,
     "optional_sql_not_using_count": 0,
     "recommended_sql_not_using_count": 0,
     "required_sql_not_using_count": 0

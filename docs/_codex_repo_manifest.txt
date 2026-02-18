@@ -9090,6 +9090,7 @@ tests/plugins/test_wasserstein_shift_v1.py
 tests/plugins/test_waterfall_summary_v2.py
 tests/stat_plugins/test_contract.py
 tests/stat_plugins/test_utils.py
+tests/test_accounting_windows.py
 tests/test_actionability_reason_codes.py
 tests/test_analysis_lane_orchestrator.py
 tests/test_append_only.py

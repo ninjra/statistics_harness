@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from statistic_harness.core.column_inference import infer_timestamp_series
+from statistic_harness.core.accounting_windows import parse_accounting_month_from_params
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -86,31 +87,7 @@ def _parse_params(text: str) -> dict[str, str]:
 
 
 def _parse_accounting_month(params: dict[str, str]) -> datetime | None:
-    for key in (
-        "accounting month",
-        "acct month",
-        "accounting_month",
-        "acct_month",
-        "accounting period",
-    ):
-        if key not in params:
-            continue
-        value = (params.get(key) or "").strip()
-        if not value:
-            continue
-        if re.fullmatch(r"\d{6}", value):
-            year = int(value[:4])
-            month = int(value[4:])
-            if 1 <= month <= 12:
-                return datetime(year, month, 1)
-        try:
-            dt = pd.to_datetime(value, errors="coerce")
-        except Exception:
-            dt = None
-        if dt is None or pd.isna(dt):
-            continue
-        return datetime(int(dt.year), int(dt.month), 1)
-    return None
+    return parse_accounting_month_from_params(params)
 
 
 def _previous_month_start(dt: datetime) -> datetime:

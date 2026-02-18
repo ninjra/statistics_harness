@@ -9,6 +9,10 @@ import numpy as np
 import pandas as pd
 
 from statistic_harness.core.close_cycle import load_preferred_close_cycle_windows
+from statistic_harness.core.accounting_windows import (
+    assign_accounting_month,
+    infer_roll_day_from_timestamps,
+)
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -1178,16 +1182,12 @@ class Plugin:
             if not host_series.empty:
                 host_count = int(host_series.nunique())
 
-        if close_start_day > close_end_day:
-            def _close_cycle_month(ts: pd.Timestamp) -> str:
-                if ts.day >= close_start_day:
-                    return f"{ts.year:04d}-{ts.month:02d}"
-                prev = (ts.replace(day=1) - pd.Timedelta(days=1))
-                return f"{prev.year:04d}-{prev.month:02d}"
-
-            revenue_rows["__month"] = revenue_rows["__start_ts"].apply(_close_cycle_month)
-        else:
-            revenue_rows["__month"] = revenue_rows["__start_ts"].dt.to_period("M").astype(str)
+        inferred_roll_day = infer_roll_day_from_timestamps(
+            revenue_rows["__start_ts"], default_day=close_end_day
+        )
+        revenue_rows["__month"] = assign_accounting_month(
+            revenue_rows["__start_ts"], roll_day=inferred_roll_day
+        )
         month_stats: list[dict[str, Any]] = []
         for month, frame in revenue_rows.groupby("__month"):
             if frame.empty:

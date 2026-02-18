@@ -29,6 +29,12 @@ from .process_matcher import (
 )
 from .storage import Storage
 from .utils import atomic_write_text, json_dumps, now_iso, read_json, write_json
+from .accounting_windows import (
+    AccountingWindow,
+    infer_accounting_windows_from_timestamps,
+    load_accounting_windows_from_run,
+    window_ranges,
+)
 
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
 _ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES_ENV = "STAT_HARNESS_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES"
@@ -810,41 +816,26 @@ def _final_recommendation_sort_key(item: dict[str, Any]) -> tuple[Any, ...]:
             kind,
         )
 
-    value_score = float(
-        _safe_num(item.get("value_score_v2"))
-        or _safe_num(item.get("client_value_score"))
-        or 0.0
-    )
-    opportunity_class = str(item.get("opportunity_class") or "").strip().lower()
-    class_rank = {
-        "server_capacity": 0,
-        "manual_automation": 1,
-        "process_efficiency": 2,
-    }.get(opportunity_class, 3)
-    efficiency_pct = float(
-        _safe_num(item.get("modeled_efficiency_gain_pct"))
-        or _safe_num(item.get("modeled_percent"))
-        or 0.0
-    )
+    value_score = float(_safe_num(item.get("value_score_v2")) or _safe_num(item.get("client_value_score")) or 0.0)
+    close_dynamic_delta = float(_safe_num(item.get("delta_hours_close_dynamic")) or _safe_num(item.get("modeled_delta_hours")) or 0.0)
+    close_dynamic_eff = float(_safe_num(item.get("efficiency_gain_close_dynamic")) or 0.0)
+    acct_delta = float(_safe_num(item.get("delta_hours_accounting_month")) or _safe_num(item.get("modeled_delta_hours")) or 0.0)
     manual_pct = float(_safe_num(item.get("modeled_manual_run_reduction_pct")) or 0.0)
     metric_confidence = float(
         _safe_num(item.get("metric_confidence"))
         or _safe_num(item.get("confidence_weight"))
         or 0.0
     )
-    modeled_hours = float(_safe_num(item.get("modeled_delta_hours")) or 0.0)
-    modeled_pct = float(_safe_num(item.get("modeled_percent")) or 0.0)
     scope_type = str(item.get("scope_type") or "").strip().lower()
     scope_rank = 0 if scope_type == "single_process" else 1
     return (
-        class_rank,
-        -efficiency_pct,
+        -close_dynamic_delta,
+        -close_dynamic_eff,
+        -acct_delta,
         -value_score,
         -metric_confidence,
         scope_rank,
         -manual_pct,
-        -modeled_hours,
-        -modeled_pct,
         primary_process,
         plugin_id,
         kind,
@@ -1369,7 +1360,7 @@ def _metric_context_from_item(
 
 
 def _build_known_issue_recommendations(
-    report: dict[str, Any], storage: Storage | None = None
+    report: dict[str, Any], storage: Storage | None = None, run_dir: Path | None = None
 ) -> dict[str, Any]:
     known = report.get("known_issues")
     if not isinstance(known, dict):
@@ -1475,8 +1466,8 @@ def _build_known_issue_recommendations(
             }
         )
     deduped = _dedupe_recommendations(items)
-    baselines = _duration_baselines(report, storage)
-    qemail_model = _process_removal_model(report, storage, "qemail")
+    baselines = _duration_baselines(report, storage, run_dir=run_dir)
+    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -3300,8 +3291,8 @@ def _build_discovery_recommendations(
         kept.append(item)
 
     deduped = _dedupe_recommendations_text(kept)
-    baselines = _duration_baselines(report, storage)
-    qemail_model = _process_removal_model(report, storage, "qemail")
+    baselines = _duration_baselines(report, storage, run_dir=run_dir)
+    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -3615,7 +3606,7 @@ def _build_recommendations(
 
     include_known = _include_known_recommendations()
     known = (
-        _build_known_issue_recommendations(report, storage)
+        _build_known_issue_recommendations(report, storage, run_dir=run_dir)
         if include_known
         else {
             "status": "suppressed",
@@ -4092,7 +4083,51 @@ def _day_predicate_sql(col: str, *, start: int, end: int) -> tuple[str, list[Any
     return f"(({day_expr} >= ?) OR ({day_expr} <= ?))", [int(start), int(end)]
 
 
-def _duration_baselines(report: dict[str, Any], storage: Storage | None) -> dict[str, float] | None:
+def _window_predicate_sql(
+    col: str,
+    ranges: list[tuple[datetime, datetime]],
+) -> tuple[str, list[Any]]:
+    if not ranges:
+        return "0", []
+    clauses: list[str] = []
+    params: list[Any] = []
+    for start, end in ranges:
+        clauses.append(f"({col} >= ? AND {col} <= ?)")
+        params.append(start.strftime("%Y-%m-%d %H:%M:%S"))
+        params.append(end.strftime("%Y-%m-%d %H:%M:%S"))
+    return "(" + " OR ".join(clauses) + ")", params
+
+
+def _resolved_accounting_windows(
+    report: dict[str, Any],
+    storage: Storage | None,
+    *,
+    run_dir: Path | None,
+    table_name: str,
+    timestamp_col: str,
+) -> list[AccountingWindow]:
+    if run_dir is not None:
+        from_run = load_accounting_windows_from_run(run_dir)
+        if from_run:
+            return from_run
+    if storage is None:
+        return []
+    try:
+        with storage.connection() as conn:
+            rows = conn.execute(
+                f"SELECT {timestamp_col} AS ts FROM {table_name} WHERE {timestamp_col} IS NOT NULL LIMIT 250000"
+            ).fetchall()
+    except Exception:
+        return []
+    if not rows:
+        return []
+    series = [row["ts"] for row in rows if row["ts"] is not None]
+    return infer_accounting_windows_from_timestamps(series)
+
+
+def _duration_baselines(
+    report: dict[str, Any], storage: Storage | None, run_dir: Path | None = None
+) -> dict[str, float] | None:
     if storage is None:
         return None
     _, table_name, mapping = _dataset_context(report, storage)
@@ -4104,10 +4139,32 @@ def _duration_baselines(report: dict[str, Any], storage: Storage | None) -> dict
     queue_col = mapping.get("QUEUE_DT") or start_col
     if not proc_col or not start_col or not end_col or not queue_col:
         return None
-    close_start, close_end = _close_cycle_bounds(report)
-    if not isinstance(close_start, int) or not isinstance(close_end, int):
-        close_start, close_end = 1, 31
-    close_pred, close_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+    windows = _resolved_accounting_windows(
+        report, storage, run_dir=run_dir, table_name=table_name, timestamp_col=queue_col
+    )
+    accounting_pred: str
+    accounting_params: list[Any]
+    close_static_pred: str
+    close_static_params: list[Any]
+    close_dynamic_pred: str
+    close_dynamic_params: list[Any]
+    if windows:
+        accounting_pred, accounting_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="accounting_month")
+        )
+        close_static_pred, close_static_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="close_static")
+        )
+        close_dynamic_pred, close_dynamic_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="close_dynamic")
+        )
+    else:
+        accounting_pred, accounting_params = "1", []
+        close_start, close_end = _close_cycle_bounds(report)
+        if not isinstance(close_start, int) or not isinstance(close_end, int):
+            close_start, close_end = 1, 31
+        close_static_pred, close_static_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+        close_dynamic_pred, close_dynamic_params = close_static_pred, list(close_static_params)
     duration_expr = (
         f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
         f"AND julianday({end_col}) >= julianday({start_col}) "
@@ -4116,23 +4173,34 @@ def _duration_baselines(report: dict[str, Any], storage: Storage | None) -> dict
     query = f"""
     SELECT
         COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_duration_hours
+        COALESCE(SUM(CASE WHEN {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS accounting_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_static_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_dynamic_duration_hours
     FROM {table_name}
     """
+    params = [*accounting_params, *close_static_params, *close_dynamic_params]
     with storage.connection() as conn:
-        row = conn.execute(query, close_params).fetchone()
+        row = conn.execute(query, params).fetchone()
     if not row:
         return None
     total_hours = float(row["total_duration_hours"] or 0.0)
-    close_hours = float(row["close_duration_hours"] or 0.0)
+    accounting_hours = float(row["accounting_duration_hours"] or 0.0)
+    close_static_hours = float(row["close_static_duration_hours"] or 0.0)
+    close_dynamic_hours = float(row["close_dynamic_duration_hours"] or 0.0)
+    if accounting_hours <= 0.0:
+        accounting_hours = total_hours
     return {
-        "general_basis_hours": total_hours,
-        "close_basis_hours": close_hours,
+        "general_basis_hours": accounting_hours,
+        "close_basis_hours": close_dynamic_hours,
+        "accounting_month_basis_hours": accounting_hours,
+        "close_static_basis_hours": close_static_hours,
+        "close_dynamic_basis_hours": close_dynamic_hours,
+        "observation_basis_hours": total_hours,
     }
 
 
 def _process_removal_model(
-    report: dict[str, Any], storage: Storage | None, process_norm: str
+    report: dict[str, Any], storage: Storage | None, process_norm: str, run_dir: Path | None = None
 ) -> dict[str, float] | None:
     if storage is None:
         return None
@@ -4148,10 +4216,26 @@ def _process_removal_model(
     queue_col = mapping.get("QUEUE_DT") or start_col
     if not proc_col or not start_col or not end_col or not queue_col:
         return None
-    close_start, close_end = _close_cycle_bounds(report)
-    if not isinstance(close_start, int) or not isinstance(close_end, int):
-        close_start, close_end = 1, 31
-    close_pred, close_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+    windows = _resolved_accounting_windows(
+        report, storage, run_dir=run_dir, table_name=table_name, timestamp_col=queue_col
+    )
+    if windows:
+        accounting_pred, accounting_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="accounting_month")
+        )
+        close_static_pred, close_static_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="close_static")
+        )
+        close_dynamic_pred, close_dynamic_params = _window_predicate_sql(
+            queue_col, window_ranges(windows, kind="close_dynamic")
+        )
+    else:
+        accounting_pred, accounting_params = "1", []
+        close_start, close_end = _close_cycle_bounds(report)
+        if not isinstance(close_start, int) or not isinstance(close_end, int):
+            close_start, close_end = 1, 31
+        close_static_pred, close_static_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
+        close_dynamic_pred, close_dynamic_params = close_static_pred, list(close_static_params)
     duration_expr = (
         f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
         f"AND julianday({end_col}) >= julianday({start_col}) "
@@ -4161,30 +4245,69 @@ def _process_removal_model(
     SELECT
         COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
         COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_duration_hours,
-        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_duration_hours
+        COALESCE(SUM(CASE WHEN {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS accounting_duration_hours,
+        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_accounting_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_static_duration_hours,
+        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_static_duration_hours,
+        COALESCE(SUM(CASE WHEN {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_dynamic_duration_hours,
+        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_dynamic_duration_hours
     FROM {table_name}
     """
-    params = [proc, *close_params, proc, *close_params]
+    params = [
+        proc,
+        *accounting_params,
+        proc,
+        *accounting_params,
+        *close_static_params,
+        proc,
+        *close_static_params,
+        *close_dynamic_params,
+        proc,
+        *close_dynamic_params,
+    ]
     with storage.connection() as conn:
         row = conn.execute(query, params).fetchone()
     if not row:
         return None
     total_hours = float(row["total_duration_hours"] or 0.0)
     process_hours = float(row["process_duration_hours"] or 0.0)
-    close_hours = float(row["close_duration_hours"] or 0.0)
-    process_close_hours = float(row["process_close_duration_hours"] or 0.0)
-    if total_hours <= 0.0 and close_hours <= 0.0:
+    accounting_hours = float(row["accounting_duration_hours"] or 0.0)
+    process_accounting_hours = float(row["process_accounting_duration_hours"] or 0.0)
+    close_static_hours = float(row["close_static_duration_hours"] or 0.0)
+    process_close_static_hours = float(row["process_close_static_duration_hours"] or 0.0)
+    close_dynamic_hours = float(row["close_dynamic_duration_hours"] or 0.0)
+    process_close_dynamic_hours = float(row["process_close_dynamic_duration_hours"] or 0.0)
+    if accounting_hours <= 0.0:
+        accounting_hours = total_hours
+        process_accounting_hours = process_hours
+    if accounting_hours <= 0.0 and close_dynamic_hours <= 0.0:
         return None
-    general_pct = (process_hours / total_hours) * 100.0 if total_hours > 0.0 else None
-    close_pct = (process_close_hours / close_hours) * 100.0 if close_hours > 0.0 else None
+    accounting_pct = (
+        (process_accounting_hours / accounting_hours) * 100.0 if accounting_hours > 0.0 else None
+    )
+    close_static_pct = (
+        (process_close_static_hours / close_static_hours) * 100.0 if close_static_hours > 0.0 else None
+    )
+    close_dynamic_pct = (
+        (process_close_dynamic_hours / close_dynamic_hours) * 100.0 if close_dynamic_hours > 0.0 else None
+    )
     return {
-        "general_basis_hours": total_hours,
-        "general_delta_hours": process_hours,
-        "general_modeled_percent": float(general_pct) if isinstance(general_pct, float) else None,
-        "close_basis_hours": close_hours,
-        "close_delta_hours": process_close_hours,
-        "close_modeled_percent": float(close_pct) if isinstance(close_pct, float) else None,
+        "general_basis_hours": accounting_hours,
+        "general_delta_hours": process_accounting_hours,
+        "general_modeled_percent": float(accounting_pct) if isinstance(accounting_pct, float) else None,
+        "close_basis_hours": close_dynamic_hours,
+        "close_delta_hours": process_close_dynamic_hours,
+        "close_modeled_percent": float(close_dynamic_pct) if isinstance(close_dynamic_pct, float) else None,
+        "accounting_month_basis_hours": accounting_hours,
+        "accounting_month_delta_hours": process_accounting_hours,
+        "accounting_month_modeled_percent": float(accounting_pct) if isinstance(accounting_pct, float) else None,
+        "close_static_basis_hours": close_static_hours,
+        "close_static_delta_hours": process_close_static_hours,
+        "close_static_modeled_percent": float(close_static_pct) if isinstance(close_static_pct, float) else None,
+        "close_dynamic_basis_hours": close_dynamic_hours,
+        "close_dynamic_delta_hours": process_close_dynamic_hours,
+        "close_dynamic_modeled_percent": float(close_dynamic_pct) if isinstance(close_dynamic_pct, float) else None,
+        "observation_basis_hours": total_hours,
     }
 
 
@@ -4499,7 +4622,9 @@ def _attach_client_value_metrics(
     }
     enriched["client_value_score"] = float(value_score)
     enriched["value_score_v2"] = float(value_score)
-    modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_percent"))
+    modeled_efficiency_gain_pct = _safe_num(enriched.get("efficiency_gain_pct_close_dynamic"))
+    if not isinstance(modeled_efficiency_gain_pct, (int, float)):
+        modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_percent"))
     if not isinstance(modeled_efficiency_gain_pct, (int, float)):
         modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_contention_reduction_pct_close"))
     enriched["modeled_efficiency_gain_pct"] = (
@@ -4651,6 +4776,84 @@ def _enrich_recommendation_item(
         enriched["not_modeled_reason"] = not_modeled_reason or "insufficient_modeled_inputs"
     else:
         enriched["not_modeled_reason"] = None
+
+    # Required comparable window metrics for every recommendation row.
+    acct_basis = None
+    close_static_basis = None
+    close_dynamic_basis = None
+    acct_delta = None
+    close_static_delta = None
+    close_dynamic_delta = None
+
+    if isinstance(process_norm, str) and process_norm == "qemail" and isinstance(qemail_model, dict):
+        acct_basis = _safe_num(qemail_model.get("accounting_month_basis_hours"))
+        close_static_basis = _safe_num(qemail_model.get("close_static_basis_hours"))
+        close_dynamic_basis = _safe_num(qemail_model.get("close_dynamic_basis_hours"))
+        acct_delta = _safe_num(qemail_model.get("accounting_month_delta_hours"))
+        close_static_delta = _safe_num(qemail_model.get("close_static_delta_hours"))
+        close_dynamic_delta = _safe_num(qemail_model.get("close_dynamic_delta_hours"))
+
+    if not isinstance(acct_basis, (int, float)) and isinstance(baselines, dict):
+        acct_basis = _safe_num(baselines.get("accounting_month_basis_hours"))
+    if not isinstance(close_static_basis, (int, float)) and isinstance(baselines, dict):
+        close_static_basis = _safe_num(baselines.get("close_static_basis_hours"))
+    if not isinstance(close_dynamic_basis, (int, float)) and isinstance(baselines, dict):
+        close_dynamic_basis = _safe_num(baselines.get("close_dynamic_basis_hours"))
+
+    base_delta = _safe_num(delta_hours)
+    if not isinstance(acct_delta, (int, float)):
+        if isinstance(base_delta, (int, float)):
+            acct_delta = float(base_delta)
+    if not isinstance(close_dynamic_delta, (int, float)):
+        if isinstance(base_delta, (int, float)):
+            if scope_class == "close_specific":
+                close_dynamic_delta = float(base_delta)
+            elif isinstance(acct_basis, (int, float)) and isinstance(close_dynamic_basis, (int, float)) and float(acct_basis) > 0.0:
+                close_dynamic_delta = float(base_delta) * max(0.0, float(close_dynamic_basis) / float(acct_basis))
+    if not isinstance(close_static_delta, (int, float)):
+        if isinstance(base_delta, (int, float)):
+            if scope_class == "close_specific":
+                close_static_delta = float(base_delta)
+            elif isinstance(acct_basis, (int, float)) and isinstance(close_static_basis, (int, float)) and float(acct_basis) > 0.0:
+                close_static_delta = float(base_delta) * max(0.0, float(close_static_basis) / float(acct_basis))
+
+    for key, basis_value, delta_value in (
+        ("accounting_month", acct_basis, acct_delta),
+        ("close_static", close_static_basis, close_static_delta),
+        ("close_dynamic", close_dynamic_basis, close_dynamic_delta),
+    ):
+        delta_field = f"delta_hours_{key}"
+        eff_field = f"efficiency_gain_{key}"
+        eff_pct_field = f"efficiency_gain_pct_{key}"
+        na_field = f"na_reason_{key}"
+        if isinstance(delta_value, (int, float)) and float(delta_value) > 0.0:
+            enriched[delta_field] = float(delta_value)
+        else:
+            enriched[delta_field] = None
+
+        if (
+            isinstance(basis_value, (int, float))
+            and float(basis_value) > 0.0
+            and isinstance(delta_value, (int, float))
+            and float(delta_value) >= 0.0
+        ):
+            eff = max(0.0, float(delta_value) / float(basis_value))
+            enriched[eff_field] = float(eff)
+            enriched[eff_pct_field] = float(eff * 100.0)
+            enriched[na_field] = None
+        else:
+            enriched[eff_field] = None
+            enriched[eff_pct_field] = None
+            if not isinstance(basis_value, (int, float)) or float(basis_value) <= 0.0:
+                enriched[na_field] = "missing_window_basis"
+            elif not isinstance(delta_value, (int, float)):
+                enriched[na_field] = enriched.get("not_modeled_reason") or "insufficient_modeled_inputs"
+            else:
+                enriched[na_field] = "insufficient_modeled_inputs"
+
+    if isinstance(enriched.get("efficiency_gain_pct_close_dynamic"), (int, float)):
+        enriched["modeled_efficiency_gain_pct"] = float(enriched["efficiency_gain_pct_close_dynamic"])
+
     _attach_client_value_metrics(enriched, scope_class=scope_class)
     return enriched
 

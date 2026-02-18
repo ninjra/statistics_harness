@@ -2,7 +2,7 @@
 
 - class_rationale: Presentation/report/planner/LLM orchestration plugins.
 - expected_output_type: `report_or_prompt_artifacts`
-- run_id: `full_loaded_3246cc7c_20260218T191344Z`
+- run_id: `full_loaded_3246cc7c_20260218T193803Z`
 
 ## Example
 
@@ -15,5 +15,5 @@
 
 ## Traceability
 
-- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `full_loaded_3246cc7c_20260218T191344Z`
+- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `full_loaded_3246cc7c_20260218T193803Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

@@ -2,7 +2,7 @@
 
 - class_rationale: Plugins that produce measurable signals feeding downstream decision plugins.
 - expected_output_type: `findings_or_metrics`
-- run_id: `full_loaded_3246cc7c_20260218T191344Z`
+- run_id: `full_loaded_3246cc7c_20260218T193803Z`
 
 ## Example
 
@@ -15,5 +15,5 @@
 
 ## Traceability
 
-- class `supporting_signal_detectors` -> plugin `analysis_close_cycle_contention` -> run `full_loaded_3246cc7c_20260218T191344Z`
+- class `supporting_signal_detectors` -> plugin `analysis_close_cycle_contention` -> run `full_loaded_3246cc7c_20260218T193803Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

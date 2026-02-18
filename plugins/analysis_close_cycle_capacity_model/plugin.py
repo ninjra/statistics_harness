@@ -8,8 +8,11 @@ import pandas as pd
 
 from statistic_harness.core.close_cycle import (
     baseline_target_spillover_masks,
-    compute_close_month,
     load_preferred_close_cycle_windows,
+)
+from statistic_harness.core.accounting_windows import (
+    assign_accounting_month,
+    infer_roll_day_from_timestamps,
 )
 from statistic_harness.core.process_matcher import (
     compile_patterns,
@@ -934,9 +937,10 @@ class Plugin:
                 baseline_close_end_day=baseline_close_end_day,
                 target_close_end_day=target_close_end_day,
             )
-            close_month = compute_close_month(
-                work["__start_ts"], baseline_close_end_day=baseline_close_end_day
+            inferred_roll_day = infer_roll_day_from_timestamps(
+                work["__start_ts"], default_day=baseline_close_end_day
             )
+            close_month = assign_accounting_month(work["__start_ts"], roll_day=inferred_roll_day)
             if spillover_mask is not None and close_month is not None:
                 proc_norm = (
                     work[process_col].astype(str).str.strip().str.lower()

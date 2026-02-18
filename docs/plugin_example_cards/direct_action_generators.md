@@ -2,7 +2,7 @@
 
 - class_rationale: Plugins expected to emit direct recommendations with concrete changes.
 - expected_output_type: `recommendation_items`
-- run_id: `full_loaded_3246cc7c_20260218T191344Z`
+- run_id: `full_loaded_3246cc7c_20260218T193803Z`
 
 ## Example
 
@@ -16,5 +16,5 @@
 
 ## Traceability
 
-- class `direct_action_generators` -> plugin `analysis_actionable_ops_levers_v1` -> run `full_loaded_3246cc7c_20260218T191344Z`
+- class `direct_action_generators` -> plugin `analysis_actionable_ops_levers_v1` -> run `full_loaded_3246cc7c_20260218T193803Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`
