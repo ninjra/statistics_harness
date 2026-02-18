@@ -13,6 +13,35 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/accounting-month-global-windows-golden-implementation-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_close_cycle_start_backtrack_v1",
+        "analysis_close_cycle_window_resolver",
+        "analysis_dynamic_close_detection"
+      ],
+      "referenced_paths": [
+        "docs/4_pillars_scoring_spec.md",
+        "docs/implementation_matrix.json",
+        "docs/plugin_data_access_matrix.json",
+        "docs/plugin_data_access_matrix.md",
+        "docs/report.schema.json",
+        "src/statistic_harness/core/accounting_windows.py",
+        "src/statistic_harness/core/close_cycle.py",
+        "src/statistic_harness/core/dataset_cache.py",
+        "src/statistic_harness/core/pipeline.py",
+        "src/statistic_harness/core/plain_report.py",
+        "src/statistic_harness/core/plugin_runner.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/report_v2_utils.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/agent_execution_contract.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -4034,6 +4063,7 @@
   "missing_any": false,
   "scanned_docs": [
     "docs/4_pillars_scoring_spec.md",
+    "docs/accounting-month-global-windows-golden-implementation-plan.md",
     "docs/agent_execution_contract.md",
     "docs/codex_stat_plugins_spec_pack.md",
     "docs/db_normalization_top10.md",

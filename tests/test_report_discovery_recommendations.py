@@ -204,3 +204,136 @@ def test_chain_bound_processes_are_filtered_from_direct_actions(monkeypatch) -> 
     assert len(items) == 1
     assert items[0].get("where", {}).get("process_norm") == "rpt_por002"
     assert "chain-bound" in str(payload.get("discovery", {}).get("summary") or "")
+
+
+def test_discovery_recommendations_include_client_value_metrics(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_RANKING_VERSION", "v2")
+    report = {
+        "plugins": {
+            "analysis_actionable_ops_levers_v1": {
+                "findings": [
+                    {
+                        "kind": "actionable_ops_lever",
+                        "process_norm": "rpt_por002",
+                        "title": "Batch payout input",
+                        "recommendation": "Convert process_id `rpt_por002` to batch input.",
+                        "action_type": "batch_input",
+                        "expected_delta_seconds": 7200.0,
+                        "confidence": 0.9,
+                        "measurement_type": "modeled",
+                        "evidence": {
+                            "estimated_calls_reduced": 200.0,
+                            "top_user_run_share": 0.8,
+                            "top_user_redacted": "user_a",
+                            "distinct_users": 4,
+                            "target_process_ids": ["rpt_por002"],
+                            "metrics": {
+                                "eligible_wait_p95_s": 120.0,
+                                "modeled_wait_p95_s": 84.0,
+                            },
+                        },
+                    }
+                ]
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    items = payload["items"]
+    assert len(items) == 1
+    row = items[0]
+    assert row.get("scope_type") == "single_process"
+    assert row.get("primary_process_id") == "rpt_por002"
+    assert row.get("target_process_ids") == ["rpt_por002"]
+    assert float(row.get("modeled_user_touches_reduced") or 0.0) > 0.0
+    assert float(row.get("modeled_user_hours_saved_month") or 0.0) > 0.0
+    assert float(row.get("modeled_close_hours_saved_month") or 0.0) > 0.0
+    assert float(row.get("modeled_contention_reduction_pct_close") or 0.0) > 0.0
+    assert float(row.get("value_score_v2") or 0.0) > 0.0
+    assert row.get("optimization_metric") == "modeled_user_hours_saved"
+    assert row.get("ranking_metric") == "client_value_score_v2"
+
+
+def test_v2_ranking_prefers_single_process_over_grouped(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_RANKING_VERSION", "v2")
+    report = {
+        "plugins": {
+            "analysis_actionable_ops_levers_v1": {
+                "findings": [
+                    {
+                        "kind": "actionable_ops_lever",
+                        "process_norm": "rpt_por002",
+                        "title": "Batch payout group",
+                        "recommendation": "Convert payout chain to grouped batch inputs.",
+                        "action_type": "batch_group_candidate",
+                        "expected_delta_seconds": 7200.0,
+                        "confidence": 0.85,
+                        "measurement_type": "modeled",
+                        "evidence": {
+                            "target_process_ids": ["rpt_por002", "poextrprvn"],
+                            "top_user_run_share": 0.8,
+                            "estimated_calls_reduced": 160.0,
+                        },
+                    },
+                    {
+                        "kind": "actionable_ops_lever",
+                        "process_norm": "rpt_por002",
+                        "title": "Batch payout single",
+                        "recommendation": "Convert process_id `rpt_por002` to single-process batch input.",
+                        "action_type": "batch_input",
+                        "expected_delta_seconds": 7200.0,
+                        "confidence": 0.85,
+                        "measurement_type": "modeled",
+                        "evidence": {
+                            "target_process_ids": ["rpt_por002"],
+                            "top_user_run_share": 0.8,
+                            "estimated_calls_reduced": 160.0,
+                        },
+                    },
+                ]
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    items = payload["items"]
+    assert len(items) >= 2
+    assert items[0].get("scope_type") == "single_process"
+    assert items[0].get("action_type") == "batch_input"
+
+
+def test_add_server_recommendation_is_routed_and_classified() -> None:
+    report = {
+        "plugins": {
+            "analysis_queue_delay_decomposition": {
+                "findings": [
+                    {
+                        "kind": "eligible_wait_impact",
+                        "eligible_wait_hours_total": 90.0,
+                    }
+                ]
+            },
+            "analysis_ideaspace_action_planner": {
+                "findings": [
+                    {
+                        "kind": "ideaspace_action",
+                        "title": "Add QPEC capacity (+1) to reduce queue delays",
+                        "what": "Action: QPEC hosts show high eligible-wait pressure; add one QPEC server.",
+                        "lever_id": "add_qpec_capacity_plus_one_v1",
+                        "action_type": "add_server",
+                        "target": "qpec",
+                        "delta_value": 33.3,
+                        "unit": "percent",
+                        "confidence": 0.8,
+                        "measurement_type": "modeled",
+                    }
+                ]
+            },
+        }
+    }
+    payload = _build_recommendations(report)
+    items = payload["items"]
+    assert items
+    add_server_rows = [row for row in items if str(row.get("action_type") or "").strip().lower() == "add_server"]
+    assert add_server_rows
+    row = add_server_rows[0]
+    assert row.get("opportunity_class") == "server_capacity"
+    assert float(row.get("modeled_efficiency_gain_pct") or 0.0) > 0.0

@@ -99,7 +99,9 @@ def derive_reason_code(
         return "NO_FINDINGS"
     if int(blank_kind_count or 0) > 0:
         return "FINDING_KIND_MISSING"
-    return "NOT_ROUTED_TO_ACTION"
+    # For deterministic non-actionable reporting, default to NOT_APPLICABLE
+    # instead of a routing-internal placeholder reason code.
+    return "NOT_APPLICABLE"
 
 
 def plain_english_explanation(

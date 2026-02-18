@@ -7158,6 +7158,7 @@ conftest.py
 docs/4_pillars_scoring_spec.md
 docs/_codex_plugin_catalog.md
 docs/_codex_repo_manifest.txt
+docs/accounting-month-global-windows-golden-implementation-plan.md
 docs/agent_execution_contract.md
 docs/binding_implementation_matrix.json
 docs/binding_implementation_matrix.md
@@ -8602,6 +8603,7 @@ src/statistic_harness.egg-info/top_level.txt
 src/statistic_harness/__init__.py
 src/statistic_harness/cli.py
 src/statistic_harness/core/__init__.py
+src/statistic_harness/core/accounting_windows.py
 src/statistic_harness/core/actionability_explanations.py
 src/statistic_harness/core/auth.py
 src/statistic_harness/core/baselines.py

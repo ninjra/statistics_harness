@@ -2,7 +2,7 @@
 
 - class_rationale: Data ingestion, profiling, and normalization plugins.
 - expected_output_type: `dataset_or_schema_artifacts`
-- run_id: `full_loaded_3246cc7c_20260217T165636Z`
+- run_id: `full_loaded_3246cc7c_20260218T191344Z`
 
 ## Example
 
@@ -15,5 +15,5 @@
 
 ## Traceability
 
-- class `ingest_profile_transform` -> plugin `profile_basic` -> run `full_loaded_3246cc7c_20260217T165636Z`
+- class `ingest_profile_transform` -> plugin `profile_basic` -> run `full_loaded_3246cc7c_20260218T191344Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

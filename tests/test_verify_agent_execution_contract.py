@@ -262,7 +262,7 @@ def test_verify_agent_execution_contract_fails_unrouted_direct_action_signal(tmp
                 "findings": [
                     {
                         "kind": "close_cycle_share_shift",
-                        "process_norm": "qemail",
+                        "process_norm": "rpt_por002",
                         "share_delta": 0.12,
                     }
                 ],

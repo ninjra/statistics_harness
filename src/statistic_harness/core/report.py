@@ -46,6 +46,8 @@ _REQUIRE_MODELED_HOURS_ENV = "STAT_HARNESS_REQUIRE_MODELED_HOURS"
 _REQUIRE_DIRECT_PROCESS_ACTION_ENV = "STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION"
 _DIRECT_PROCESS_ACTION_TYPES_ENV = "STAT_HARNESS_DIRECT_PROCESS_ACTION_TYPES"
 _CHAIN_BOUND_RATIO_MIN_ENV = "STAT_HARNESS_CHAIN_BOUND_RATIO_MIN"
+_RANKING_VERSION_ENV = "STAT_HARNESS_RANKING_VERSION"
+_CLOSE_CYCLES_PER_YEAR_ENV = "STAT_HARNESS_CLOSE_CYCLES_PER_YEAR"
 _REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV = "STAT_HARNESS_REPORT_MD_MAX_FINDINGS_PER_PLUGIN"
 _REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
 _REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
@@ -93,6 +95,7 @@ def _direct_process_action_types() -> set[str]:
         if out:
             return out
     return {
+        "add_server",
         "batch_input",
         "batch_group_candidate",
         "batch_or_cache",
@@ -116,6 +119,26 @@ def _chain_bound_ratio_min() -> float:
         return 0.0
     if value > 1.0:
         return 1.0
+    return float(value)
+
+
+def _ranking_version() -> str:
+    raw = os.environ.get(_RANKING_VERSION_ENV, "").strip().lower()
+    if raw in {"v1", "legacy"}:
+        return "v1"
+    return "v2"
+
+
+def _close_cycles_per_year() -> float:
+    raw = os.environ.get(_CLOSE_CYCLES_PER_YEAR_ENV, "").strip()
+    if not raw:
+        return 12.0
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return 12.0
+    if value <= 0.0:
+        return 12.0
     return float(value)
 
 
@@ -766,6 +789,66 @@ def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, 
     action_type = str(item.get("action_type") or item.get("action") or "")
     novelty = 1.0 - _action_type_obviousness(action_type)
     return (priority, _tier_score_for_item(item), novelty, score, impact)
+
+
+def _final_recommendation_sort_key(item: dict[str, Any]) -> tuple[Any, ...]:
+    primary_process = str(
+        item.get("primary_process_id")
+        or _recommendation_process_hint(item)
+        or _item_process_norm(item)
+        or ""
+    ).strip().lower()
+    plugin_id = str(item.get("plugin_id") or "").strip().lower()
+    kind = str(item.get("kind") or "").strip().lower()
+
+    if _ranking_version() == "v1":
+        return (
+            -float(_safe_num(item.get("modeled_delta_hours")) or 0.0),
+            -float(_safe_num(item.get("relevance_score")) or 0.0),
+            primary_process,
+            plugin_id,
+            kind,
+        )
+
+    value_score = float(
+        _safe_num(item.get("value_score_v2"))
+        or _safe_num(item.get("client_value_score"))
+        or 0.0
+    )
+    opportunity_class = str(item.get("opportunity_class") or "").strip().lower()
+    class_rank = {
+        "server_capacity": 0,
+        "manual_automation": 1,
+        "process_efficiency": 2,
+    }.get(opportunity_class, 3)
+    efficiency_pct = float(
+        _safe_num(item.get("modeled_efficiency_gain_pct"))
+        or _safe_num(item.get("modeled_percent"))
+        or 0.0
+    )
+    manual_pct = float(_safe_num(item.get("modeled_manual_run_reduction_pct")) or 0.0)
+    metric_confidence = float(
+        _safe_num(item.get("metric_confidence"))
+        or _safe_num(item.get("confidence_weight"))
+        or 0.0
+    )
+    modeled_hours = float(_safe_num(item.get("modeled_delta_hours")) or 0.0)
+    modeled_pct = float(_safe_num(item.get("modeled_percent")) or 0.0)
+    scope_type = str(item.get("scope_type") or "").strip().lower()
+    scope_rank = 0 if scope_type == "single_process" else 1
+    return (
+        class_rank,
+        -efficiency_pct,
+        -value_score,
+        -metric_confidence,
+        scope_rank,
+        -manual_pct,
+        -modeled_hours,
+        -modeled_pct,
+        primary_process,
+        plugin_id,
+        kind,
+    )
 
 
 def _capacity_scale_recommendation(
@@ -3280,14 +3363,16 @@ def _build_discovery_recommendations(
             dropped_without_modeled_hours += 1
         deduped = normalized
 
-    deduped = sorted(
-        deduped,
-        key=lambda row: (
-            float(row.get("modeled_delta_hours") or 0.0),
-            float(row.get("relevance_score") or 0.0),
-        ),
-        reverse=True,
-    )
+    if _ranking_version() == "v2":
+        for row in deduped:
+            value_score = _safe_num(row.get("value_score_v2"))
+            if not isinstance(value_score, (int, float)):
+                value_score = _safe_num(row.get("client_value_score"))
+            if isinstance(value_score, (int, float)):
+                row["relevance_score"] = float(value_score)
+                row["ranking_metric"] = "client_value_score_v2"
+
+    deduped = sorted(deduped, key=_final_recommendation_sort_key)
     if isinstance(top_n, int) and top_n > 0:
         deduped = deduped[:top_n]
     status = "ok" if deduped else "none"
@@ -3853,6 +3938,54 @@ def _item_process_norm(item: dict[str, Any]) -> str:
     return ""
 
 
+def _item_evidence_row(item: dict[str, Any]) -> dict[str, Any]:
+    evidence = item.get("evidence")
+    if isinstance(evidence, list):
+        for row in evidence:
+            if isinstance(row, dict):
+                return row
+    if isinstance(evidence, dict):
+        return evidence
+    return {}
+
+
+def _target_process_ids_for_item(item: dict[str, Any]) -> list[str]:
+    out: list[str] = []
+    for bucket in (item, _item_evidence_row(item)):
+        raw = bucket.get("target_process_ids") if isinstance(bucket, dict) else None
+        if isinstance(raw, list):
+            for value in raw:
+                if isinstance(value, str) and value.strip():
+                    out.append(value.strip().lower())
+    process_norm = _item_process_norm(item)
+    if process_norm:
+        out.append(process_norm)
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for token in out:
+        if not token or token in seen:
+            continue
+        seen.add(token)
+        deduped.append(token)
+    return deduped
+
+
+def _scope_type_for_item(item: dict[str, Any]) -> str:
+    targets = _target_process_ids_for_item(item)
+    return "grouped_explicit" if len(targets) > 1 else "single_process"
+
+
+def _primary_process_for_item(item: dict[str, Any]) -> str:
+    targets = _target_process_ids_for_item(item)
+    return targets[0] if targets else _item_process_norm(item)
+
+
+def _safe_num(value: Any) -> float | None:
+    if isinstance(value, (int, float)) and math.isfinite(float(value)):
+        return float(value)
+    return None
+
+
 def _scope_class_for_item(item: dict[str, Any]) -> str:
     plugin_id = str(item.get("plugin_id") or "").strip().lower()
     kind = str(item.get("kind") or "").strip().lower()
@@ -4160,6 +4293,236 @@ def _item_metrics_payload(item: dict[str, Any]) -> dict[str, Any]:
     return {}
 
 
+def _modeled_rollups(
+    *,
+    delta_hours: float | None,
+    scope_class: str,
+) -> dict[str, float | None]:
+    if not isinstance(delta_hours, (int, float)) or float(delta_hours) <= 0.0:
+        return {
+            "close_cycle": None,
+            "month": None,
+            "annualized": None,
+        }
+    close_cycle = float(delta_hours) if scope_class == "close_specific" else None
+    month = float(delta_hours)
+    annualized = float(month) * float(_close_cycles_per_year())
+    return {
+        "close_cycle": close_cycle,
+        "month": month,
+        "annualized": annualized,
+    }
+
+
+def _attach_client_value_metrics(
+    enriched: dict[str, Any],
+    *,
+    scope_class: str,
+) -> None:
+    evidence = _item_evidence_row(enriched)
+    targets = _target_process_ids_for_item(enriched)
+    scope_type = _scope_type_for_item(enriched)
+    primary_process = _primary_process_for_item(enriched)
+    action_type = str(enriched.get("action_type") or enriched.get("action") or "").strip().lower()
+    enriched["scope_type"] = scope_type
+    enriched["primary_process_id"] = primary_process or None
+    enriched["target_process_ids"] = targets
+    enriched["target_process_count"] = int(len(targets))
+
+    delta_hours = _safe_num(enriched.get("modeled_delta_hours"))
+    rollups = _modeled_rollups(delta_hours=delta_hours, scope_class=scope_class)
+    enriched["modeled_close_hours_saved_cycle"] = rollups["close_cycle"]
+    enriched["modeled_close_hours_saved_month"] = rollups["month"]
+    enriched["modeled_close_hours_saved_annualized"] = rollups["annualized"]
+
+    estimated_calls_reduced = _safe_num(
+        enriched.get("estimated_calls_reduced")
+        if enriched.get("estimated_calls_reduced") is not None
+        else evidence.get("estimated_calls_reduced")
+    )
+    if not isinstance(estimated_calls_reduced, (int, float)):
+        runs_with_key = _safe_num(enriched.get("runs_with_key"))
+        if not isinstance(runs_with_key, (int, float)):
+            runs_with_key = _safe_num(evidence.get("runs_with_key"))
+        if isinstance(runs_with_key, (int, float)) and float(runs_with_key) > 1.0:
+            estimated_calls_reduced = float(runs_with_key) - 1.0
+
+    top_user_share = _safe_num(
+        enriched.get("top_user_run_share")
+        if enriched.get("top_user_run_share") is not None
+        else evidence.get("top_user_run_share")
+    )
+    if not isinstance(top_user_share, (int, float)):
+        top_user_runs = _safe_num(
+            enriched.get("top_user_runs")
+            if enriched.get("top_user_runs") is not None
+            else evidence.get("top_user_runs")
+        )
+        user_runs_total = _safe_num(
+            enriched.get("user_runs_total")
+            if enriched.get("user_runs_total") is not None
+            else evidence.get("user_runs_total")
+        )
+        if (
+            isinstance(top_user_runs, (int, float))
+            and isinstance(user_runs_total, (int, float))
+            and float(user_runs_total) > 0.0
+        ):
+            top_user_share = max(
+                0.0,
+                min(1.0, float(top_user_runs) / float(user_runs_total)),
+            )
+
+    user_touches_reduced = None
+    if isinstance(estimated_calls_reduced, (int, float)) and float(estimated_calls_reduced) > 0.0:
+        if isinstance(top_user_share, (int, float)) and float(top_user_share) > 0.0:
+            user_touches_reduced = float(estimated_calls_reduced) * float(top_user_share)
+        else:
+            user_touches_reduced = float(estimated_calls_reduced)
+    enriched["modeled_user_touches_reduced"] = user_touches_reduced
+    enriched["modeled_user_runs_reduced"] = user_touches_reduced
+    manual_run_reduction_pct = None
+    runs_with_key = _safe_num(
+        enriched.get("runs_with_key")
+        if enriched.get("runs_with_key") is not None
+        else evidence.get("runs_with_key")
+    )
+    if (
+        isinstance(user_touches_reduced, (int, float))
+        and isinstance(runs_with_key, (int, float))
+        and float(runs_with_key) > 0.0
+    ):
+        manual_run_reduction_pct = max(
+            0.0,
+            min(100.0, (float(user_touches_reduced) / float(runs_with_key)) * 100.0),
+        )
+    enriched["modeled_manual_run_reduction_pct"] = (
+        float(manual_run_reduction_pct)
+        if isinstance(manual_run_reduction_pct, (int, float))
+        else None
+    )
+
+    user_hours_close = None
+    if isinstance(delta_hours, (int, float)) and float(delta_hours) > 0.0:
+        if isinstance(top_user_share, (int, float)) and float(top_user_share) > 0.0:
+            user_hours_close = float(delta_hours) * float(top_user_share)
+        elif isinstance(user_touches_reduced, (int, float)) and float(user_touches_reduced) > 0.0:
+            user_hours_close = float(delta_hours)
+    user_rollups = _modeled_rollups(delta_hours=user_hours_close, scope_class=scope_class)
+    enriched["modeled_user_hours_saved_close_cycle"] = user_rollups["close_cycle"]
+    enriched["modeled_user_hours_saved_month"] = user_rollups["month"]
+    enriched["modeled_user_hours_saved_annualized"] = user_rollups["annualized"]
+
+    top_user_redacted = str(
+        enriched.get("top_user_redacted")
+        if enriched.get("top_user_redacted") is not None
+        else evidence.get("top_user_redacted")
+        or ""
+    ).strip()
+    if top_user_redacted:
+        enriched["affected_user_primary"] = top_user_redacted
+    distinct_users = _safe_num(
+        enriched.get("distinct_users")
+        if enriched.get("distinct_users") is not None
+        else evidence.get("distinct_users")
+    )
+    if isinstance(distinct_users, (int, float)):
+        enriched["affected_user_count"] = int(max(0, int(float(distinct_users))))
+
+    metrics = _item_metrics_payload(enriched)
+    contention_pct = None
+    p95_before = _safe_num(metrics.get("eligible_wait_p95_s"))
+    p95_modeled = _safe_num(metrics.get("modeled_wait_p95_s"))
+    if (
+        isinstance(p95_before, (int, float))
+        and isinstance(p95_modeled, (int, float))
+        and float(p95_before) > 0.0
+        and float(p95_modeled) >= 0.0
+        and float(p95_modeled) < float(p95_before)
+    ):
+        contention_pct = ((float(p95_before) - float(p95_modeled)) / float(p95_before)) * 100.0
+    if not isinstance(contention_pct, (int, float)) and scope_class == "close_specific":
+        modeled_pct = _safe_num(enriched.get("modeled_percent"))
+        if isinstance(modeled_pct, (int, float)) and float(modeled_pct) > 0.0:
+            contention_pct = float(modeled_pct)
+    enriched["modeled_contention_reduction_pct_close"] = (
+        float(contention_pct)
+        if isinstance(contention_pct, (int, float)) and float(contention_pct) > 0.0
+        else None
+    )
+    enriched["modeled_queue_wait_hours_saved_close"] = (
+        float(rollups["close_cycle"])
+        if isinstance(rollups["close_cycle"], (int, float)) and float(rollups["close_cycle"]) > 0.0
+        else None
+    )
+
+    confidence = _safe_num(enriched.get("confidence"))
+    if not isinstance(confidence, (int, float)):
+        confidence = _safe_num(enriched.get("confidence_weight"))
+    if not isinstance(confidence, (int, float)):
+        confidence = 0.5
+    confidence = max(0.0, min(1.0, float(confidence)))
+    enriched["metric_confidence"] = confidence
+
+    user_effort_score = (
+        max(0.0, float(user_rollups["close_cycle"] or 0.0))
+        + math.log1p(max(0.0, float(user_touches_reduced or 0.0)))
+    )
+    close_window_score = (
+        max(0.0, float(rollups["close_cycle"] or 0.0))
+        + (0.35 * max(0.0, float(rollups["month"] or 0.0)))
+    )
+    server_contention_score = (
+        max(0.0, float(enriched.get("modeled_queue_wait_hours_saved_close") or 0.0))
+        + (max(0.0, float(enriched.get("modeled_contention_reduction_pct_close") or 0.0)) / 100.0)
+    )
+    targeting_bonus = 1.0 if scope_type == "single_process" else 0.35
+    ambiguity_penalty = 0.0
+    if scope_type != "single_process":
+        ambiguity_penalty = 0.20 + (0.10 * max(0.0, float(len(targets) - 1)))
+
+    value_score = (
+        (0.45 * user_effort_score)
+        + (0.30 * close_window_score)
+        + (0.15 * server_contention_score)
+        + (0.10 * confidence)
+        + (0.20 * targeting_bonus)
+        - ambiguity_penalty
+    )
+    enriched["value_components"] = {
+        "user_effort_score": float(user_effort_score),
+        "close_window_score": float(close_window_score),
+        "server_contention_score": float(server_contention_score),
+        "confidence_score": float(confidence),
+        "targeting_bonus": float(targeting_bonus),
+        "ambiguity_penalty": float(ambiguity_penalty),
+    }
+    enriched["client_value_score"] = float(value_score)
+    enriched["value_score_v2"] = float(value_score)
+    modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_percent"))
+    if not isinstance(modeled_efficiency_gain_pct, (int, float)):
+        modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_contention_reduction_pct_close"))
+    enriched["modeled_efficiency_gain_pct"] = (
+        float(modeled_efficiency_gain_pct)
+        if isinstance(modeled_efficiency_gain_pct, (int, float))
+        and float(modeled_efficiency_gain_pct) > 0.0
+        else None
+    )
+    if action_type in {"add_server", "tune_schedule"} or primary_process in {"qpec", "qemail"}:
+        enriched["opportunity_class"] = "server_capacity"
+    elif action_type in {
+        "batch_input",
+        "batch_input_refactor",
+        "batch_group_candidate",
+        "batch_or_cache",
+        "dedupe_or_cache",
+        "throttle_or_dedupe",
+    }:
+        enriched["opportunity_class"] = "manual_automation"
+    else:
+        enriched["opportunity_class"] = "process_efficiency"
+
+
 def _enrich_recommendation_item(
     item: dict[str, Any],
     report: dict[str, Any],
@@ -4288,6 +4651,7 @@ def _enrich_recommendation_item(
         enriched["not_modeled_reason"] = not_modeled_reason or "insufficient_modeled_inputs"
     else:
         enriched["not_modeled_reason"] = None
+    _attach_client_value_metrics(enriched, scope_class=scope_class)
     return enriched
 
 
@@ -5846,7 +6210,7 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
     discovery_items = _filter_recommendations_by_process(
         discovery_items, excluded_processes
     )
-    recs_sorted = sorted(discovery_items, key=_discovery_recommendation_sort_key, reverse=True)[:3]
+    recs_sorted = sorted(discovery_items, key=_final_recommendation_sort_key)[:3]
 
     if recs_sorted:
         lines.append("## Top Recommendations (Discovery)")
@@ -6004,7 +6368,7 @@ def _write_engineering_summary(report: dict[str, Any], run_dir: Path) -> None:
         report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
     discovery_items = _dedupe_recommendations_text(discovery_items)
-    recs = sorted(discovery_items, key=_discovery_recommendation_sort_key, reverse=True)[:3]
+    recs = sorted(discovery_items, key=_final_recommendation_sort_key)[:3]
     merged_notes: list[str] = []
 
     lines.append("## Traceability")

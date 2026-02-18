@@ -1084,13 +1084,21 @@ def _plain_process(item: dict[str, Any]) -> str:
 
 
 def _plain_hours(item: dict[str, Any]) -> str:
+    touches = item.get("modeled_user_touches_reduced")
+    touches_n = float(touches) if isinstance(touches, (int, float)) and float(touches) > 0.0 else 0.0
     value = item.get("modeled_delta_hours")
     if not isinstance(value, (int, float)) or float(value) <= 0:
         value = item.get("impact_hours")
     if not isinstance(value, (int, float)) or float(value) <= 0:
         value = item.get("modeled_delta")
     if isinstance(value, (int, float)) and float(value) > 0:
+        if touches_n > 0.0:
+            return (
+                f"about {float(value):.2f} queue-delay hours, plus ~{touches_n:.0f} manual runs eliminated"
+            )
         return f"about {float(value):.2f} hours"
+    if touches_n > 0.0:
+        return f"~{touches_n:.0f} manual runs eliminated (human effort relief)"
     return "an unknown amount"
 
 
@@ -1138,10 +1146,29 @@ def _plain_recommendation_fields(item: dict[str, Any]) -> tuple[str, str]:
         targets = item.get("target_process_ids")
         if not isinstance(targets, list):
             targets = evidence.get("target_process_ids")
-        target_list = ", ".join(
+        target_tokens = (
             [str(t).strip() for t in targets if isinstance(t, str) and t.strip()]
-        ) if isinstance(targets, list) else process
-        change = f"Convert these process_ids to batch input first: {target_list}."
+            if isinstance(targets, list)
+            else [process]
+        )
+        rpt_targets = [t for t in target_tokens if t.strip().lower().startswith("rpt_")]
+        po_targets = [t for t in target_tokens if t.strip().lower().startswith("po")]
+        other_targets = [
+            t
+            for t in target_tokens
+            if t not in rpt_targets and t not in po_targets
+        ]
+        if rpt_targets and (po_targets or other_targets):
+            grouped = po_targets + other_targets
+            grouped_text = ", ".join(grouped)
+            rpt_text = ", ".join(rpt_targets)
+            change = (
+                f"Convert these process_ids to batch input first: {grouped_text}. "
+                f"Keep `{rpt_text}` as a separate orchestration/report anchor recommendation."
+            )
+        else:
+            target_list = ", ".join(target_tokens)
+            change = f"Convert these process_ids to batch input first: {target_list}."
         why = (
             "These steps look like one-by-one payout processing in the same close-month chain, "
             "so batching should cut repeated job launches."
@@ -1176,6 +1203,43 @@ def _plain_recommendation_fields(item: dict[str, Any]) -> tuple[str, str]:
     if text:
         return text, "This recommendation comes from measured plugin evidence."
     return f"Review `{process}` for a targeted fix.", "Measured evidence suggests this process is a driver."
+
+
+def _plain_linkage_key(item: dict[str, Any]) -> str:
+    action_type = str(item.get("action_type") or item.get("action") or "").strip().lower()
+    if action_type not in {"batch_input", "batch_input_refactor"}:
+        return ""
+    ev_raw = item.get("evidence")
+    evidence = ev_raw[0] if isinstance(ev_raw, list) and ev_raw and isinstance(ev_raw[0], dict) else {}
+    key = str(evidence.get("key") or item.get("key") or "").strip().lower()
+    user = str(
+        item.get("affected_user_primary")
+        or item.get("top_user_redacted")
+        or evidence.get("top_user_redacted")
+        or ""
+    ).strip().lower()
+    month = str(
+        item.get("close_month")
+        or item.get("month")
+        or evidence.get("close_month")
+        or evidence.get("month")
+        or ""
+    ).strip().lower()
+    if not any([key, user, month]):
+        return ""
+    return f"{key}|{user}|{month}"
+
+
+def _plain_linked_display_group(current_process: str, group: list[str]) -> list[str]:
+    current = str(current_process or "").strip().lower()
+    tokens = [str(v).strip().lower() for v in group if str(v).strip()]
+    if current.startswith("po"):
+        subset = [v for v in tokens if v.startswith("po")]
+        return subset if subset else tokens
+    if current.startswith("rpt_"):
+        subset = [v for v in tokens if v.startswith("rpt_")]
+        return subset if subset else tokens
+    return tokens
 
 
 def _render_recommendations_plain_md(
@@ -1245,13 +1309,64 @@ def _render_recommendations_plain_md(
     for title, items in sections:
         if not items:
             continue
+        linked_groups: dict[str, list[str]] = {}
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            lk = _plain_linkage_key(item)
+            if not lk:
+                continue
+            proc = _plain_process(item).strip().lower()
+            if not proc:
+                continue
+            linked_groups.setdefault(lk, [])
+            if proc not in linked_groups[lk]:
+                linked_groups[lk].append(proc)
         lines.append("")
         lines.append(f"## {title}")
         for idx, item in enumerate(items[:max_items], start=1):
             change, why = _plain_recommendation_fields(item)
             lines.append(f"{idx}. What to change: {change}")
             lines.append(f"   Why this matters: {why}")
+            lk = _plain_linkage_key(item)
+            linked_group = _plain_linked_display_group(_plain_process(item), linked_groups.get(lk, []))
+            if lk and len(linked_group) > 1:
+                linked = ", ".join(linked_group)
+                lines.append(
+                    f"   Linked recommendation set: {linked} (same parameter/user sweep family)."
+                )
             lines.append(f"   Expected benefit: {_plain_hours(item)}")
+            touches_reduced = item.get("modeled_user_touches_reduced")
+            if isinstance(touches_reduced, (int, float)) and float(touches_reduced) > 0.0:
+                user_hint = str(item.get("affected_user_primary") or "").strip()
+                user_suffix = f" for user `{user_hint}`" if user_hint else ""
+                lines.append(
+                    f"   User effort reduction: ~{float(touches_reduced):.0f} fewer manual runs per close cycle{user_suffix}."
+                )
+                if float(touches_reduced) >= 100.0:
+                    lines.append(
+                        "   Human effort note: queue-delay hours understate this because it removes repetitive manual execution workload."
+                    )
+            close_cycle_saved = item.get("modeled_close_hours_saved_cycle")
+            if isinstance(close_cycle_saved, (int, float)) and float(close_cycle_saved) > 0.0:
+                lines.append(
+                    f"   Close-window time saved: ~{float(close_cycle_saved):.2f} hours per close cycle."
+                )
+            month_saved = item.get("modeled_close_hours_saved_month")
+            if isinstance(month_saved, (int, float)) and float(month_saved) > 0.0:
+                lines.append(
+                    f"   Monthly time saved: ~{float(month_saved):.2f} hours."
+                )
+            annual_saved = item.get("modeled_close_hours_saved_annualized")
+            if isinstance(annual_saved, (int, float)) and float(annual_saved) > 0.0:
+                lines.append(
+                    f"   Annualized time saved: ~{float(annual_saved):.2f} hours."
+                )
+            contention_pct = item.get("modeled_contention_reduction_pct_close")
+            if isinstance(contention_pct, (int, float)) and float(contention_pct) > 0.0:
+                lines.append(
+                    f"   Contention reduction: ~{float(contention_pct):.2f}% less close-window queue pressure."
+                )
             modeled_pct = item.get("modeled_percent")
             if isinstance(modeled_pct, (int, float)):
                 lines.append(f"   Modeled improvement percent: {float(modeled_pct):.2f}%")
@@ -1259,6 +1374,20 @@ def _render_recommendations_plain_md(
                 reason = str(item.get("not_modeled_reason") or "").strip()
                 if reason:
                     lines.append(f"   Modeled improvement percent: not available ({reason})")
+            value_score = item.get("value_score_v2")
+            if not isinstance(value_score, (int, float)):
+                value_score = item.get("client_value_score")
+            if isinstance(value_score, (int, float)):
+                lines.append(f"   Priority score: {float(value_score):.2f} (higher = better client value)")
+            efficiency_pct = item.get("modeled_efficiency_gain_pct")
+            if isinstance(efficiency_pct, (int, float)):
+                lines.append(f"   Efficiency gain (%): {float(efficiency_pct):.2f}%")
+            manual_pct = item.get("modeled_manual_run_reduction_pct")
+            if isinstance(manual_pct, (int, float)):
+                lines.append(f"   Manual-work reduction (%): {float(manual_pct):.2f}%")
+            opp_class = str(item.get("opportunity_class") or "").strip()
+            if opp_class:
+                lines.append(f"   Recommendation class: {opp_class}")
             rank = str(item.get("obviousness_rank") or "").strip()
             score = item.get("obviousness_score")
             if rank:

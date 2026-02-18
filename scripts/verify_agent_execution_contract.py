@@ -7,6 +7,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 import yaml
+from statistic_harness.core.actionability_explanations import NON_ADJUSTABLE_PROCESSES
 
 BAD_PLUGIN_STATUSES = ("skipped", "degraded", "error", "aborted")
 ACTIONABLE_SIGNAL_REASON_ALLOWLIST = {
@@ -174,6 +175,9 @@ def _has_actionable_signal(plugin_id: str, findings: list[dict[str, Any]]) -> bo
         if kind == "actionable_ops_lever":
             return True
         if pid == "analysis_close_cycle_uplift" and kind == "close_cycle_share_shift":
+            process_norm = str(item.get("process_norm") or item.get("process") or "").strip().lower()
+            if process_norm and process_norm in NON_ADJUSTABLE_PROCESSES:
+                continue
             share_delta = item.get("share_delta")
             if isinstance(share_delta, (int, float)) and float(share_delta) > 0.0:
                 return True

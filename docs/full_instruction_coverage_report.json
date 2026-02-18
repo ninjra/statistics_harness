@@ -1,7 +1,25 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 1262,
-  "items": [],
+  "item_count": 1324,
+  "items": [
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 71,
+      "missing_paths": [
+        "src/statistic_harness/core/accounting_windows.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "src/statistic_harness/core/accounting_windows.py",
+        "src/statistic_harness/core/close_cycle.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/accounting-month-global-windows-golden-implementation-plan.md",
+      "text": "- **Location**: `src/statistic_harness/core/accounting_windows.py` (new), `src/statistic_harness/core/close_cycle.py`",
+      "unresolved_plugin_tokens": []
+    }
+  ],
   "matrix_status": {
     "binding_missing_any": false,
     "docs_missing_any_normative": false,
@@ -10,7 +28,9 @@
     "redteam_missing_required_ids": [],
     "sql_required_not_using_sql": []
   },
-  "missing_by_source": {},
-  "missing_item_count": 0,
-  "source_count": 26
+  "missing_by_source": {
+    "docs/accounting-month-global-windows-golden-implementation-plan.md": 1
+  },
+  "missing_item_count": 1,
+  "source_count": 27
 }

@@ -23,6 +23,10 @@ CHECK_ID="final_validation_$(date -u +%Y%m%dT%H%M%SZ)"
 CHECK_DIR="$ROOT_DIR/appdata/final_validation/$CHECK_ID"
 mkdir -p "$CHECK_DIR"
 
+if [[ "$KNOWN_ISSUES_MODE" == "on" ]]; then
+  export STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS="${STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS:-1}"
+fi
+
 echo "CHECK_ID=$CHECK_ID"
 echo "CHECK_DIR=$CHECK_DIR"
 echo "DATASET_VERSION_ID=$DATASET_VERSION_ID"
@@ -201,8 +205,14 @@ echo "STEP=verify_agent_execution_contract RUN_ID=$RUN_ID"
 contract_json="$CHECK_DIR/agent_execution_contract.json"
 contract_console="$CHECK_DIR/agent_execution_contract_console.log"
 contract_cmd=(python scripts/verify_agent_execution_contract.py --run-id "$RUN_ID" --expected-known-issues-mode "$KNOWN_ISSUES_MODE" --out "$contract_json")
-if [[ "$KNOWN_ISSUES_MODE" == "on" ]]; then
-  contract_cmd+=(--require-known-signature "analysis_close_cycle_contention:close_cycle_contention")
+if [[ "$KNOWN_ISSUES_MODE" == "on" && -n "${STAT_HARNESS_REQUIRED_KNOWN_SIGNATURES:-}" ]]; then
+  IFS=',' read -r -a required_known_signatures <<<"${STAT_HARNESS_REQUIRED_KNOWN_SIGNATURES}"
+  for sig in "${required_known_signatures[@]}"; do
+    sig="$(echo "$sig" | xargs)"
+    if [[ -n "$sig" ]]; then
+      contract_cmd+=(--require-known-signature "$sig")
+    fi
+  done
 fi
 contract_rc=0
 "${contract_cmd[@]}" > "$contract_console" 2>&1 || contract_rc=$?

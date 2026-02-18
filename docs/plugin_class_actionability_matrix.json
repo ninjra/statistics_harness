@@ -1,8 +1,8 @@
 {
   "class_counts": {
     "direct_action_generators": {
-      "actionable_count": 3,
-      "explained_na_count": 3,
+      "actionable_count": 1,
+      "explained_na_count": 5,
       "missing_output_count": 0,
       "plugin_count": 6
     },
@@ -19,8 +19,8 @@
       "plugin_count": 8
     },
     "supporting_signal_detectors": {
-      "actionable_count": 0,
-      "explained_na_count": 230,
+      "actionable_count": 1,
+      "explained_na_count": 229,
       "missing_output_count": 0,
       "plugin_count": 230
     },
@@ -65,7 +65,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_action_search_mip_batched_scheduler_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -74,8 +74,8 @@
       "plugin_name": "Action Search (MIP Batched Scheduler)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -87,7 +87,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_action_search_simulated_annealing_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -96,8 +96,8 @@
       "plugin_name": "Action Search (Simulated Annealing)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "actionable",
@@ -105,10 +105,10 @@
         "analysis_close_cycle_window_resolver"
       ],
       "example": {
-        "action_type": "batch_or_cache",
+        "action_type": "batch_input",
         "kind": "actionable_ops_lever",
-        "modeled_percent": 0.0001015426,
-        "recommendation": "For chkregupdt, many runs repeat the same STATUS_CD. Consider caching or batching by STATUS_CD to reduce queued work. Upper bound: 0.0h (~0.0h/day) of wait time above 60s associated with this process over the window. Validate by measuring queue-delay distribution before/after batching and ensuring any SLAs still hold."
+        "modeled_percent": 0.0027139555,
+        "recommendation": "Convert specific process_id `gmicalcrun` to batch-input mode in close month 2025-08. Why: 1,177 runs handled 1,158 unique `o(18015)` values (coverage 100.0%, uniqueness 98.4%), which indicates one-call-per-value sweep behavior. Change `gmicalcrun` to accept a list of `o(18015)` values and process one close-month cohort per run (reducing job launches by ~1,176). Upper bound: 0.3h of over-threshold wait time above 60s associated with this process over the observation window (not guaranteed). Manual-loop signal: audrey_stachmus2 executed 1,904 of 2,425 close-window runs (78.5% concentration, 10 distinct users overall)."
       },
       "expected_output_type": "recommendation_items",
       "modeled_output_supported": true,
@@ -118,7 +118,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -126,7 +126,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_aft_survival_lognormal_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -135,8 +135,8 @@
       "plugin_name": "analysis_aft_survival_lognormal_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -146,7 +146,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_anova_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NO_ACTIONABLE_RESULT"
+        "reason_code": "NO_ELIGIBLE_SLICE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -155,8 +155,8 @@
       "plugin_name": "Anova Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NO_ELIGIBLE_SLICE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -168,7 +168,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_association_rules_apriori_v1 produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -177,8 +177,8 @@
       "plugin_name": "Association Rules (Apriori)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -186,7 +186,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_attribution produced 9 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -195,8 +195,8 @@
       "plugin_name": "Attribution Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -214,7 +214,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -224,7 +224,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_bayesian_point_displacement produced 3 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -233,8 +233,8 @@
       "plugin_name": "Bayesian Point Displacement",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -242,7 +242,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_benfords_law_anomaly_v1 produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -251,8 +251,8 @@
       "plugin_name": "analysis_benfords_law_anomaly_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -260,7 +260,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_beta_binomial_overdispersion_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -269,8 +269,8 @@
       "plugin_name": "analysis_beta_binomial_overdispersion_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -282,7 +282,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_biclustering_cheng_church_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -291,8 +291,8 @@
       "plugin_name": "Biclustering (Process\u00d7Param Coherence)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -302,7 +302,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_bocpd_gaussian produced 7 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -311,8 +311,8 @@
       "plugin_name": "BOCPD Gaussian",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -320,7 +320,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_bootstrap_ci_effect_sizes_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -329,8 +329,8 @@
       "plugin_name": "analysis_bootstrap_ci_effect_sizes_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -338,7 +338,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_bsts_intervention_counterfactual_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -347,8 +347,8 @@
       "plugin_name": "analysis_bsts_intervention_counterfactual_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -358,7 +358,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_burst_detection_kleinberg produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -367,8 +367,8 @@
       "plugin_name": "Burst Detection Kleinberg",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -379,7 +379,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_burst_modeling_hawkes_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -388,8 +388,8 @@
       "plugin_name": "Burst Modeling (Hawkes-Style)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -397,7 +397,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_busy_period_segmentation_v2 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -406,8 +406,8 @@
       "plugin_name": "Busy Period Segmentation v2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -415,7 +415,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_capacity_frontier_envelope_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -424,8 +424,8 @@
       "plugin_name": "analysis_capacity_frontier_envelope_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -433,7 +433,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_capacity_scaling produced 8 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -442,8 +442,8 @@
       "plugin_name": "Capacity Scaling Scenario",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -461,7 +461,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -469,7 +469,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_chain_makespan produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -478,8 +478,8 @@
       "plugin_name": "Chain Makespan Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -499,7 +499,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -507,7 +507,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_change_score_consensus_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -516,8 +516,8 @@
       "plugin_name": "analysis_change_score_consensus_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -527,7 +527,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_changepoint_energy_edivisive produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -536,8 +536,8 @@
       "plugin_name": "Changepoint Energy Edivisive",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -547,7 +547,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_changepoint_method_survey_guided produced 22 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -556,8 +556,8 @@
       "plugin_name": "Changepoint Method Survey Guided",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -567,7 +567,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_changepoint_pelt produced 20 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -576,8 +576,8 @@
       "plugin_name": "Changepoint Pelt",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -586,8 +586,8 @@
       ],
       "example": {
         "kind": "non_actionable_explanation",
-        "plain_english_explanation": "analysis_chi_square_association produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "plain_english_explanation": "analysis_chi_square_association produced 40 finding(s), but none matched current action-routing rules.",
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -596,8 +596,8 @@
       "plugin_name": "Chi Square Association",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -615,7 +615,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -635,17 +635,18 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "CAPACITY_IMPACT_NOT_APPLICABLE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
       "depends_on": [
-        "analysis_close_cycle_window_resolver"
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
       ],
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_capacity_model produced 7 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NO_MODELED_CAPACITY_GAIN"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "recommendation_items",
       "modeled_output_supported": false,
@@ -654,8 +655,8 @@
       "plugin_name": "Close Cycle Capacity Model",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NO_MODELED_CAPACITY_GAIN",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -666,7 +667,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_change_point_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -675,28 +676,30 @@
       "plugin_name": "Close Cycle Change Point (Heuristic)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
-      "actionability_state": "explained_na",
+      "actionability_state": "actionable",
       "depends_on": [
-        "analysis_close_cycle_window_resolver"
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
       ],
       "example": {
-        "kind": "non_actionable_explanation",
-        "plain_english_explanation": "analysis_close_cycle_contention produced 3 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "action_type": "",
+        "kind": "close_cycle_contention",
+        "modeled_percent": 34.4830334105,
+        "recommendation": "Missing evidence for analysis_close_cycle_contention:close_cycle_contention (process qemail); check inputs and re-run."
       },
       "expected_output_type": "findings_or_metrics",
-      "modeled_output_supported": false,
+      "modeled_output_supported": true,
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_contention",
       "plugin_name": "Close Cycle Contention Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -706,7 +709,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_duration_shift produced 4 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -715,8 +718,8 @@
       "plugin_name": "Close Cycle Duration Shift Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -736,7 +739,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_REVENUE_COMPRESSION_PRESSURE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -744,7 +747,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_start_backtrack_v1 produced 158 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -753,8 +756,8 @@
       "plugin_name": "Close Cycle Start Backtrack v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -774,7 +777,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "EXCLUDED_BY_PROCESS_POLICY",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -784,7 +787,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_window_resolver produced 159 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -793,8 +796,8 @@
       "plugin_name": "Close Cycle Window Resolver",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -804,7 +807,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_cluster_analysis_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -813,8 +816,8 @@
       "plugin_name": "Cluster Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -822,7 +825,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_competing_risks_cif_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -831,8 +834,8 @@
       "plugin_name": "analysis_competing_risks_cif_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -840,7 +843,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_concurrency_reconstruction produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -849,8 +852,8 @@
       "plugin_name": "Concurrency Reconstruction",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -860,7 +863,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_conformal_feature_prediction produced 362 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -869,8 +872,8 @@
       "plugin_name": "Conformal Feature Prediction",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -880,7 +883,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_conformance_alignments produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -889,8 +892,8 @@
       "plugin_name": "Conformance Alignments",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -898,7 +901,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_conformance_checking produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -907,8 +910,8 @@
       "plugin_name": "Conformance Checking",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -920,7 +923,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_constrained_clustering_cop_kmeans_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -929,8 +932,8 @@
       "plugin_name": "Constrained Clustering (COP-KMeans)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -938,7 +941,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_constraints_violation_detector_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -947,8 +950,8 @@
       "plugin_name": "analysis_constraints_violation_detector_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -958,7 +961,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_control_chart_cusum produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -967,8 +970,8 @@
       "plugin_name": "Control Chart Cusum",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -978,7 +981,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_control_chart_ewma produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -987,8 +990,8 @@
       "plugin_name": "Control Chart Ewma",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -998,7 +1001,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_control_chart_individuals produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1007,8 +1010,8 @@
       "plugin_name": "Control Chart Individuals",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1016,7 +1019,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_control_chart_suite produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1025,8 +1028,8 @@
       "plugin_name": "Control Chart Suite",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1036,7 +1039,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_copula_dependence produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1045,8 +1048,8 @@
       "plugin_name": "Copula Dependence",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1058,7 +1061,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_cur_decomposition_explain_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1067,8 +1070,8 @@
       "plugin_name": "CUR Decomposition Explainability",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1086,7 +1089,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1097,7 +1100,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_daily_pattern_alignment_dtw_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1106,8 +1109,8 @@
       "plugin_name": "Daily Pattern Alignment (DTW)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1119,7 +1122,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_density_clustering_hdbscan_v1 produced 20 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1128,8 +1131,8 @@
       "plugin_name": "Density Clustering (HDBSCAN)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1140,7 +1143,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dependency_community_leiden_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1149,8 +1152,8 @@
       "plugin_name": "Dependency Community Detection (Leiden)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1161,7 +1164,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dependency_community_louvain_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1170,8 +1173,8 @@
       "plugin_name": "Dependency Community Detection (Louvain)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1182,7 +1185,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dependency_critical_path_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1191,8 +1194,8 @@
       "plugin_name": "Dependency Critical Path (Proxy)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1202,7 +1205,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dependency_graph_change_detection produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1211,8 +1214,8 @@
       "plugin_name": "Dependency Graph Change Detection",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1220,7 +1223,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dependency_resolution_join produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1229,8 +1232,8 @@
       "plugin_name": "Dependency Resolution Join",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1238,7 +1241,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_determinism_discipline produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1247,8 +1250,8 @@
       "plugin_name": "Determinism Discipline",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1260,7 +1263,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_diffusion_maps_manifold_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1269,8 +1272,8 @@
       "plugin_name": "Diffusion Maps Manifold Drift",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1288,7 +1291,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1299,7 +1302,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_discrete_event_queue_simulator_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1308,8 +1311,8 @@
       "plugin_name": "Discrete-Event Queue Simulator",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1327,7 +1330,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1335,7 +1338,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_distance_covariance_dependence_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1344,8 +1347,8 @@
       "plugin_name": "analysis_distance_covariance_dependence_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1353,7 +1356,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_distribution_drift_suite produced 22 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1362,8 +1365,8 @@
       "plugin_name": "Distribution Drift Suite",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1374,7 +1377,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_distribution_shift_wasserstein_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1383,8 +1386,8 @@
       "plugin_name": "Distribution Shift (Wasserstein/EMD)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1395,7 +1398,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dmd_koopman_modes_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1404,8 +1407,8 @@
       "plugin_name": "Dynamic Mode Decomposition Koopman Modes",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1415,7 +1418,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dp_gmm produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1424,8 +1427,8 @@
       "plugin_name": "DP GMM",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1435,7 +1438,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_drift_adwin produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1444,8 +1447,8 @@
       "plugin_name": "Drift Adwin",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1453,7 +1456,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_dynamic_close_detection produced 7 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1462,31 +1465,30 @@
       "plugin_name": "Dynamic Close Window Detection",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
-      "actionability_state": "actionable",
+      "actionability_state": "explained_na",
       "depends_on": [
         "analysis_close_cycle_window_resolver",
         "analysis_ideaspace_action_planner",
         "analysis_ideaspace_energy_ebm_v1"
       ],
       "example": {
-        "action_type": "add_server",
-        "kind": "verified_action",
-        "modeled_percent": 2.3183695953,
-        "recommendation": "QPEC hosts show high eligible-wait pressure; add one QPEC server (QPEC+1) or increase QPEC workers by 1 to reduce queue delay under load."
+        "kind": "non_actionable_explanation",
+        "plain_english_explanation": "analysis_ebm_action_verifier_v1 produced 5 finding(s), but none matched current action-routing rules.",
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "recommendation_items",
-      "modeled_output_supported": true,
+      "modeled_output_supported": false,
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_ebm_action_verifier_v1",
       "plugin_name": "EBM Action Verifier (Kona Layer)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1496,7 +1498,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_effect_size_report produced 9 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1505,8 +1507,8 @@
       "plugin_name": "Effect Size Report",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1517,7 +1519,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_empirical_bayes_shrinkage_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1526,8 +1528,8 @@
       "plugin_name": "Empirical Bayes Shrinkage Rankings",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1535,7 +1537,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_energy_distance_two_sample_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1544,8 +1546,8 @@
       "plugin_name": "analysis_energy_distance_two_sample_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1555,7 +1557,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_event_count_bocpd_poisson produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1564,8 +1566,8 @@
       "plugin_name": "Event Count Bocpd Poisson",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1575,7 +1577,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_evt_gumbel_tail produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1584,8 +1586,8 @@
       "plugin_name": "Evt Gumbel Tail",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1595,7 +1597,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_evt_peaks_over_threshold produced 4 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1604,8 +1606,8 @@
       "plugin_name": "Evt Peaks Over Threshold",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1615,7 +1617,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_factor_analysis_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1624,8 +1626,8 @@
       "plugin_name": "Factor Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1633,7 +1635,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_factor_rotation_varimax_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1642,8 +1644,8 @@
       "plugin_name": "analysis_factor_rotation_varimax_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1651,7 +1653,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_fisher_exact_enrichment_v1 produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1660,8 +1662,8 @@
       "plugin_name": "analysis_fisher_exact_enrichment_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1673,7 +1675,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_frequent_directions_cov_sketch_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1682,8 +1684,8 @@
       "plugin_name": "Frequent Directions Covariance Sketch",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1695,7 +1697,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_frequent_itemsets_fpgrowth_v1 produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1704,8 +1706,8 @@
       "plugin_name": "Frequent Param Sets (FP-Growth)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1713,7 +1715,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_fused_lasso_trend_filtering_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1722,8 +1724,8 @@
       "plugin_name": "analysis_fused_lasso_trend_filtering_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1731,7 +1733,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_gam_spline_regression_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1740,8 +1742,8 @@
       "plugin_name": "analysis_gam_spline_regression_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1759,7 +1761,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1769,7 +1771,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_gaussian_copula_shift produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1778,8 +1780,8 @@
       "plugin_name": "Gaussian Copula Shift",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1789,7 +1791,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_gaussian_knockoffs produced 42 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1798,8 +1800,8 @@
       "plugin_name": "Gaussian Knockoffs",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1817,7 +1819,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1828,7 +1830,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ges_score_based_causal_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1837,8 +1839,8 @@
       "plugin_name": "GES-style Score-based Causal Graph",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1846,7 +1848,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graph_assortativity_shift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1855,8 +1857,8 @@
       "plugin_name": "analysis_graph_assortativity_shift_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1867,7 +1869,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graph_min_cut_partition_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1876,8 +1878,8 @@
       "plugin_name": "Graph Minimum Cut Partition",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1885,7 +1887,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graph_motif_triads_shift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1894,8 +1896,8 @@
       "plugin_name": "analysis_graph_motif_triads_shift_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1903,7 +1905,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graph_pagerank_hotspots_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1912,8 +1914,8 @@
       "plugin_name": "analysis_graph_pagerank_hotspots_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1923,7 +1925,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graph_topology_curves produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1932,8 +1934,8 @@
       "plugin_name": "Graph Topology Curves",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1943,7 +1945,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_graphical_lasso_dependency_network produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1952,8 +1954,8 @@
       "plugin_name": "Graphical Lasso Dependency Network",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1961,7 +1963,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_haar_wavelet_transient_detector_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1970,8 +1972,8 @@
       "plugin_name": "analysis_haar_wavelet_transient_detector_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -1981,7 +1983,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_hawkes_self_exciting produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -1990,8 +1992,8 @@
       "plugin_name": "Hawkes Self Exciting",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2009,7 +2011,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2017,7 +2019,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_higuchi_fractal_dimension_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2026,8 +2028,8 @@
       "plugin_name": "analysis_higuchi_fractal_dimension_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2037,7 +2039,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_hmm_latent_state_sequences produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2046,8 +2048,8 @@
       "plugin_name": "Hmm Latent State Sequences",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2058,7 +2060,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_hold_time_attribution_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2067,8 +2069,8 @@
       "plugin_name": "Hold Time Attribution",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2080,7 +2082,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_hsic_independence_screen_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2089,8 +2091,8 @@
       "plugin_name": "HSIC Nonlinear Dependence Screen",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2108,7 +2110,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2116,7 +2118,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ica_source_separation_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2125,8 +2127,8 @@
       "plugin_name": "analysis_ica_source_separation_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2147,30 +2149,29 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
-      "actionability_state": "actionable",
+      "actionability_state": "explained_na",
       "depends_on": [
         "analysis_close_cycle_window_resolver",
         "ingest_tabular",
         "analysis_ideaspace_normative_gap"
       ],
       "example": {
-        "action_type": "add_server",
-        "kind": "ideaspace_action",
-        "modeled_percent": 33.3333333333,
-        "recommendation": "QPEC hosts show high eligible-wait pressure; add one QPEC server (QPEC+1) or increase QPEC workers by 1 to reduce queue delay under load. (~33.3%)"
+        "kind": "non_actionable_explanation",
+        "plain_english_explanation": "analysis_ideaspace_action_planner produced 5 finding(s), but none matched current action-routing rules.",
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "recommendation_items",
-      "modeled_output_supported": true,
+      "modeled_output_supported": false,
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_ideaspace_action_planner",
       "plugin_name": "Ideaspace Action Planner",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2181,7 +2182,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ideaspace_energy_ebm_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2190,8 +2191,8 @@
       "plugin_name": "Ideaspace Energy EBM (Kona Layer)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2202,7 +2203,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ideaspace_normative_gap produced 21 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2211,8 +2212,8 @@
       "plugin_name": "Ideaspace Normative Gap",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2222,7 +2223,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_isolation_forest produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2231,8 +2232,8 @@
       "plugin_name": "Isolation Forest",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2240,7 +2241,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_isolation_forest_anomaly produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2249,8 +2250,8 @@
       "plugin_name": "Isolation Forest Anomaly",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2260,7 +2261,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_issue_cards_v2 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "derived_findings_or_validation",
       "modeled_output_supported": false,
@@ -2269,8 +2270,8 @@
       "plugin_name": "Issue Cards v2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2280,7 +2281,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_kernel_two_sample_mmd produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2289,8 +2290,8 @@
       "plugin_name": "Kernel Two Sample Mmd",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2300,7 +2301,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_kingman_vut_approx produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2309,8 +2310,8 @@
       "plugin_name": "Kingman Vut Approx",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2321,7 +2322,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_knn_graph_two_sample_test_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2330,8 +2331,8 @@
       "plugin_name": "kNN Graph Two-sample Test",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2341,7 +2342,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_knockoff_wrapper_rf produced 42 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2350,8 +2351,8 @@
       "plugin_name": "Knockoff Wrapper RF",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2362,7 +2363,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ksd_stein_discrepancy_anomaly_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2371,8 +2372,8 @@
       "plugin_name": "KSD Stein Discrepancy Anomaly",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2382,7 +2383,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_lagged_predictability_test produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2391,8 +2392,8 @@
       "plugin_name": "Lagged Predictability Test",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2403,7 +2404,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_lingam_causal_discovery_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2412,8 +2413,8 @@
       "plugin_name": "LiNGAM-style Causal Discovery",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2423,7 +2424,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_littles_law_consistency produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2432,8 +2433,8 @@
       "plugin_name": "Littles Law Consistency",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2443,7 +2444,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_local_outlier_factor produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2452,8 +2453,8 @@
       "plugin_name": "Local Outlier Factor",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2463,7 +2464,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_log_template_drain produced 20 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2472,8 +2473,8 @@
       "plugin_name": "Log Template Drain",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2481,7 +2482,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_log_template_mining_drain produced 20 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2490,8 +2491,8 @@
       "plugin_name": "Log Template Mining (Drain)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2499,7 +2500,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_lomb_scargle_periodogram_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2508,8 +2509,8 @@
       "plugin_name": "analysis_lomb_scargle_periodogram_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2517,7 +2518,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_mann_kendall_trend_test_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2526,8 +2527,8 @@
       "plugin_name": "analysis_mann_kendall_trend_test_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2537,7 +2538,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_map_permutation_test_karniski produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2546,8 +2547,8 @@
       "plugin_name": "Map Permutation Test Karniski",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2565,7 +2566,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2585,7 +2586,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2595,7 +2596,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_matrix_profile_motifs_discords produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2604,8 +2605,8 @@
       "plugin_name": "Matrix Profile Motifs Discords",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2615,7 +2616,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_message_entropy_drift produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2624,8 +2625,8 @@
       "plugin_name": "Message Entropy Drift",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2635,7 +2636,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_monte_carlo_surface_uncertainty produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2644,8 +2645,8 @@
       "plugin_name": "Monte Carlo Surface Uncertainty",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2653,7 +2654,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multicollinearity_vif_screen_v1 produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2662,8 +2663,8 @@
       "plugin_name": "analysis_multicollinearity_vif_screen_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2673,7 +2674,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multiple_testing_fdr produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2682,8 +2683,8 @@
       "plugin_name": "Multiple Testing Fdr",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2691,7 +2692,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multiscale_entropy_mse_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2700,8 +2701,8 @@
       "plugin_name": "analysis_multiscale_entropy_mse_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2709,7 +2710,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multivariate_changepoint_pelt produced 4 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2718,8 +2719,8 @@
       "plugin_name": "Multivariate Changepoint (PELT)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2727,7 +2728,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multivariate_control_charts produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2736,8 +2737,8 @@
       "plugin_name": "Multivariate Control Charts",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2747,7 +2748,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multivariate_ewma_control produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2756,8 +2757,8 @@
       "plugin_name": "Multivariate Ewma Control",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2767,7 +2768,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_multivariate_t2_control produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2776,8 +2777,8 @@
       "plugin_name": "Multivariate T2 Control",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2787,7 +2788,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_mutual_information_screen produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2796,8 +2797,8 @@
       "plugin_name": "Mutual Information Screen",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2805,7 +2806,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_negative_binomial_overdispersion_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2814,8 +2815,8 @@
       "plugin_name": "analysis_negative_binomial_overdispersion_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2826,7 +2827,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_neural_additive_model_nam_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2835,8 +2836,8 @@
       "plugin_name": "Neural Additive Model Approximation",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2847,7 +2848,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_node2vec_graph_embedding_drift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2856,8 +2857,8 @@
       "plugin_name": "Node2Vec-style Graph Embedding Drift",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2868,7 +2869,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_normalizing_flow_density_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2877,8 +2878,8 @@
       "plugin_name": "Normalizing Flow Density Approximation",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2888,7 +2889,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_notears_linear produced 6 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2897,8 +2898,8 @@
       "plugin_name": "NOTEARS Linear",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2908,7 +2909,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_one_class_svm produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2917,8 +2918,8 @@
       "plugin_name": "One Class Svm",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2928,7 +2929,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_online_conformal_changepoint produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2937,8 +2938,8 @@
       "plugin_name": "Online Conformal Changepoint",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2946,7 +2947,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_outlier_influence_cooks_distance_v1 produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2955,8 +2956,8 @@
       "plugin_name": "analysis_outlier_influence_cooks_distance_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2968,7 +2969,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_param_near_duplicate_minhash_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2977,8 +2978,8 @@
       "plugin_name": "Param Near-Duplicate Detection (MinHash/LSH)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -2990,7 +2991,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_param_near_duplicate_simhash_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -2999,8 +3000,8 @@
       "plugin_name": "Param Near-Duplicate Detection (SimHash)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3011,7 +3012,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_param_variant_explosion_v1 produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3020,8 +3021,8 @@
       "plugin_name": "Param Variant Explosion",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3029,7 +3030,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_partial_correlation_network_shift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3038,8 +3039,8 @@
       "plugin_name": "analysis_partial_correlation_network_shift_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3050,7 +3051,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_pc_algorithm_causal_graph_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3059,8 +3060,8 @@
       "plugin_name": "PC Algorithm Causal Skeleton",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3070,7 +3071,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_pca_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3079,8 +3080,8 @@
       "plugin_name": "Pca Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3090,7 +3091,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_pca_control_chart produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3099,8 +3100,8 @@
       "plugin_name": "Pca Control Chart",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3108,7 +3109,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_percentile_analysis produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3117,8 +3118,8 @@
       "plugin_name": "Percentile Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3128,7 +3129,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_periodicity_spectral_scan produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3137,8 +3138,8 @@
       "plugin_name": "Periodicity Spectral Scan",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3156,7 +3157,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3167,7 +3168,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_phate_trajectory_embedding_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3176,8 +3177,8 @@
       "plugin_name": "PHATE-like Trajectory Embedding",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3185,7 +3186,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_piecewise_linear_trend_changepoints_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3194,8 +3195,8 @@
       "plugin_name": "analysis_piecewise_linear_trend_changepoints_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3203,7 +3204,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_poisson_regression_rate_drivers_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3212,8 +3213,8 @@
       "plugin_name": "analysis_poisson_regression_rate_drivers_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3221,7 +3222,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_process_counterfactuals produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3230,8 +3231,8 @@
       "plugin_name": "Process Counterfactuals",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3241,7 +3242,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_process_drift_conformance_over_time produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3250,8 +3251,8 @@
       "plugin_name": "Process Drift Conformance Over Time",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3261,7 +3262,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_process_sequence produced 20 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3270,8 +3271,8 @@
       "plugin_name": "Process Sequence Mining",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3279,7 +3280,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_process_sequence_bottlenecks produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3288,8 +3289,8 @@
       "plugin_name": "Process Sequence Bottlenecks",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3299,7 +3300,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_proportional_hazards_duration produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3308,8 +3309,8 @@
       "plugin_name": "Proportional Hazards Duration",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3317,7 +3318,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_quantile_loss_boosting_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3326,8 +3327,8 @@
       "plugin_name": "analysis_quantile_loss_boosting_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3335,7 +3336,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_quantile_mapping_drift_qq_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3344,8 +3345,8 @@
       "plugin_name": "analysis_quantile_mapping_drift_qq_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3355,7 +3356,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_quantile_regression_duration produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3364,8 +3365,8 @@
       "plugin_name": "Quantile Regression Duration",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3373,7 +3374,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_quantile_regression_forest_v1 produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3382,8 +3383,8 @@
       "plugin_name": "analysis_quantile_regression_forest_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3391,7 +3392,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_quantile_sketch_p2_streaming_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3400,8 +3401,8 @@
       "plugin_name": "analysis_quantile_sketch_p2_streaming_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3411,7 +3412,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_queue_delay_decomposition produced 11 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3420,8 +3421,8 @@
       "plugin_name": "Queue Delay Decomposition",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3431,7 +3432,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_queue_model_fit produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3440,8 +3441,8 @@
       "plugin_name": "Queue Model Fit",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3449,7 +3450,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_random_matrix_marchenko_pastur_denoise_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3458,8 +3459,8 @@
       "plugin_name": "analysis_random_matrix_marchenko_pastur_denoise_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3467,7 +3468,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_randomization_test_median_shift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3476,8 +3477,8 @@
       "plugin_name": "analysis_randomization_test_median_shift_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3487,7 +3488,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_recommendation_dedupe_v2 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "derived_findings_or_validation",
       "modeled_output_supported": false,
@@ -3496,8 +3497,8 @@
       "plugin_name": "Recommendation Dedupe v2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3515,7 +3516,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3525,7 +3526,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_regression_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3534,8 +3535,8 @@
       "plugin_name": "Regression Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3546,7 +3547,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_retry_rate_hotspots_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3555,8 +3556,8 @@
       "plugin_name": "Retry Rate Hotspots",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3566,7 +3567,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_robust_covariance_outliers produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3575,8 +3576,8 @@
       "plugin_name": "Robust Covariance Outliers",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3586,7 +3587,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_robust_pca_pcp produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3595,8 +3596,8 @@
       "plugin_name": "Robust Pca Pcp",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3604,7 +3605,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_robust_pca_sparse_outliers produced 30 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3613,8 +3614,8 @@
       "plugin_name": "Robust PCA Sparse Outliers",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3622,7 +3623,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_robust_regression_huber_ransac_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3631,8 +3632,8 @@
       "plugin_name": "analysis_robust_regression_huber_ransac_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3650,7 +3651,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3660,7 +3661,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_scan_statistics produced 6 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3669,8 +3670,8 @@
       "plugin_name": "Scan Statistics",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3678,7 +3679,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_seasonal_holt_winters_forecast_residuals_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3687,8 +3688,8 @@
       "plugin_name": "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3696,7 +3697,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_sequence_classification produced 10 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3705,8 +3706,8 @@
       "plugin_name": "Standalone vs Sequence Classification",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3717,7 +3718,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_sequence_grammar_sequitur_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3726,8 +3727,8 @@
       "plugin_name": "Sequence Grammar Inference (SEQUITUR)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3747,7 +3748,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3758,7 +3759,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_sequential_patterns_prefixspan_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3767,8 +3768,8 @@
       "plugin_name": "Sequential Patterns (PrefixSpan)",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3780,7 +3781,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_similarity_graph_spectral_clustering_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3789,8 +3790,8 @@
       "plugin_name": "Similarity Graph Spectral Clustering",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3801,7 +3802,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_sinkhorn_ot_drift_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3810,8 +3811,8 @@
       "plugin_name": "Sinkhorn OT Drift",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3819,7 +3820,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_sparse_pca_interpretable_components_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3828,8 +3829,8 @@
       "plugin_name": "analysis_sparse_pca_interpretable_components_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3847,7 +3848,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3858,7 +3859,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ssa_decomposition_changepoint_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3867,8 +3868,8 @@
       "plugin_name": "SSA Decomposition and Changepoint",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3878,7 +3879,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_state_space_kalman_residuals produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3887,8 +3888,8 @@
       "plugin_name": "State Space Kalman Residuals",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3906,7 +3907,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3914,7 +3915,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_stl_seasonal_decompose_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3923,8 +3924,8 @@
       "plugin_name": "analysis_stl_seasonal_decompose_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3942,7 +3943,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3952,7 +3953,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_fabric_sso_eigen produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3961,8 +3962,8 @@
       "plugin_name": "Surface Fabric Sso Eigen",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3972,7 +3973,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_fractal_dimension_variogram produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -3981,8 +3982,8 @@
       "plugin_name": "Surface Fractal Dimension Variogram",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -3992,7 +3993,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_hydrology_flow_watershed produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4001,8 +4002,8 @@
       "plugin_name": "Surface Hydrology Flow Watershed",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4012,7 +4013,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_multiscale_wavelet_curvature produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4021,8 +4022,8 @@
       "plugin_name": "Surface Multiscale Wavelet Curvature",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4032,7 +4033,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_roughness_metrics produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4041,8 +4042,8 @@
       "plugin_name": "Surface Roughness Metrics",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4052,7 +4053,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_rugosity_index produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4061,8 +4062,8 @@
       "plugin_name": "Surface Rugosity Index",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4072,7 +4073,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_surface_terrain_position_index produced 5 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4081,8 +4082,8 @@
       "plugin_name": "Surface Terrain Position Index",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4092,7 +4093,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_survival_kaplan_meier produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4101,8 +4102,8 @@
       "plugin_name": "Survival Kaplan Meier",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4112,7 +4113,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_survival_time_to_event produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4121,8 +4122,8 @@
       "plugin_name": "Survival Time To Event",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4133,7 +4134,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_symbolic_regression_gp_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4142,8 +4143,8 @@
       "plugin_name": "Symbolic Regression GP Approximation",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4154,7 +4155,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tabpfn_foundation_tabular_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4163,8 +4164,8 @@
       "plugin_name": "TabPFN-style Few-shot Tabular Baseline",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4172,7 +4173,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tail_isolation produced 13 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4181,8 +4182,8 @@
       "plugin_name": "Tail Isolation",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4192,7 +4193,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tda_betti_curve_changepoint produced 155 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4201,8 +4202,8 @@
       "plugin_name": "Tda Betti Curve Changepoint",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4212,7 +4213,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tda_mapper_graph produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4221,8 +4222,8 @@
       "plugin_name": "Tda Mapper Graph",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4232,7 +4233,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tda_persistence_landscapes produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4241,8 +4242,8 @@
       "plugin_name": "Tda Persistence Landscapes",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4252,7 +4253,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tda_persistent_homology produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4261,8 +4262,8 @@
       "plugin_name": "Tda Persistent Homology",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4272,7 +4273,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_template_drift_two_sample produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4281,8 +4282,8 @@
       "plugin_name": "Template Drift Two Sample",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4293,7 +4294,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_tensor_cp_parafac_decomp_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4302,8 +4303,8 @@
       "plugin_name": "Tensor CP PARAFAC Decomposition",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4313,7 +4314,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_term_burst_kleinberg produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4322,8 +4323,8 @@
       "plugin_name": "Term Burst Kleinberg",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4333,7 +4334,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_time_series_analysis_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4342,8 +4343,8 @@
       "plugin_name": "Time Series Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4353,7 +4354,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_topic_model_lda produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4362,8 +4363,8 @@
       "plugin_name": "Topic Model Lda",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4373,7 +4374,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_topographic_angle_dynamics produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4382,8 +4383,8 @@
       "plugin_name": "Topographic Angle Dynamics",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4393,7 +4394,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_topographic_similarity_angle_projection produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4402,8 +4403,8 @@
       "plugin_name": "Topographic Similarity Angle Projection",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4413,7 +4414,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_topographic_tanova_permutation produced 6 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4422,8 +4423,8 @@
       "plugin_name": "Topographic Tanova Permutation",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4434,7 +4435,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_traceability_manifest_v2 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "derived_findings_or_validation",
       "modeled_output_supported": false,
@@ -4443,8 +4444,8 @@
       "plugin_name": "Traceability Manifest v2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4454,7 +4455,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_transfer_entropy_directional produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4463,8 +4464,8 @@
       "plugin_name": "Transfer Entropy Directional",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4474,7 +4475,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_ttests_auto produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NO_ACTIONABLE_RESULT"
+        "reason_code": "NO_SIGNIFICANT_EFFECT"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4483,8 +4484,8 @@
       "plugin_name": "Ttests Auto",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NO_SIGNIFICANT_EFFECT",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4494,7 +4495,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_two_sample_categorical_chi2 produced 14 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4503,8 +4504,8 @@
       "plugin_name": "Two Sample Categorical Chi2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4514,7 +4515,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_two_sample_numeric_ad produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4523,8 +4524,8 @@
       "plugin_name": "Two Sample Numeric Ad",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4544,7 +4545,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4564,7 +4565,7 @@
       "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4572,7 +4573,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_upload_linkage produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4581,8 +4582,8 @@
       "plugin_name": "Upload to Revenue Linkage Analysis",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4590,7 +4591,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_user_host_savings produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4599,8 +4600,8 @@
       "plugin_name": "User/Host Savings",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4610,7 +4611,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_variant_differential produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4619,8 +4620,8 @@
       "plugin_name": "Variant Differential",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4631,7 +4632,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_waterfall_summary_v2 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "derived_findings_or_validation",
       "modeled_output_supported": false,
@@ -4640,8 +4641,8 @@
       "plugin_name": "Waterfall Summary v2",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4649,7 +4650,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_wild_binary_segmentation_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4658,8 +4659,8 @@
       "plugin_name": "analysis_wild_binary_segmentation_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4667,7 +4668,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_zero_inflated_count_model_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4676,8 +4677,8 @@
       "plugin_name": "analysis_zero_inflated_count_model_v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4685,7 +4686,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "causal_recommendations_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4694,8 +4695,8 @@
       "plugin_name": "Causal Recommendations v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4703,7 +4704,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "changepoint_detection_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4712,8 +4713,8 @@
       "plugin_name": "Changepoint Detection v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "missing_output",
@@ -4727,7 +4728,7 @@
       "plugin_status": null,
       "plugin_type": "ingest",
       "reason_code": "NOT_IN_RUN_SCOPE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "missing_output",
@@ -4743,7 +4744,7 @@
       "plugin_status": null,
       "plugin_type": "llm",
       "reason_code": "NOT_IN_RUN_SCOPE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "missing_output",
@@ -4759,7 +4760,7 @@
       "plugin_status": null,
       "plugin_type": "llm",
       "reason_code": "NOT_IN_RUN_SCOPE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4767,7 +4768,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "planner_basic produced 110 finding(s), but none matched current action-routing rules. This is a planner plugin with no downstream plugin dependencies in this run.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "report_or_prompt_artifacts",
       "modeled_output_supported": false,
@@ -4776,8 +4777,8 @@
       "plugin_name": "Planner Basic",
       "plugin_status": "ok",
       "plugin_type": "planner",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4787,7 +4788,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "process_mining_conformance_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4796,8 +4797,8 @@
       "plugin_name": "Process Mining Conformance v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4805,7 +4806,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "process_mining_discovery_v1 produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
@@ -4814,8 +4815,8 @@
       "plugin_name": "Process Mining Discovery v1",
       "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4835,7 +4836,7 @@
       "plugin_status": "ok",
       "plugin_type": "profile",
       "reason_code": "NO_FINDINGS",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4845,7 +4846,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "profile_eventlog produced 39 finding(s), but none matched current action-routing rules. This is a profile plugin; its output feeds downstream plugins: analysis_association_rules_apriori_v1, analysis_biclustering_cheng_church_v1, analysis_burst_modeling_hawkes_v1, analysis_constrained_clustering_cop_kmeans_v1, analysis_cur_decomposition_explain_v1, analysis_daily_pattern_alignment_dtw_v1, analysis_density_clustering_hdbscan_v1, analysis_dependency_community_leiden_v1, analysis_dependency_community_louvain_v1, analysis_diffusion_maps_manifold_v1, analysis_distribution_shift_wasserstein_v1, analysis_dmd_koopman_modes_v1 (+25 more).",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "dataset_or_schema_artifacts",
       "modeled_output_supported": false,
@@ -4854,8 +4855,8 @@
       "plugin_name": "Profile Eventlog",
       "plugin_status": "ok",
       "plugin_type": "profile",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "missing_output",
@@ -4869,7 +4870,7 @@
       "plugin_status": null,
       "plugin_type": "report",
       "reason_code": "NOT_IN_RUN_SCOPE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4884,7 +4885,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "report_decision_bundle_v2 produced 2 finding(s), but none matched current action-routing rules. This is a report plugin with no downstream plugin dependencies in this run.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "report_or_prompt_artifacts",
       "modeled_output_supported": false,
@@ -4893,8 +4894,8 @@
       "plugin_name": "Decision Report Bundle v2",
       "plugin_status": "ok",
       "plugin_type": "report",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4904,7 +4905,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "report_payout_report_v1 produced 1 finding(s), but none matched current action-routing rules. This is a report plugin with no downstream plugin dependencies in this run.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "report_or_prompt_artifacts",
       "modeled_output_supported": false,
@@ -4913,8 +4914,8 @@
       "plugin_name": "Payout Report (Batch/Multi-Input)",
       "plugin_status": "ok",
       "plugin_type": "report",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "missing_output",
@@ -4930,7 +4931,7 @@
       "plugin_status": null,
       "plugin_type": "report",
       "reason_code": "NOT_IN_RUN_SCOPE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4942,7 +4943,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "report_slide_kit_emitter_v2 produced 1 finding(s), but none matched current action-routing rules. This is a report plugin; its output feeds downstream plugins: report_decision_bundle_v2.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "report_or_prompt_artifacts",
       "modeled_output_supported": false,
@@ -4951,8 +4952,8 @@
       "plugin_name": "Slide Kit Emitter v2",
       "plugin_status": "ok",
       "plugin_type": "report",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4970,7 +4971,7 @@
       "plugin_status": "ok",
       "plugin_type": "transform",
       "reason_code": "NO_FINDINGS",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4988,7 +4989,7 @@
       "plugin_status": "ok",
       "plugin_type": "transform",
       "reason_code": "SQL_ASSIST_READY",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -4998,7 +4999,7 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "transform_sqlpack_materialize_v1 produced 1 finding(s), but none matched current action-routing rules. This is a transform plugin with no downstream plugin dependencies in this run.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NOT_APPLICABLE"
       },
       "expected_output_type": "dataset_or_schema_artifacts",
       "modeled_output_supported": false,
@@ -5007,8 +5008,8 @@
       "plugin_name": "SQL Pack Materializer (v1)",
       "plugin_status": "ok",
       "plugin_type": "transform",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "reason_code": "NOT_APPLICABLE",
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     },
     {
       "actionability_state": "explained_na",
@@ -5026,9 +5027,9 @@
       "plugin_status": "na",
       "plugin_type": "transform",
       "reason_code": "NOT_APPLICABLE",
-      "run_id": "full_loaded_3246cc7c_20260217T165636Z"
+      "run_id": "full_loaded_3246cc7c_20260218T191344Z"
     }
   ],
-  "run_id": "full_loaded_3246cc7c_20260217T165636Z",
+  "run_id": "full_loaded_3246cc7c_20260218T191344Z",
   "taxonomy_path": "docs/plugin_class_taxonomy.yaml"
 }
