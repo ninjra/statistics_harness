@@ -29,32 +29,69 @@ case "$ORCHESTRATOR_MODE" in
     ;;
 esac
 
-# Default: 2 analysis workers (user-requested). Override by exporting STAT_HARNESS_MAX_WORKERS_ANALYSIS.
-export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-2}"
+RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-respectful}"
+case "$RESOURCE_PROFILE" in
+  respectful|balanced|performance) ;;
+  *)
+    echo "ERROR: invalid STAT_HARNESS_RESOURCE_PROFILE=$RESOURCE_PROFILE (expected respectful|balanced|performance)"
+    exit 2
+    ;;
+esac
+
+if [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
+  default_workers_analysis="1"
+  default_mem_governor_max_used_pct="35"
+  default_plugin_rlimit_mb="3072"
+  default_nice_level="10"
+elif [[ "$RESOURCE_PROFILE" == "balanced" ]]; then
+  default_workers_analysis="2"
+  default_mem_governor_max_used_pct="45"
+  default_plugin_rlimit_mb="4096"
+  default_nice_level="5"
+else
+  default_workers_analysis="2"
+  default_mem_governor_max_used_pct="60"
+  default_plugin_rlimit_mb="4096"
+  default_nice_level="0"
+fi
+
+export STAT_HARNESS_RESOURCE_PROFILE="$RESOURCE_PROFILE"
+export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-$default_workers_analysis}"
 export STAT_HARNESS_CLI_PROGRESS="${STAT_HARNESS_CLI_PROGRESS:-1}"
 export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 export STAT_HARNESS_STARTUP_INTEGRITY="${STAT_HARNESS_STARTUP_INTEGRITY:-off}"
 export STAT_HARNESS_DISCOVERY_TOP_N="${STAT_HARNESS_DISCOVERY_TOP_N:-12}"
 export STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE="${STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE:-0.0}"
 export STAT_HARNESS_MAX_OBVIOUSNESS="${STAT_HARNESS_MAX_OBVIOUSNESS:-0.74}"
-export STAT_HARNESS_ALLOW_ACTION_TYPES="${STAT_HARNESS_ALLOW_ACTION_TYPES:-batch_input,batch_group_candidate,batch_or_cache,batch_input_refactor,add_server,tune_schedule,unblock_dependency_chain,reduce_transition_gap}"
+export STAT_HARNESS_ALLOW_ACTION_TYPES="${STAT_HARNESS_ALLOW_ACTION_TYPES:-}"
 # Operator exclusion list: non-adjustable processes should not appear as recommendations.
 export STAT_HARNESS_EXCLUDE_PROCESSES="${STAT_HARNESS_EXCLUDE_PROCESSES:-losextchld,losloadcld,jbcreateje,jboachild,jbvalcdblk,jbinvoice,postwkfl,qemail,jbpreproof,rdimpairje}"
 # Soft memory governor defaults (operator override via env):
 # - if system RAM usage exceeds this, the pipeline will delay starting additional analysis plugins
 #   to avoid multi-plugin RAM spikes.
 export STAT_HARNESS_MEM_GOVERNOR_STAGES="${STAT_HARNESS_MEM_GOVERNOR_STAGES:-analysis}"
-export STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT="${STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT:-50}"
+export STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT="${STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT:-$default_mem_governor_max_used_pct}"
 export STAT_HARNESS_MEM_GOVERNOR_POLL_SECONDS="${STAT_HARNESS_MEM_GOVERNOR_POLL_SECONDS:-5}"
 export STAT_HARNESS_MEM_GOVERNOR_LOG_SECONDS="${STAT_HARNESS_MEM_GOVERNOR_LOG_SECONDS:-30}"
 # Hard cap each plugin subprocess address space to prevent host-level OOM kills.
-export STAT_HARNESS_PLUGIN_RLIMIT_AS_MB="${STAT_HARNESS_PLUGIN_RLIMIT_AS_MB:-4096}"
+export STAT_HARNESS_PLUGIN_RLIMIT_AS_MB="${STAT_HARNESS_PLUGIN_RLIMIT_AS_MB:-$default_plugin_rlimit_mb}"
 export STAT_HARNESS_KNOWN_ISSUES_MODE="$KNOWN_ISSUES_MODE"
 export STAT_HARNESS_ORCHESTRATOR_MODE="$ORCHESTRATOR_MODE"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
+export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
+export STAT_HARNESS_PROCESS_NICE_LEVEL="${STAT_HARNESS_PROCESS_NICE_LEVEL:-$default_nice_level}"
+export STAT_HARNESS_PROCESS_IONICE_CLASS="${STAT_HARNESS_PROCESS_IONICE_CLASS:-2}"
+export STAT_HARNESS_PROCESS_IONICE_PRIO="${STAT_HARNESS_PROCESS_IONICE_PRIO:-7}"
 
 LOG_PATH="$ROOT_DIR/appdata/full_run_${DATASET_VERSION_ID:0:8}_$(date -u +%Y%m%dT%H%M%SZ).log"
 
-nohup python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" >"$LOG_PATH" 2>&1 &
+if command -v ionice >/dev/null 2>&1; then
+  nohup ionice -c "${STAT_HARNESS_PROCESS_IONICE_CLASS}" -n "${STAT_HARNESS_PROCESS_IONICE_PRIO}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" >"$LOG_PATH" 2>&1 &
+else
+  nohup nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" >"$LOG_PATH" 2>&1 &
+fi
 PID="$!"
 
 sleep 0.5
@@ -88,4 +125,9 @@ echo "PID=$PID"
 echo "RUN_ID=$RUN_ID"
 echo "KNOWN_ISSUES_MODE=$KNOWN_ISSUES_MODE"
 echo "ORCHESTRATOR_MODE=$ORCHESTRATOR_MODE"
+echo "RESOURCE_PROFILE=$RESOURCE_PROFILE"
+echo "MAX_WORKERS_ANALYSIS=$STAT_HARNESS_MAX_WORKERS_ANALYSIS"
+echo "MEM_GOVERNOR_MAX_USED_PCT=$STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT"
+echo "PLUGIN_RLIMIT_AS_MB=$STAT_HARNESS_PLUGIN_RLIMIT_AS_MB"
+echo "PROCESS_NICE_LEVEL=$STAT_HARNESS_PROCESS_NICE_LEVEL"
 echo "LOG=$LOG_PATH"

@@ -3,7 +3,9 @@ from __future__ import annotations
 from statistic_harness.core.report import _build_recommendations
 
 
-def test_recommendations_include_non_actionable_explanations_with_downstream_lists() -> None:
+def test_recommendations_include_non_actionable_explanations_with_downstream_lists(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "0")
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "0")
     report = {
         "plugins": {
             "analysis_ideaspace_action_planner": {

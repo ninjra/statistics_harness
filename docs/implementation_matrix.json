@@ -26,6 +26,18 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "normative",
+      "doc_path": "docs/agent_execution_contract.md",
+      "missing_paths": [],
+      "plugin_ids": [
+        "analysis_close_cycle_contention"
+      ],
+      "referenced_paths": [
+        "scripts/verify_agent_execution_contract.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "generated",
       "doc_path": "docs/binding_implementation_matrix.json",
       "missing_paths": [],
@@ -1966,14 +1978,17 @@
       "doc_kind": "normative",
       "doc_path": "docs/operator_playbook_autonomous_insights.md",
       "missing_paths": [],
-      "plugin_ids": [],
+      "plugin_ids": [
+        "analysis_close_cycle_contention"
+      ],
       "referenced_paths": [
         "docs/plugin_class_actionability_matrix.json",
         "docs/plugin_example_cards/index.json",
         "scripts/build_plugin_class_actionability_matrix.py",
         "scripts/compare_plugin_actionability_runs.py",
         "scripts/generate_plugin_example_cards.py",
-        "scripts/show_actionable_results.py"
+        "scripts/show_actionable_results.py",
+        "scripts/verify_agent_execution_contract.py"
       ],
       "unresolved_plugin_tokens": []
     },
@@ -5763,6 +5778,7 @@
     "docs/4_pillars_scoring_spec.md",
     "docs/_codex_plugin_catalog.md",
     "docs/_codex_repo_manifest.txt",
+    "docs/agent_execution_contract.md",
     "docs/binding_implementation_matrix.json",
     "docs/binding_implementation_matrix.md",
     "docs/codex_stat_plugins_spec_pack.md",

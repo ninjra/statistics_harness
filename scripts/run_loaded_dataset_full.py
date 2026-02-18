@@ -712,6 +712,7 @@ def _extract_known_issue_checks(recs: dict[str, Any]) -> dict[str, Any]:
                 "plugin_id": str(item.get("plugin_id") or "").strip(),
                 "kind": str(item.get("kind") or "").strip(),
                 "observed_count": item.get("observed_count"),
+                "evidence_source": str(item.get("evidence_source") or "").strip(),
                 "min_count": expected.get("min_count"),
                 "max_count": expected.get("max_count"),
                 "modeled_percent": item.get("modeled_percent"),
@@ -1492,9 +1493,17 @@ def main() -> int:
     except (TypeError, ValueError):
         row_count = None
 
+    resource_profile = str(
+        os.environ.get("STAT_HARNESS_RESOURCE_PROFILE", "balanced")
+    ).strip().lower()
+    if resource_profile not in {"respectful", "balanced", "performance"}:
+        resource_profile = "balanced"
     # Large datasets: cap parallelism unless explicitly overridden.
     if row_count is not None and row_count >= 200_000:
-        os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "2")
+        if resource_profile == "respectful":
+            os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "1")
+        else:
+            os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "2")
 
     plugin_ids: list[str]
     if args.plugin_set == "auto":

@@ -1895,7 +1895,8 @@
         "needs_timestamp"
       ],
       "depends_on": [
-        "analysis_close_cycle_window_resolver"
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
       ],
       "description": "Model close-cycle completion-time impact from adding capacity (model-only findings).",
       "entrypoint": "plugin.py:Plugin",
@@ -1925,7 +1926,8 @@
         "needs_timestamp"
       ],
       "depends_on": [
-        "analysis_close_cycle_window_resolver"
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
       ],
       "description": "Detect close-cycle slowdowns and contention (e.g., qemail/qpec)",
       "entrypoint": "plugin.py:Plugin",

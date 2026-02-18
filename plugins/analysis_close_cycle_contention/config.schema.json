@@ -9,6 +9,7 @@
     "start_column": { "type": ["string", "null"] },
     "end_column": { "type": ["string", "null"] },
     "duration_column": { "type": ["string", "null"] },
+    "queue_column": { "type": ["string", "null"] },
     "server_column": { "type": ["string", "null"] },
     "user_column": { "type": ["string", "null"] },
     "param_column": { "type": ["string", "null"] },
@@ -23,6 +24,11 @@
     "max_unique_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
     "min_days": { "type": "integer", "minimum": 1 },
     "max_examples": { "type": "integer", "minimum": 1 },
-    "min_recommendation_pct": { "type": "number", "minimum": 0, "maximum": 1 }
+    "min_recommendation_pct": { "type": "number", "minimum": 0, "maximum": 1 },
+    "modeled_backstop_max_processes": { "type": "integer", "minimum": 1 },
+    "modeled_backstop_min_queue_wait_ratio": { "type": "number", "minimum": 1 },
+    "modeled_backstop_min_boundary_overlap_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+    "month_boundary_window_days": { "type": "integer", "minimum": 0, "maximum": 10 },
+    "priority_processes": { "type": "array", "items": { "type": "string" } }
   }
 }

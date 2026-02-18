@@ -138,3 +138,73 @@ def test_close_cycle_contention_prefers_process_id_over_queue_id(run_dir):
     result = Plugin().run(ctx)
     assert result.status == "ok"
     assert result.metrics.get("process_column") == "PROCESS_ID"
+
+
+def test_close_cycle_contention_returns_not_applicable_instead_of_skipped(run_dir):
+    df = pd.DataFrame(
+        [
+            {
+                "PROCESS_ID": "qemail",
+                "START_TS": "2026-01-20T08:00:00",
+            }
+        ]
+    )
+    ctx = make_context(run_dir, df, {})
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    assert result.metrics.get("not_applicable_reason") == "no_duration_data"
+    assert any(
+        str(item.get("decision") or "") == "not_applicable"
+        for item in result.findings
+    )
+
+
+def test_close_cycle_contention_normalizes_qemail_aliases(run_dir):
+    rows = []
+    for day in range(10, 20):
+        date = dt.datetime(2026, 1, day, 8, 0, 0)
+        _add_day(rows, date, qemail_count=1, other_duration=15)
+    for day in range(20, 32):
+        date = dt.datetime(2026, 1, day, 8, 0, 0)
+        for idx in range(10):
+            rows.append(
+                {
+                    "process": "qpec_job",
+                    "timestamp": date + dt.timedelta(minutes=idx),
+                    "duration": 15,
+                    "server": "qpec1",
+                    "params": "job=main",
+                }
+            )
+        for idx in range(50):
+            rows.append(
+                {
+                    "process": "QEMAIL_MAIN" if idx % 2 == 0 else "qemail-burst",
+                    "timestamp": date + dt.timedelta(minutes=60 + idx),
+                    "duration": 1,
+                    "server": "qpec1",
+                    "params": "noop=true",
+                }
+            )
+
+    df = pd.DataFrame(rows)
+    df["timestamp"] = df["timestamp"].astype(str)
+    ctx = make_context(
+        run_dir,
+        df,
+        {
+            "modeled_backstop_min_close_runs": 10,
+            "modeled_backstop_min_pct": 0.10,
+            "modeled_backstop_max_processes": 25,
+        },
+    )
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    qemail_findings = [
+        item
+        for item in result.findings
+        if item.get("kind") == "close_cycle_contention"
+        and str(item.get("process_norm") or "") == "qemail"
+    ]
+    assert qemail_findings
+    assert all(str(item.get("process") or "") == "qemail" for item in qemail_findings)

@@ -13,6 +13,21 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/agent_execution_contract.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_close_cycle_contention"
+      ],
+      "referenced_paths": [
+        "scripts/verify_agent_execution_contract.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/codex_stat_plugins_spec_pack.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -187,14 +202,17 @@
       "doc_path": "docs/operator_playbook_autonomous_insights.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
-      "plugin_ids": [],
+      "plugin_ids": [
+        "analysis_close_cycle_contention"
+      ],
       "referenced_paths": [
         "docs/plugin_class_actionability_matrix.json",
         "docs/plugin_example_cards/index.json",
         "scripts/build_plugin_class_actionability_matrix.py",
         "scripts/compare_plugin_actionability_runs.py",
         "scripts/generate_plugin_example_cards.py",
-        "scripts/show_actionable_results.py"
+        "scripts/show_actionable_results.py",
+        "scripts/verify_agent_execution_contract.py"
       ],
       "requirement_enforcement_paths": {},
       "requirement_ids": [],
@@ -4016,6 +4034,7 @@
   "missing_any": false,
   "scanned_docs": [
     "docs/4_pillars_scoring_spec.md",
+    "docs/agent_execution_contract.md",
     "docs/codex_stat_plugins_spec_pack.md",
     "docs/db_normalization_top10.md",
     "docs/docs_non_plugin_tokens.json",

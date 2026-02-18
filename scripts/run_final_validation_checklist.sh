@@ -197,6 +197,21 @@ python scripts/show_actionable_results.py --run-id "$RUN_ID" | tee "$CHECK_DIR/s
 echo "STEP=build_summary"
 python scripts/build_final_validation_summary.py --run-id "$RUN_ID" --out "$CHECK_DIR/summary.json" | tee "$CHECK_DIR/summary_console.log"
 
+echo "STEP=verify_agent_execution_contract RUN_ID=$RUN_ID"
+contract_json="$CHECK_DIR/agent_execution_contract.json"
+contract_console="$CHECK_DIR/agent_execution_contract_console.log"
+contract_cmd=(python scripts/verify_agent_execution_contract.py --run-id "$RUN_ID" --expected-known-issues-mode "$KNOWN_ISSUES_MODE" --out "$contract_json")
+if [[ "$KNOWN_ISSUES_MODE" == "on" ]]; then
+  contract_cmd+=(--require-known-signature "analysis_close_cycle_contention:close_cycle_contention")
+fi
+contract_rc=0
+"${contract_cmd[@]}" > "$contract_console" 2>&1 || contract_rc=$?
+cat "$contract_console"
+contract_ok="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}; print('1' if bool(d.get('ok')) else '0')" "$contract_json")"
+if [[ "$contract_rc" -ne 0 || "$contract_ok" != "1" ]]; then
+  echo "AGENT_EXECUTION_CONTRACT_FAILED=1"
+fi
+
 run_status_final="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('run_status') or ''))" "$CHECK_DIR/summary.json")"
 skip_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); c=d.get('plugin_status_counts') or {}; print(int(c.get('skipped',0)))" "$CHECK_DIR/summary.json")"
 degraded_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); c=d.get('plugin_status_counts') or {}; print(int(c.get('degraded',0)))" "$CHECK_DIR/summary.json")"
@@ -228,6 +243,7 @@ if [[ "$unexplained_plugin_count" -ne 0 ]]; then ok=false; fi
 if [[ "$blank_kind_findings_count" -ne 0 ]]; then ok=false; fi
 if [[ "$explanations_missing_plain_text_count" -ne 0 ]]; then ok=false; fi
 if [[ "$non_decision_explanations_missing_downstream_count" -ne 0 ]]; then ok=false; fi
+if [[ "$contract_rc" -ne 0 || "$contract_ok" != "1" ]]; then ok=false; fi
 if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" == "1" ]]; then ok=false; fi
 if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" != "1" ]]; then
   echo "STREAMING_POLICY_WARNING runtime_contract_mismatch_count=$runtime_contract_mismatch_count (set STAT_HARNESS_STREAMING_POLICY_STRICT=1 to fail)"

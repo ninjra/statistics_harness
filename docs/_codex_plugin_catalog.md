@@ -36,9 +36,9 @@
 | `analysis_chi_square_association` | Chi Square Association | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_circular_time_of_day_drift_v1` | analysis_circular_time_of_day_drift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_close_cycle_capacity_impact` | Close Cycle Capacity Impact | `plugin.py:Plugin` | 1 | 2 |
-| `analysis_close_cycle_capacity_model` | Close Cycle Capacity Model | `plugin.py:Plugin` | 1 | 2 |
+| `analysis_close_cycle_capacity_model` | Close Cycle Capacity Model | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_close_cycle_change_point_v1` | Close Cycle Change Point (Heuristic) | `plugin.py:Plugin` | 2 | 1 |
-| `analysis_close_cycle_contention` | Close Cycle Contention Analysis | `plugin.py:Plugin` | 1 | 2 |
+| `analysis_close_cycle_contention` | Close Cycle Contention Analysis | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_close_cycle_duration_shift` | Close Cycle Duration Shift Analysis | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_close_cycle_revenue_compression` | Close Cycle Revenue Compression | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_close_cycle_start_backtrack_v1` | Close Cycle Start Backtrack v1 | `plugin.py:Plugin` | 0 | 2 |

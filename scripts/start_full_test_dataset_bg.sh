@@ -8,14 +8,31 @@ cd "$ROOT_DIR"
 . "$ROOT_DIR/.venv/bin/activate"
 export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 
-export STAT_HARNESS_MAX_WORKERS_ANALYSIS="2"
+RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-respectful}"
+if [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
+  default_workers_analysis="1"
+  default_nice_level="10"
+elif [[ "$RESOURCE_PROFILE" == "balanced" ]]; then
+  default_workers_analysis="2"
+  default_nice_level="5"
+else
+  default_workers_analysis="2"
+  default_nice_level="0"
+fi
+export STAT_HARNESS_RESOURCE_PROFILE="$RESOURCE_PROFILE"
+export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-$default_workers_analysis}"
 export STAT_HARNESS_CLI_PROGRESS="1"
 export STAT_HARNESS_STARTUP_INTEGRITY="off"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
+export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
+export STAT_HARNESS_PROCESS_NICE_LEVEL="${STAT_HARNESS_PROCESS_NICE_LEVEL:-$default_nice_level}"
 
 export DATASET_VERSION_ID="3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a"
 LOG_PATH="$ROOT_DIR/appdata/full_run_${DATASET_VERSION_ID:0:8}_$(date -u +%Y%m%dT%H%M%SZ).log"
 
-nohup python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed 123 >"$LOG_PATH" 2>&1 &
+nohup nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed 123 >"$LOG_PATH" 2>&1 &
 PID="$!"
 
 sleep 0.5

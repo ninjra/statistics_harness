@@ -171,8 +171,14 @@ def _chi2_table(table: np.ndarray) -> tuple[float, float]:
     if table.size == 0:
         return 1.0, 0.0
     if HAS_SCIPY:
-        chi2, p, _, _ = scipy_stats.chi2_contingency(table)
-        return float(p), float(chi2)
+        try:
+            chi2, p, _, _ = scipy_stats.chi2_contingency(table)
+            return float(p), float(chi2)
+        except ValueError:
+            # Some sparse categorical cross-tabs can trigger SciPy's
+            # "expected frequencies has a zero element" path. Treat this
+            # deterministically as non-significant instead of failing plugin.
+            return 1.0, 0.0
     return 1.0, 0.0
 
 
@@ -314,14 +320,44 @@ def _chi_square_association(
         return PluginResult("skipped", "No k-anonymous categorical pairs detected", {}, [], [], None)
 
     max_pairs = int(config.get("max_pairs", 80))
+    max_levels_per_col = int(config.get("max_unique_levels_per_column", 2000))
+    max_cells = int(config.get("max_contingency_cells", 500_000))
     pvals: list[float] = []
     rows: list[dict[str, Any]] = []
+    eligible_level_counts: dict[str, int] = {}
+    skipped_large_pairs = 0
+    skipped_crosstab_alloc = 0
+    for col in cols:
+        try:
+            vc = df[col].value_counts(dropna=False)
+            eligible = int((vc >= k_min).sum())
+        except Exception:
+            eligible = 0
+        if eligible > 0:
+            eligible_level_counts[col] = eligible
     for i in range(len(cols)):
         for j in range(i + 1, len(cols)):
             if timer.exceeded() or len(rows) >= max_pairs:
                 break
             a, b = cols[i], cols[j]
-            tab = pd.crosstab(df[a], df[b], dropna=False)
+            levels_a = int(eligible_level_counts.get(a, 0))
+            levels_b = int(eligible_level_counts.get(b, 0))
+            if levels_a > max_levels_per_col or levels_b > max_levels_per_col:
+                skipped_large_pairs += 1
+                continue
+            if levels_a > 0 and levels_b > 0 and (levels_a * levels_b) > max_cells:
+                skipped_large_pairs += 1
+                continue
+            try:
+                tab = pd.crosstab(df[a], df[b], dropna=False)
+            except MemoryError:
+                skipped_crosstab_alloc += 1
+                continue
+            except ValueError as exc:
+                if "Unable to allocate" in str(exc):
+                    skipped_crosstab_alloc += 1
+                    continue
+                raise
             # k-anon prune rows/cols
             tab = tab.loc[tab.sum(axis=1) >= k_min, tab.sum(axis=0) >= k_min]
             if tab.shape[0] < 2 or tab.shape[1] < 2:
@@ -345,7 +381,17 @@ def _chi_square_association(
             break
 
     if not rows:
-        return PluginResult("ok", "No chi-square pairs eligible under k-min/budget", _basic_metrics(df, sample_meta), [], [], None)
+        metrics = _basic_metrics(df, sample_meta)
+        metrics["skipped_large_pairs"] = int(skipped_large_pairs)
+        metrics["skipped_crosstab_alloc"] = int(skipped_crosstab_alloc)
+        return PluginResult(
+            "ok",
+            "No chi-square pairs eligible under k-min/budget",
+            metrics,
+            [],
+            [],
+            None,
+        )
 
     qvals, _ = bh_fdr(pvals)
     findings: list[dict[str, Any]] = []
@@ -355,8 +401,14 @@ def _chi_square_association(
             continue
         findings.append({"kind": "chi_square_association", "measurement_type": "measured", **row})
     artifacts = [_artifact(ctx, plugin_id, "chi_square_association.json", {"rows": rows}, "json")]
-    summary = f"Chi-square: computed={len(rows)} significant={len(findings)}"
-    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
+    summary = (
+        f"Chi-square: computed={len(rows)} significant={len(findings)} "
+        f"skipped_large_pairs={skipped_large_pairs} skipped_crosstab_alloc={skipped_crosstab_alloc}"
+    )
+    metrics = _basic_metrics(df, sample_meta)
+    metrics["skipped_large_pairs"] = int(skipped_large_pairs)
+    metrics["skipped_crosstab_alloc"] = int(skipped_crosstab_alloc)
+    return PluginResult("ok", summary, metrics, findings, artifacts, None)
 
 
 def _anova_auto(
@@ -2354,6 +2406,23 @@ def _actionable_ops_levers_v1(
                 f"Upper bound: {_fmt_hours(impact_hours)}{per_day_txt} of wait time above {thr:.0f}s attributable to this linkage in the observed data. "
                 "Next: confirm the linkage subset in the dependency artifact, then decide whether to relax the dependency rule, allow overlap/parallelism, or reduce the upstream step duration."
             )
+        elif action_type == "orchestrate_chain":
+            parent_raw = str((extra or {}).get("parent_process") or evidence.get("parent_process") or "").strip()
+            child_raw = str((extra or {}).get("child_process") or evidence.get("child_process") or "").strip()
+            parent = redactor(parent_raw) if parent_raw else label
+            child = redactor(child_raw) if child_raw else "(downstream child)"
+            chain_ratio = evidence.get("child_chain_ratio")
+            ratio_txt = (
+                f"{float(chain_ratio) * 100.0:.1f}%"
+                if isinstance(chain_ratio, (int, float))
+                else "high"
+            )
+            recommendation = (
+                f"{child} behaves like a chain child (dependency/master linkage non-null ratio {ratio_txt}), "
+                f"so target {parent} or the dependency rule instead of changing {child} directly. "
+                f"Upper bound: {_fmt_hours(impact_hours)} of wait time above {thr:.0f}s tied to this parent->child linkage. "
+                "Next: shorten parent runtime, enable overlap/parallelism where safe, or remove unnecessary dependency edges."
+            )
         elif action_type == "reschedule":
             avoid = (extra or {}).get("avoid_window") or {}
             target = (extra or {}).get("target_window") or {}
@@ -2380,6 +2449,11 @@ def _actionable_ops_levers_v1(
             coverage = (extra or {}).get("coverage")
             unique_ratio = (extra or {}).get("unique_ratio")
             reducible = (extra or {}).get("estimated_calls_reduced")
+            top_user = str((extra or {}).get("top_user_redacted") or "").strip()
+            top_user_runs = (extra or {}).get("top_user_runs")
+            top_user_share = (extra or {}).get("top_user_run_share")
+            distinct_users = (extra or {}).get("distinct_users")
+            user_runs_total = (extra or {}).get("user_runs_total")
             cm_txt = f" in close month {cm}" if cm else ""
             runs_txt = f"{int(runs):,}" if isinstance(runs, (int, float)) else "many"
             uniq_txt = f"{int(uniq):,}" if isinstance(uniq, (int, float)) else "many"
@@ -2395,12 +2469,53 @@ def _actionable_ops_levers_v1(
             )
             reducible_txt = f"{int(reducible):,}" if isinstance(reducible, (int, float)) else ""
             reducible_clause = f" (reducing job launches by ~{reducible_txt})" if reducible_txt else ""
+            user_loop_clause = ""
+            if (
+                isinstance(top_user_runs, (int, float))
+                and isinstance(top_user_share, (int, float))
+                and isinstance(user_runs_total, (int, float))
+                and float(top_user_runs) > 1.0
+                and float(top_user_share) >= 0.5
+            ):
+                user_label = top_user if top_user else "single user"
+                user_loop_clause = (
+                    f" Manual-loop signal: {user_label} executed {int(top_user_runs):,} of "
+                    f"{int(user_runs_total):,} close-window runs "
+                    f"({float(top_user_share) * 100.0:.1f}% concentration"
+                )
+                if isinstance(distinct_users, (int, float)):
+                    user_loop_clause += f", {int(distinct_users):,} distinct users overall"
+                user_loop_clause += ")."
             recommendation = (
                 f"Convert specific process_id `{label}` to batch-input mode{cm_txt}. "
                 f"Why: {runs_txt} runs handled {uniq_txt} unique `{key}` values "
                 f"(coverage {coverage_txt}, uniqueness {unique_ratio_txt}), which indicates one-call-per-value sweep behavior. "
                 f"Change `{label}` to accept a list of `{key}` values and process one close-month cohort per run{reducible_clause}. "
                 f"Upper bound: {_fmt_hours(impact_hours)} of over-threshold wait time above {thr:.0f}s associated with this process over the observation window (not guaranteed)."
+                f"{user_loop_clause}"
+            )
+        elif action_type == "batch_group_candidate":
+            key = str((extra or {}).get("key") or evidence.get("key") or "").strip() or "parameter"
+            cm = str((extra or {}).get("best_close_month") or evidence.get("close_month") or "").strip()
+            target_ids_raw = (extra or {}).get("target_process_ids") or evidence.get("target_process_ids")
+            target_ids = [
+                str(v).strip().lower()
+                for v in (target_ids_raw if isinstance(target_ids_raw, list) else [])
+                if isinstance(v, str) and str(v).strip()
+            ]
+            target_ids = list(dict.fromkeys(target_ids))
+            target_preview = ", ".join(f"`{redactor(pid)}`" for pid in target_ids[:8])
+            if len(target_ids) > 8:
+                target_preview += f", +{len(target_ids) - 8} more"
+            cm_txt = f" for close month {cm}" if cm else ""
+            reducible = (extra or {}).get("estimated_calls_reduced") or evidence.get("estimated_calls_reduced")
+            reducible_txt = f"{int(reducible):,}" if isinstance(reducible, (int, float)) else "multiple"
+            recommendation = (
+                f"Convert the payout cohort sweep{cm_txt} to explicit multi-input runs by `{key}`. "
+                f"Specific process_id targets: {target_preview if target_preview else f'`{label}`'}. "
+                f"Change each listed process to accept a list of `{key}` values, then run one cohort execution instead of many single-value launches "
+                f"(estimated launch reduction ~{reducible_txt}). "
+                f"Upper bound: {_fmt_hours(impact_hours)} of over-threshold wait above {thr:.0f}s across this grouped workload."
             )
         elif action_type == "throttle_or_dedupe":
             per_day = _fmt_hours(impact_hours_per_day) if impact_hours_per_day is not None else None
@@ -2531,6 +2646,11 @@ def _actionable_ops_levers_v1(
         if not timer.exceeded():
             pq = pd.to_numeric(df[pqid_col], errors="coerce")
             depq = pd.to_numeric(df[dep_col], errors="coerce")
+            masterq = (
+                pd.to_numeric(df["MASTER_PROCESS_QUEUE_ID"], errors="coerce")
+                if "MASTER_PROCESS_QUEUE_ID" in df.columns
+                else None
+            )
             # Build a best-effort mapping from queue_id -> process_id for parent resolution.
             map_df = (
                 pd.DataFrame({pqid_col: pq, "_proc": proc})
@@ -2571,10 +2691,50 @@ def _actionable_ops_levers_v1(
                         n = int(row.get("count") or 0)
                         if not parent or sum_over <= 0.0:
                             continue
+                        child_str = str(child).strip()
+                        child_mask = proc.astype(str) == child_str
+                        child_rows_total = int(child_mask.sum())
+                        dep_non_null_ratio = None
+                        dep_null_ratio = None
+                        master_non_null_ratio = None
+                        master_null_ratio = None
+                        if child_rows_total > 0:
+                            dep_non_null = int(depq[child_mask].notna().sum())
+                            dep_non_null_ratio = float(dep_non_null) / float(child_rows_total)
+                            dep_null_ratio = 1.0 - dep_non_null_ratio
+                            if isinstance(masterq, pd.Series):
+                                master_non_null = int(masterq[child_mask].notna().sum())
+                                master_non_null_ratio = float(master_non_null) / float(child_rows_total)
+                                master_null_ratio = 1.0 - master_non_null_ratio
+                        distinct_parent_count = int(
+                            grp[grp["_child"] == child]["_parent"].nunique(dropna=True)
+                        )
+                        chain_ratio_candidates = [
+                            float(v)
+                            for v in (dep_non_null_ratio, master_non_null_ratio)
+                            if isinstance(v, (int, float))
+                        ]
+                        chain_ratio = max(chain_ratio_candidates) if chain_ratio_candidates else 0.0
+                        chain_child_ratio_min = float(
+                            config.get("dependency_chain_child_ratio_min", 0.95)
+                        )
+                        likely_chain_child = bool(
+                            child_rows_total > 0 and chain_ratio >= chain_child_ratio_min
+                        )
+                        target_process = parent if likely_chain_child else child_str
+                        target_action = (
+                            "orchestrate_chain" if likely_chain_child else "unblock_dependency_chain"
+                        )
+                        title = (
+                            f"Reduce blocker {parent} to unblock {child}"
+                            if likely_chain_child
+                            else f"Unblock {child} when preceded by {parent}"
+                        )
+                        feasibility = "indirect_only" if likely_chain_child else "direct_child_actionable"
                         emit(
-                            title=f"Unblock {child} when preceded by {parent}",
-                            action_type="unblock_dependency_chain",
-                            process_value=child,
+                            title=title,
+                            action_type=target_action,
+                            process_value=target_process,
                             # Upper-bound: if this parent->child blockage were eliminated entirely.
                             expected_delta_seconds=sum_over,
                             expected_delta_percent=None,
@@ -2592,14 +2752,25 @@ def _actionable_ops_levers_v1(
                                 "wait_threshold_seconds": float(wait_threshold_seconds),
                                 "rows_with_dependency": int(len(pairs)),
                                 "parent_process": parent,
-                                "child_process": child,
+                                "child_process": child_str,
                                 "subset_runs": n,
                                 "subset_over_threshold_wait_sec_total": sum_over,
+                                "child_rows_total": child_rows_total,
+                                "child_dependency_non_null_ratio": dep_non_null_ratio,
+                                "child_dependency_null_ratio": dep_null_ratio,
+                                "child_master_queue_non_null_ratio": master_non_null_ratio,
+                                "child_master_queue_null_ratio": master_null_ratio,
+                                "child_distinct_parent_count": distinct_parent_count,
+                                "child_chain_ratio": chain_ratio,
+                                "chain_child_ratio_min": chain_child_ratio_min,
+                                "likely_chain_child": likely_chain_child,
+                                "actionability_mode": feasibility,
                                 "dependency_hotspots_artifact": str(artifacts[-1].path) if artifacts else None,
                             },
                             extra={
                                 "parent_process": redactor(parent),
-                                "child_process": redactor(str(child)),
+                                "child_process": redactor(child_str),
+                                "actionability_mode": feasibility,
                             },
                         )
 
@@ -2921,6 +3092,7 @@ def _actionable_ops_levers_v1(
         proc_norm_series = df[process_col].astype(str).str.strip().str.lower()
         _over_sum_by_proc_norm = over.groupby(proc_norm_series, dropna=False).sum() if not over.empty else pd.Series(dtype=float)
         median_close_by_proc: dict[str, float] = {}
+        user_repeat_by_proc: dict[str, dict[str, Any]] = {}
         if (queue_col or start_col or time_col) and (queue_col or start_col or time_col) in df.columns:
             ts_local = pd.to_datetime(df[queue_col or start_col or time_col], errors="coerce", utc=False)
             if ts_local.notna().any():
@@ -2935,6 +3107,62 @@ def _actionable_ops_levers_v1(
                     median_close_by_proc = {str(k): float(v) for k, v in med.items() if isinstance(v, (int, float)) and math.isfinite(float(v))}
                 except Exception:
                     median_close_by_proc = {}
+        user_col = None
+        for candidate in (
+            "USER_ID",
+            "ASSIGNED_USER_ID",
+            "OWNER_ID",
+            "OPERATOR_ID",
+            "REQUEST_USER_ID",
+            "USER_ID_RQST_TERMINATE",
+        ):
+            if candidate in df.columns:
+                user_col = candidate
+                break
+        if not isinstance(user_col, str) or user_col not in df.columns:
+            inferred_user_col = _pick_from_all(("user", "owner", "operator", "request_user"))
+            if isinstance(inferred_user_col, str) and inferred_user_col in df.columns:
+                user_col = inferred_user_col
+        if isinstance(user_col, str) and user_col in df.columns:
+            try:
+                user_series = df[user_col].astype(str).str.strip()
+                proc_series = proc_norm_series.astype(str).str.strip().str.lower()
+                valid = (
+                    proc_series.ne("")
+                    & user_series.ne("")
+                    & user_series.str.lower().ne("nan")
+                    & user_series.str.lower().ne("none")
+                )
+                if bool(valid.any()):
+                    tmp_users = pd.DataFrame(
+                        {"process_norm": proc_series[valid], "user_norm": user_series[valid]}
+                    )
+                    pair_counts = (
+                        tmp_users.groupby(["process_norm", "user_norm"], dropna=False)
+                        .size()
+                        .rename("runs")
+                        .reset_index()
+                    )
+                    proc_totals = tmp_users.groupby("process_norm", dropna=False).size()
+                    for process_norm, sub in pair_counts.groupby("process_norm", dropna=False):
+                        if sub.empty:
+                            continue
+                        ordered = sub.sort_values(["runs", "user_norm"], ascending=[False, True])
+                        top = ordered.iloc[0]
+                        top_runs = int(top.get("runs") or 0)
+                        total_runs = int(proc_totals.get(process_norm, 0))
+                        if top_runs <= 0 or total_runs <= 0:
+                            continue
+                        user_repeat_by_proc[str(process_norm)] = {
+                            "user_column": str(user_col),
+                            "top_user_redacted": redactor(str(top.get("user_norm") or "")),
+                            "top_user_runs": top_runs,
+                            "top_user_run_share": float(top_runs) / float(total_runs),
+                            "distinct_users": int(sub["user_norm"].nunique(dropna=True)),
+                            "user_runs_total": total_runs,
+                        }
+            except Exception:
+                user_repeat_by_proc = {}
 
         emitted = 0
         emitted_batch_rows: list[dict[str, Any]] = []
@@ -2967,10 +3195,15 @@ def _actionable_ops_levers_v1(
             except Exception:
                 total_over = None
             median_close = median_close_by_proc.get(proc_norm)
+            user_repeat = user_repeat_by_proc.get(proc_norm, {})
             est_total = None
             if median_close is not None and math.isfinite(float(median_close)):
                 est_total = float(estimated_calls_reduced) * float(median_close)
-                if isinstance(total_over, (int, float)) and math.isfinite(float(total_over)):
+                if (
+                    isinstance(total_over, (int, float))
+                    and math.isfinite(float(total_over))
+                    and float(total_over) > 0.0
+                ):
                     est_total = min(est_total, float(total_over))
             elif isinstance(total_over, (int, float)) and math.isfinite(float(total_over)):
                 est_total = float(total_over)
@@ -3000,6 +3233,12 @@ def _actionable_ops_levers_v1(
                     "batch_input_candidates_artifact": str(artifacts[-1].path) if artifacts else None,
                     "over_threshold_seconds_total_upper_bound": float(total_over) if isinstance(total_over, (int, float)) else None,
                     "median_close_target_seconds": float(median_close) if isinstance(median_close, (int, float)) else None,
+                    "user_column": user_repeat.get("user_column"),
+                    "top_user_redacted": user_repeat.get("top_user_redacted"),
+                    "top_user_runs": user_repeat.get("top_user_runs"),
+                    "top_user_run_share": user_repeat.get("top_user_run_share"),
+                    "distinct_users": user_repeat.get("distinct_users"),
+                    "user_runs_total": user_repeat.get("user_runs_total"),
                 },
                 extra={
                     "key": key,
@@ -3009,6 +3248,11 @@ def _actionable_ops_levers_v1(
                     "coverage": float(row.get("coverage")) if isinstance(row.get("coverage"), (int, float)) else row.get("coverage"),
                     "unique_ratio": float(row.get("unique_ratio")) if isinstance(row.get("unique_ratio"), (int, float)) else row.get("unique_ratio"),
                     "estimated_calls_reduced": int(estimated_calls_reduced),
+                    "top_user_redacted": user_repeat.get("top_user_redacted"),
+                    "top_user_runs": user_repeat.get("top_user_runs"),
+                    "top_user_run_share": user_repeat.get("top_user_run_share"),
+                    "distinct_users": user_repeat.get("distinct_users"),
+                    "user_runs_total": user_repeat.get("user_runs_total"),
                     "validation_steps": [
                         "Pick 5-10 sample values from the artifact and confirm they differ only by this key.",
                         "Add/validate a multi-input endpoint that accepts a list of these values.",

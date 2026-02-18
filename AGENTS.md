@@ -45,3 +45,10 @@ Always provide a single short one-line command with no line breaks and keep it u
 ## Mandatory Workflow Gates
 - `MUST`: Use short one-line commands only (no multi-line shell commands).
 - `MUST`: Before any file/code change, output the full available skills list and the selected-skill rationale for the current task.
+
+## Output Formatting (Hard Gate)
+- For Y/N status lists, render `Y` and `N` with raw ANSI escapes (not escaped text, not HTML):
+  - Green `Y`: `[32mY[0m`
+  - Red `N`: `[31mN[0m`
+- Status line format is strict: `<colored Y|N>:<identifier>`
+- Do not output literal `\x1b[...]` sequences; output real ANSI control characters.

@@ -72,6 +72,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
       "plugin_name": "Action Search (MIP Batched Scheduler)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -93,6 +94,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_action_search_simulated_annealing_v1",
       "plugin_name": "Action Search (Simulated Annealing)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -113,6 +115,7 @@
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_actionable_ops_levers_v1",
       "plugin_name": "Actionable Ops Levers (v1)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -130,6 +133,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_aft_survival_lognormal_v1",
       "plugin_name": "analysis_aft_survival_lognormal_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -149,6 +153,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_anova_auto",
       "plugin_name": "Anova Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -170,6 +175,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_association_rules_apriori_v1",
       "plugin_name": "Association Rules (Apriori)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -187,6 +193,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_attribution",
       "plugin_name": "Attribution Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -204,6 +211,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
       "plugin_name": "analysis_bayesian_online_changepoint_studentt_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -223,6 +231,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_bayesian_point_displacement",
       "plugin_name": "Bayesian Point Displacement",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -240,6 +249,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_benfords_law_anomaly_v1",
       "plugin_name": "analysis_benfords_law_anomaly_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -257,6 +267,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_beta_binomial_overdispersion_v1",
       "plugin_name": "analysis_beta_binomial_overdispersion_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -278,6 +289,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_biclustering_cheng_church_v1",
       "plugin_name": "Biclustering (Process\u00d7Param Coherence)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -297,6 +309,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_bocpd_gaussian",
       "plugin_name": "BOCPD Gaussian",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -314,6 +327,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
       "plugin_name": "analysis_bootstrap_ci_effect_sizes_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -331,6 +345,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
       "plugin_name": "analysis_bsts_intervention_counterfactual_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -350,6 +365,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_burst_detection_kleinberg",
       "plugin_name": "Burst Detection Kleinberg",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -370,6 +386,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_burst_modeling_hawkes_v1",
       "plugin_name": "Burst Modeling (Hawkes-Style)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -387,6 +404,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_busy_period_segmentation_v2",
       "plugin_name": "Busy Period Segmentation v2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -404,6 +422,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_capacity_frontier_envelope_v1",
       "plugin_name": "analysis_capacity_frontier_envelope_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -421,6 +440,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_capacity_scaling",
       "plugin_name": "Capacity Scaling Scenario",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -438,6 +458,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_cca_crossblock_association_v1",
       "plugin_name": "analysis_cca_crossblock_association_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -455,6 +476,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_chain_makespan",
       "plugin_name": "Chain Makespan Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -474,6 +496,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_change_impact_pre_post",
       "plugin_name": "Change Impact Pre Post",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -491,6 +514,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_change_score_consensus_v1",
       "plugin_name": "analysis_change_score_consensus_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -510,6 +534,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_changepoint_energy_edivisive",
       "plugin_name": "Changepoint Energy Edivisive",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -529,6 +554,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_changepoint_method_survey_guided",
       "plugin_name": "Changepoint Method Survey Guided",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -548,6 +574,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_changepoint_pelt",
       "plugin_name": "Changepoint Pelt",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -567,6 +594,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_chi_square_association",
       "plugin_name": "Chi Square Association",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -584,6 +612,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_circular_time_of_day_drift_v1",
       "plugin_name": "analysis_circular_time_of_day_drift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -596,15 +625,16 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_capacity_impact produced 2 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "CAPACITY_IMPACT_NOT_APPLICABLE"
       },
       "expected_output_type": "recommendation_items",
       "modeled_output_supported": false,
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_close_cycle_capacity_impact",
       "plugin_name": "Close Cycle Capacity Impact",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
+      "reason_code": "CAPACITY_IMPACT_NOT_APPLICABLE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -615,15 +645,16 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_capacity_model produced 7 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NO_MODELED_CAPACITY_GAIN"
       },
       "expected_output_type": "recommendation_items",
       "modeled_output_supported": false,
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_close_cycle_capacity_model",
       "plugin_name": "Close Cycle Capacity Model",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
+      "reason_code": "NO_MODELED_CAPACITY_GAIN",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -642,6 +673,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_change_point_v1",
       "plugin_name": "Close Cycle Change Point (Heuristic)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -661,6 +693,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_contention",
       "plugin_name": "Close Cycle Contention Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -680,6 +713,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_duration_shift",
       "plugin_name": "Close Cycle Duration Shift Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -692,15 +726,16 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_revenue_compression produced 1 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "NO_REVENUE_COMPRESSION_PRESSURE"
       },
       "expected_output_type": "findings_or_metrics",
       "modeled_output_supported": false,
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_revenue_compression",
       "plugin_name": "Close Cycle Revenue Compression",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
+      "reason_code": "NO_REVENUE_COMPRESSION_PRESSURE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -716,6 +751,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_start_backtrack_v1",
       "plugin_name": "Close Cycle Start Backtrack v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -728,15 +764,16 @@
       "example": {
         "kind": "non_actionable_explanation",
         "plain_english_explanation": "analysis_close_cycle_uplift produced 3 finding(s), but none matched current action-routing rules.",
-        "reason_code": "NOT_ROUTED_TO_ACTION"
+        "reason_code": "EXCLUDED_BY_PROCESS_POLICY"
       },
       "expected_output_type": "recommendation_items",
       "modeled_output_supported": false,
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_close_cycle_uplift",
       "plugin_name": "Close Cycle Uplift Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
-      "reason_code": "NOT_ROUTED_TO_ACTION",
+      "reason_code": "EXCLUDED_BY_PROCESS_POLICY",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -754,6 +791,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_close_cycle_window_resolver",
       "plugin_name": "Close Cycle Window Resolver",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -773,6 +811,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_cluster_analysis_auto",
       "plugin_name": "Cluster Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -790,6 +829,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_competing_risks_cif_v1",
       "plugin_name": "analysis_competing_risks_cif_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -807,6 +847,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_concurrency_reconstruction",
       "plugin_name": "Concurrency Reconstruction",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -826,6 +867,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_conformal_feature_prediction",
       "plugin_name": "Conformal Feature Prediction",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -845,6 +887,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_conformance_alignments",
       "plugin_name": "Conformance Alignments",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -862,6 +905,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_conformance_checking",
       "plugin_name": "Conformance Checking",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -883,6 +927,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
       "plugin_name": "Constrained Clustering (COP-KMeans)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -900,6 +945,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_constraints_violation_detector_v1",
       "plugin_name": "analysis_constraints_violation_detector_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -919,6 +965,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_control_chart_cusum",
       "plugin_name": "Control Chart Cusum",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -938,6 +985,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_control_chart_ewma",
       "plugin_name": "Control Chart Ewma",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -957,6 +1005,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_control_chart_individuals",
       "plugin_name": "Control Chart Individuals",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -974,6 +1023,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_control_chart_suite",
       "plugin_name": "Control Chart Suite",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -993,6 +1043,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_copula_dependence",
       "plugin_name": "Copula Dependence",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1014,6 +1065,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_cur_decomposition_explain_v1",
       "plugin_name": "CUR Decomposition Explainability",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1031,6 +1083,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_cusum_on_model_residuals_v1",
       "plugin_name": "analysis_cusum_on_model_residuals_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1051,6 +1104,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
       "plugin_name": "Daily Pattern Alignment (DTW)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1072,6 +1126,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_density_clustering_hdbscan_v1",
       "plugin_name": "Density Clustering (HDBSCAN)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1092,6 +1147,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dependency_community_leiden_v1",
       "plugin_name": "Dependency Community Detection (Leiden)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1112,6 +1168,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dependency_community_louvain_v1",
       "plugin_name": "Dependency Community Detection (Louvain)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1132,6 +1189,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dependency_critical_path_v1",
       "plugin_name": "Dependency Critical Path (Proxy)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1151,6 +1209,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dependency_graph_change_detection",
       "plugin_name": "Dependency Graph Change Detection",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1168,6 +1227,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dependency_resolution_join",
       "plugin_name": "Dependency Resolution Join",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1185,6 +1245,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_determinism_discipline",
       "plugin_name": "Determinism Discipline",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1206,6 +1267,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_diffusion_maps_manifold_v1",
       "plugin_name": "Diffusion Maps Manifold Drift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1223,6 +1285,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
       "plugin_name": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1243,6 +1306,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_discrete_event_queue_simulator_v1",
       "plugin_name": "Discrete-Event Queue Simulator",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1260,6 +1324,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_distance_correlation_screen_v1",
       "plugin_name": "analysis_distance_correlation_screen_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1277,6 +1342,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_distance_covariance_dependence_v1",
       "plugin_name": "analysis_distance_covariance_dependence_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1294,6 +1360,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_distribution_drift_suite",
       "plugin_name": "Distribution Drift Suite",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1314,6 +1381,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_distribution_shift_wasserstein_v1",
       "plugin_name": "Distribution Shift (Wasserstein/EMD)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1334,6 +1402,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dmd_koopman_modes_v1",
       "plugin_name": "Dynamic Mode Decomposition Koopman Modes",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1353,6 +1422,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dp_gmm",
       "plugin_name": "DP GMM",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1372,6 +1442,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_drift_adwin",
       "plugin_name": "Drift Adwin",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1389,6 +1460,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_dynamic_close_detection",
       "plugin_name": "Dynamic Close Window Detection",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1411,6 +1483,7 @@
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_ebm_action_verifier_v1",
       "plugin_name": "EBM Action Verifier (Kona Layer)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1430,6 +1503,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_effect_size_report",
       "plugin_name": "Effect Size Report",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1450,6 +1524,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
       "plugin_name": "Empirical Bayes Shrinkage Rankings",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1467,6 +1542,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_energy_distance_two_sample_v1",
       "plugin_name": "analysis_energy_distance_two_sample_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1486,6 +1562,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_event_count_bocpd_poisson",
       "plugin_name": "Event Count Bocpd Poisson",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1505,6 +1582,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_evt_gumbel_tail",
       "plugin_name": "Evt Gumbel Tail",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1524,6 +1602,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_evt_peaks_over_threshold",
       "plugin_name": "Evt Peaks Over Threshold",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1543,6 +1622,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_factor_analysis_auto",
       "plugin_name": "Factor Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1560,6 +1640,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_factor_rotation_varimax_v1",
       "plugin_name": "analysis_factor_rotation_varimax_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1577,6 +1658,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_fisher_exact_enrichment_v1",
       "plugin_name": "analysis_fisher_exact_enrichment_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1598,6 +1680,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
       "plugin_name": "Frequent Directions Covariance Sketch",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1619,6 +1702,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
       "plugin_name": "Frequent Param Sets (FP-Growth)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1636,6 +1720,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
       "plugin_name": "analysis_fused_lasso_trend_filtering_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1653,6 +1738,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_gam_spline_regression_v1",
       "plugin_name": "analysis_gam_spline_regression_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1670,6 +1756,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_garch_volatility_shift_v1",
       "plugin_name": "analysis_garch_volatility_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1689,6 +1776,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_gaussian_copula_shift",
       "plugin_name": "Gaussian Copula Shift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1708,6 +1796,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_gaussian_knockoffs",
       "plugin_name": "Gaussian Knockoffs",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1725,6 +1814,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_geometric_median_multivariate_location_v1",
       "plugin_name": "analysis_geometric_median_multivariate_location_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1745,6 +1835,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ges_score_based_causal_v1",
       "plugin_name": "GES-style Score-based Causal Graph",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1762,6 +1853,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graph_assortativity_shift_v1",
       "plugin_name": "analysis_graph_assortativity_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1782,6 +1874,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graph_min_cut_partition_v1",
       "plugin_name": "Graph Minimum Cut Partition",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1799,6 +1892,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graph_motif_triads_shift_v1",
       "plugin_name": "analysis_graph_motif_triads_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1816,6 +1910,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graph_pagerank_hotspots_v1",
       "plugin_name": "analysis_graph_pagerank_hotspots_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1835,6 +1930,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graph_topology_curves",
       "plugin_name": "Graph Topology Curves",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1854,6 +1950,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_graphical_lasso_dependency_network",
       "plugin_name": "Graphical Lasso Dependency Network",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1871,6 +1968,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
       "plugin_name": "analysis_haar_wavelet_transient_detector_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1890,6 +1988,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_hawkes_self_exciting",
       "plugin_name": "Hawkes Self Exciting",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1907,6 +2006,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_heavy_tail_index_hill_v1",
       "plugin_name": "analysis_heavy_tail_index_hill_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1924,6 +2024,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_higuchi_fractal_dimension_v1",
       "plugin_name": "analysis_higuchi_fractal_dimension_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1943,6 +2044,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_hmm_latent_state_sequences",
       "plugin_name": "Hmm Latent State Sequences",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1963,6 +2065,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_hold_time_attribution_v1",
       "plugin_name": "Hold Time Attribution",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -1984,6 +2087,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_hsic_independence_screen_v1",
       "plugin_name": "HSIC Nonlinear Dependence Screen",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2001,6 +2105,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_hurst_exponent_long_memory_v1",
       "plugin_name": "analysis_hurst_exponent_long_memory_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2018,6 +2123,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ica_source_separation_v1",
       "plugin_name": "analysis_ica_source_separation_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2038,6 +2144,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
       "plugin_name": "Invariant Causal Prediction Screen",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2060,6 +2167,7 @@
       "plugin_class": "direct_action_generators",
       "plugin_id": "analysis_ideaspace_action_planner",
       "plugin_name": "Ideaspace Action Planner",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2080,6 +2188,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ideaspace_energy_ebm_v1",
       "plugin_name": "Ideaspace Energy EBM (Kona Layer)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2100,6 +2209,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ideaspace_normative_gap",
       "plugin_name": "Ideaspace Normative Gap",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2119,6 +2229,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_isolation_forest",
       "plugin_name": "Isolation Forest",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2136,6 +2247,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_isolation_forest_anomaly",
       "plugin_name": "Isolation Forest Anomaly",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2155,6 +2267,7 @@
       "plugin_class": "synthesis_verification",
       "plugin_id": "analysis_issue_cards_v2",
       "plugin_name": "Issue Cards v2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2174,6 +2287,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_kernel_two_sample_mmd",
       "plugin_name": "Kernel Two Sample Mmd",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2193,6 +2307,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_kingman_vut_approx",
       "plugin_name": "Kingman Vut Approx",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2213,6 +2328,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_knn_graph_two_sample_test_v1",
       "plugin_name": "kNN Graph Two-sample Test",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2232,6 +2348,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_knockoff_wrapper_rf",
       "plugin_name": "Knockoff Wrapper RF",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2252,6 +2369,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
       "plugin_name": "KSD Stein Discrepancy Anomaly",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2271,6 +2389,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_lagged_predictability_test",
       "plugin_name": "Lagged Predictability Test",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2291,6 +2410,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_lingam_causal_discovery_v1",
       "plugin_name": "LiNGAM-style Causal Discovery",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2310,6 +2430,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_littles_law_consistency",
       "plugin_name": "Littles Law Consistency",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2329,6 +2450,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_local_outlier_factor",
       "plugin_name": "Local Outlier Factor",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2348,6 +2470,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_log_template_drain",
       "plugin_name": "Log Template Drain",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2365,6 +2488,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_log_template_mining_drain",
       "plugin_name": "Log Template Mining (Drain)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2382,6 +2506,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_lomb_scargle_periodogram_v1",
       "plugin_name": "analysis_lomb_scargle_periodogram_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2399,6 +2524,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_mann_kendall_trend_test_v1",
       "plugin_name": "analysis_mann_kendall_trend_test_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2418,6 +2544,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_map_permutation_test_karniski",
       "plugin_name": "Map Permutation Test Karniski",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2435,6 +2562,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_marked_point_process_intensity_v1",
       "plugin_name": "analysis_marked_point_process_intensity_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2454,6 +2582,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_markov_transition_shift",
       "plugin_name": "Markov Transition Shift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2473,6 +2602,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_matrix_profile_motifs_discords",
       "plugin_name": "Matrix Profile Motifs Discords",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2492,6 +2622,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_message_entropy_drift",
       "plugin_name": "Message Entropy Drift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2511,6 +2642,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_monte_carlo_surface_uncertainty",
       "plugin_name": "Monte Carlo Surface Uncertainty",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2528,6 +2660,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multicollinearity_vif_screen_v1",
       "plugin_name": "analysis_multicollinearity_vif_screen_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2547,6 +2680,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multiple_testing_fdr",
       "plugin_name": "Multiple Testing Fdr",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2564,6 +2698,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multiscale_entropy_mse_v1",
       "plugin_name": "analysis_multiscale_entropy_mse_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2581,6 +2716,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multivariate_changepoint_pelt",
       "plugin_name": "Multivariate Changepoint (PELT)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2598,6 +2734,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multivariate_control_charts",
       "plugin_name": "Multivariate Control Charts",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2617,6 +2754,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multivariate_ewma_control",
       "plugin_name": "Multivariate Ewma Control",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2636,6 +2774,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_multivariate_t2_control",
       "plugin_name": "Multivariate T2 Control",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2655,6 +2794,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_mutual_information_screen",
       "plugin_name": "Mutual Information Screen",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2672,6 +2812,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_negative_binomial_overdispersion_v1",
       "plugin_name": "analysis_negative_binomial_overdispersion_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2692,6 +2833,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_neural_additive_model_nam_v1",
       "plugin_name": "Neural Additive Model Approximation",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2712,6 +2854,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
       "plugin_name": "Node2Vec-style Graph Embedding Drift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2732,6 +2875,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_normalizing_flow_density_v1",
       "plugin_name": "Normalizing Flow Density Approximation",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2751,6 +2895,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_notears_linear",
       "plugin_name": "NOTEARS Linear",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2770,6 +2915,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_one_class_svm",
       "plugin_name": "One Class Svm",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2789,6 +2935,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_online_conformal_changepoint",
       "plugin_name": "Online Conformal Changepoint",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2806,6 +2953,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
       "plugin_name": "analysis_outlier_influence_cooks_distance_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2827,6 +2975,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_param_near_duplicate_minhash_v1",
       "plugin_name": "Param Near-Duplicate Detection (MinHash/LSH)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2848,6 +2997,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_param_near_duplicate_simhash_v1",
       "plugin_name": "Param Near-Duplicate Detection (SimHash)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2868,6 +3018,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_param_variant_explosion_v1",
       "plugin_name": "Param Variant Explosion",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2885,6 +3036,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_partial_correlation_network_shift_v1",
       "plugin_name": "analysis_partial_correlation_network_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2905,6 +3057,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
       "plugin_name": "PC Algorithm Causal Skeleton",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2924,6 +3077,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_pca_auto",
       "plugin_name": "Pca Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2943,6 +3097,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_pca_control_chart",
       "plugin_name": "Pca Control Chart",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2960,6 +3115,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_percentile_analysis",
       "plugin_name": "Percentile Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2979,6 +3135,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_periodicity_spectral_scan",
       "plugin_name": "Periodicity Spectral Scan",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -2996,6 +3153,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_permutation_entropy_drift_v1",
       "plugin_name": "analysis_permutation_entropy_drift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3016,6 +3174,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_phate_trajectory_embedding_v1",
       "plugin_name": "PHATE-like Trajectory Embedding",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3033,6 +3192,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
       "plugin_name": "analysis_piecewise_linear_trend_changepoints_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3050,6 +3210,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
       "plugin_name": "analysis_poisson_regression_rate_drivers_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3067,6 +3228,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_process_counterfactuals",
       "plugin_name": "Process Counterfactuals",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3086,6 +3248,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_process_drift_conformance_over_time",
       "plugin_name": "Process Drift Conformance Over Time",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3105,6 +3268,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_process_sequence",
       "plugin_name": "Process Sequence Mining",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3122,6 +3286,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_process_sequence_bottlenecks",
       "plugin_name": "Process Sequence Bottlenecks",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3141,6 +3306,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_proportional_hazards_duration",
       "plugin_name": "Proportional Hazards Duration",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3158,6 +3324,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_quantile_loss_boosting_v1",
       "plugin_name": "analysis_quantile_loss_boosting_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3175,6 +3342,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
       "plugin_name": "analysis_quantile_mapping_drift_qq_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3194,6 +3362,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_quantile_regression_duration",
       "plugin_name": "Quantile Regression Duration",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3211,6 +3380,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_quantile_regression_forest_v1",
       "plugin_name": "analysis_quantile_regression_forest_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3228,6 +3398,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
       "plugin_name": "analysis_quantile_sketch_p2_streaming_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3247,6 +3418,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_queue_delay_decomposition",
       "plugin_name": "Queue Delay Decomposition",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3266,6 +3438,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_queue_model_fit",
       "plugin_name": "Queue Model Fit",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3283,6 +3456,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
       "plugin_name": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3300,6 +3474,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_randomization_test_median_shift_v1",
       "plugin_name": "analysis_randomization_test_median_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3319,6 +3494,7 @@
       "plugin_class": "synthesis_verification",
       "plugin_id": "analysis_recommendation_dedupe_v2",
       "plugin_name": "Recommendation Dedupe v2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3336,6 +3512,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_recurrence_quantification_rqa_v1",
       "plugin_name": "analysis_recurrence_quantification_rqa_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3355,6 +3532,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_regression_auto",
       "plugin_name": "Regression Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3375,6 +3553,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_retry_rate_hotspots_v1",
       "plugin_name": "Retry Rate Hotspots",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3394,6 +3573,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_robust_covariance_outliers",
       "plugin_name": "Robust Covariance Outliers",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3413,6 +3593,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_robust_pca_pcp",
       "plugin_name": "Robust Pca Pcp",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3430,6 +3611,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_robust_pca_sparse_outliers",
       "plugin_name": "Robust PCA Sparse Outliers",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3447,6 +3629,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_robust_regression_huber_ransac_v1",
       "plugin_name": "analysis_robust_regression_huber_ransac_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3464,6 +3647,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sample_entropy_irregularity_v1",
       "plugin_name": "analysis_sample_entropy_irregularity_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3483,6 +3667,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_scan_statistics",
       "plugin_name": "Scan Statistics",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3500,6 +3685,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
       "plugin_name": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3517,6 +3703,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sequence_classification",
       "plugin_name": "Standalone vs Sequence Classification",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3537,6 +3724,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sequence_grammar_sequitur_v1",
       "plugin_name": "Sequence Grammar Inference (SEQUITUR)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3556,6 +3744,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sequential_patterns_prefixspan",
       "plugin_name": "Sequential Patterns Prefixspan",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3576,6 +3765,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
       "plugin_name": "Sequential Patterns (PrefixSpan)",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3597,6 +3787,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
       "plugin_name": "Similarity Graph Spectral Clustering",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3617,6 +3808,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sinkhorn_ot_drift_v1",
       "plugin_name": "Sinkhorn OT Drift",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3634,6 +3826,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
       "plugin_name": "analysis_sparse_pca_interpretable_components_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3651,6 +3844,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_spectral_radius_stability_v1",
       "plugin_name": "analysis_spectral_radius_stability_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3671,6 +3865,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
       "plugin_name": "SSA Decomposition and Changepoint",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3690,6 +3885,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_state_space_kalman_residuals",
       "plugin_name": "State Space Kalman Residuals",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3707,6 +3903,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_state_space_smoother_level_shift_v1",
       "plugin_name": "analysis_state_space_smoother_level_shift_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3724,6 +3921,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_stl_seasonal_decompose_v1",
       "plugin_name": "analysis_stl_seasonal_decompose_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3741,6 +3939,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_subspace_tracking_oja_v1",
       "plugin_name": "analysis_subspace_tracking_oja_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3760,6 +3959,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_fabric_sso_eigen",
       "plugin_name": "Surface Fabric Sso Eigen",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3779,6 +3979,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_fractal_dimension_variogram",
       "plugin_name": "Surface Fractal Dimension Variogram",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3798,6 +3999,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_hydrology_flow_watershed",
       "plugin_name": "Surface Hydrology Flow Watershed",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3817,6 +4019,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
       "plugin_name": "Surface Multiscale Wavelet Curvature",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3836,6 +4039,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_roughness_metrics",
       "plugin_name": "Surface Roughness Metrics",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3855,6 +4059,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_rugosity_index",
       "plugin_name": "Surface Rugosity Index",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3874,6 +4079,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_surface_terrain_position_index",
       "plugin_name": "Surface Terrain Position Index",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3893,6 +4099,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_survival_kaplan_meier",
       "plugin_name": "Survival Kaplan Meier",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3912,6 +4119,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_survival_time_to_event",
       "plugin_name": "Survival Time To Event",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3932,6 +4140,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_symbolic_regression_gp_v1",
       "plugin_name": "Symbolic Regression GP Approximation",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3952,6 +4161,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tabpfn_foundation_tabular_v1",
       "plugin_name": "TabPFN-style Few-shot Tabular Baseline",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3969,6 +4179,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tail_isolation",
       "plugin_name": "Tail Isolation",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -3988,6 +4199,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tda_betti_curve_changepoint",
       "plugin_name": "Tda Betti Curve Changepoint",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4007,6 +4219,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tda_mapper_graph",
       "plugin_name": "Tda Mapper Graph",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4026,6 +4239,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tda_persistence_landscapes",
       "plugin_name": "Tda Persistence Landscapes",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4045,6 +4259,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tda_persistent_homology",
       "plugin_name": "Tda Persistent Homology",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4064,6 +4279,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_template_drift_two_sample",
       "plugin_name": "Template Drift Two Sample",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4084,6 +4300,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_tensor_cp_parafac_decomp_v1",
       "plugin_name": "Tensor CP PARAFAC Decomposition",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4103,6 +4320,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_term_burst_kleinberg",
       "plugin_name": "Term Burst Kleinberg",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4122,6 +4340,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_time_series_analysis_auto",
       "plugin_name": "Time Series Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4141,6 +4360,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_topic_model_lda",
       "plugin_name": "Topic Model Lda",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4160,6 +4380,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_topographic_angle_dynamics",
       "plugin_name": "Topographic Angle Dynamics",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4179,6 +4400,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_topographic_similarity_angle_projection",
       "plugin_name": "Topographic Similarity Angle Projection",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4198,6 +4420,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_topographic_tanova_permutation",
       "plugin_name": "Topographic Tanova Permutation",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4218,6 +4441,7 @@
       "plugin_class": "synthesis_verification",
       "plugin_id": "analysis_traceability_manifest_v2",
       "plugin_name": "Traceability Manifest v2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4237,6 +4461,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_transfer_entropy_directional",
       "plugin_name": "Transfer Entropy Directional",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4256,6 +4481,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_ttests_auto",
       "plugin_name": "Ttests Auto",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4275,6 +4501,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_two_sample_categorical_chi2",
       "plugin_name": "Two Sample Categorical Chi2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4294,6 +4521,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_two_sample_numeric_ad",
       "plugin_name": "Two Sample Numeric Ad",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4313,6 +4541,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_two_sample_numeric_ks",
       "plugin_name": "Two Sample Numeric Ks",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4332,6 +4561,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_two_sample_numeric_mann_whitney",
       "plugin_name": "Two Sample Numeric Mann Whitney",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NO_ACTIONABLE_RESULT",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4349,6 +4579,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_upload_linkage",
       "plugin_name": "Upload to Revenue Linkage Analysis",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4366,6 +4597,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_user_host_savings",
       "plugin_name": "User/Host Savings",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4385,6 +4617,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_variant_differential",
       "plugin_name": "Variant Differential",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4405,6 +4638,7 @@
       "plugin_class": "synthesis_verification",
       "plugin_id": "analysis_waterfall_summary_v2",
       "plugin_name": "Waterfall Summary v2",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4422,6 +4656,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_wild_binary_segmentation_v1",
       "plugin_name": "analysis_wild_binary_segmentation_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4439,6 +4674,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "analysis_zero_inflated_count_model_v1",
       "plugin_name": "analysis_zero_inflated_count_model_v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4456,6 +4692,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "causal_recommendations_v1",
       "plugin_name": "Causal Recommendations v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4473,6 +4710,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "changepoint_detection_v1",
       "plugin_name": "Changepoint Detection v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4486,8 +4724,9 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "ingest_tabular",
       "plugin_name": "Ingest Tabular",
+      "plugin_status": null,
       "plugin_type": "ingest",
-      "reason_code": "NO_RECOMMENDATION_AND_NO_EXPLANATION",
+      "reason_code": "NOT_IN_RUN_SCOPE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -4501,8 +4740,9 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "llm_prompt_builder",
       "plugin_name": "LLM Prompt Builder",
+      "plugin_status": null,
       "plugin_type": "llm",
-      "reason_code": "NO_RECOMMENDATION_AND_NO_EXPLANATION",
+      "reason_code": "NOT_IN_RUN_SCOPE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -4516,8 +4756,9 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "llm_text2sql_local_generate_v1",
       "plugin_name": "Local Text2SQL Pack Generator (v1)",
+      "plugin_status": null,
       "plugin_type": "llm",
-      "reason_code": "NO_RECOMMENDATION_AND_NO_EXPLANATION",
+      "reason_code": "NOT_IN_RUN_SCOPE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -4533,6 +4774,7 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "planner_basic",
       "plugin_name": "Planner Basic",
+      "plugin_status": "ok",
       "plugin_type": "planner",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4552,6 +4794,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "process_mining_conformance_v1",
       "plugin_name": "Process Mining Conformance v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4569,6 +4812,7 @@
       "plugin_class": "supporting_signal_detectors",
       "plugin_id": "process_mining_discovery_v1",
       "plugin_name": "Process Mining Discovery v1",
+      "plugin_status": "ok",
       "plugin_type": "analysis",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4588,6 +4832,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "profile_basic",
       "plugin_name": "Profile Basic",
+      "plugin_status": "ok",
       "plugin_type": "profile",
       "reason_code": "NO_FINDINGS",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4607,6 +4852,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "profile_eventlog",
       "plugin_name": "Profile Eventlog",
+      "plugin_status": "ok",
       "plugin_type": "profile",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4620,8 +4866,9 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "report_bundle",
       "plugin_name": "Report Bundle",
+      "plugin_status": null,
       "plugin_type": "report",
-      "reason_code": "NO_RECOMMENDATION_AND_NO_EXPLANATION",
+      "reason_code": "NOT_IN_RUN_SCOPE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -4644,6 +4891,7 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "report_decision_bundle_v2",
       "plugin_name": "Decision Report Bundle v2",
+      "plugin_status": "ok",
       "plugin_type": "report",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4663,6 +4911,7 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "report_payout_report_v1",
       "plugin_name": "Payout Report (Batch/Multi-Input)",
+      "plugin_status": "ok",
       "plugin_type": "report",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4678,8 +4927,9 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "report_plain_english_v1",
       "plugin_name": "Plain-English Report (v1)",
+      "plugin_status": null,
       "plugin_type": "report",
-      "reason_code": "NO_RECOMMENDATION_AND_NO_EXPLANATION",
+      "reason_code": "NOT_IN_RUN_SCOPE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
     },
     {
@@ -4699,6 +4949,7 @@
       "plugin_class": "reporting_llm_post_processing",
       "plugin_id": "report_slide_kit_emitter_v2",
       "plugin_name": "Slide Kit Emitter v2",
+      "plugin_status": "ok",
       "plugin_type": "report",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4716,6 +4967,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "transform_normalize_mixed",
       "plugin_name": "Normalize Mixed Types",
+      "plugin_status": "ok",
       "plugin_type": "transform",
       "reason_code": "NO_FINDINGS",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4733,6 +4985,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "transform_sql_intents_pack_v1",
       "plugin_name": "SQL Intents Pack (v1)",
+      "plugin_status": "ok",
       "plugin_type": "transform",
       "reason_code": "SQL_ASSIST_READY",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4752,6 +5005,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "transform_sqlpack_materialize_v1",
       "plugin_name": "SQL Pack Materializer (v1)",
+      "plugin_status": "ok",
       "plugin_type": "transform",
       "reason_code": "NOT_ROUTED_TO_ACTION",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"
@@ -4769,6 +5023,7 @@
       "plugin_class": "ingest_profile_transform",
       "plugin_id": "transform_template",
       "plugin_name": "Template Transformer",
+      "plugin_status": "na",
       "plugin_type": "transform",
       "reason_code": "NOT_APPLICABLE",
       "run_id": "full_loaded_3246cc7c_20260217T165636Z"

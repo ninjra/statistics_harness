@@ -58,7 +58,7 @@ def test_allow_process_patterns_filters_discovery(monkeypatch) -> None:
     assert items[0].get("where", {}).get("process_norm") == "rpt_por002"
 
 
-def test_default_obviousness_filter_hides_obvious_actions(monkeypatch) -> None:
+def test_default_obviousness_filter_keeps_structural_actions(monkeypatch) -> None:
     monkeypatch.delenv("STAT_HARNESS_ALLOW_ACTION_TYPES", raising=False)
     monkeypatch.delenv("STAT_HARNESS_MAX_OBVIOUSNESS", raising=False)
     report = {
@@ -94,12 +94,15 @@ def test_default_obviousness_filter_hides_obvious_actions(monkeypatch) -> None:
     discovery = _build_discovery_recommendations(report, storage=None, run_dir=None)
     items = discovery.get("items") if isinstance(discovery, dict) else None
     assert isinstance(items, list)
-    assert len(items) == 1
-    assert items[0].get("action_type") == "batch_group_candidate"
-    assert items[0].get("obviousness_rank") == "needle"
+    action_types = {str(item.get("action_type") or "") for item in items}
+    assert action_types == {"batch_group_candidate"}
+    for item in items:
+        if item.get("action_type") == "batch_group_candidate":
+            assert item.get("obviousness_rank") == "needle"
 
 
 def test_ideaspace_actions_are_surfaced_with_action_types(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "0")
     monkeypatch.delenv("STAT_HARNESS_ALLOW_ACTION_TYPES", raising=False)
     monkeypatch.delenv("STAT_HARNESS_MAX_OBVIOUSNESS", raising=False)
     report = {
@@ -114,6 +117,7 @@ def test_ideaspace_actions_are_surfaced_with_action_types(monkeypatch) -> None:
                         "action_type": "add_server",
                         "target": "qpec",
                         "delta_value": 33.3,
+                        "estimated_delta_hours_total": 12.0,
                         "confidence": 0.7,
                         "measurement_type": "modeled",
                         "evidence": {"metrics": {"qpec_host_count": 2}},
@@ -126,6 +130,7 @@ def test_ideaspace_actions_are_surfaced_with_action_types(monkeypatch) -> None:
                         "action_type": "tune_schedule",
                         "target": "qemail",
                         "delta_value": 12.5,
+                        "estimated_delta_hours_total": 3.0,
                         "confidence": 0.65,
                         "measurement_type": "modeled",
                         "evidence": {"metrics": {"median_interval_sec": 300.0}},
