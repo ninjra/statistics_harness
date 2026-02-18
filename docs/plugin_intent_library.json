@@ -670,6 +670,7 @@
       ],
       "config_schema_path": "plugins/analysis_close_cycle_capacity_model/config.schema.json",
       "depends_on": [
+        "analysis_close_cycle_start_backtrack_v1",
         "analysis_close_cycle_window_resolver"
       ],
       "description": "Model close-cycle completion-time impact from adding capacity (model-only findings).",
@@ -716,6 +717,7 @@
       ],
       "config_schema_path": "plugins/analysis_close_cycle_contention/config.schema.json",
       "depends_on": [
+        "analysis_close_cycle_start_backtrack_v1",
         "analysis_close_cycle_window_resolver"
       ],
       "description": "Detect close-cycle slowdowns and contention (e.g., qemail/qpec)",

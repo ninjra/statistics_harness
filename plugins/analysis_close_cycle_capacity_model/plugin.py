@@ -9,7 +9,7 @@ import pandas as pd
 from statistic_harness.core.close_cycle import (
     baseline_target_spillover_masks,
     compute_close_month,
-    load_close_cycle_windows,
+    load_preferred_close_cycle_windows,
 )
 from statistic_harness.core.process_matcher import (
     compile_patterns,
@@ -1033,6 +1033,9 @@ class Plugin:
         lookahead_days = int(ctx.settings.get("lookahead_days", 7))
         min_close_confidence = float(ctx.settings.get("min_close_confidence", 0.1))
         min_close_data_ratio = float(ctx.settings.get("min_close_data_ratio", 0.5))
+        allow_calendar_fallback_modeling = bool(
+            ctx.settings.get("allow_calendar_fallback_modeling", False)
+        )
 
         work["__date"] = work["__start_ts"].dt.date
         daily = (
@@ -1078,7 +1081,9 @@ class Plugin:
             )
 
         close_dates_default = close_dates
-        dynamic_windows = load_close_cycle_windows(ctx.run_dir)
+        dynamic_windows, dynamic_source_plugin = load_preferred_close_cycle_windows(
+            ctx.run_dir
+        )
         close_dates_dynamic = _dates_from_windows(
             dynamic_windows, "dynamic_start", "dynamic_end"
         )
@@ -1087,6 +1092,14 @@ class Plugin:
         close_rows_dynamic = int(work["__date"].isin(close_dates_dynamic).sum())
         if dynamic_available:
             close_dates = close_dates_dynamic
+            dynamic_months = {
+                str(window.accounting_month)
+                for window in dynamic_windows
+                if getattr(window, "accounting_month", None)
+            }
+            if not dynamic_months:
+                dynamic_months = {day.strftime("%Y-%m") for day in close_dates_dynamic}
+            confident_months = dynamic_months
 
         summary.update(
             {
@@ -1105,9 +1118,11 @@ class Plugin:
                 "close_window_fallback": fallback_used,
                 "close_window_fallback_reason": fallback_reason,
                 "close_cycle_dynamic_available": dynamic_available,
+                "close_cycle_dynamic_source_plugin": dynamic_source_plugin,
                 "close_cycle_dynamic_months": len(dynamic_windows),
                 "close_cycle_rows_default": close_rows_default,
                 "close_cycle_rows_dynamic": close_rows_dynamic,
+                "allow_calendar_fallback_modeling": allow_calendar_fallback_modeling,
             }
         )
 
@@ -1120,7 +1135,13 @@ class Plugin:
             else ("override" if close_mode == "override" else "infer")
         )
         if dynamic_available:
-            close_window_source = "dynamic_resolver"
+            close_window_source = (
+                f"dynamic_{dynamic_source_plugin}"
+                if isinstance(dynamic_source_plugin, str) and dynamic_source_plugin
+                else "dynamic_resolver"
+            )
+        if fallback_used and not dynamic_available and not allow_calendar_fallback_modeling:
+            return _emit_not_applicable("close_window_fallback_calendar_default")
 
         bucket_size = str(ctx.settings.get("bucket_size", "day") or "day").lower()
         min_bucket_rows = int(ctx.settings.get("min_bucket_rows", 50))
@@ -1189,9 +1210,10 @@ class Plugin:
 
         bucket_df = pd.DataFrame(buckets)
         close_buckets = bucket_df.loc[bucket_df["close"]].copy()
-        close_buckets = close_buckets.loc[
-            close_buckets["month"].isin(confident_months)
-        ].copy()
+        if confident_months:
+            close_buckets = close_buckets.loc[
+                close_buckets["month"].isin(confident_months)
+            ].copy()
         if close_buckets.empty:
             return _emit_not_applicable("no_close_buckets")
 
@@ -1420,9 +1442,83 @@ class Plugin:
                     )
                     return
 
-                effect = None
-                if modeled_val is not None and baseline_val > 0:
-                    effect = (modeled_val / baseline_val) - 1.0
+                if modeled_val is None:
+                    findings.append(
+                        {
+                            "kind": "close_cycle_capacity_model",
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "decision": "not_applicable",
+                            "measurement_type": "not_applicable",
+                            "reason": reason_hint or "missing_modeled_value",
+                            "close_window_mode": close_mode,
+                            "close_window_fallback": fallback_used,
+                            "close_window_source": close_window_source,
+                            "close_window_reason": fallback_reason,
+                            "baseline_host_count": baseline_host_count,
+                            "added_hosts": added_hosts,
+                            "scale_factor": scale_factor,
+                            "target_reduction": target_reduction,
+                            "tolerance": tolerance,
+                            "bucket_count": int(baseline.shape[0]),
+                            "months": months,
+                            "baseline_value": baseline_val,
+                            "modeled_value": modeled_val,
+                            "columns": [
+                                col
+                                for col in [
+                                    process_col,
+                                    host_col,
+                                    start_col,
+                                    end_col,
+                                    queue_col,
+                                    eligible_col,
+                                ]
+                                if col
+                            ],
+                        }
+                    )
+                    return
+
+                effect = (modeled_val / baseline_val) - 1.0
+                if modeled_val >= (baseline_val - 1e-9):
+                    findings.append(
+                        {
+                            "kind": "close_cycle_capacity_model",
+                            "host_metric": metric,
+                            "metric_type": metric_type,
+                            "decision": "not_applicable",
+                            "measurement_type": "not_applicable",
+                            "reason": reason_hint or "no_modeled_capacity_gain",
+                            "close_window_mode": close_mode,
+                            "close_window_fallback": fallback_used,
+                            "close_window_source": close_window_source,
+                            "close_window_reason": fallback_reason,
+                            "baseline_host_count": baseline_host_count,
+                            "added_hosts": added_hosts,
+                            "scale_factor": scale_factor,
+                            "target_reduction": target_reduction,
+                            "tolerance": tolerance,
+                            "bucket_count": int(baseline.shape[0]),
+                            "months": months,
+                            "baseline_value": baseline_val,
+                            "modeled_value": modeled_val,
+                            "effect": effect,
+                            "columns": [
+                                col
+                                for col in [
+                                    process_col,
+                                    host_col,
+                                    start_col,
+                                    end_col,
+                                    queue_col,
+                                    eligible_col,
+                                ]
+                                if col
+                            ],
+                        }
+                    )
+                    return
 
                 findings.append(
                     {
@@ -1498,7 +1594,7 @@ class Plugin:
                     }
                 )
 
-            _emit_metric("ttc", baseline_service, modeled_service, None)
+            _emit_metric("ttc", baseline_service, modeled_service, "service_time_not_capacity_sensitive")
             _emit_metric(
                 "queue_to_end",
                 baseline_queue_to_end,

@@ -9,6 +9,8 @@ from typing import Any
 
 import yaml
 
+from statistic_harness.core.actionability_explanations import derive_reason_code
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TAXONOMY = ROOT / "docs" / "plugin_class_taxonomy.yaml"
@@ -122,6 +124,9 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
     manifests = _load_plugin_manifests()
     report = _report_for_run(run_id)
     rec_by_plugin, exp_by_plugin = _plugin_examples(report)
+    report_plugins = (
+        report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
+    )
     rows: list[dict[str, Any]] = []
     for plugin in manifests:
         plugin_id = str(plugin.get("plugin_id") or "").strip()
@@ -130,6 +135,16 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
         expected_output_type = str(class_meta.get("expected_output_type") or "").strip()
         recommendation = rec_by_plugin.get(plugin_id)
         explanation = exp_by_plugin.get(plugin_id)
+        plugin_payload = (
+            report_plugins.get(plugin_id)
+            if isinstance(report_plugins.get(plugin_id), dict)
+            else None
+        )
+        plugin_status = (
+            str(plugin_payload.get("status") or "").strip().lower()
+            if isinstance(plugin_payload, dict)
+            else ""
+        )
         if isinstance(recommendation, dict):
             actionability_state = "actionable"
             reason_code = ""
@@ -143,7 +158,28 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
             }
         elif isinstance(explanation, dict):
             actionability_state = "explained_na"
-            reason_code = str(explanation.get("reason_code") or "NON_DECISION_PLUGIN").strip()
+            reason_code = str(explanation.get("reason_code") or "").strip()
+            if isinstance(plugin_payload, dict):
+                findings = (
+                    plugin_payload.get("findings")
+                    if isinstance(plugin_payload.get("findings"), list)
+                    else []
+                )
+                typed_findings = [item for item in findings if isinstance(item, dict)]
+                blank_kind_count = int(
+                    sum(1 for item in typed_findings if not str(item.get("kind") or "").strip())
+                )
+                derived_reason = derive_reason_code(
+                    status=plugin_status or "unknown",
+                    finding_count=int(len(typed_findings)),
+                    blank_kind_count=blank_kind_count,
+                    debug=plugin_payload.get("debug") if isinstance(plugin_payload.get("debug"), dict) else {},
+                    findings=typed_findings,
+                )
+                if not reason_code or reason_code == "NOT_ROUTED_TO_ACTION":
+                    reason_code = str(derived_reason or "").strip()
+            if not reason_code:
+                reason_code = "NON_DECISION_PLUGIN"
             modeled_supported = False
             example = {
                 "kind": str(explanation.get("kind") or ""),
@@ -151,10 +187,40 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
                 "plain_english_explanation": str(explanation.get("plain_english_explanation") or ""),
             }
         else:
-            actionability_state = "missing_output"
-            reason_code = "NO_RECOMMENDATION_AND_NO_EXPLANATION"
+            if not isinstance(plugin_payload, dict):
+                actionability_state = "missing_output"
+                reason_code = "NOT_IN_RUN_SCOPE"
+                example = {}
+            elif expected_output_type != "recommendation_items":
+                actionability_state = "explained_na"
+                reason_code = "NON_DECISION_PLUGIN"
+                example = {
+                    "kind": "non_actionable_explanation",
+                    "reason_code": reason_code,
+                    "plain_english_explanation": (
+                        f"{plugin_id} is a non-decision plugin ({expected_output_type}) and is"
+                        " tracked as explained N/A when recommendation lanes are absent."
+                    ),
+                }
+            elif plugin_status in {"na", "not_applicable"}:
+                actionability_state = "explained_na"
+                reason_code = "NOT_APPLICABLE"
+                example = {
+                    "kind": "non_actionable_explanation",
+                    "reason_code": reason_code,
+                    "plain_english_explanation": (
+                        f"{plugin_id} reported status '{plugin_status}' and is deterministically"
+                        " classified as explained N/A."
+                    ),
+                }
+            else:
+                actionability_state = "missing_output"
+                reason_code = "REPORT_SNAPSHOT_OMISSION"
+                example = {
+                    "kind": "missing_output",
+                    "plugin_status": plugin_status or "unknown",
+                }
             modeled_supported = False
-            example = {}
         rows.append(
             {
                 "plugin_id": plugin_id,
@@ -165,6 +231,7 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
                 "actionability_state": actionability_state,
                 "modeled_output_supported": bool(modeled_supported),
                 "reason_code": reason_code,
+                "plugin_status": plugin_status or None,
                 "depends_on": plugin.get("depends_on") or [],
                 "run_id": run_id,
                 "example": example,

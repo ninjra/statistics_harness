@@ -2,6 +2,19 @@ from __future__ import annotations
 
 from typing import Any
 
+NON_ADJUSTABLE_PROCESSES = {
+    "losextchld",
+    "losloadcld",
+    "jbcreateje",
+    "jboachild",
+    "jbvalcdblk",
+    "jbinvoice",
+    "postwkfl",
+    "qemail",
+    "jbpreproof",
+    "rdimpairje",
+}
+
 
 def derive_reason_code(
     *,
@@ -15,12 +28,68 @@ def derive_reason_code(
     code = str(debug_map.get("reason_code") or "").strip()
     if code:
         return code
-    for item in findings or []:
+    typed_findings = [item for item in (findings or []) if isinstance(item, dict)]
+    for item in typed_findings:
         if not isinstance(item, dict):
             continue
         candidate = str(item.get("reason_code") or "").strip()
         if candidate:
             return candidate
+    kinds = {str(item.get("kind") or "").strip() for item in typed_findings}
+    if "close_cycle_capacity_impact" in kinds:
+        if all(
+            str(item.get("decision") or "").strip().lower() == "not_applicable"
+            for item in typed_findings
+            if str(item.get("kind") or "").strip() == "close_cycle_capacity_impact"
+        ):
+            return "CAPACITY_IMPACT_NOT_APPLICABLE"
+    if "close_cycle_capacity_model" in kinds:
+        modeled = [
+            item
+            for item in typed_findings
+            if str(item.get("kind") or "").strip() == "close_cycle_capacity_model"
+            and str(item.get("decision") or "").strip().lower() == "modeled"
+        ]
+        if modeled and all(
+            isinstance(item.get("baseline_value"), (int, float))
+            and isinstance(item.get("modeled_value"), (int, float))
+            and float(item.get("modeled_value")) >= float(item.get("baseline_value"))
+            for item in modeled
+        ):
+            return "NO_MODELED_CAPACITY_GAIN"
+    if "close_cycle_revenue_compression" in kinds:
+        modeled = [
+            item
+            for item in typed_findings
+            if str(item.get("kind") or "").strip() == "close_cycle_revenue_compression"
+            and str(item.get("decision") or "").strip().lower() == "modeled"
+        ]
+        if modeled and all(
+            isinstance(item.get("baseline_value"), (int, float))
+            and isinstance(item.get("modeled_value"), (int, float))
+            and float(item.get("modeled_value")) >= float(item.get("baseline_value"))
+            for item in modeled
+        ):
+            return "NO_REVENUE_COMPRESSION_PRESSURE"
+    if "close_cycle_share_shift" in kinds and all(
+        not isinstance(item.get("share_delta"), (int, float)) or float(item.get("share_delta")) <= 0.0
+        for item in typed_findings
+        if str(item.get("kind") or "").strip() == "close_cycle_share_shift"
+    ):
+        return "SHARE_SHIFT_BELOW_THRESHOLD"
+    share_shift_rows = [
+        item
+        for item in typed_findings
+        if str(item.get("kind") or "").strip() == "close_cycle_share_shift"
+    ]
+    if share_shift_rows:
+        process_norms = {
+            str(item.get("process_norm") or item.get("process") or "").strip().lower()
+            for item in share_shift_rows
+            if str(item.get("process_norm") or item.get("process") or "").strip()
+        }
+        if process_norms and all(proc in NON_ADJUSTABLE_PROCESSES for proc in process_norms):
+            return "EXCLUDED_BY_PROCESS_POLICY"
     status_norm = str(status or "").strip().lower()
     if status_norm == "error":
         return "PLUGIN_ERROR"

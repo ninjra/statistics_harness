@@ -5,6 +5,7 @@ type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
   - analysis_close_cycle_window_resolver
+  - analysis_close_cycle_start_backtrack_v1
 settings:
   description: Model close-cycle completion-time impact from adding capacity (model-only findings).
   defaults:
@@ -22,6 +23,7 @@ settings:
     lookahead_days: 7
     min_close_confidence: 0.1
     min_close_data_ratio: 0.5
+    allow_calendar_fallback_modeling: false
     bucket_size: day
     min_bucket_rows: 50
     min_buckets_per_group: 5

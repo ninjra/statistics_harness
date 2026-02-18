@@ -36,9 +36,9 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_chi_square_association` | analysis | Chi Square Association | 1 | dataset_loader | recommended | 1 |
 | `analysis_circular_time_of_day_drift_v1` | analysis | analysis_circular_time_of_day_drift_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_close_cycle_capacity_impact` | analysis | Close Cycle Capacity Impact | 1 | dataset_loader | recommended | 1 |
-| `analysis_close_cycle_capacity_model` | analysis | Close Cycle Capacity Model | 1 | dataset_loader | recommended | 1 |
+| `analysis_close_cycle_capacity_model` | analysis | Close Cycle Capacity Model | 2 | dataset_loader | recommended | 1 |
 | `analysis_close_cycle_change_point_v1` | analysis | Close Cycle Change Point (Heuristic) | 2 | dataset_loader | recommended | 1 |
-| `analysis_close_cycle_contention` | analysis | Close Cycle Contention Analysis | 1 | dataset_loader | recommended | 1 |
+| `analysis_close_cycle_contention` | analysis | Close Cycle Contention Analysis | 2 | dataset_loader | recommended | 1 |
 | `analysis_close_cycle_duration_shift` | analysis | Close Cycle Duration Shift Analysis | 1 | dataset_loader | recommended | 1 |
 | `analysis_close_cycle_revenue_compression` | analysis | Close Cycle Revenue Compression | 1 | dataset_loader | recommended | 1 |
 | `analysis_close_cycle_start_backtrack_v1` | analysis | Close Cycle Start Backtrack v1 | 0 | dataset_loader | recommended | 1 |

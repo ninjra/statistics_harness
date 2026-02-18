@@ -56,7 +56,7 @@ def load_close_cycle_windows(
                 dynamic_start=getattr(row, "close_start_dynamic", None),
                 dynamic_end=getattr(row, "close_end_dynamic", None),
                 delta_days=_safe_float(getattr(row, "close_end_delta_days", None)),
-                source=getattr(row, "source", None),
+                source=(getattr(row, "source", None) or plugin_id),
                 confidence=_safe_float(getattr(row, "confidence", None)),
                 fallback_reason=getattr(row, "fallback_reason", None),
             )
@@ -110,6 +110,7 @@ def resolve_close_cycle_masks(
     close_start_day: int,
     close_end_day: int,
     plugin_id: str = "analysis_close_cycle_window_resolver",
+    plugin_ids: Iterable[str] | None = None,
 ) -> tuple[Any, Any, bool, list[CloseWindow]]:
     try:
         import pandas as pd  # type: ignore
@@ -127,7 +128,21 @@ def resolve_close_cycle_masks(
         return None, None, False, []
 
     default_mask = _mask_from_days(series, close_start_day, close_end_day)
-    windows = load_close_cycle_windows(run_dir, plugin_id=plugin_id)
+    ordered_plugin_ids: list[str]
+    if plugin_ids is not None:
+        ordered_plugin_ids = [str(pid).strip() for pid in plugin_ids if str(pid).strip()]
+    elif plugin_id and str(plugin_id).strip() and str(plugin_id).strip() != "analysis_close_cycle_window_resolver":
+        preferred = [str(plugin_id).strip(), *DEFAULT_CLOSE_WINDOW_PLUGIN_IDS]
+        ordered_plugin_ids = []
+        for pid in preferred:
+            if pid and pid not in ordered_plugin_ids:
+                ordered_plugin_ids.append(pid)
+    else:
+        ordered_plugin_ids = list(DEFAULT_CLOSE_WINDOW_PLUGIN_IDS)
+
+    windows, _source_plugin = load_preferred_close_cycle_windows(
+        run_dir, plugin_ids=ordered_plugin_ids
+    )
     dynamic_mask = _mask_from_windows(series, windows, "dynamic_start", "dynamic_end")
     if dynamic_mask is None:
         return default_mask, default_mask, False, windows

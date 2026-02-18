@@ -11,6 +11,12 @@ from statistic_harness.core.close_cycle import resolve_close_cycle_masks
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import infer_close_cycle_window, write_json
 
+INVALID_STRINGS = {"", "nan", "none", "null"}
+PROCESS_ALIAS_PREFIXES: tuple[tuple[str, str], ...] = (
+    ("qemail", "qemail"),
+    ("qpec", "qpec"),
+)
+
 
 def _spearman_corr(left: pd.Series, right: pd.Series) -> float:
     if left.empty or right.empty:
@@ -109,11 +115,39 @@ def _process_candidate_score(df: pd.DataFrame, col: str) -> float:
     return float(score)
 
 
+def _canonical_process(value: Any) -> str:
+    if value is None:
+        return ""
+    raw = str(value).strip().lower()
+    if not raw or raw in INVALID_STRINGS:
+        return ""
+    compact = re.sub(r"[^a-z0-9]+", "", raw)
+    if not compact:
+        return raw
+    for prefix, canonical in PROCESS_ALIAS_PREFIXES:
+        if compact.startswith(prefix):
+            return canonical
+    return raw
+
+
+def _process_label_for_finding(process_norm: str, fallback_label: str) -> str:
+    if process_norm in {"qemail", "qpec"}:
+        return process_norm
+    return fallback_label
+
+
 class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult(
+                "ok",
+                "Close-cycle contention not applicable: empty dataset",
+                {"candidates": 0, "not_applicable_reason": "empty_dataset"},
+                [],
+                [],
+                None,
+            )
 
         columns_meta = []
         role_by_name: dict[str, str] = {}
@@ -226,6 +260,18 @@ class Plugin:
         if duration_col:
             used.add(duration_col)
 
+        queue_col = _pick_column(
+            ctx.settings.get("queue_column"),
+            columns,
+            role_by_name,
+            {"queue", "queued", "enqueue", "submitted"},
+            ["queue", "queued", "enqueue", "submitted"],
+            lower_names,
+            used,
+        )
+        if queue_col:
+            used.add(queue_col)
+
         server_col = _pick_column(
             ctx.settings.get("server_column"),
             columns,
@@ -260,15 +306,88 @@ class Plugin:
             used,
         )
 
-        if not process_col:
+        def _emit_not_applicable(reason: str, summary_text: str) -> PluginResult:
+            finding = {
+                "kind": "close_cycle_contention",
+                "decision": "not_applicable",
+                "measurement_type": "not_applicable",
+                "reason": reason,
+                "columns": [
+                    col
+                    for col in [
+                        process_col,
+                        timestamp_col,
+                        duration_col,
+                        queue_col,
+                        start_col,
+                        end_col,
+                        server_col,
+                        user_col,
+                        param_col,
+                    ]
+                    if col
+                ],
+                "evidence": {
+                    "dataset_id": ctx.dataset_id or "unknown",
+                    "dataset_version_id": ctx.dataset_version_id or "unknown",
+                    "row_ids": [],
+                    "column_ids": [],
+                    "query": None,
+                },
+            }
+            artifacts_dir = ctx.artifacts_dir("analysis_close_cycle_contention")
+            out_path = artifacts_dir / "results.json"
+            write_json(
+                out_path,
+                {
+                    "summary": {
+                        "process_column": process_col,
+                        "timestamp_column": timestamp_col,
+                        "duration_column": duration_col,
+                        "queue_column": queue_col,
+                        "server_column": server_col,
+                        "param_column": param_col,
+                        "not_applicable_reason": reason,
+                    },
+                    "candidates": [],
+                },
+            )
+            artifacts = [
+                PluginArtifact(
+                    path=str(out_path.relative_to(ctx.run_dir)),
+                    type="json",
+                    description="Close cycle contention candidates",
+                )
+            ]
             return PluginResult(
-                "skipped", "No process/activity column detected", {}, [], [], None
+                "ok",
+                summary_text,
+                {
+                    "candidates": 0,
+                    "process_column": process_col,
+                    "timestamp_column": timestamp_col,
+                    "duration_column": duration_col,
+                    "queue_column": queue_col,
+                    "server_column": server_col,
+                    "param_column": param_col,
+                    "not_applicable_reason": reason,
+                },
+                [finding],
+                artifacts,
+                None,
+            )
+
+        if not process_col:
+            return _emit_not_applicable(
+                "missing_process_column",
+                "Close-cycle contention not applicable: no process/activity column detected",
             )
 
         base_timestamp_col = timestamp_col or start_col or end_col
         if not base_timestamp_col:
-            return PluginResult(
-                "skipped", "No timestamp column detected", {}, [], [], None
+            return _emit_not_applicable(
+                "missing_timestamp_column",
+                "Close-cycle contention not applicable: no timestamp column detected",
             )
 
         work = df.copy()
@@ -277,6 +396,7 @@ class Plugin:
             process_col,
             base_timestamp_col,
             duration_col,
+            queue_col,
             start_col,
             end_col,
             server_col,
@@ -292,8 +412,9 @@ class Plugin:
         )
         work = work.loc[work["__timestamp"].notna()].copy()
         if work.empty:
-            return PluginResult(
-                "skipped", "No valid timestamps found", {}, [], [], None
+            return _emit_not_applicable(
+                "no_valid_timestamps",
+                "Close-cycle contention not applicable: no valid timestamps found",
             )
 
         duration_label = duration_col
@@ -307,30 +428,36 @@ class Plugin:
             duration = (end_ts - start_ts).dt.total_seconds()
             duration_label = f"{start_col}->{end_col}"
         else:
-            return PluginResult(
-                "skipped",
-                "No duration data available",
-                {},
-                [],
-                [],
-                None,
+            return _emit_not_applicable(
+                "no_duration_data",
+                "Close-cycle contention not applicable: no duration data available",
             )
 
         work["__duration"] = duration
         work = work.loc[work["__duration"].notna() & (work["__duration"] > 0)].copy()
         if work.empty:
-            return PluginResult(
-                "skipped", "No valid durations found", {}, [], [], None
+            return _emit_not_applicable(
+                "no_valid_durations",
+                "Close-cycle contention not applicable: no valid durations found",
             )
 
         work["__process"] = work[process_col].astype(str).str.strip()
-        work["__process_norm"] = work["__process"].str.lower()
-        invalid = {"", "nan", "none", "null"}
-        work = work.loc[~work["__process_norm"].isin(invalid)].copy()
+        work["__process_norm"] = work[process_col].map(_canonical_process)
+        work = work.loc[~work["__process_norm"].isin(INVALID_STRINGS)].copy()
         if work.empty:
-            return PluginResult(
-                "skipped", "No valid process values", {}, [], [], None
+            return _emit_not_applicable(
+                "no_valid_process_values",
+                "Close-cycle contention not applicable: no valid process values",
             )
+
+        if queue_col and start_col and queue_col in work.columns and start_col in work.columns:
+            work["__queue_ts"] = pd.to_datetime(work[queue_col], errors="coerce", utc=False)
+            work["__start_ts"] = pd.to_datetime(work[start_col], errors="coerce", utc=False)
+            work["__queue_wait_sec"] = (
+                work["__start_ts"] - work["__queue_ts"]
+            ).dt.total_seconds().clip(lower=0)
+        else:
+            work["__queue_wait_sec"] = pd.Series([float("nan")] * len(work), index=work.index)
 
         close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
         window_days = int(ctx.settings.get("close_cycle_window_days", 17))
@@ -366,7 +493,7 @@ class Plugin:
             )
         )
         modeled_backstop_max_processes = int(
-            ctx.settings.get("modeled_backstop_max_processes", 3)
+            ctx.settings.get("modeled_backstop_max_processes", 25)
         )
         modeled_backstop_max_duration_ratio = float(
             ctx.settings.get("modeled_backstop_max_duration_ratio", 0.75)
@@ -377,9 +504,32 @@ class Plugin:
         modeled_backstop_min_slowdown_ratio = float(
             ctx.settings.get("modeled_backstop_min_slowdown_ratio", 1.1)
         )
+        modeled_backstop_min_queue_wait_ratio = float(
+            ctx.settings.get("modeled_backstop_min_queue_wait_ratio", 1.05)
+        )
+        modeled_backstop_min_boundary_overlap_ratio = float(
+            ctx.settings.get("modeled_backstop_min_boundary_overlap_ratio", 0.15)
+        )
+        month_boundary_window_days = int(
+            ctx.settings.get("month_boundary_window_days", 3)
+        )
+        priority_processes_raw = ctx.settings.get("priority_processes", ["qemail", "qpec"])
+        if not isinstance(priority_processes_raw, (list, tuple, set)):
+            priority_processes_raw = ["qemail", "qpec"]
+        priority_processes = {
+            _canonical_process(value)
+            for value in priority_processes_raw
+            if _canonical_process(value)
+        }
 
         work["__day"] = work["__timestamp"].dt.day
         work["__date"] = work["__timestamp"].dt.date
+        month_end = work["__timestamp"] + pd.offsets.MonthEnd(0)
+        days_to_eom = (month_end.dt.normalize() - work["__timestamp"].dt.normalize()).dt.days
+        work["__near_month_boundary"] = (
+            (days_to_eom >= 0)
+            & (days_to_eom <= month_boundary_window_days)
+        ) | (work["__timestamp"].dt.day <= (month_boundary_window_days + 1))
         default_mask, dynamic_mask, dynamic_available, dynamic_windows = (
             resolve_close_cycle_masks(
                 work["__timestamp"], ctx.run_dir, close_start, close_end
@@ -527,12 +677,17 @@ class Plugin:
                     continue
             row_ids = row_ids[:max_examples]
 
-            process_label = process_labels.get(process_norm, process_norm)
+            process_label = _process_label_for_finding(
+                process_norm,
+                process_labels.get(process_norm, process_norm),
+            )
             columns = [process_col, base_timestamp_col]
             if duration_col and duration_col in work.columns:
                 columns.append(duration_col)
             elif start_col and end_col:
                 columns.extend([start_col, end_col])
+            if queue_col:
+                columns.append(queue_col)
             if server_col:
                 columns.append(server_col)
             if user_col:
@@ -681,12 +836,17 @@ class Plugin:
                         continue
                 row_ids = row_ids[:max_examples]
 
-                process_label = process_labels.get(proc_norm, proc_norm)
+                process_label = _process_label_for_finding(
+                    proc_norm,
+                    process_labels.get(proc_norm, proc_norm),
+                )
                 columns = [process_col, base_timestamp_col]
                 if duration_col and duration_col in work.columns:
                     columns.append(duration_col)
                 elif start_col and end_col:
                     columns.extend([start_col, end_col])
+                if queue_col:
+                    columns.append(queue_col)
                 if server_col:
                     columns.append(server_col)
                 if user_col:
@@ -750,9 +910,14 @@ class Plugin:
         open_days_total = int(work.loc[~work["__close"], "__date"].nunique())
         close_days_total = int(work.loc[work["__close"], "__date"].nunique())
         arrival_added = 0
-        for process_norm, row in counts.iterrows():
+        ranked_counts = counts.copy()
+        ranked_counts["__close_count"] = ranked_counts.get(True, 0)
+        ranked_counts = ranked_counts.sort_values("__close_count", ascending=False)
+        for process_norm, row in ranked_counts.iterrows():
             if arrival_added >= modeled_backstop_max_processes:
                 break
+            if process_norm == "__close_count":
+                continue
             proc_norm = str(process_norm).strip().lower()
             if not proc_norm or proc_norm in existing_findings:
                 continue
@@ -790,6 +955,41 @@ class Plugin:
                 continue
 
             close_mask = (work["__process_norm"] == proc_norm) & work["__close"]
+            open_mask = (work["__process_norm"] == proc_norm) & (~work["__close"])
+
+            close_queue_wait_median = None
+            open_queue_wait_median = None
+            queue_wait_ratio = None
+            if work["__queue_wait_sec"].notna().any():
+                close_queue_wait = work.loc[close_mask, "__queue_wait_sec"].dropna()
+                open_queue_wait = work.loc[open_mask, "__queue_wait_sec"].dropna()
+                if not close_queue_wait.empty and not open_queue_wait.empty:
+                    close_queue_wait_median = float(close_queue_wait.median())
+                    open_queue_wait_median = float(open_queue_wait.median())
+                    if open_queue_wait_median > 0:
+                        queue_wait_ratio = float(
+                            close_queue_wait_median / open_queue_wait_median
+                        )
+
+            boundary_overlap_ratio = float(
+                work.loc[close_mask, "__near_month_boundary"].mean()
+            )
+            signal_votes = 0
+            if rate_ratio >= modeled_backstop_min_rate_ratio:
+                signal_votes += 1
+            if slowdown_ratio >= modeled_backstop_min_slowdown_ratio:
+                signal_votes += 1
+            if (
+                queue_wait_ratio is not None
+                and queue_wait_ratio >= modeled_backstop_min_queue_wait_ratio
+            ):
+                signal_votes += 1
+            if boundary_overlap_ratio >= modeled_backstop_min_boundary_overlap_ratio:
+                signal_votes += 1
+            min_signal_votes = 1 if proc_norm in priority_processes else 2
+            if signal_votes < min_signal_votes:
+                continue
+
             row_ids = []
             for idx in work.loc[close_mask].index.tolist():
                 try:
@@ -798,12 +998,17 @@ class Plugin:
                     continue
             row_ids = row_ids[:max_examples]
 
-            process_label = process_labels.get(proc_norm, proc_norm)
+            process_label = _process_label_for_finding(
+                proc_norm,
+                process_labels.get(proc_norm, proc_norm),
+            )
             columns = [process_col, base_timestamp_col]
             if duration_col and duration_col in work.columns:
                 columns.append(duration_col)
             elif start_col and end_col:
                 columns.extend([start_col, end_col])
+            if queue_col:
+                columns.append(queue_col)
             if server_col:
                 columns.append(server_col)
             if user_col:
@@ -859,6 +1064,11 @@ class Plugin:
                     "close_rate_per_day": float(close_rate),
                     "open_rate_per_day": float(open_rate),
                     "close_open_rate_ratio": float(rate_ratio),
+                    "close_queue_wait_median_sec": close_queue_wait_median,
+                    "open_queue_wait_median_sec": open_queue_wait_median,
+                    "queue_wait_ratio": queue_wait_ratio,
+                    "boundary_overlap_ratio": float(boundary_overlap_ratio),
+                    "signal_votes": int(signal_votes),
                     "server_count": int(server_count),
                     "servers": server_list,
                     "param_unique_ratio": param_unique_ratio,
@@ -879,6 +1089,11 @@ class Plugin:
                     "estimated_improvement_pct": float(modeled_reduction_pct),
                     "modeled_reduction_hours": float(modeled_reduction_hours),
                     "close_open_rate_ratio": float(rate_ratio),
+                    "close_queue_wait_median_sec": close_queue_wait_median,
+                    "open_queue_wait_median_sec": open_queue_wait_median,
+                    "queue_wait_ratio": queue_wait_ratio,
+                    "boundary_overlap_ratio": float(boundary_overlap_ratio),
+                    "signal_votes": int(signal_votes),
                     "param_unique_ratio": param_unique_ratio,
                     "server_count": int(server_count),
                     "servers": server_list,
@@ -897,6 +1112,7 @@ class Plugin:
                     "process_column": process_col,
                     "timestamp_column": base_timestamp_col,
                     "duration_column": duration_label,
+                    "queue_column": queue_col,
                     "server_column": server_col,
                     "param_column": param_col,
                     "close_cycle_start_day": close_start,
@@ -910,6 +1126,8 @@ class Plugin:
                     "close_cycle_rows_dynamic": close_rows_dynamic,
                     "inferred_close_cycle_start_day": inferred_start,
                     "inferred_close_cycle_end_day": inferred_end,
+                    "month_boundary_window_days": month_boundary_window_days,
+                    "priority_processes": sorted(priority_processes),
                 },
                 "candidates": candidate_stats,
             },
@@ -931,6 +1149,7 @@ class Plugin:
                     "process_column": process_col,
                     "timestamp_column": base_timestamp_col,
                     "duration_column": duration_label,
+                    "queue_column": queue_col,
                     "close_cycle_start_day": close_start,
                     "close_cycle_end_day": close_end,
                     "close_cycle_mode": close_mode,
@@ -942,6 +1161,7 @@ class Plugin:
                     "close_cycle_rows_dynamic": close_rows_dynamic,
                     "inferred_close_cycle_start_day": inferred_start,
                     "inferred_close_cycle_end_day": inferred_end,
+                    "month_boundary_window_days": month_boundary_window_days,
                 },
                 [],
                 artifacts,
@@ -956,6 +1176,7 @@ class Plugin:
                 "process_column": process_col,
                 "timestamp_column": base_timestamp_col,
                 "duration_column": duration_label,
+                "queue_column": queue_col,
                 "server_column": server_col,
                 "param_column": param_col,
                 "close_cycle_start_day": close_start,
@@ -969,6 +1190,7 @@ class Plugin:
                 "close_cycle_rows_dynamic": close_rows_dynamic,
                 "inferred_close_cycle_start_day": inferred_start,
                 "inferred_close_cycle_end_day": inferred_end,
+                "month_boundary_window_days": month_boundary_window_days,
             },
             findings,
             artifacts,

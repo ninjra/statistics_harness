@@ -15,6 +15,7 @@ import yaml
 
 from .four_pillars import build_four_pillars_scorecard
 from .actionability_explanations import (
+    NON_ADJUSTABLE_PROCESSES,
     derive_reason_code,
     plain_english_explanation,
     recommended_next_step,
@@ -30,6 +31,7 @@ from .storage import Storage
 from .utils import atomic_write_text, json_dumps, now_iso, read_json, write_json
 
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
+_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES_ENV = "STAT_HARNESS_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES"
 _SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
 _MAX_PER_ACTION_TYPE_ENV = "STAT_HARNESS_MAX_PER_ACTION_TYPE"
 _ALLOW_ACTION_TYPES_ENV = "STAT_HARNESS_ALLOW_ACTION_TYPES"
@@ -40,6 +42,10 @@ _MAX_OBVIOUSNESS_ENV = "STAT_HARNESS_MAX_OBVIOUSNESS"
 _RECENCY_UNKNOWN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_UNKNOWN_WEIGHT"
 _RECENCY_DECAY_PER_MONTH_ENV = "STAT_HARNESS_RECENCY_DECAY_PER_MONTH"
 _RECENCY_MIN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_MIN_WEIGHT"
+_REQUIRE_MODELED_HOURS_ENV = "STAT_HARNESS_REQUIRE_MODELED_HOURS"
+_REQUIRE_DIRECT_PROCESS_ACTION_ENV = "STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION"
+_DIRECT_PROCESS_ACTION_TYPES_ENV = "STAT_HARNESS_DIRECT_PROCESS_ACTION_TYPES"
+_CHAIN_BOUND_RATIO_MIN_ENV = "STAT_HARNESS_CHAIN_BOUND_RATIO_MIN"
 _REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV = "STAT_HARNESS_REPORT_MD_MAX_FINDINGS_PER_PLUGIN"
 _REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
 _REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
@@ -51,6 +57,66 @@ def _include_known_recommendations() -> bool:
         "true",
         "yes",
     }
+
+
+def _allow_known_issue_synthetic_matches() -> bool:
+    return os.environ.get(_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES_ENV, "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def _require_modeled_hours() -> bool:
+    raw = os.environ.get(_REQUIRE_MODELED_HOURS_ENV, "").strip().lower()
+    if not raw:
+        return True
+    return raw in {"1", "true", "yes", "on"}
+
+
+def _require_direct_process_action() -> bool:
+    raw = os.environ.get(_REQUIRE_DIRECT_PROCESS_ACTION_ENV, "").strip().lower()
+    if not raw:
+        return True
+    return raw in {"1", "true", "yes", "on"}
+
+
+def _direct_process_action_types() -> set[str]:
+    raw = os.environ.get(_DIRECT_PROCESS_ACTION_TYPES_ENV, "").strip()
+    if raw:
+        out: set[str] = set()
+        for token in re.split(r"[;,\s]+", raw):
+            token = token.strip().lower()
+            if token:
+                out.add(token)
+        if out:
+            return out
+    return {
+        "batch_input",
+        "batch_group_candidate",
+        "batch_or_cache",
+        "batch_input_refactor",
+        "throttle_or_dedupe",
+        "route_process",
+        "reschedule",
+        "tune_schedule",
+    }
+
+
+def _chain_bound_ratio_min() -> float:
+    raw = os.environ.get(_CHAIN_BOUND_RATIO_MIN_ENV, "").strip()
+    if not raw:
+        return 0.5
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return 0.5
+    if value < 0.0:
+        return 0.0
+    if value > 1.0:
+        return 1.0
+    return float(value)
 
 
 def _read_positive_int_env(name: str, default: int) -> int:
@@ -645,7 +711,7 @@ def _action_type_obviousness(action_type: str) -> float:
     if at in {"reduce_process_wait", "review", "tune_threshold"}:
         return 0.95
     if at in {"reduce_spillover_past_eom"}:
-        return 0.98
+        return 0.70
     if not at:
         return 0.85
     return 0.65
@@ -657,6 +723,16 @@ def _obviousness_rank(score: float) -> str:
     if score <= 0.70:
         return "targeted"
     return "obvious"
+
+
+def _modeled_improvement_percent(baseline: Any, modeled: Any) -> float | None:
+    if not isinstance(baseline, (int, float)) or not isinstance(modeled, (int, float)):
+        return None
+    base = float(baseline)
+    mod = float(modeled)
+    if base <= 0.0:
+        return None
+    return ((base - mod) / base) * 100.0
 
 
 def _discovery_recommendation_sort_key(item: dict[str, Any]) -> tuple[int, int, float, float, float]:
@@ -924,6 +1000,93 @@ def _dataset_context(
     return dataset_version_id, ctx_row.get("table_name"), mapping
 
 
+def _sql_positive_numeric_expr(column_name: str) -> str:
+    col = str(column_name or "").strip()
+    if not col or not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", col):
+        return "0"
+    return f"COALESCE(CAST(NULLIF(TRIM(CAST({col} AS TEXT)), '') AS REAL), 0.0) > 0.0"
+
+
+def _process_chain_modifiability_map(
+    report: dict[str, Any], storage: Storage | None, process_hints: list[str]
+) -> dict[str, dict[str, Any]]:
+    if storage is None:
+        return {}
+    normalized = sorted(
+        {
+            str(p or "").strip().lower()
+            for p in process_hints
+            if isinstance(p, str) and str(p).strip()
+        }
+    )
+    if not normalized:
+        return {}
+    _, table_name, mapping = _dataset_context(report, storage)
+    if not table_name or not mapping:
+        return {}
+
+    process_col = mapping.get("PROCESS_ID")
+    master_col = mapping.get("MASTER_PROCESS_QUEUE_ID")
+    parent_col = mapping.get("PARENT_PROCESS_QUEUE_ID")
+    parent_step_col = mapping.get("PARENT_PROCESS_STEP_QUEUE_ID")
+    child_count_col = mapping.get("CHILD_PROCESS_COUNT")
+    if not process_col:
+        return {}
+    child_terms = [
+        _sql_positive_numeric_expr(col)
+        for col in (master_col, parent_col, parent_step_col)
+        if isinstance(col, str) and col.strip()
+    ]
+    parent_term = (
+        _sql_positive_numeric_expr(child_count_col)
+        if isinstance(child_count_col, str) and child_count_col.strip()
+        else "0"
+    )
+    if not child_terms and parent_term == "0":
+        return {}
+
+    placeholders = ",".join(["?"] * len(normalized))
+    child_cond = " OR ".join(f"({term})" for term in child_terms) if child_terms else "0"
+    sql = f"""
+    SELECT LOWER(TRIM(CAST({process_col} AS TEXT))) AS process_norm,
+           COUNT(*) AS runs_total,
+           SUM(CASE WHEN ({child_cond}) THEN 1 ELSE 0 END) AS child_link_rows,
+           SUM(CASE WHEN ({parent_term}) THEN 1 ELSE 0 END) AS parent_link_rows
+    FROM {table_name}
+    WHERE LOWER(TRIM(CAST({process_col} AS TEXT))) IN ({placeholders})
+    GROUP BY LOWER(TRIM(CAST({process_col} AS TEXT)))
+    """
+    out: dict[str, dict[str, Any]] = {}
+    threshold = _chain_bound_ratio_min()
+    try:
+        with storage.connection() as conn:
+            cur = conn.execute(sql, normalized)
+            rows = [dict(r) for r in cur.fetchall()]
+    except Exception:
+        return {}
+    for row in rows:
+        process_norm = str(row.get("process_norm") or "").strip().lower()
+        if not process_norm:
+            continue
+        runs_total = int(row.get("runs_total") or 0)
+        child_link_rows = int(row.get("child_link_rows") or 0)
+        parent_link_rows = int(row.get("parent_link_rows") or 0)
+        child_link_ratio = (float(child_link_rows) / float(runs_total)) if runs_total > 0 else 0.0
+        parent_link_ratio = (float(parent_link_rows) / float(runs_total)) if runs_total > 0 else 0.0
+        chain_bound_ratio = max(child_link_ratio, parent_link_ratio)
+        out[process_norm] = {
+            "runs_total": runs_total,
+            "child_link_rows": child_link_rows,
+            "parent_link_rows": parent_link_rows,
+            "child_link_ratio": child_link_ratio,
+            "parent_link_ratio": parent_link_ratio,
+            "chain_bound_ratio": chain_bound_ratio,
+            "chain_bound_ratio_threshold": float(threshold),
+            "chain_bound": bool(runs_total > 0 and chain_bound_ratio >= float(threshold)),
+        }
+    return out
+
+
 def _parse_params(params: str) -> dict[str, str]:
     if not params:
         return {}
@@ -1141,6 +1304,8 @@ def _build_known_issue_recommendations(
         }
 
     items: list[dict[str, Any]] = []
+    synthetic_match_count = 0
+    allow_synthetic_matches = _allow_known_issue_synthetic_matches()
     for issue in expected:
         if not isinstance(issue, dict):
             continue
@@ -1161,14 +1326,21 @@ def _build_known_issue_recommendations(
         findings = _collect_findings_for_plugin(report, plugin_id, kind)
         matched = [f for f in findings if _matches_expected(f, where, contains)]
         count = len(matched)
+        evidence_source = "plugin_findings"
         process_hint = _process_hint(where)
-        if count == 0 and str(kind or "").strip() == "close_cycle_contention":
+        if (
+            allow_synthetic_matches
+            and count == 0
+            and str(kind or "").strip() == "close_cycle_contention"
+        ):
             synthetic = _synthetic_close_cycle_contention_finding(
                 report, storage, process_hint
             )
             if isinstance(synthetic, dict):
                 matched = [synthetic]
                 count = 1
+                evidence_source = "synthetic_fallback"
+                synthetic_match_count += 1
 
         status = "confirmed"
         if count == 0:
@@ -1213,6 +1385,7 @@ def _build_known_issue_recommendations(
                 "contains": contains,
                 "expected": {"min_count": min_count, "max_count": max_count},
                 "observed_count": count,
+                "evidence_source": evidence_source,
                 "evidence": evidence,
                 "action": meta.get("action"),
                 "modeled_delta": meta.get("modeled_delta"),
@@ -1226,9 +1399,25 @@ def _build_known_issue_recommendations(
         for item in deduped
         if isinstance(item, dict)
     ]
+    failing_count = int(
+        sum(
+            1
+            for item in deduped
+            if isinstance(item, dict) and str(item.get("status") or "").lower() != "confirmed"
+        )
+    )
+    status = "failing" if failing_count > 0 else "ok"
+    summary = f"Generated {len(deduped)} recommendation(s) from known issues."
+    if failing_count > 0:
+        summary += f" {failing_count} landmark(s) are not independently confirmed."
+    if synthetic_match_count > 0:
+        summary += (
+            f" Synthetic fallback matches used: {synthetic_match_count} "
+            f"(diagnostic-only; controlled by {_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES_ENV}=1)."
+        )
     return {
-        "status": "ok",
-        "summary": f"Generated {len(deduped)} recommendation(s) from known issues.",
+        "status": status,
+        "summary": summary,
         "items": deduped,
     }
 
@@ -2288,10 +2477,11 @@ def _build_discovery_recommendations(
             process = item.get("process_norm") or item.get("process") or item.get("process_id")
             if not isinstance(process, str) or not process.strip():
                 continue
-            process_key = process.strip().lower()
-            if excluded_match and excluded_match(process_key):
-                continue
             action_type = item.get("action_type") or "actionable_ops"
+            action_norm = str(action_type or "").strip().lower()
+            if action_norm in {"unblock_dependency_chain", "orchestrate_chain"}:
+                # Environment policy: chain/flow rewiring is not modifiable.
+                continue
             title = item.get("title") or f"Operational lever for {process}"
             delta_s = item.get("expected_delta_seconds")
             delta_pct = item.get("expected_delta_percent")
@@ -2303,17 +2493,20 @@ def _build_discovery_recommendations(
             relevance_score = impact_hours * float(conf) * controllability_weight
             context = _metric_context_from_item("actionable_ops_lever", item, report)
             rec_text = item.get("recommendation")
+            evidence = (
+                item.get("evidence")
+                if isinstance(item.get("evidence"), dict)
+                else {"source": src_plugin_id}
+            )
+            process_key = process.strip().lower()
+            if excluded_match and excluded_match(process_key):
+                continue
             if not isinstance(rec_text, str) or not rec_text.strip():
                 rec_text = f"{title}."
                 if isinstance(delta_s, (int, float)):
                     rec_text += f" Expected Δ {float(delta_s):.2f}s"
                 if isinstance(delta_pct, (int, float)):
                     rec_text += f" ({float(delta_pct):.1f}%)."
-            evidence = (
-                item.get("evidence")
-                if isinstance(item.get("evidence"), dict)
-                else {"source": src_plugin_id}
-            )
             items.append(
                 {
                     "title": title,
@@ -2389,6 +2582,12 @@ def _build_discovery_recommendations(
             if not isinstance(impact_pct, (int, float)):
                 impact_pct = item.get("estimated_delta_pct")
             impact_hours = 0.0
+            est_hours_total = item.get("estimated_delta_hours_total")
+            est_delta_seconds = item.get("estimated_delta_seconds")
+            if isinstance(est_hours_total, (int, float)):
+                impact_hours = max(0.0, float(est_hours_total))
+            elif isinstance(est_delta_seconds, (int, float)):
+                impact_hours = max(0.0, float(est_delta_seconds) / 3600.0)
             modeled_percent_hint: float | None = None
             unit = str(item.get("unit") or "").strip().lower()
             if isinstance(impact_pct, (int, float)):
@@ -2400,7 +2599,7 @@ def _build_discovery_recommendations(
                     # treat values <=1 as ratio and >1 as already-percent.
                     raw_pct = float(impact_pct)
                     modeled_percent_hint = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
-            if not isinstance(modeled_percent_hint, (int, float)):
+            if not isinstance(modeled_percent_hint, (int, float)) and impact_hours <= 0.0:
                 if isinstance(item.get("estimated_delta_hours_total"), (int, float)):
                     impact_hours = max(0.0, float(item.get("estimated_delta_hours_total")))
                 elif isinstance(item.get("estimated_delta_seconds"), (int, float)):
@@ -2437,6 +2636,12 @@ def _build_discovery_recommendations(
                     "unit": unit or None,
                     "measurement_type": item.get("measurement_type") or "modeled",
                     "impact_hours": impact_hours,
+                    "estimated_delta_hours_total": (
+                        float(est_hours_total) if isinstance(est_hours_total, (int, float)) else None
+                    ),
+                    "estimated_delta_seconds": (
+                        float(est_delta_seconds) if isinstance(est_delta_seconds, (int, float)) else None
+                    ),
                     "confidence_weight": float(confidence_weight),
                     "controllability_weight": float(controllability_weight),
                     "relevance_score": float(relevance_score),
@@ -2544,7 +2749,10 @@ def _build_discovery_recommendations(
             continue
         item = spill[0]
         detail = item.get("details") if isinstance(item.get("details"), dict) else {}
+        spill_evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
         top_proc = detail.get("top_spillover_processes")
+        if not isinstance(top_proc, list):
+            top_proc = spill_evidence.get("top_spillover_processes")
         proc_rows: list[dict[str, Any]] = []
         if isinstance(top_proc, list):
             proc_rows = [r for r in top_proc if isinstance(r, dict)]
@@ -2567,19 +2775,30 @@ def _build_discovery_recommendations(
             "Close-cycle spillover past month-end exists under the current baseline close window "
             "(e.g. 20th->5th) that is outside the target close window (20th->EOM/31). "
             f"Observed spillover: {metric_txt}. "
-            "Action: focus on the top spillover processes and apply structural levers (batch/multi-input, dedupe/caching, macro consolidation) "
-            "so those runs complete by EOM instead of days 1-5."
+            "Action: reclaim this spillover before EOM by targeting the highest-hour contributors first."
         )
         if proc_rows:
+            top_total = 0.0
+            if isinstance(qh, (int, float)) and float(qh) > 0.0:
+                for r in proc_rows[:3]:
+                    v = r.get("spillover_queue_wait_hours_total")
+                    if isinstance(v, (int, float)):
+                        top_total += float(v)
+                if top_total > 0.0:
+                    rec_text += (
+                        f" Top 3 contributors represent ~{(top_total / float(qh)) * 100.0:.1f}% "
+                        "of total spillover queue-wait."
+                    )
             proc_summ: list[str] = []
             for r in proc_rows[:8]:
                 proc = r.get("process_norm") or r.get("process")
                 hrs = r.get("spillover_queue_wait_hours_total") or r.get("spillover_duration_hours_total") or r.get("spillover_service_hours_total")
                 if isinstance(proc, str) and proc.strip():
+                    proc_norm = proc.strip().lower()
                     if isinstance(hrs, (int, float)):
-                        proc_summ.append(f"{proc.strip()} (~{float(hrs):.1f}h)")
+                        proc_summ.append(f"{proc_norm} (~{float(hrs):.1f}h)")
                     else:
-                        proc_summ.append(proc.strip())
+                        proc_summ.append(proc_norm)
             if proc_summ:
                 rec_text += " Top spillover processes: " + ", ".join(proc_summ) + "."
 
@@ -2616,6 +2835,278 @@ def _build_discovery_recommendations(
                 "relevance_score": impact_hours * 0.7 * 0.8,
             }
         )
+
+    close_capacity_model = plugins.get("analysis_close_cycle_capacity_model")
+    if isinstance(close_capacity_model, dict):
+        for item in close_capacity_model.get("findings") or []:
+            if not isinstance(item, dict) or item.get("kind") != "close_cycle_capacity_model":
+                continue
+            if str(item.get("decision") or "").strip().lower() != "modeled":
+                continue
+            modeled_percent_hint = _modeled_improvement_percent(
+                item.get("baseline_value"), item.get("modeled_value")
+            )
+            if not isinstance(modeled_percent_hint, (int, float)) or float(modeled_percent_hint) <= 0.0:
+                continue
+            baseline_value = item.get("baseline_value")
+            modeled_value = item.get("modeled_value")
+            delta_seconds = (
+                float(baseline_value) - float(modeled_value)
+                if isinstance(baseline_value, (int, float)) and isinstance(modeled_value, (int, float))
+                else 0.0
+            )
+            impact_hours = max(0.0, delta_seconds / 3600.0)
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight("close_cycle_capacity_model", {})
+            relevance_basis = float(modeled_percent_hint) if float(modeled_percent_hint) > 0.0 else impact_hours
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            host_metric = str(item.get("host_metric") or "host_count").strip() or "host_count"
+            metric_type = str(item.get("metric_type") or "close_cycle_duration").strip() or "close_cycle_duration"
+            context = _metric_context_from_item("close_cycle_capacity_model", item, report)
+            rec_text = (
+                f"Add one server for close-cycle {host_metric}/{metric_type}: modeled median improves "
+                f"from {float(baseline_value):.2f}s to {float(modeled_value):.2f}s "
+                f"(~{float(modeled_percent_hint):.1f}% reduction)."
+            )
+            items.append(
+                {
+                    "title": f"Add close-cycle capacity ({host_metric}/{metric_type})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_close_cycle_capacity_model",
+                    "kind": "close_cycle_capacity_model",
+                    "where": None,
+                    "contains": None,
+                    "observed_count": item.get("bucket_count"),
+                    "evidence": [
+                        {
+                            "host_metric": host_metric,
+                            "metric_type": metric_type,
+                            "baseline_value": baseline_value,
+                            "modeled_value": modeled_value,
+                            "scale_factor": item.get("scale_factor"),
+                            "target_reduction": item.get("target_reduction"),
+                        }
+                    ],
+                    "action": "add_server",
+                    "action_type": "add_server",
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "modeled_percent_hint": float(modeled_percent_hint),
+                    "unit": "percent",
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    **context,
+                }
+            )
+
+    close_capacity_impact = plugins.get("analysis_close_cycle_capacity_impact")
+    if isinstance(close_capacity_impact, dict):
+        for item in close_capacity_impact.get("findings") or []:
+            if not isinstance(item, dict) or item.get("kind") != "close_cycle_capacity_impact":
+                continue
+            if str(item.get("decision") or "").strip().lower() != "detected":
+                continue
+            effect = item.get("effect")
+            if not isinstance(effect, (int, float)) or float(effect) >= 0.0:
+                continue
+            modeled_percent_hint = abs(float(effect)) * 100.0
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight("close_cycle_capacity_impact", {})
+            relevance_score = (
+                float(modeled_percent_hint)
+                * float(confidence_weight)
+                * float(controllability_weight)
+            )
+            host_metric = str(item.get("host_metric") or "host_count").strip() or "host_count"
+            rec_text = (
+                f"Add one server: measured close-cycle {host_metric} improves by "
+                f"~{float(modeled_percent_hint):.1f}% in high-capacity buckets."
+            )
+            context = _metric_context_from_item("close_cycle_capacity_impact", item, report)
+            items.append(
+                {
+                    "title": f"Add measured close-cycle capacity ({host_metric})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_close_cycle_capacity_impact",
+                    "kind": "close_cycle_capacity_impact",
+                    "where": None,
+                    "contains": None,
+                    "observed_count": item.get("hi_bucket_count"),
+                    "evidence": [
+                        {
+                            "host_metric": host_metric,
+                            "effect": effect,
+                            "ci_low": item.get("ci_low"),
+                            "ci_high": item.get("ci_high"),
+                        }
+                    ],
+                    "action": "add_server",
+                    "action_type": "add_server",
+                    "modeled_delta": None,
+                    "modeled_percent_hint": float(modeled_percent_hint),
+                    "unit": "percent",
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": 0.0,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    **context,
+                }
+            )
+
+    close_revenue = plugins.get("analysis_close_cycle_revenue_compression")
+    if isinstance(close_revenue, dict):
+        for item in close_revenue.get("findings") or []:
+            if not isinstance(item, dict) or item.get("kind") != "close_cycle_revenue_compression":
+                continue
+            if str(item.get("decision") or "").strip().lower() != "modeled":
+                continue
+            modeled_percent_hint = _modeled_improvement_percent(
+                item.get("baseline_value"), item.get("modeled_value")
+            )
+            if not isinstance(modeled_percent_hint, (int, float)) or float(modeled_percent_hint) <= 0.0:
+                continue
+            process_norm = str(item.get("process_label") or "").strip().lower() or None
+            if process_norm and excluded_match and excluded_match(process_norm):
+                continue
+            baseline_days = item.get("baseline_value")
+            modeled_days = item.get("modeled_value")
+            impact_hours = (
+                max(0.0, float(baseline_days) - float(modeled_days)) * 24.0
+                if isinstance(baseline_days, (int, float)) and isinstance(modeled_days, (int, float))
+                else 0.0
+            )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = _controllability_weight("close_cycle_revenue_compression", {})
+            relevance_basis = float(modeled_percent_hint) if float(modeled_percent_hint) > 0.0 else impact_hours
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            process_label = str(item.get("process_label") or process_norm or "revenue_close").strip()
+            rec_text = (
+                f"Add revenue-close capacity for {process_label}: modeled span improves from "
+                f"{float(baseline_days):.2f} days to {float(modeled_days):.2f} days "
+                f"(~{float(modeled_percent_hint):.1f}% reduction)."
+            )
+            context = _metric_context_from_item("close_cycle_revenue_compression", item, report)
+            items.append(
+                {
+                    "title": f"Add revenue-close capacity ({process_label})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_close_cycle_revenue_compression",
+                    "kind": "close_cycle_revenue_compression",
+                    "where": {"process_norm": process_norm} if process_norm else None,
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [
+                        {
+                            "process_label": process_label,
+                            "baseline_value_days": baseline_days,
+                            "modeled_value_days": modeled_days,
+                            "required_scale_factor_median": item.get("required_scale_factor_median"),
+                        }
+                    ],
+                    "action": "add_server",
+                    "action_type": "add_server",
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "modeled_percent_hint": float(modeled_percent_hint),
+                    "unit": "percent",
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    **context,
+                }
+            )
+
+    close_uplift = plugins.get("analysis_close_cycle_uplift")
+    if isinstance(close_uplift, dict):
+        for item in close_uplift.get("findings") or []:
+            if not isinstance(item, dict) or item.get("kind") != "close_cycle_share_shift":
+                continue
+            process_norm = str(item.get("process_norm") or item.get("process") or "").strip().lower()
+            if not process_norm:
+                continue
+            if excluded_match and excluded_match(process_norm):
+                continue
+            share_delta = item.get("share_delta")
+            if not isinstance(share_delta, (int, float)) or float(share_delta) <= 0.0:
+                continue
+            share_delta_pp = float(share_delta) * 100.0
+            close_count = item.get("close_count")
+            median_close = item.get("median_close")
+            median_open = item.get("median_open")
+            impact_hours = 0.0
+            if (
+                isinstance(close_count, (int, float))
+                and isinstance(median_close, (int, float))
+                and isinstance(median_open, (int, float))
+                and float(median_close) > float(median_open)
+            ):
+                impact_hours = (
+                    max(0.0, float(median_close) - float(median_open))
+                    * max(0.0, float(close_count))
+                    / 3600.0
+                )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.75
+            relevance_basis = share_delta_pp if share_delta_pp > 0.0 else impact_hours
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            slowdown_ratio = item.get("slowdown_ratio")
+            process_label = str(item.get("process") or process_norm).strip()
+            rec_text = (
+                f"Reduce close-cycle concentration for {process_label}: this process is over-indexed in close by "
+                f"{share_delta_pp:.2f} percentage points"
+            )
+            if isinstance(slowdown_ratio, (int, float)) and float(slowdown_ratio) > 0.0:
+                rec_text += f" with close-cycle slowdown ratio {float(slowdown_ratio):.2f}x."
+            else:
+                rec_text += "."
+            rec_text += (
+                " Action: split oversized inputs and move pre-close steps earlier so this process does less work inside the close window."
+            )
+            context = _metric_context_from_item("close_cycle_duration_shift", item, report)
+            items.append(
+                {
+                    "title": f"Reduce close-cycle concentration ({process_label})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_close_cycle_uplift",
+                    "kind": "close_cycle_share_shift",
+                    "where": {"process_norm": process_norm},
+                    "contains": None,
+                    "observed_count": close_count if isinstance(close_count, (int, float)) else None,
+                    "evidence": [
+                        {
+                            "process_norm": process_norm,
+                            "close_share": item.get("close_share"),
+                            "open_share": item.get("open_share"),
+                            "share_delta": share_delta,
+                            "slowdown_ratio": slowdown_ratio,
+                        }
+                    ],
+                    "action": "reduce_transition_gap",
+                    "action_type": "reduce_transition_gap",
+                    "target": process_norm,
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "modeled_percent_hint": share_delta_pp,
+                    "unit": "percent",
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    **context,
+                }
+            )
 
     # Sort before dedupe so that higher-value items "win" when text merges occur.
     items = sorted(items, key=_discovery_recommendation_sort_key, reverse=True)
@@ -2734,9 +3225,67 @@ def _build_discovery_recommendations(
         if isinstance(item, dict)
     ]
     deduped = _apply_recency_weight(deduped)
+    dropped_non_direct_process = 0
+    dropped_chain_bound_process = 0
+    if _require_direct_process_action():
+        allowed_direct_actions = _direct_process_action_types()
+        direct_process_hints = sorted(
+            {
+                str(_recommendation_process_hint(row) or "").strip().lower()
+                for row in deduped
+                if isinstance(row, dict)
+            }
+            - {""}
+        )
+        process_modifiability = _process_chain_modifiability_map(
+            report, storage, direct_process_hints
+        )
+        direct_only: list[dict[str, Any]] = []
+        for row in deduped:
+            action_norm = str(row.get("action_type") or row.get("action") or "").strip().lower()
+            if action_norm not in allowed_direct_actions:
+                dropped_non_direct_process += 1
+                continue
+            process_hint = str(_recommendation_process_hint(row) or "").strip().lower()
+            if not process_hint or process_hint in {"(multiple)", "all", "any", "global"}:
+                dropped_non_direct_process += 1
+                continue
+            if process_hint in NON_ADJUSTABLE_PROCESSES:
+                dropped_non_direct_process += 1
+                continue
+            if excluded_match and excluded_match(process_hint):
+                dropped_non_direct_process += 1
+                continue
+            profile = process_modifiability.get(process_hint)
+            if isinstance(profile, dict):
+                row["lineage_modifiability"] = profile
+                if bool(profile.get("chain_bound")):
+                    dropped_chain_bound_process += 1
+                    continue
+            where = row.get("where") if isinstance(row.get("where"), dict) else {}
+            if str(where.get("process_norm") or "").strip().lower() != process_hint:
+                row["where"] = {"process_norm": process_hint}
+            direct_only.append(row)
+        deduped = direct_only
+    dropped_without_modeled_hours = 0
+    if _require_modeled_hours():
+        normalized: list[dict[str, Any]] = []
+        for row in deduped:
+            modeled_hours = row.get("modeled_delta_hours")
+            if isinstance(modeled_hours, (int, float)) and float(modeled_hours) > 0.0:
+                row["relevance_score"] = float(modeled_hours)
+                row["optimization_metric"] = "modeled_user_hours_saved"
+                normalized.append(row)
+                continue
+            dropped_without_modeled_hours += 1
+        deduped = normalized
+
     deduped = sorted(
         deduped,
-        key=lambda row: float(row.get("relevance_score") or 0.0),
+        key=lambda row: (
+            float(row.get("modeled_delta_hours") or 0.0),
+            float(row.get("relevance_score") or 0.0),
+        ),
         reverse=True,
     )
     if isinstance(top_n, int) and top_n > 0:
@@ -2747,6 +3296,21 @@ def _build_discovery_recommendations(
         if deduped
         else "No discovery recommendations generated from plugin findings."
     )
+    if dropped_without_modeled_hours > 0:
+        summary += (
+            f" Dropped {dropped_without_modeled_hours} candidate(s) without positive "
+            "modeled user-hours savings."
+        )
+    if dropped_non_direct_process > 0:
+        summary += (
+            f" Dropped {dropped_non_direct_process} candidate(s) that are not direct "
+            "process-level actionable changes."
+        )
+    if dropped_chain_bound_process > 0:
+        summary += (
+            f" Dropped {dropped_chain_bound_process} candidate(s) because the target "
+            "process is parent/child chain-bound (non-modifiable flow)."
+        )
     return {"status": status, "summary": summary, "items": deduped}
 
 
@@ -3531,6 +4095,71 @@ def _kona_modeled_percent_for_process(report: dict[str, Any], process_norm: str)
     return best
 
 
+def _queue_wait_hours_for_process(report: dict[str, Any], process_norm: str) -> float | None:
+    proc = str(process_norm or "").strip().lower()
+    if not proc:
+        return None
+    plugins = report.get("plugins")
+    if not isinstance(plugins, dict):
+        return None
+    payload = plugins.get("analysis_queue_delay_decomposition")
+    if not isinstance(payload, dict):
+        return None
+    findings = payload.get("findings")
+    if not isinstance(findings, list):
+        return None
+    for item in findings:
+        if not isinstance(item, dict):
+            continue
+        if item.get("kind") != "eligible_wait_process_stats":
+            continue
+        proc_item = str(item.get("process_norm") or item.get("process") or "").strip().lower()
+        if proc_item != proc:
+            continue
+        value = item.get("eligible_wait_hours_total")
+        if isinstance(value, (int, float)) and math.isfinite(float(value)):
+            return float(value)
+    return None
+
+
+def _queue_wait_hours_total(report: dict[str, Any]) -> float | None:
+    plugins = report.get("plugins")
+    if not isinstance(plugins, dict):
+        return None
+    payload = plugins.get("analysis_queue_delay_decomposition")
+    if not isinstance(payload, dict):
+        return None
+    findings = payload.get("findings")
+    if not isinstance(findings, list):
+        return None
+    for item in findings:
+        if not isinstance(item, dict):
+            continue
+        if item.get("kind") != "eligible_wait_impact":
+            continue
+        for key in ("eligible_wait_hours_total", "eligible_wait_gt_hours_total"):
+            value = item.get(key)
+            if isinstance(value, (int, float)) and math.isfinite(float(value)):
+                return float(value)
+    return None
+
+
+def _item_metrics_payload(item: dict[str, Any]) -> dict[str, Any]:
+    evidence = item.get("evidence")
+    if isinstance(evidence, list):
+        for row in evidence:
+            if not isinstance(row, dict):
+                continue
+            metrics = row.get("metrics")
+            if isinstance(metrics, dict):
+                return metrics
+    if isinstance(evidence, dict):
+        metrics = evidence.get("metrics")
+        if isinstance(metrics, dict):
+            return metrics
+    return {}
+
+
 def _enrich_recommendation_item(
     item: dict[str, Any],
     report: dict[str, Any],
@@ -3541,6 +4170,7 @@ def _enrich_recommendation_item(
     scope_class = _scope_class_for_item(item)
     enriched["scope_class"] = scope_class
     process_norm = _item_process_norm(item)
+    action_type = str(enriched.get("action_type") or enriched.get("action") or "").strip().lower()
 
     basis_hours: float | None = None
     delta_hours: float | None = None
@@ -3572,6 +4202,18 @@ def _enrich_recommendation_item(
             if not isinstance(modeled_percent, (int, float)) or float(modeled_percent) < kona_val:
                 modeled_percent = kona_val
 
+    if not isinstance(basis_hours, (int, float)):
+        proc_wait_basis = _queue_wait_hours_for_process(report, process_norm)
+        if isinstance(proc_wait_basis, (int, float)) and float(proc_wait_basis) > 0.0:
+            basis_hours = float(proc_wait_basis)
+    if (
+        not isinstance(basis_hours, (int, float))
+        and action_type == "add_server"
+    ):
+        total_wait_basis = _queue_wait_hours_total(report)
+        if isinstance(total_wait_basis, (int, float)) and float(total_wait_basis) > 0.0:
+            basis_hours = float(total_wait_basis)
+
     if not isinstance(modeled_percent, (int, float)):
         pct_hint = enriched.get("modeled_percent_hint")
         if isinstance(pct_hint, (int, float)):
@@ -3579,6 +4221,23 @@ def _enrich_recommendation_item(
         elif unit in {"percent", "pct", "%"} and isinstance(enriched.get("modeled_delta"), (int, float)):
             raw_pct = float(enriched.get("modeled_delta") or 0.0)
             modeled_percent = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
+        elif unit in {"percent", "pct", "%"} and isinstance(enriched.get("delta_value"), (int, float)):
+            raw_pct = float(enriched.get("delta_value") or 0.0)
+            modeled_percent = raw_pct * 100.0 if 0.0 <= raw_pct <= 1.0 else raw_pct
+        else:
+            metrics = _item_metrics_payload(enriched)
+            p95_before = metrics.get("eligible_wait_p95_s")
+            p95_modeled = metrics.get("modeled_wait_p95_s")
+            if (
+                isinstance(p95_before, (int, float))
+                and isinstance(p95_modeled, (int, float))
+                and float(p95_before) > 0.0
+                and float(p95_modeled) >= 0.0
+                and float(p95_modeled) < float(p95_before)
+            ):
+                modeled_percent = (
+                    (float(p95_before) - float(p95_modeled)) / float(p95_before)
+                ) * 100.0
 
     if not isinstance(delta_hours, (int, float)):
         if isinstance(enriched.get("modeled_delta"), (int, float)):
@@ -3612,10 +4271,20 @@ def _enrich_recommendation_item(
         else:
             not_modeled_reason = "insufficient_modeled_inputs"
 
+    if isinstance(delta_hours, (int, float)) and float(delta_hours) <= 0.0:
+        delta_hours = None
+    if isinstance(modeled_percent, (int, float)) and float(modeled_percent) <= 0.0:
+        modeled_percent = None
+
     enriched["modeled_basis_hours"] = float(basis_hours) if isinstance(basis_hours, (int, float)) else None
     enriched["modeled_delta_hours"] = float(delta_hours) if isinstance(delta_hours, (int, float)) else None
+    if isinstance(enriched.get("modeled_delta_hours"), (int, float)):
+        enriched["modeled_delta"] = float(enriched["modeled_delta_hours"])
+        enriched["impact_hours"] = float(enriched["modeled_delta_hours"])
     enriched["modeled_percent"] = float(modeled_percent) if isinstance(modeled_percent, (int, float)) else None
-    if enriched["modeled_percent"] is None:
+    if isinstance(enriched.get("modeled_delta_hours"), (int, float)):
+        enriched["not_modeled_reason"] = None
+    elif enriched["modeled_percent"] is None:
         enriched["not_modeled_reason"] = not_modeled_reason or "insufficient_modeled_inputs"
     else:
         enriched["not_modeled_reason"] = None

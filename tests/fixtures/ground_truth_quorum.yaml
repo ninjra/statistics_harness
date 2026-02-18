@@ -9,7 +9,7 @@ expected_findings:
     kind: close_cycle_capacity_model
     where:
       measurement_type: not_applicable
-      reason: no_buckets_after_filtering
+      reason: close_window_fallback_calendar_default
     min_count: 6
     max_count: 6
   - plugin_id: analysis_close_cycle_contention

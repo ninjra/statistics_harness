@@ -88,9 +88,39 @@ def test_capacity_model_handles_missing_queue_columns(run_dir):
     assert not_applicable
     assert all(item.get("decision") == "not_applicable" for item in not_applicable)
 
-    ttc_modeled = [
+    ttc_not_applicable = [
         item
         for item in result.findings
-        if item.get("metric_type") == "ttc" and item.get("decision") == "modeled"
+        if item.get("metric_type") == "ttc" and item.get("decision") == "not_applicable"
     ]
-    assert ttc_modeled
+    assert ttc_not_applicable
+    assert any(
+        str(item.get("reason") or "") == "service_time_not_capacity_sensitive"
+        for item in ttc_not_applicable
+    )
+
+
+def test_capacity_model_disallows_calendar_fallback_modeling_by_default(run_dir):
+    rows = _make_rows(range(20, 24), ["h1", "h2"])
+    df = pd.DataFrame(rows)
+    settings = {
+        "close_window_mode": "infer_or_default",
+        "min_close_days": 10,
+        "max_close_days": 10,
+        "min_close_confidence": 0.95,
+        "min_close_data_ratio": 1.0,
+        "bucket_size": "day",
+        "min_bucket_rows": 1,
+        "min_buckets_per_group": 2,
+        "min_months": 1,
+        "baseline_host_count": 2,
+        "added_hosts": 1,
+    }
+    ctx = make_context(run_dir, df, settings)
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    assert any(
+        str(item.get("decision") or "") == "not_applicable"
+        and str(item.get("reason") or "") == "close_window_fallback_calendar_default"
+        for item in result.findings
+    )

@@ -8,7 +8,7 @@ from typing import Any, Iterable
 import numpy as np
 import pandas as pd
 
-from statistic_harness.core.close_cycle import load_close_cycle_windows
+from statistic_harness.core.close_cycle import load_preferred_close_cycle_windows
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import write_json
 
@@ -883,7 +883,9 @@ class Plugin:
             )
 
         close_dates_default = close_dates
-        dynamic_windows = load_close_cycle_windows(ctx.run_dir)
+        dynamic_windows, dynamic_source_plugin = load_preferred_close_cycle_windows(
+            ctx.run_dir
+        )
         close_dates_dynamic = _dates_from_windows(
             dynamic_windows, "dynamic_start", "dynamic_end"
         )
@@ -907,6 +909,7 @@ class Plugin:
                 "close_window_fallback": fallback_used,
                 "close_window_fallback_reason": fallback_reason,
                 "close_cycle_dynamic_available": dynamic_available,
+                "close_cycle_dynamic_source_plugin": dynamic_source_plugin,
                 "close_cycle_dynamic_months": len(dynamic_windows),
                 "close_cycle_rows_default": close_rows_default,
                 "close_cycle_rows_dynamic": close_rows_dynamic,
@@ -922,7 +925,11 @@ class Plugin:
             else ("override" if close_mode == "override" else "infer")
         )
         if dynamic_available:
-            close_window_source = "dynamic_resolver"
+            close_window_source = (
+                f"dynamic_{dynamic_source_plugin}"
+                if isinstance(dynamic_source_plugin, str) and dynamic_source_plugin
+                else "dynamic_resolver"
+            )
 
         bucket_size = str(ctx.settings.get("bucket_size", "day") or "day").lower()
         min_bucket_rows = int(ctx.settings.get("min_bucket_rows", 50))
