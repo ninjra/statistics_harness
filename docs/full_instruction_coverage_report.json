@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 1324,
+  "item_count": 1337,
   "items": [],
   "matrix_status": {
     "binding_missing_any": false,

@@ -9216,7 +9216,14 @@ tests/test_upload_cas.py
 tests/test_upload_limits.py
 tests/test_vector_store.py
 tests/test_verify_agent_execution_contract.py
+tools/apply_codex_theme_all_projects.py
+tools/cp.cmd
+tools/cr.cmd
+tools/cx.cmd
+tools/cx.sh
+tools/cyberpunk_style_probe.py
 tools/sitecustomize.py
+tools/wslmem.ps1
 unimplemented/codex_decision_report_v2.md
 unimplemented/codex_plugins_2.md
 unimplemented/codex_stat_plugins_spec_pack.md
