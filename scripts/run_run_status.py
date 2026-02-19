@@ -84,7 +84,7 @@ def _get_run_status(appdata_dir: Path, run_id: str) -> RunStatus:
         plugin_done = int(
             con.execute(
                 "select count(*) as c from plugin_executions where run_id=? and status in "
-                "('ok','skipped','degraded','error','aborted')",
+                "('ok','na','skipped','degraded','error','aborted')",
                 (run_id,),
             ).fetchone()["c"]
         )

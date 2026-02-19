@@ -13,6 +13,7 @@ RUN_SEED="${2:-1337}"
 INTERVAL_SECONDS="${3:-30}"
 KNOWN_ISSUES_MODE="${4:-${STAT_HARNESS_KNOWN_ISSUES_MODE:-on}}"
 ORCHESTRATOR_MODE="${5:-${STAT_HARNESS_ORCHESTRATOR_MODE:-two_lane_strict}}"
+GOLDEN_MODE="${6:-${STAT_HARNESS_GOLDEN_MODE:-strict}}"
 D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_D_STATE_STREAK_THRESHOLD:-8}"
 PYTEST_D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_PYTEST_D_STATE_STREAK_THRESHOLD:-8}"
 AUTONOMOUS_NOVELTY_MIN="${STAT_HARNESS_AUTONOMOUS_NOVELTY_MIN:-1}"
@@ -34,6 +35,7 @@ echo "RUN_SEED=$RUN_SEED"
 echo "INTERVAL_SECONDS=$INTERVAL_SECONDS"
 echo "KNOWN_ISSUES_MODE=$KNOWN_ISSUES_MODE"
 echo "ORCHESTRATOR_MODE=$ORCHESTRATOR_MODE"
+echo "GOLDEN_MODE=$GOLDEN_MODE"
 echo "PYTEST_D_STATE_STREAK_THRESHOLD=$PYTEST_D_STATE_STREAK_THRESHOLD"
 echo "AUTONOMOUS_NOVELTY_MIN=$AUTONOMOUS_NOVELTY_MIN"
 echo "AUTONOMOUS_NOVELTY_MAX_JACCARD=$AUTONOMOUS_NOVELTY_MAX_JACCARD"
@@ -45,6 +47,10 @@ if [[ "$KNOWN_ISSUES_MODE" != "on" && "$KNOWN_ISSUES_MODE" != "off" ]]; then
 fi
 if [[ "$ORCHESTRATOR_MODE" != "legacy" && "$ORCHESTRATOR_MODE" != "two_lane_strict" ]]; then
   echo "ORCHESTRATOR_MODE_INVALID=$ORCHESTRATOR_MODE (expected legacy|two_lane_strict)"
+  exit 2
+fi
+if [[ "$GOLDEN_MODE" != "off" && "$GOLDEN_MODE" != "default" && "$GOLDEN_MODE" != "strict" ]]; then
+  echo "GOLDEN_MODE_INVALID=$GOLDEN_MODE (expected off|default|strict)"
   exit 2
 fi
 
@@ -141,7 +147,7 @@ if [[ "$pytest_hung" -ne 0 || "$pytest_rc" -ne 0 ]]; then
 fi
 
 echo "STEP=start_full_loaded_dataset_bg"
-START_OUT="$(bash scripts/start_full_loaded_dataset_bg.sh "$DATASET_VERSION_ID" "$RUN_SEED" "$KNOWN_ISSUES_MODE" "$ORCHESTRATOR_MODE")"
+START_OUT="$(bash scripts/start_full_loaded_dataset_bg.sh "$DATASET_VERSION_ID" "$RUN_SEED" "$KNOWN_ISSUES_MODE" "$ORCHESTRATOR_MODE" "$GOLDEN_MODE")"
 printf '%s\n' "$START_OUT" | tee "$CHECK_DIR/start_full_loaded_dataset_bg.log"
 RUN_ID="$(printf '%s\n' "$START_OUT" | awk -F= '/^RUN_ID=/{print $2}' | tail -n 1)"
 if [[ -z "$RUN_ID" ]]; then
@@ -239,6 +245,7 @@ discovery_recommendation_count="$(python -c "import json,sys; from pathlib impor
 actionable_plugin_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('actionable_plugin_count') or 0))" "$CHECK_DIR/summary.json")"
 runtime_contract_mismatch_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('runtime_contract_mismatch_count') or 0))" "$CHECK_DIR/summary.json")"
 summary_orchestrator_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('orchestrator_mode') or ''))" "$CHECK_DIR/summary.json")"
+summary_golden_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('golden_mode') or ''))" "$CHECK_DIR/summary.json")"
 
 ok=true
 if [[ "$hang_aborted" -ne 0 ]]; then ok=false; fi
@@ -259,6 +266,7 @@ if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" != 
   echo "STREAMING_POLICY_WARNING runtime_contract_mismatch_count=$runtime_contract_mismatch_count (set STAT_HARNESS_STREAMING_POLICY_STRICT=1 to fail)"
 fi
 if [[ -n "$summary_orchestrator_mode" && "$summary_orchestrator_mode" != "$ORCHESTRATOR_MODE" ]]; then ok=false; fi
+if [[ -n "$summary_golden_mode" && "$summary_golden_mode" != "$GOLDEN_MODE" ]]; then ok=false; fi
 if [[ "$KNOWN_ISSUES_MODE" == "off" || "$summary_known_issues_mode" == "off" ]]; then
   if [[ "$recommendation_item_count" -le 0 ]]; then ok=false; fi
   if [[ "$discovery_recommendation_count" -le 0 ]]; then ok=false; fi

@@ -1632,6 +1632,7 @@ def main() -> int:
     os.environ["STAT_HARNESS_KNOWN_ISSUES_MODE"] = known_issues_mode
     os.environ["STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"] = "0" if known_issues_mode == "off" else "1"
     os.environ["STAT_HARNESS_ORCHESTRATOR_MODE"] = orchestrator_mode
+    os.environ.setdefault("STAT_HARNESS_GOLDEN_MODE", "strict")
     os.environ.setdefault("STAT_HARNESS_CLI_PROGRESS", "1")
     # Default to reuse-cache for operator UX on large datasets. Still safe for "updated plugins"
     # because cache keys include plugin code hash + settings hash + dataset hash.

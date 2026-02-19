@@ -502,12 +502,14 @@ def build_summary(run_id: str) -> dict[str, object]:
             manifest_summary.get("overall_outcome")
             or ("passed" if run and str(run["status"]).strip().lower() == "completed" else "failed")
         ).strip().lower()
+        golden_mode = str(manifest_summary.get("golden_mode") or "").strip().lower()
         return {
             "run_id": run_id,
             "run_status": str(run["status"]) if run else None,
             "overall_outcome": overall_outcome,
             "orchestrator_mode": orchestrator_mode or None,
             "orchestrator_mode_effective": orchestrator_mode_effective or None,
+            "golden_mode": golden_mode or None,
             "created_at": str(run["created_at"]) if run else None,
             "completed_at": str(run["completed_at"]) if run else None,
             "plugin_status_counts": counts,

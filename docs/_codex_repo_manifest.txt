@@ -9185,6 +9185,7 @@ tests/test_report_schema.py
 tests/test_retention.py
 tests/test_row_trace.py
 tests/test_run_manifest.py
+tests/test_run_run_status.py
 tests/test_sandbox.py
 tests/test_security_paths.py
 tests/test_similarity.py
