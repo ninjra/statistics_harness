@@ -2192,8 +2192,28 @@ class Pipeline:
         try:
             report = build_report(self.storage, run_id, run_dir, Path("docs/report.schema.json"))
             write_report(report, run_dir)
-        except Exception:
-            pass
+        except Exception as exc:
+            err_payload = {
+                "type": type(exc).__name__,
+                "message": str(exc),
+                "traceback": traceback.format_exc(limit=25),
+            }
+            self.storage.insert_event(
+                kind="run_policy_violation",
+                created_at=now_iso(),
+                run_id=run_id,
+                run_fingerprint=run_fingerprint,
+                payload={
+                    "policy": "final_report_synthesis",
+                    "reason": "exception",
+                    "error": err_payload,
+                },
+            )
+            any_failures = True
+            final_status = "partial"
+            overall_outcome = "failed"
+            # Fail closed: do not leave run marked completed when final report synthesis failed.
+            self.storage.update_run_status(run_id, final_status, error=err_payload)
 
         # Build and persist a canonical run manifest for portable provenance.
         artifacts: list[dict[str, Any]] = []

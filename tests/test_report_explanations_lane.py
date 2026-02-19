@@ -84,8 +84,7 @@ def test_non_actionable_reason_is_no_decision_signal_for_non_recommendation_find
         None,
     )
     assert isinstance(row, dict)
-    assert row.get("reason_code") == "NON_DECISION_PLUGIN"
-    assert row.get("reason_code_detail") == "NO_ACTIONABLE_FINDING_CLASS"
+    assert row.get("reason_code") == "NO_ACTIONABLE_FINDING_CLASS"
 
 
 def test_non_actionable_reason_flags_missing_direct_process_target(monkeypatch) -> None:
@@ -187,5 +186,4 @@ def test_non_actionable_reason_flags_observation_only(monkeypatch) -> None:
         None,
     )
     assert isinstance(row, dict)
-    assert row.get("reason_code") == "NON_DECISION_PLUGIN"
-    assert row.get("reason_code_detail") == "OBSERVATION_ONLY"
+    assert row.get("reason_code") == "OBSERVATION_ONLY"

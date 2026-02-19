@@ -58,24 +58,6 @@ _REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV = "STAT_HARNESS_REPORT_MD_MAX_FINDINGS_PE
 _REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
 _REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
 _PLUGIN_CLASS_TAXONOMY_PATH = Path(__file__).resolve().parents[3] / "docs" / "plugin_class_taxonomy.yaml"
-_NON_DECISION_REASON_CODES = {
-    "OBSERVATION_ONLY",
-    "NO_ACTIONABLE_FINDING_CLASS",
-    "PLUGIN_PRECONDITION_UNMET",
-    "NO_DIRECT_PROCESS_TARGET",
-    "NO_STATISTICAL_SIGNAL",
-    "NO_ELIGIBLE_SLICE",
-    "NO_SIGNIFICANT_EFFECT",
-    "EXCLUDED_BY_PROCESS_POLICY",
-    "ACTION_TYPE_POLICY_BLOCK",
-    "ADAPTER_RULE_MISSING",
-    "NO_FINDINGS",
-    "FINDING_KIND_MISSING",
-    "CAPACITY_IMPACT_CONSTRAINT",
-    "NO_MODELED_CAPACITY_GAIN",
-    "NO_REVENUE_COMPRESSION_PRESSURE",
-    "SHARE_SHIFT_BELOW_THRESHOLD",
-}
 _PLUGIN_CLASS_TAXONOMY_CACHE: dict[str, Any] | None = None
 
 
@@ -3777,10 +3759,6 @@ def _build_non_actionable_explanations(
             status, finding_count, blank_kind_count, payload
         )
         reason_code = base_reason_code
-        if plugin_type and plugin_type != "analysis":
-            reason_code = "NON_DECISION_PLUGIN"
-        elif plugin_class != "direct_action_generators" and base_reason_code in _NON_DECISION_REASON_CODES:
-            reason_code = "NON_DECISION_PLUGIN"
         downstream = downstream_map.get(pid) or []
         required_inputs, missing_inputs = _extract_precondition_inputs(payload)
         explanation = plain_english_explanation(
@@ -3792,19 +3770,6 @@ def _build_non_actionable_explanations(
             blank_kind_count=int(blank_kind_count),
             downstream_plugins=downstream,
         )
-        if reason_code == "NON_DECISION_PLUGIN":
-            class_text = (
-                f" ({plugin_class})" if isinstance(plugin_class, str) and plugin_class.strip() else ""
-            )
-            output_text = (
-                f" expected_output={expected_output_type}"
-                if isinstance(expected_output_type, str) and expected_output_type.strip()
-                else ""
-            )
-            explanation += (
-                f" This plugin is classified as a supporting/non-decision signal{class_text};"
-                f"{output_text}."
-            )
         next_step = recommended_next_step(
             plugin_type=plugin_type,
             status=status,
@@ -3812,18 +3777,6 @@ def _build_non_actionable_explanations(
             blank_kind_count=int(blank_kind_count),
             downstream_plugins=downstream,
         )
-        if reason_code == "NON_DECISION_PLUGIN":
-            if downstream:
-                next_step = (
-                    "Use this signal through downstream decision plugins: "
-                    + ", ".join(downstream[:6])
-                    + ("." if len(downstream) <= 6 else ", ...")
-                )
-            else:
-                next_step = (
-                    "No downstream decision plugin is mapped. Add routing to a decision plugin or "
-                    "keep this plugin as explicit observability-only output."
-                )
         if reason_code == "NO_DIRECT_PROCESS_TARGET":
             next_step = (
                 "Emit process-level targets (`process_norm` or `target_process_ids`) for each action "

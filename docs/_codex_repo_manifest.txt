@@ -7265,6 +7265,8 @@ docs/release_evidence/golden_release_summary.json
 docs/release_evidence/golden_release_summary.md
 docs/release_evidence/non_actionable_reason_before_after.json
 docs/release_evidence/non_actionable_reason_before_after.md
+docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv
+docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json
 docs/repo_improvements_capability_map_v1.json
 docs/repo_improvements_catalog.normalized.schema.json
 docs/repo_improvements_catalog.raw.schema.json
@@ -8478,6 +8480,7 @@ r
 repomix-output.md
 s
 scripts/api_smoke.py
+scripts/audit_plugin_actionability.py
 scripts/backfill_stat_plugin_cache_keys.py
 scripts/binding_implementation_matrix.py
 scripts/bootstrap.ps1
