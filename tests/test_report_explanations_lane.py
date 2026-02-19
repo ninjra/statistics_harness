@@ -56,3 +56,136 @@ def test_recommendations_include_non_actionable_explanations_with_downstream_lis
     coverage = payload.get("actionability_coverage")
     assert isinstance(coverage, dict)
     assert int(coverage.get("unexplained_plugin_count") or 0) == 0
+
+
+def test_non_actionable_reason_is_no_decision_signal_for_non_recommendation_findings(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "1")
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "1")
+    report = {
+        "plugins": {
+            "analysis_cluster_analysis_auto": {
+                "status": "ok",
+                "summary": "Cluster profile produced diagnostics only",
+                "findings": [{"kind": "cluster_analysis_auto"}],
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    explanations = payload.get("explanations") if isinstance(payload, dict) else {}
+    items = explanations.get("items") if isinstance(explanations, dict) else []
+    row = next(
+        (
+            item
+            for item in (items or [])
+            if isinstance(item, dict) and item.get("plugin_id") == "analysis_cluster_analysis_auto"
+        ),
+        None,
+    )
+    assert isinstance(row, dict)
+    assert row.get("reason_code") == "NON_DECISION_PLUGIN"
+    assert row.get("reason_code_detail") == "NO_ACTIONABLE_FINDING_CLASS"
+
+
+def test_non_actionable_reason_flags_missing_direct_process_target(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "1")
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "0")
+    report = {
+        "plugins": {
+            "analysis_actionable_ops_levers_v1": {
+                "status": "ok",
+                "summary": "Action combo plan",
+                "findings": [
+                    {
+                        "kind": "actionable_ops_lever",
+                        "process_norm": "(multiple)",
+                        "recommendation": "Execute the selected actions as one package.",
+                        "action_type": "action_plan_combo",
+                        "expected_delta_seconds": 3600.0,
+                        "measurement_type": "modeled",
+                    }
+                ],
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    explanations = payload.get("explanations") if isinstance(payload, dict) else {}
+    items = explanations.get("items") if isinstance(explanations, dict) else []
+    row = next(
+        (
+            item
+            for item in (items or [])
+            if isinstance(item, dict)
+            and item.get("plugin_id") == "analysis_actionable_ops_levers_v1"
+        ),
+        None,
+    )
+    assert isinstance(row, dict)
+    assert row.get("reason_code") == "NO_DIRECT_PROCESS_TARGET"
+
+
+def test_non_actionable_reason_flags_plugin_precondition_unmet(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "1")
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "0")
+    report = {
+        "plugins": {
+            "analysis_ideaspace_action_planner": {
+                "status": "ok",
+                "summary": "deterministic fallback",
+                "findings": [
+                    {
+                        "kind": "plugin_not_applicable",
+                        "what": "plugin failed",
+                        "why": "preconditions not satisfied",
+                        "required_inputs": ["process_norm", "duration_seconds"],
+                        "missing_inputs": ["duration_seconds"],
+                    }
+                ],
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    explanations = payload.get("explanations") if isinstance(payload, dict) else {}
+    items = explanations.get("items") if isinstance(explanations, dict) else []
+    row = next(
+        (
+            item
+            for item in (items or [])
+            if isinstance(item, dict)
+            and item.get("plugin_id") == "analysis_ideaspace_action_planner"
+        ),
+        None,
+    )
+    assert isinstance(row, dict)
+    assert row.get("reason_code") == "PLUGIN_PRECONDITION_UNMET"
+    assert row.get("missing_inputs") == ["duration_seconds"]
+    assert "duration_seconds" in str(row.get("recommended_next_step") or "")
+
+
+def test_non_actionable_reason_flags_observation_only(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "1")
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "0")
+    report = {
+        "plugins": {
+            "analysis_percentile_analysis": {
+                "status": "ok",
+                "summary": "observation only",
+                "findings": [{"kind": "plugin_observation", "what": "diagnostic"}],
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    explanations = payload.get("explanations") if isinstance(payload, dict) else {}
+    items = explanations.get("items") if isinstance(explanations, dict) else []
+    row = next(
+        (
+            item
+            for item in (items or [])
+            if isinstance(item, dict) and item.get("plugin_id") == "analysis_percentile_analysis"
+        ),
+        None,
+    )
+    assert isinstance(row, dict)
+    assert row.get("reason_code") == "NON_DECISION_PLUGIN"
+    assert row.get("reason_code_detail") == "OBSERVATION_ONLY"

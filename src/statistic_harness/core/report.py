@@ -57,6 +57,26 @@ _CLOSE_CYCLES_PER_YEAR_ENV = "STAT_HARNESS_CLOSE_CYCLES_PER_YEAR"
 _REPORT_MD_MAX_FINDINGS_PER_PLUGIN_ENV = "STAT_HARNESS_REPORT_MD_MAX_FINDINGS_PER_PLUGIN"
 _REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
 _REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
+_PLUGIN_CLASS_TAXONOMY_PATH = Path(__file__).resolve().parents[3] / "docs" / "plugin_class_taxonomy.yaml"
+_NON_DECISION_REASON_CODES = {
+    "OBSERVATION_ONLY",
+    "NO_ACTIONABLE_FINDING_CLASS",
+    "PLUGIN_PRECONDITION_UNMET",
+    "NO_DIRECT_PROCESS_TARGET",
+    "NO_STATISTICAL_SIGNAL",
+    "NO_ELIGIBLE_SLICE",
+    "NO_SIGNIFICANT_EFFECT",
+    "EXCLUDED_BY_PROCESS_POLICY",
+    "ACTION_TYPE_POLICY_BLOCK",
+    "ADAPTER_RULE_MISSING",
+    "NO_FINDINGS",
+    "FINDING_KIND_MISSING",
+    "CAPACITY_IMPACT_CONSTRAINT",
+    "NO_MODELED_CAPACITY_GAIN",
+    "NO_REVENUE_COMPRESSION_PRESSURE",
+    "SHARE_SHIFT_BELOW_THRESHOLD",
+}
+_PLUGIN_CLASS_TAXONOMY_CACHE: dict[str, Any] | None = None
 
 
 def _include_known_recommendations() -> bool:
@@ -111,6 +131,89 @@ def _direct_process_action_types() -> set[str]:
         "reschedule",
         "tune_schedule",
     }
+
+
+def _normalize_process_hint(raw: Any) -> str:
+    if not isinstance(raw, str):
+        return ""
+    token = raw.strip().lower()
+    if token.startswith("proc:"):
+        token = token[5:].strip()
+    if token in {"", "(multiple)", "multiple", "all", "any", "global"}:
+        return ""
+    return token
+
+
+def _finding_recommendation_text(finding: dict[str, Any]) -> str:
+    text = str(finding.get("recommendation") or "").strip()
+    if text:
+        return text
+    recs = finding.get("recommendations")
+    if isinstance(recs, list):
+        for value in recs:
+            token = str(value or "").strip()
+            if token:
+                return token
+    return ""
+
+
+def _infer_action_type_from_text(text: str) -> str:
+    token = str(text or "").strip().lower()
+    if not token:
+        return ""
+    if "add" in token and ("server" in token or "capacity" in token):
+        return "add_server"
+    if "batch" in token and "group" in token:
+        return "batch_group_candidate"
+    if "batch" in token:
+        return "batch_input"
+    if "cache" in token:
+        return "batch_or_cache"
+    if "resched" in token or "schedule" in token:
+        return "reschedule"
+    if "route" in token:
+        return "route_process"
+    if "throttle" in token or "dedupe" in token or "de-duplicate" in token:
+        return "throttle_or_dedupe"
+    return ""
+
+
+def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
+    out: list[str] = []
+    for key in ("process_norm", "process", "process_id"):
+        token = _normalize_process_hint(finding.get(key))
+        if token:
+            out.append(token)
+    evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+    for bucket in (finding, evidence):
+        raw = bucket.get("target_process_ids") if isinstance(bucket, dict) else None
+        if isinstance(raw, list):
+            for value in raw:
+                token = _normalize_process_hint(value)
+                if token:
+                    out.append(token)
+    selected = evidence.get("selected") if isinstance(evidence.get("selected"), list) else []
+    for row in selected:
+        if not isinstance(row, dict):
+            continue
+        for key in ("process_norm", "process", "process_id"):
+            token = _normalize_process_hint(row.get(key))
+            if token:
+                out.append(token)
+    for key in ("processes", "process_ids"):
+        raw_list = evidence.get(key) if isinstance(evidence.get(key), list) else []
+        for value in raw_list:
+            token = _normalize_process_hint(value)
+            if token:
+                out.append(token)
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for token in out:
+        if token in seen:
+            continue
+        seen.add(token)
+        deduped.append(token)
+    return deduped
 
 
 def _chain_bound_ratio_min() -> float:
@@ -2548,65 +2651,100 @@ def _build_discovery_recommendations(
 
     if ops_findings:
         for src_plugin_id, item in ops_findings:
-            process = item.get("process_norm") or item.get("process") or item.get("process_id")
-            if not isinstance(process, str) or not process.strip():
-                continue
-            action_type = item.get("action_type") or "actionable_ops"
-            action_norm = str(action_type or "").strip().lower()
-            if action_norm in {"unblock_dependency_chain", "orchestrate_chain"}:
-                # Environment policy: chain/flow rewiring is not modifiable.
-                continue
-            title = item.get("title") or f"Operational lever for {process}"
-            delta_s = item.get("expected_delta_seconds")
-            delta_pct = item.get("expected_delta_percent")
-            conf = item.get("confidence")
-            if not isinstance(conf, (int, float)):
-                conf = _confidence_weight(item, {})
-            impact_hours = float(delta_s) / 3600.0 if isinstance(delta_s, (int, float)) else 0.0
-            controllability_weight = 0.9
-            relevance_score = impact_hours * float(conf) * controllability_weight
-            context = _metric_context_from_item("actionable_ops_lever", item, report)
-            rec_text = item.get("recommendation")
-            evidence = (
-                item.get("evidence")
-                if isinstance(item.get("evidence"), dict)
-                else {"source": src_plugin_id}
+            base_evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            selected_rows = (
+                base_evidence.get("selected") if isinstance(base_evidence.get("selected"), list) else []
             )
-            process_key = process.strip().lower()
-            if excluded_match and excluded_match(process_key):
-                continue
-            if not isinstance(rec_text, str) or not rec_text.strip():
-                rec_text = f"{title}."
-                if isinstance(delta_s, (int, float)):
-                    rec_text += f" Expected Δ {float(delta_s):.2f}s"
-                if isinstance(delta_pct, (int, float)):
-                    rec_text += f" ({float(delta_pct):.1f}%)."
-            items.append(
-                {
-                    "title": title,
-                    "status": "discovered",
-                    "category": "discovery",
-                    "recommendation": rec_text,
-                    "plugin_id": src_plugin_id,
-                    "kind": "actionable_ops_lever",
-                    "where": {"process_norm": process},
-                    "contains": None,
-                    "observed_count": None,
-                    "evidence": [evidence],
-                    "action": action_type,
-                    "action_type": action_type,
-                    "target": process,
-                    "scenario_id": item.get("process_id"),
-                    "delta_signature": None,
-                    "modeled_delta": impact_hours if impact_hours else None,
-                    "measurement_type": item.get("measurement_type") or "measured",
-                    "impact_hours": impact_hours,
-                    "confidence_weight": float(conf),
-                    "controllability_weight": controllability_weight,
-                    "relevance_score": relevance_score,
-                    **context,
-                }
-            )
+            expanded: list[dict[str, Any]] = []
+            for row in selected_rows:
+                if not isinstance(row, dict):
+                    continue
+                candidate = dict(item)
+                for key in ("process_norm", "process", "process_id", "action_type", "title"):
+                    if row.get(key):
+                        candidate[key] = row.get(key)
+                if isinstance(row.get("delta_seconds"), (int, float)):
+                    candidate["expected_delta_seconds"] = float(row.get("delta_seconds") or 0.0)
+                candidate["_selected_row"] = row
+                expanded.append(candidate)
+            if not expanded:
+                targets = _target_process_ids_for_finding(item)
+                if targets:
+                    for process in targets:
+                        candidate = dict(item)
+                        candidate["process_norm"] = process
+                        candidate["process"] = process
+                        expanded.append(candidate)
+                else:
+                    expanded.append(dict(item))
+
+            for candidate in expanded:
+                process = _normalize_process_hint(
+                    candidate.get("process_norm")
+                    or candidate.get("process")
+                    or candidate.get("process_id")
+                )
+                if not process:
+                    continue
+                action_type = str(candidate.get("action_type") or "").strip().lower()
+                if not action_type:
+                    action_type = _infer_action_type_from_text(
+                        _finding_recommendation_text(candidate) or str(candidate.get("title") or "")
+                    )
+                if not action_type:
+                    action_type = "actionable_ops"
+                if action_type in {"unblock_dependency_chain", "orchestrate_chain"}:
+                    # Environment policy: chain/flow rewiring is not modifiable.
+                    continue
+                title = candidate.get("title") or f"Operational lever for {process}"
+                delta_s = candidate.get("expected_delta_seconds")
+                delta_pct = candidate.get("expected_delta_percent")
+                conf = candidate.get("confidence")
+                if not isinstance(conf, (int, float)):
+                    conf = _confidence_weight(candidate, {})
+                impact_hours = float(delta_s) / 3600.0 if isinstance(delta_s, (int, float)) else 0.0
+                controllability_weight = 0.9
+                relevance_score = impact_hours * float(conf) * controllability_weight
+                context = _metric_context_from_item("actionable_ops_lever", candidate, report)
+                rec_text = _finding_recommendation_text(candidate) or _finding_recommendation_text(item)
+                evidence = dict(base_evidence) if isinstance(base_evidence, dict) else {"source": src_plugin_id}
+                selected_row = candidate.get("_selected_row")
+                if isinstance(selected_row, dict):
+                    evidence["selected_action"] = selected_row
+                if excluded_match and excluded_match(process):
+                    continue
+                if not isinstance(rec_text, str) or not rec_text.strip():
+                    rec_text = f"{title}."
+                    if isinstance(delta_s, (int, float)):
+                        rec_text += f" Expected Δ {float(delta_s):.2f}s"
+                    if isinstance(delta_pct, (int, float)):
+                        rec_text += f" ({float(delta_pct):.1f}%)."
+                items.append(
+                    {
+                        "title": title,
+                        "status": "discovered",
+                        "category": "discovery",
+                        "recommendation": rec_text,
+                        "plugin_id": src_plugin_id,
+                        "kind": "actionable_ops_lever",
+                        "where": {"process_norm": process},
+                        "contains": None,
+                        "observed_count": None,
+                        "evidence": [evidence],
+                        "action": action_type,
+                        "action_type": action_type,
+                        "target": process,
+                        "scenario_id": candidate.get("process_id"),
+                        "delta_signature": None,
+                        "modeled_delta": impact_hours if impact_hours else None,
+                        "measurement_type": candidate.get("measurement_type") or "measured",
+                        "impact_hours": impact_hours,
+                        "confidence_weight": float(conf),
+                        "controllability_weight": controllability_weight,
+                        "relevance_score": relevance_score,
+                        **context,
+                    }
+                )
 
     ideaspace_plugin = plugins.get("analysis_ideaspace_action_planner")
     if isinstance(ideaspace_plugin, dict):
@@ -3410,6 +3548,90 @@ def _manifest_index() -> dict[str, dict[str, Any]]:
     return index
 
 
+def _plugin_class_taxonomy() -> dict[str, Any]:
+    global _PLUGIN_CLASS_TAXONOMY_CACHE
+    if _PLUGIN_CLASS_TAXONOMY_CACHE is not None:
+        return _PLUGIN_CLASS_TAXONOMY_CACHE
+    try:
+        payload = yaml.safe_load(_PLUGIN_CLASS_TAXONOMY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        payload = {}
+    _PLUGIN_CLASS_TAXONOMY_CACHE = payload if isinstance(payload, dict) else {}
+    return _PLUGIN_CLASS_TAXONOMY_CACHE
+
+
+def _plugin_class_id(plugin_id: str, plugin_type: str) -> str:
+    taxonomy = _plugin_class_taxonomy()
+    overrides = taxonomy.get("plugin_overrides") if isinstance(taxonomy.get("plugin_overrides"), dict) else {}
+    defaults = (
+        taxonomy.get("plugin_type_default_class")
+        if isinstance(taxonomy.get("plugin_type_default_class"), dict)
+        else {}
+    )
+    pid = str(plugin_id or "").strip()
+    ptype = str(plugin_type or "").strip().lower()
+    value = overrides.get(pid)
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    default_value = defaults.get(ptype)
+    if isinstance(default_value, str) and default_value.strip():
+        return default_value.strip()
+    if ptype and ptype != "analysis":
+        return "supporting_signal_detectors"
+    return "direct_action_generators" if pid == "analysis_actionable_ops_levers_v1" else "supporting_signal_detectors"
+
+
+def _plugin_expected_output_type(plugin_class: str) -> str:
+    taxonomy = _plugin_class_taxonomy()
+    classes = taxonomy.get("classes") if isinstance(taxonomy.get("classes"), dict) else {}
+    class_meta = classes.get(plugin_class) if isinstance(classes.get(plugin_class), dict) else {}
+    value = class_meta.get("expected_output_type")
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    return ""
+
+
+def _extract_precondition_inputs(payload: dict[str, Any]) -> tuple[list[str], list[str]]:
+    findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
+    debug = payload.get("debug") if isinstance(payload.get("debug"), dict) else {}
+    required: set[str] = set()
+    missing: set[str] = set()
+
+    def _collect(target: set[str], value: Any) -> None:
+        if isinstance(value, str):
+            for token in re.split(r"[;,|]", value):
+                item = token.strip()
+                if item:
+                    target.add(item)
+            return
+        if isinstance(value, (list, tuple, set)):
+            for item in value:
+                if isinstance(item, str) and item.strip():
+                    target.add(item.strip())
+
+    sources: list[dict[str, Any]] = [debug]
+    sources.extend(item for item in findings if isinstance(item, dict))
+    for item in sources:
+        _collect(required, item.get("required_inputs"))
+        _collect(required, item.get("required_columns"))
+        _collect(required, item.get("required_fields"))
+        _collect(missing, item.get("missing_inputs"))
+        _collect(missing, item.get("missing_columns"))
+        _collect(missing, item.get("missing_fields"))
+        prereq = item.get("prerequisites") if isinstance(item.get("prerequisites"), dict) else {}
+        if isinstance(prereq, dict):
+            _collect(required, prereq.get("required"))
+            _collect(required, prereq.get("required_inputs"))
+            _collect(required, prereq.get("required_columns"))
+            _collect(missing, prereq.get("missing"))
+            _collect(missing, prereq.get("missing_inputs"))
+            _collect(missing, prereq.get("missing_columns"))
+
+    required_sorted = sorted(required)
+    missing_sorted = sorted(missing)
+    return required_sorted, missing_sorted
+
+
 def _downstream_consumers(plugin_ids: set[str], manifest_index: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
     reverse: dict[str, set[str]] = {pid: set() for pid in plugin_ids}
     for pid in plugin_ids:
@@ -3451,13 +3673,70 @@ def _reason_code_for_non_actionable(
 ) -> str:
     debug = payload.get("debug") if isinstance(payload.get("debug"), dict) else {}
     findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
-    return derive_reason_code(
+    typed_findings = [f for f in findings if isinstance(f, dict)]
+    finding_kinds = {str(f.get("kind") or "").strip() for f in typed_findings}
+    reason = derive_reason_code(
         status=status,
         finding_count=int(finding_count or 0),
         blank_kind_count=int(blank_kind_count or 0),
         debug=debug if isinstance(debug, dict) else {},
-        findings=[f for f in findings if isinstance(f, dict)],
+        findings=typed_findings,
     )
+    if reason == "NO_DECISION_SIGNAL":
+        if "plugin_not_applicable" in finding_kinds:
+            return "PLUGIN_PRECONDITION_UNMET"
+        if "plugin_observation" in finding_kinds:
+            return "OBSERVATION_ONLY"
+        if "analysis_no_action_diagnostic" in finding_kinds:
+            explicit = {
+                str(f.get("reason_code") or "").strip()
+                for f in typed_findings
+                if str(f.get("kind") or "").strip() == "analysis_no_action_diagnostic"
+                and str(f.get("reason_code") or "").strip()
+            }
+            if "NO_ELIGIBLE_SLICE" in explicit:
+                return "NO_ELIGIBLE_SLICE"
+            if "NO_SIGNIFICANT_EFFECT" in explicit:
+                return "NO_SIGNIFICANT_EFFECT"
+            return "NO_STATISTICAL_SIGNAL"
+        return "NO_ACTIONABLE_FINDING_CLASS"
+    if reason != "ADAPTER_RULE_MISSING":
+        return reason
+
+    recommended_rows = [f for f in typed_findings if _finding_recommendation_text(f)]
+    if not recommended_rows:
+        return "NO_ACTIONABLE_FINDING_CLASS"
+    if not _require_direct_process_action():
+        return reason
+
+    allowed_actions = _direct_process_action_types()
+    blocked_no_process_target = False
+    blocked_action_type = False
+    blocked_process_policy = False
+    for finding in recommended_rows:
+        process_targets = _target_process_ids_for_finding(finding)
+        if not process_targets:
+            blocked_no_process_target = True
+            continue
+        if all(proc in NON_ADJUSTABLE_PROCESSES for proc in process_targets):
+            blocked_process_policy = True
+            continue
+        process_hint = next(
+            (proc for proc in process_targets if proc not in NON_ADJUSTABLE_PROCESSES),
+            "",
+        )
+        action_hint = str(finding.get("action_type") or finding.get("action") or "").strip().lower()
+        if action_hint and action_hint not in allowed_actions:
+            blocked_action_type = True
+            continue
+        return reason
+    if blocked_no_process_target:
+        return "NO_DIRECT_PROCESS_TARGET"
+    if blocked_process_policy:
+        return "EXCLUDED_BY_PROCESS_POLICY"
+    if blocked_action_type:
+        return "ACTION_TYPE_POLICY_BLOCK"
+    return reason
 
 
 def _build_non_actionable_explanations(
@@ -3475,6 +3754,8 @@ def _build_non_actionable_explanations(
             continue
         payload = plugins.get(pid) if isinstance(plugins.get(pid), dict) else {}
         plugin_type = str((manifest_index.get(pid) or {}).get("type") or "unknown").strip().lower()
+        plugin_class = _plugin_class_id(pid, plugin_type)
+        expected_output_type = _plugin_expected_output_type(plugin_class)
         status = str(payload.get("status") or "unknown").strip().lower()
         summary = str(payload.get("summary") or "").strip()
         findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
@@ -3492,8 +3773,16 @@ def _build_non_actionable_explanations(
             if isinstance(f, dict) and str(f.get("kind") or "").strip()
         ).most_common(8)
         kind_preview = [k for k, _ in top_kinds]
-        reason_code = _reason_code_for_non_actionable(status, finding_count, blank_kind_count, payload)
+        base_reason_code = _reason_code_for_non_actionable(
+            status, finding_count, blank_kind_count, payload
+        )
+        reason_code = base_reason_code
+        if plugin_type and plugin_type != "analysis":
+            reason_code = "NON_DECISION_PLUGIN"
+        elif plugin_class != "direct_action_generators" and base_reason_code in _NON_DECISION_REASON_CODES:
+            reason_code = "NON_DECISION_PLUGIN"
         downstream = downstream_map.get(pid) or []
+        required_inputs, missing_inputs = _extract_precondition_inputs(payload)
         explanation = plain_english_explanation(
             plugin_id=pid,
             plugin_type=plugin_type,
@@ -3503,6 +3792,19 @@ def _build_non_actionable_explanations(
             blank_kind_count=int(blank_kind_count),
             downstream_plugins=downstream,
         )
+        if reason_code == "NON_DECISION_PLUGIN":
+            class_text = (
+                f" ({plugin_class})" if isinstance(plugin_class, str) and plugin_class.strip() else ""
+            )
+            output_text = (
+                f" expected_output={expected_output_type}"
+                if isinstance(expected_output_type, str) and expected_output_type.strip()
+                else ""
+            )
+            explanation += (
+                f" This plugin is classified as a supporting/non-decision signal{class_text};"
+                f"{output_text}."
+            )
         next_step = recommended_next_step(
             plugin_type=plugin_type,
             status=status,
@@ -3510,6 +3812,44 @@ def _build_non_actionable_explanations(
             blank_kind_count=int(blank_kind_count),
             downstream_plugins=downstream,
         )
+        if reason_code == "NON_DECISION_PLUGIN":
+            if downstream:
+                next_step = (
+                    "Use this signal through downstream decision plugins: "
+                    + ", ".join(downstream[:6])
+                    + ("." if len(downstream) <= 6 else ", ...")
+                )
+            else:
+                next_step = (
+                    "No downstream decision plugin is mapped. Add routing to a decision plugin or "
+                    "keep this plugin as explicit observability-only output."
+                )
+        if reason_code == "NO_DIRECT_PROCESS_TARGET":
+            next_step = (
+                "Emit process-level targets (`process_norm` or `target_process_ids`) for each action "
+                "candidate, then rerun full gauntlet."
+            )
+        if reason_code == "NO_ACTIONABLE_FINDING_CLASS":
+            next_step = (
+                "Emit a direct-action finding kind (`actionable_ops_lever`, `ideaspace_action`, "
+                "or `verified_action`) with process target and modeled delta fields."
+            )
+        if reason_code == "EXCLUDED_BY_PROCESS_POLICY":
+            next_step = (
+                "Current target is policy-blocked (chain-bound/non-adjustable). Promote the nearest "
+                "modifiable parent process target and rerun."
+            )
+        if reason_code == "CAPACITY_IMPACT_CONSTRAINT":
+            next_step = (
+                "Capacity impact was not applicable for current slices; expand eligible slice coverage "
+                "or provide modeled scenario inputs for capacity simulation."
+            )
+        if reason_code in {"PLUGIN_PRECONDITION_UNMET", "PREREQUISITE_UNMET"} and missing_inputs:
+            next_step = (
+                "Backfill missing inputs/columns and rerun full gauntlet: "
+                + ", ".join(missing_inputs[:12])
+                + ("." if len(missing_inputs) <= 12 else ", ...")
+            )
 
         items.append(
             {
@@ -3519,12 +3859,17 @@ def _build_non_actionable_explanations(
                 "plugin_status": status or "unknown",
                 "kind": "non_actionable_explanation",
                 "reason_code": reason_code,
+                "reason_code_detail": base_reason_code if reason_code != base_reason_code else None,
                 "plain_english_explanation": explanation,
                 "recommended_next_step": next_step,
+                "plugin_class": plugin_class,
+                "expected_output_type": expected_output_type or None,
                 "downstream_plugins": downstream,
                 "downstream_plugin_count": int(len(downstream)),
                 "finding_count": int(finding_count),
                 "finding_kind_preview": kind_preview,
+                "required_inputs": required_inputs,
+                "missing_inputs": missing_inputs,
                 "summary": summary,
             }
         )

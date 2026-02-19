@@ -11,15 +11,25 @@ from statistic_harness.core.actionability_explanations import NON_ADJUSTABLE_PRO
 
 BAD_PLUGIN_STATUSES = ("skipped", "degraded", "error", "aborted")
 ACTIONABLE_SIGNAL_REASON_ALLOWLIST = {
-    "NOT_APPLICABLE",
+    "PREREQUISITE_UNMET",
+    "PLUGIN_PRECONDITION_UNMET",
+    "OBSERVATION_ONLY",
+    "NO_STATISTICAL_SIGNAL",
+    "NO_ACTIONABLE_FINDING_CLASS",
+    "NON_DECISION_PLUGIN",
     "NO_FINDINGS",
+    "NO_DECISION_SIGNAL",
+    "ADAPTER_RULE_MISSING",
+    "NO_DIRECT_PROCESS_TARGET",
+    "ACTION_TYPE_POLICY_BLOCK",
     "PLUGIN_ERROR",
-    "CAPACITY_IMPACT_NOT_APPLICABLE",
+    "CAPACITY_IMPACT_CONSTRAINT",
     "NO_MODELED_CAPACITY_GAIN",
     "NO_REVENUE_COMPRESSION_PRESSURE",
     "SHARE_SHIFT_BELOW_THRESHOLD",
     "EXCLUDED_BY_PROCESS_POLICY",
 }
+LEGACY_REASON_CODE_BLOCKLIST = {"NOT_APPLICABLE", "CAPACITY_IMPACT_NOT_APPLICABLE"}
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -303,6 +313,13 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
         for item in explanation_items
         if str(item.get("plugin_id") or "").strip()
     }
+    legacy_explanation_reason_codes = sorted(
+        {
+            str(item.get("reason_code") or "").strip()
+            for item in explanation_items
+            if str(item.get("reason_code") or "").strip() in LEGACY_REASON_CODE_BLOCKLIST
+        }
+    )
     direct_action_plugins = _load_direct_action_plugins(root)
     unrouted_direct_action_signals: list[dict[str, Any]] = []
     direct_action_not_routed_reasons: list[dict[str, Any]] = []
@@ -385,6 +402,8 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
         "direct_action_invalid_non_actionable_reasons": direct_action_invalid_non_actionable_reasons,
         "unrouted_direct_action_signals": unrouted_direct_action_signals,
         "unrouted_direct_action_signal_count": int(len(unrouted_direct_action_signals)),
+        "legacy_explanation_reason_codes": legacy_explanation_reason_codes,
+        "legacy_explanation_reason_code_count": int(len(legacy_explanation_reason_codes)),
         "allowed_non_actionable_reason_codes": sorted(ACTIONABLE_SIGNAL_REASON_ALLOWLIST),
     }
 
@@ -492,6 +511,15 @@ def verify_contract(
             primary.get("allowed_non_actionable_reason_codes") or [],
             primary.get("direct_action_invalid_non_actionable_reasons") or [],
             "Direct-action plugins without recommendations must carry deterministic reason codes.",
+        )
+    )
+    checks.append(
+        _check(
+            "run.no_legacy_not_applicable_reason_codes",
+            int(primary.get("legacy_explanation_reason_code_count") or 0) == 0,
+            0,
+            int(primary.get("legacy_explanation_reason_code_count") or 0),
+            "Legacy NOT_APPLICABLE reason codes are disallowed; explanations must use resolved deterministic reasons.",
         )
     )
     if compare is not None:

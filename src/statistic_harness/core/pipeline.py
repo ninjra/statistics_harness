@@ -990,8 +990,8 @@ class Pipeline:
             if "missing" in lowered:
                 return "MISSING_PREREQUISITE"
             if "not applicable" in lowered or "n/a" in lowered:
-                return "NOT_APPLICABLE"
-            return "NO_ACTIONABLE_RESULT"
+                return "PREREQUISITE_UNMET"
+            return "NO_DECISION_SIGNAL"
 
         def _not_applicable_finding(
             plugin_id: str,

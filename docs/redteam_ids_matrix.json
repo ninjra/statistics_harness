@@ -1355,7 +1355,8 @@
           "tests/test_ideaspace_plugins.py",
           "tests/test_pipeline_analysis_no_findings_policy.py",
           "tests/test_plugin_manager_lane_inference.py",
-          "tests/test_redteam_requirements_full.py"
+          "tests/test_redteam_requirements_full.py",
+          "tests/test_report_explanations_lane.py"
         ]
       },
       "id": "OBS-03",
