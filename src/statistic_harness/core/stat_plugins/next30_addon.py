@@ -245,6 +245,12 @@ def _series_from_time_value(
     *,
     value_col: str | None = None,
 ) -> tuple[pd.Series, pd.Series, str, str] | None:
+    def _parse_time(series: pd.Series) -> pd.Series:
+        try:
+            return pd.to_datetime(series, errors="coerce", utc=False)
+        except Exception:
+            return pd.to_datetime(series.astype(str), errors="coerce", utc=False)
+
     time_col = inferred.get("time_column")
     if not isinstance(time_col, str) or time_col not in df.columns:
         candidates = [c for c in df.columns if "time" in str(c).lower() or "date" in str(c).lower() or "dt" in str(c).lower()]
@@ -266,7 +272,7 @@ def _series_from_time_value(
         if best_col is None:
             return None
         value_col = best_col
-    ts = pd.to_datetime(df[time_col], errors="coerce", utc=False)
+    ts = _parse_time(df[time_col])
     vals = pd.to_numeric(df[value_col], errors="coerce")
     ok = ts.notna() & vals.notna()
     if int(ok.sum()) < 20:
@@ -279,13 +285,23 @@ def _bucket_series(ts: pd.Series, values: pd.Series) -> tuple[pd.Series, str]:
     deltas = frame["ts"].diff().dt.total_seconds().dropna()
     freq = "D"
     if not deltas.empty and float(deltas.median()) <= 3600.0:
-        freq = "H"
-    series = (
-        frame.set_index("ts")["value"]
-        .resample(freq)
-        .mean()
-        .dropna()
-    )
+        # Pandas 2.x frequency aliases are lower-case.
+        freq = "h"
+    try:
+        series = (
+            frame.set_index("ts")["value"]
+            .resample(freq)
+            .mean()
+            .dropna()
+        )
+    except Exception:
+        freq = "D"
+        series = (
+            frame.set_index("ts")["value"]
+            .resample(freq)
+            .mean()
+            .dropna()
+        )
     return series, freq
 
 
@@ -388,6 +404,15 @@ def _window_cp_score(y: np.ndarray, window: int) -> tuple[int, float]:
 
 def _to_array(series: pd.Series) -> np.ndarray:
     return pd.to_numeric(series, errors="coerce").dropna().to_numpy(dtype=float)
+
+
+def _downsample_series(y: np.ndarray, max_points: int) -> tuple[np.ndarray, int]:
+    cap = max(200, int(max_points))
+    n = int(len(y))
+    if n <= cap:
+        return y, 1
+    step = int(math.ceil(float(n) / float(cap)))
+    return y[::step], step
 
 
 def _handler_bsts_intervention_counterfactual_v1(
@@ -841,27 +866,59 @@ def _handler_bayesian_online_changepoint_studentt_v1(
     )
 
 
-def _wbs_candidates(y: np.ndarray, seed: int, min_seg: int = 20, K: int = 128) -> list[int]:
+def _wbs_candidates(
+    y: np.ndarray,
+    seed: int,
+    min_seg: int = 20,
+    K: int = 128,
+    timer: BudgetTimer | None = None,
+) -> list[int]:
     n = len(y)
     rng = np.random.default_rng(seed)
     out: list[int] = []
     if n < (2 * min_seg + 2):
         return out
+    y_eval, step = _downsample_series(y, max_points=4096)
+    n_eval = len(y_eval)
+    if n_eval < (2 * min_seg + 2):
+        return out
     for _ in range(K):
-        l = int(rng.integers(0, n - 2 * min_seg))
-        r = int(rng.integers(l + 2 * min_seg, n))
-        segment = y[l:r]
+        l = int(rng.integers(0, n_eval - 2 * min_seg))
+        r = int(rng.integers(l + 2 * min_seg, n_eval))
+        segment = y_eval[l:r]
+        m = len(segment)
+        if m < (2 * min_seg + 2):
+            continue
+        csum = np.concatenate(([0.0], np.cumsum(segment)))
+        csum2 = np.concatenate(([0.0], np.cumsum(segment * segment)))
+        total_sum = float(csum[m])
+        total_sum2 = float(csum2[m])
+        mean_seg = total_sum / float(m)
+        var_seg = max(0.0, total_sum2 / float(m) - mean_seg * mean_seg)
         best_k = None
         best_gain = 0.0
-        for k in range(min_seg, len(segment) - min_seg):
-            left = segment[:k]
-            right = segment[k:]
-            gain = float(np.var(segment) - (np.var(left) * len(left) + np.var(right) * len(right)) / len(segment))
+        for k in range(min_seg, m - min_seg):
+            left_n = float(k)
+            right_n = float(m - k)
+            left_sum = float(csum[k])
+            left_sum2 = float(csum2[k])
+            right_sum = total_sum - left_sum
+            right_sum2 = total_sum2 - left_sum2
+            left_mean = left_sum / left_n
+            right_mean = right_sum / right_n
+            left_var = max(0.0, left_sum2 / left_n - left_mean * left_mean)
+            right_var = max(0.0, right_sum2 / right_n - right_mean * right_mean)
+            gain = float(
+                var_seg
+                - ((left_var * left_n + right_var * right_n) / float(m))
+            )
             if gain > best_gain:
                 best_gain = gain
-                best_k = l + k
+                best_k = (l + k) * step
         if best_k is not None:
-            out.append(int(best_k))
+            out.append(int(min(n - 1, max(0, int(best_k)))))
+        if timer is not None:
+            _ensure_budget(timer)
     return out
 
 
@@ -896,12 +953,29 @@ def _handler_wild_binary_segmentation_v1(
     value_col = _best_latency_col(df, inferred)
     if value_col is None:
         return _ok_with_reason(plugin_id, ctx, df, sample_meta, "no_numeric_column")
-    y = _to_array(df[value_col])
+    y_full = _to_array(df[value_col])
+    y, downsample_step = _downsample_series(
+        y_full, int(config.get("plugin", {}).get("max_points", 12000))
+    )
     if len(y) < 120:
         return _ok_with_reason(plugin_id, ctx, df, sample_meta, "insufficient_points")
     seed = int(config.get("seed", 1337))
     K = int(config.get("plugin", {}).get("intervals", 128))
-    candidates = _wbs_candidates(y, seed=seed, min_seg=20, K=max(16, K))
+    try:
+        candidates = _wbs_candidates(y, seed=seed, min_seg=20, K=max(16, K), timer=timer)
+    except Exception as exc:
+        if "time_budget_exceeded" in str(exc):
+            return _ok_with_reason(
+                plugin_id,
+                ctx,
+                df,
+                sample_meta,
+                "time_budget_exceeded",
+                debug={"value_column": value_col, "downsample_step": int(downsample_step)},
+            )
+        raise
+    if downsample_step > 1:
+        candidates = [int(min(len(y_full) - 1, max(0, c * downsample_step))) for c in candidates]
     clustered = _cluster_indices(candidates, tolerance=5, max_points=int(config.get("plugin", {}).get("max_changepoints", 10)))
     findings = [
         _make_finding(
@@ -934,7 +1008,11 @@ def _handler_wild_binary_segmentation_v1(
         "Computed wild binary segmentation changepoints.",
         findings,
         artifacts,
-        extra_metrics={"runtime_ms": _runtime_ms(timer), "clusters": len(clustered)},
+        extra_metrics={
+            "runtime_ms": _runtime_ms(timer),
+            "clusters": len(clustered),
+            "downsample_step": int(downsample_step),
+        },
     )
 
 
@@ -1087,11 +1165,27 @@ def _handler_change_score_consensus_v1(
     value_col = _best_latency_col(df, inferred)
     if value_col is None:
         return _ok_with_reason(plugin_id, ctx, df, sample_meta, "no_numeric_column")
-    y = _to_array(df[value_col])
+    y_full = _to_array(df[value_col])
+    y, downsample_step = _downsample_series(
+        y_full, int(config.get("plugin", {}).get("max_points", 8000))
+    )
     if len(y) < 60:
         return _ok_with_reason(plugin_id, ctx, df, sample_meta, "insufficient_points")
-    w_idx, _ = _window_cp_score(y, window=max(10, len(y) // 20))
-    wbs = _wbs_candidates(y, seed=int(config.get("seed", 1337)), min_seg=15, K=64)
+    try:
+        w_idx, _ = _window_cp_score(y, window=max(10, len(y) // 20))
+        _ensure_budget(timer)
+        wbs = _wbs_candidates(y, seed=int(config.get("seed", 1337)), min_seg=15, K=64, timer=timer)
+    except Exception as exc:
+        if "time_budget_exceeded" in str(exc):
+            return _ok_with_reason(
+                plugin_id,
+                ctx,
+                df,
+                sample_meta,
+                "time_budget_exceeded",
+                debug={"value_column": value_col, "downsample_step": int(downsample_step)},
+            )
+        raise
     deriv = np.abs(
         np.diff(
             pd.Series(y)
@@ -1104,6 +1198,8 @@ def _handler_change_score_consensus_v1(
     )
     d_idx = int(np.argmax(deriv)) if len(deriv) else len(y) // 2
     all_idx = [int(w_idx), int(d_idx)] + [int(i) for i in wbs[:100]]
+    if downsample_step > 1:
+        all_idx = [int(min(len(y_full) - 1, max(0, i * downsample_step))) for i in all_idx]
     consensus = _cluster_indices(all_idx, tolerance=10, max_points=10)
     findings = [
         _make_finding(
@@ -1129,7 +1225,17 @@ def _handler_change_score_consensus_v1(
         )
     ]
     return _finalize(
-        plugin_id, ctx, df, sample_meta, "Computed changepoint consensus.", findings, artifacts, extra_metrics={"runtime_ms": _runtime_ms(timer)}
+        plugin_id,
+        ctx,
+        df,
+        sample_meta,
+        "Computed changepoint consensus.",
+        findings,
+        artifacts,
+        extra_metrics={
+            "runtime_ms": _runtime_ms(timer),
+            "downsample_step": int(downsample_step),
+        },
     )
 
 

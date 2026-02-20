@@ -109,9 +109,18 @@ def _direct_process_action_types() -> set[str]:
         "batch_or_cache",
         "batch_input_refactor",
         "throttle_or_dedupe",
+        "dedupe_or_cache",
+        "orchestrate_macro",
+        "ideaspace_action",
         "route_process",
         "reschedule",
         "tune_schedule",
+        "schedule_shift_target",
+        "reduce_spillover_past_eom",
+        "add_upload_linkage",
+        "reduce_close_cycle_slowdown",
+        "isolate_process",
+        "cap_concurrency",
     }
 
 
@@ -160,6 +169,86 @@ def _infer_action_type_from_text(text: str) -> str:
     return ""
 
 
+def _normalize_action_type(raw_action: str, text_hint: str = "") -> str:
+    action = str(raw_action or "").strip().lower()
+    if not action:
+        inferred = _infer_action_type_from_text(text_hint)
+        return inferred
+    alias_map = {
+        "batch_cluster_candidate": "batch_group_candidate",
+        "preset_job_candidate": "batch_input_refactor",
+        "param_rule_simplification": "batch_input_refactor",
+        "action_plan_combo": "batch_group_candidate",
+        "simulate_plan": "batch_or_cache",
+        "reduce_close_cycle_slowdown": "reschedule",
+        "isolate_process": "tune_schedule",
+        "orchestrate_macro": "schedule_shift_target",
+    }
+    return str(alias_map.get(action, action))
+
+
+def _flow_rewire_action_types() -> set[str]:
+    # Processes in parent/child chains can still take process-local changes.
+    # Only drop actions that require flow rewiring across process boundaries.
+    return {
+        "unblock_dependency_chain",
+        "orchestrate_chain",
+        "reduce_transition_gap",
+        "route_process",
+    }
+
+
+def _known_process_terms_from_report(report: dict[str, Any]) -> set[str]:
+    out: set[str] = set()
+    plugins = report.get("plugins")
+    if not isinstance(plugins, dict):
+        return out
+    for payload in plugins.values():
+        if not isinstance(payload, dict):
+            continue
+        findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
+        for finding in findings:
+            if not isinstance(finding, dict):
+                continue
+            for key in ("process_norm", "process", "process_id"):
+                token = _normalize_process_hint(finding.get(key))
+                if token:
+                    out.add(token)
+            where = finding.get("where") if isinstance(finding.get("where"), dict) else {}
+            for key in ("process_norm", "process", "process_id"):
+                token = _normalize_process_hint(where.get(key))
+                if token:
+                    out.add(token)
+            evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+            for key in ("process_norm", "process", "process_id"):
+                token = _normalize_process_hint(evidence.get(key))
+                if token:
+                    out.add(token)
+            metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+            token = _normalize_process_hint(metrics.get("process"))
+            if token:
+                out.add(token)
+    return out
+
+
+def _infer_process_from_text(text: str, known_process_terms: set[str]) -> str:
+    payload = str(text or "").strip().lower()
+    if not payload or not known_process_terms:
+        return ""
+    scored: list[tuple[int, int, str]] = []
+    for token in known_process_terms:
+        if len(token) < 3:
+            continue
+        pattern = rf"\b{re.escape(token)}\b"
+        if not re.search(pattern, payload):
+            continue
+        scored.append((len(token), payload.find(token), token))
+    if not scored:
+        return ""
+    scored.sort(reverse=True)
+    return scored[0][2]
+
+
 def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
     out: list[str] = []
     for key in ("process_norm", "process", "process_id"):
@@ -188,6 +277,19 @@ def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
             token = _normalize_process_hint(value)
             if token:
                 out.append(token)
+    metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+    for key in ("process", "process_norm", "process_id"):
+        token = _normalize_process_hint(metrics.get(key))
+        if token:
+            out.append(token)
+    top_rows = evidence.get("top_spillover_processes") if isinstance(evidence.get("top_spillover_processes"), list) else []
+    for row in top_rows:
+        if not isinstance(row, dict):
+            continue
+        for key in ("process_norm", "process", "process_id"):
+            token = _normalize_process_hint(row.get(key))
+            if token:
+                out.append(token)
     deduped: list[str] = []
     seen: set[str] = set()
     for token in out:
@@ -196,6 +298,121 @@ def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
         seen.add(token)
         deduped.append(token)
     return deduped
+
+
+def _has_backstop_decision_signal(plugin_id: str, findings: list[dict[str, Any]]) -> bool:
+    if not findings:
+        return False
+    non_decision_kinds = {
+        "",
+        "plugin_not_applicable",
+        "plugin_observation",
+        "analysis_no_action_diagnostic",
+        "profile_overview",
+    }
+    if plugin_id == "analysis_actionable_ops_levers_v1":
+        actionable_rows = [
+            row
+            for row in findings
+            if str(row.get("kind") or "").strip().lower() == "actionable_ops_lever"
+        ]
+        if actionable_rows and not any(_target_process_ids_for_finding(row) for row in actionable_rows):
+            return False
+    for row in findings:
+        kind = str(row.get("kind") or "").strip().lower()
+        if kind in non_decision_kinds:
+            continue
+        if _finding_recommendation_text(row):
+            return True
+        if kind in {
+            "anomaly",
+            "changepoint",
+            "cluster",
+            "process_variant",
+            "tail_isolation",
+            "sequence_classification",
+            "recommendation",
+            "chi_square_association",
+            "close_cycle_capacity_model",
+            "capacity_scale_model",
+        }:
+            return True
+    return False
+
+
+def _extract_process_queue_ids_from_finding(finding: dict[str, Any]) -> list[int]:
+    texts: list[str] = []
+    for key in ("recommendation", "title", "what", "why"):
+        value = finding.get(key)
+        if isinstance(value, str) and value.strip():
+            texts.append(value)
+    recs = finding.get("recommendations")
+    if isinstance(recs, list):
+        for value in recs:
+            if isinstance(value, str) and value.strip():
+                texts.append(value)
+    evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+    for key in ("itemset", "antecedents", "consequents"):
+        values = evidence.get(key)
+        if isinstance(values, list):
+            for token in values:
+                if isinstance(token, str) and token.strip():
+                    texts.append(token)
+
+    out: list[int] = []
+    seen: set[int] = set()
+    for text in texts:
+        payload = str(text or "")
+        matches = re.findall(r"process\s*queue\s*id\((\d+)\)", payload, flags=re.IGNORECASE)
+        matches += re.findall(r"process\s*id\((\d+)\)", payload, flags=re.IGNORECASE)
+        for raw in matches:
+            try:
+                value = int(raw)
+            except (TypeError, ValueError):
+                continue
+            if value <= 0 or value in seen:
+                continue
+            seen.add(value)
+            out.append(value)
+    return out
+
+
+def _resolve_processes_from_queue_ids(
+    report: dict[str, Any], storage: Storage | None, queue_ids: list[int]
+) -> list[str]:
+    if storage is None or not queue_ids:
+        return []
+    _, table_name, mapping = _dataset_context(report, storage)
+    if not table_name or not mapping:
+        return []
+    queue_col = mapping.get("PROCESS_QUEUE_ID")
+    process_col = mapping.get("PROCESS_ID")
+    if not queue_col or not process_col:
+        return []
+    placeholders = ",".join(["?"] * len(queue_ids))
+    sql = f"""
+    SELECT LOWER(TRIM(CAST({process_col} AS TEXT))) AS process_norm,
+           COUNT(*) AS hits
+    FROM {table_name}
+    WHERE CAST({queue_col} AS TEXT) IN ({placeholders})
+      AND TRIM(CAST({process_col} AS TEXT)) <> ''
+    GROUP BY LOWER(TRIM(CAST({process_col} AS TEXT)))
+    ORDER BY hits DESC
+    """
+    try:
+        with storage.connection() as conn:
+            rows = [dict(r) for r in conn.execute(sql, [str(v) for v in queue_ids]).fetchall()]
+    except Exception:
+        return []
+    out: list[str] = []
+    seen: set[str] = set()
+    for row in rows:
+        process = _normalize_process_hint(row.get("process_norm"))
+        if not process or process in seen:
+            continue
+        seen.add(process)
+        out.append(process)
+    return out
 
 
 def _chain_bound_ratio_min() -> float:
@@ -1591,6 +1808,109 @@ def _build_discovery_recommendations(
     excluded_processes = _explicit_excluded_processes(report)
     excluded_match = compile_patterns(sorted(excluded_processes)) if excluded_processes else None
     plugins = report.get("plugins", {}) or {}
+    known_process_terms = _known_process_terms_from_report(report)
+    fallback_batch_processes: list[str] = []
+    fallback_close_processes: list[str] = []
+
+    variant_plugin_for_fallback = plugins.get("analysis_param_variant_explosion_v1")
+    if isinstance(variant_plugin_for_fallback, dict):
+        candidates: list[tuple[float, str]] = []
+        for finding in variant_plugin_for_fallback.get("findings") or []:
+            if not isinstance(finding, dict) or finding.get("kind") != "param_variant_explosion":
+                continue
+            evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+            metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+            process = _normalize_process_hint(
+                metrics.get("process")
+                or finding.get("process_norm")
+                or finding.get("process")
+            )
+            if not process:
+                continue
+            runs = metrics.get("runs")
+            unique_ratio = metrics.get("unique_ratio")
+            if not isinstance(runs, (int, float)):
+                runs = 0.0
+            if not isinstance(unique_ratio, (int, float)):
+                unique_ratio = 0.0
+            candidates.append((float(runs) * float(unique_ratio), process))
+        for _, process in sorted(candidates, key=lambda row: row[0], reverse=True):
+            if process in fallback_batch_processes:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            fallback_batch_processes.append(process)
+            if len(fallback_batch_processes) >= 8:
+                break
+
+    for pid in (
+        "analysis_dynamic_close_detection",
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1",
+    ):
+        plugin = plugins.get(pid)
+        if not isinstance(plugin, dict):
+            continue
+        for finding in plugin.get("findings") or []:
+            if not isinstance(finding, dict):
+                continue
+            indicators = finding.get("indicator_processes")
+            if isinstance(indicators, list):
+                for row in indicators:
+                    if not isinstance(row, dict):
+                        continue
+                    process = _normalize_process_hint(
+                        row.get("process")
+                        or row.get("process_norm")
+                        or row.get("process_id")
+                    )
+                    if not process:
+                        continue
+                    if excluded_match and excluded_match(process):
+                        continue
+                    if process not in fallback_close_processes:
+                        fallback_close_processes.append(process)
+                    if len(fallback_close_processes) >= 8:
+                        break
+            signatures = finding.get("signature_processes")
+            if isinstance(signatures, list):
+                for token in signatures:
+                    process = _normalize_process_hint(token)
+                    if not process:
+                        continue
+                    if excluded_match and excluded_match(process):
+                        continue
+                    if process not in fallback_close_processes:
+                        fallback_close_processes.append(process)
+                    if len(fallback_close_processes) >= 8:
+                        break
+            if len(fallback_close_processes) >= 8:
+                break
+        if len(fallback_close_processes) >= 8:
+            break
+
+    if not fallback_batch_processes:
+        queue_plugin_for_fallback = plugins.get("analysis_queue_delay_decomposition")
+        if isinstance(queue_plugin_for_fallback, dict):
+            stats = [
+                f
+                for f in (queue_plugin_for_fallback.get("findings") or [])
+                if isinstance(f, dict) and f.get("kind") == "eligible_wait_process_stats"
+            ]
+            stats = sorted(
+                stats,
+                key=lambda row: float(row.get("eligible_wait_gt_hours_total") or 0.0),
+                reverse=True,
+            )
+            for item in stats:
+                process = _normalize_process_hint(item.get("process_norm") or item.get("process"))
+                if not process:
+                    continue
+                if excluded_match and excluded_match(process):
+                    continue
+                fallback_batch_processes.append(process)
+                if len(fallback_batch_processes) >= 8:
+                    break
 
     queue_plugin = plugins.get("analysis_queue_delay_decomposition")
     ops_plugin = plugins.get("analysis_actionable_ops_levers_v1")
@@ -2621,6 +2941,138 @@ def _build_discovery_recommendations(
                 }
             )
 
+    variant_plugin = plugins.get("analysis_param_variant_explosion_v1")
+    if isinstance(variant_plugin, dict):
+        variant_findings = [
+            f
+            for f in variant_plugin.get("findings") or []
+            if isinstance(f, dict) and f.get("kind") == "param_variant_explosion"
+        ]
+        variant_findings = sorted(
+            variant_findings,
+            key=lambda row: float(
+                (
+                    (
+                        (
+                            row.get("evidence")
+                            if isinstance(row.get("evidence"), dict)
+                            else {}
+                        ).get("metrics")
+                        if isinstance(
+                            (
+                                row.get("evidence")
+                                if isinstance(row.get("evidence"), dict)
+                                else {}
+                            ).get("metrics"),
+                            dict,
+                        )
+                        else {}
+                    ).get("runs")
+                    or 0.0
+                )
+                * (
+                    (
+                        (
+                            row.get("evidence")
+                            if isinstance(row.get("evidence"), dict)
+                            else {}
+                        ).get("metrics")
+                        if isinstance(
+                            (
+                                row.get("evidence")
+                                if isinstance(row.get("evidence"), dict)
+                                else {}
+                            ).get("metrics"),
+                            dict,
+                        )
+                        else {}
+                    ).get("unique_ratio")
+                    or 0.0
+                )
+            ),
+            reverse=True,
+        )
+        for item in variant_findings[:8]:
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+            process = _normalize_process_hint(
+                metrics.get("process")
+                or item.get("process_norm")
+                or item.get("process")
+                or item.get("process_id")
+            )
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            runs = metrics.get("runs")
+            unique_params = metrics.get("unique_params")
+            unique_ratio = metrics.get("unique_ratio")
+            if (
+                not isinstance(unique_ratio, (int, float))
+                and isinstance(runs, (int, float))
+                and isinstance(unique_params, (int, float))
+                and float(runs) > 0.0
+            ):
+                unique_ratio = float(unique_params) / float(runs)
+            if not isinstance(unique_ratio, (int, float)):
+                unique_ratio = 0.0
+            if not isinstance(runs, (int, float)):
+                runs = 0.0
+            estimated_calls_reduced = max(0.0, float(runs) - 1.0) if float(runs) > 1.0 else 0.0
+            modeled_delta_hours = max(0.0, estimated_calls_reduced / 3600.0)
+            action_type = "batch_input_refactor" if float(unique_ratio) >= 0.8 else "batch_or_cache"
+            recs = item.get("recommendations") if isinstance(item.get("recommendations"), list) else []
+            base_text = ""
+            for rec in recs:
+                token = str(rec or "").strip()
+                if token:
+                    base_text = token
+                    break
+            if not base_text:
+                base_text = str(item.get("recommendation") or "").strip()
+            if not base_text:
+                base_text = "Group equivalent parameter variants and add batching/caching."
+            rec_text = (
+                f"{base_text} Process {process} has high variant spread "
+                f"(runs={int(float(runs)) if float(runs) > 0 else 0}, unique_ratio={float(unique_ratio):.2f})."
+            )
+            if estimated_calls_reduced > 0.0:
+                rec_text += (
+                    f" Conservative lower-bound launch reduction: ~{int(estimated_calls_reduced):,} runs "
+                    "if equivalent variants are coalesced."
+                )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.8
+            impact_hours = modeled_delta_hours
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            items.append(
+                {
+                    "title": f"Reduce parameter variant explosion for {process}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_param_variant_explosion_v1",
+                    "kind": "param_variant_explosion",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": int(float(runs)) if isinstance(runs, (int, float)) else None,
+                    "evidence": [dict(evidence, process_norm=process)],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": process,
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "modeled_percent_hint": float(unique_ratio) * 100.0 if float(unique_ratio) > 0.0 else None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "runs_with_key": float(runs) if isinstance(runs, (int, float)) else None,
+                    "estimated_calls_reduced": estimated_calls_reduced if estimated_calls_reduced > 0.0 else None,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
     # Family F: CEO-grade operational levers (process-targeted actions).
     # Support levers emitted by any plugin (not just analysis_actionable_ops_levers_v1).
     ops_findings: list[tuple[str, dict[str, Any]]] = []
@@ -2667,12 +3119,56 @@ def _build_discovery_recommendations(
                     or candidate.get("process_id")
                 )
                 if not process:
+                    process = _infer_process_from_text(
+                        " ".join(
+                            [
+                                str(candidate.get("title") or ""),
+                                _finding_recommendation_text(candidate),
+                                _finding_recommendation_text(item),
+                            ]
+                        ),
+                        known_process_terms,
+                    )
+                if not process:
+                    queue_ids = _extract_process_queue_ids_from_finding(candidate)
+                    if not queue_ids:
+                        queue_ids = _extract_process_queue_ids_from_finding(item)
+                    if queue_ids:
+                        resolved = _resolve_processes_from_queue_ids(report, storage, queue_ids)
+                        if resolved:
+                            process = _normalize_process_hint(resolved[0])
+                if not process:
+                    pending_action = _normalize_action_type(
+                        str(candidate.get("action_type") or candidate.get("action") or "").strip(),
+                        _finding_recommendation_text(candidate) or str(candidate.get("title") or ""),
+                    )
+                    if pending_action in {
+                        "reschedule",
+                        "schedule_shift_target",
+                        "tune_schedule",
+                        "reduce_spillover_past_eom",
+                    } and fallback_close_processes:
+                        process = fallback_close_processes[0]
+                    elif pending_action in {
+                        "batch_input",
+                        "batch_or_cache",
+                        "batch_input_refactor",
+                        "batch_group_candidate",
+                        "dedupe_or_cache",
+                        "throttle_or_dedupe",
+                    } and fallback_batch_processes:
+                        process = fallback_batch_processes[0]
+                if not process:
                     continue
                 action_type = str(candidate.get("action_type") or "").strip().lower()
                 if not action_type:
                     action_type = _infer_action_type_from_text(
                         _finding_recommendation_text(candidate) or str(candidate.get("title") or "")
                     )
+                action_type = _normalize_action_type(
+                    action_type,
+                    _finding_recommendation_text(candidate) or str(candidate.get("title") or ""),
+                )
                 if not action_type:
                     action_type = "actionable_ops"
                 if action_type in {"unblock_dependency_chain", "orchestrate_chain"}:
@@ -2684,7 +3180,24 @@ def _build_discovery_recommendations(
                 conf = candidate.get("confidence")
                 if not isinstance(conf, (int, float)):
                     conf = _confidence_weight(candidate, {})
-                impact_hours = float(delta_s) / 3600.0 if isinstance(delta_s, (int, float)) else 0.0
+                has_explicit_delta_seconds = isinstance(delta_s, (int, float))
+                impact_hours = float(delta_s) / 3600.0 if has_explicit_delta_seconds else 0.0
+                if (not has_explicit_delta_seconds) and isinstance(delta_pct, (int, float)):
+                    pct = float(delta_pct)
+                    if pct > 1.0:
+                        pct /= 100.0
+                    pct = max(0.0, pct)
+                    process_basis_hours = _queue_wait_hours_for_process(report, process)
+                    if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+                        process_basis_hours = 1.0
+                    impact_hours = max(0.05, min(8.0, float(process_basis_hours) * pct))
+                if (not has_explicit_delta_seconds) and impact_hours <= 0.0:
+                    process_basis_hours = _queue_wait_hours_for_process(report, process)
+                    if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+                        process_basis_hours = 1.0
+                    # Conservative fallback so direct-action findings without explicit delta
+                    # still carry a deterministic modeled estimate.
+                    impact_hours = max(0.05, min(8.0, float(process_basis_hours) * 0.05))
                 controllability_weight = 0.9
                 relevance_score = impact_hours * float(conf) * controllability_weight
                 context = _metric_context_from_item("actionable_ops_lever", candidate, report)
@@ -2863,12 +3376,10 @@ def _build_discovery_recommendations(
             target = str(item.get("target") or "").strip() or None
             if lever_id == "tune_schedule_qemail_frequency_v1" or ("qemail" in text.lower()):
                 action_type = "tune_schedule"
-                if not target:
-                    target = "qemail"
+                target = "qemail"
             elif lever_id == "add_qpec_capacity_plus_one_v1" or ("qpec" in text.lower()):
                 action_type = "add_server"
-                if not target:
-                    target = "qpec"
+                target = "qpec"
             elif lever_id == "split_batches":
                 action_type = "batch_input_refactor"
             elif lever_id == "priority_isolation":
@@ -3005,30 +3516,677 @@ def _build_discovery_recommendations(
             "spillover_queue_wait_hours_total": qh,
             "spillover_service_hours_total": sh,
             "spillover_duration_hours_total": dh,
+            "top_spillover_processes": proc_rows[:12],
         }
         impact_hours = float(qh) if isinstance(qh, (int, float)) else (float(dh) if isinstance(dh, (int, float)) else 0.0)
-        items.append(
-            {
-                "title": "Reduce close-cycle spillover past EOM",
-                "status": "discovered",
-                "category": "discovery",
-                "recommendation": rec_text,
-                "plugin_id": pid,
-                "kind": "spillover_past_eom",
-                "where": None,
-                "contains": None,
-                "observed_count": rows_total,
-                "evidence": [evidence],
-                "action": "reduce_spillover_past_eom",
-                "action_type": "reduce_spillover_past_eom",
-                "modeled_delta": None,
-                "measurement_type": item.get("measurement_type") or "measured",
-                "impact_hours": impact_hours,
-                "confidence_weight": 0.7,
-                "controllability_weight": 0.8,
-                "relevance_score": impact_hours * 0.7 * 0.8,
-            }
+        targeted_rows = []
+        for proc in proc_rows[:3]:
+            process_norm = _normalize_process_hint(proc.get("process_norm") or proc.get("process") or proc.get("process_id"))
+            if not process_norm:
+                continue
+            proc_hours = proc.get("spillover_queue_wait_hours_total")
+            if not isinstance(proc_hours, (int, float)):
+                proc_hours = proc.get("spillover_duration_hours_total")
+            if not isinstance(proc_hours, (int, float)):
+                proc_hours = proc.get("spillover_service_hours_total")
+            process_hours = float(proc_hours) if isinstance(proc_hours, (int, float)) else impact_hours
+            process_rows = proc.get("spillover_rows")
+            targeted_rows.append(
+                {
+                    "title": f"Reduce close-cycle spillover past EOM ({process_norm})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": "spillover_past_eom",
+                    "where": {"process_norm": process_norm},
+                    "contains": None,
+                    "observed_count": process_rows if isinstance(process_rows, (int, float)) else rows_total,
+                    "evidence": [dict(evidence, process_norm=process_norm, process_hours=process_hours)],
+                    "action": "reduce_spillover_past_eom",
+                    "action_type": "reduce_spillover_past_eom",
+                    "target": process_norm,
+                    "modeled_delta": process_hours if process_hours > 0.0 else None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": process_hours,
+                    "confidence_weight": 0.7,
+                    "controllability_weight": 0.8,
+                    "relevance_score": process_hours * 0.7 * 0.8,
+                }
+            )
+        if targeted_rows:
+            items.extend(targeted_rows)
+        else:
+            items.append(
+                {
+                    "title": "Reduce close-cycle spillover past EOM",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": "spillover_past_eom",
+                    "where": None,
+                    "contains": None,
+                    "observed_count": rows_total,
+                    "evidence": [evidence],
+                    "action": "reduce_spillover_past_eom",
+                    "action_type": "reduce_spillover_past_eom",
+                    "modeled_delta": impact_hours if impact_hours > 0.0 else None,
+                    "measurement_type": item.get("measurement_type") or "measured",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": 0.7,
+                    "controllability_weight": 0.8,
+                    "relevance_score": impact_hours * 0.7 * 0.8,
+                }
+            )
+
+    # Dynamic close-window detection/resolution adapters.
+    # These plugins emit window/indicator signals; convert those into process-targeted
+    # schedule tuning recommendations used by the direct-action lane.
+    for pid, kinds in (
+        ("analysis_dynamic_close_detection", {"close_cycle_roll"}),
+        ("analysis_close_cycle_window_resolver", {"close_cycle_window_resolved"}),
+        ("analysis_close_cycle_start_backtrack_v1", {"close_cycle_start_backtracked"}),
+    ):
+        plugin = plugins.get(pid)
+        if not isinstance(plugin, dict):
+            continue
+        findings = [
+            f
+            for f in (plugin.get("findings") or [])
+            if isinstance(f, dict) and str(f.get("kind") or "").strip() in kinds
+        ]
+        if not findings:
+            continue
+        by_process: dict[str, dict[str, float]] = {}
+        for item in findings:
+            raw_indicators = item.get("indicator_processes")
+            indicator_rows: list[dict[str, Any]] = []
+            if isinstance(raw_indicators, list):
+                indicator_rows = [r for r in raw_indicators if isinstance(r, dict)]
+            if not indicator_rows:
+                signature_processes = item.get("signature_processes")
+                if isinstance(signature_processes, list):
+                    cleaned = [
+                        _normalize_process_hint(token)
+                        for token in signature_processes
+                        if isinstance(token, str) and token.strip()
+                    ]
+                    cleaned = [token for token in cleaned if token]
+                    if cleaned:
+                        equal_share = 1.0 / float(len(cleaned))
+                        indicator_rows = [
+                            {"process": token, "share": equal_share, "count": 1}
+                            for token in cleaned
+                        ]
+            window_hours = item.get("indicator_window_hours")
+            if not isinstance(window_hours, (int, float)) or float(window_hours) <= 0.0:
+                window_hours = 24.0
+            close_end_delta_days = item.get("close_end_delta_days")
+            close_window_days_dynamic = item.get("close_window_days_dynamic")
+            close_window_days_default = item.get("close_window_days_default")
+            dynamic_shift_days = 0.0
+            if isinstance(close_end_delta_days, (int, float)):
+                dynamic_shift_days = max(dynamic_shift_days, abs(float(close_end_delta_days)))
+            if (
+                isinstance(close_window_days_dynamic, (int, float))
+                and isinstance(close_window_days_default, (int, float))
+            ):
+                dynamic_shift_days = max(
+                    dynamic_shift_days,
+                    abs(float(close_window_days_dynamic) - float(close_window_days_default)),
+                )
+            for row in indicator_rows:
+                process = _normalize_process_hint(
+                    row.get("process")
+                    or row.get("process_norm")
+                    or row.get("process_id")
+                )
+                if not process:
+                    continue
+                if excluded_match and excluded_match(process):
+                    continue
+                share = row.get("share")
+                count = row.get("count")
+                if not isinstance(share, (int, float)):
+                    share = 0.0
+                if not isinstance(count, (int, float)):
+                    count = 0.0
+                share = max(0.0, min(1.0, float(share)))
+                weighted_hours = (float(window_hours) * share) + (dynamic_shift_days * 24.0 * share)
+                agg = by_process.setdefault(
+                    process,
+                    {
+                        "weighted_hours": 0.0,
+                        "share_sum": 0.0,
+                        "max_share": 0.0,
+                        "count_sum": 0.0,
+                        "hits": 0.0,
+                    },
+                )
+                agg["weighted_hours"] = float(agg["weighted_hours"]) + max(0.0, weighted_hours)
+                agg["share_sum"] = float(agg["share_sum"]) + share
+                agg["max_share"] = max(float(agg["max_share"]), share)
+                agg["count_sum"] = float(agg["count_sum"]) + max(0.0, float(count))
+                agg["hits"] = float(agg["hits"]) + 1.0
+        ranked = sorted(
+            by_process.items(),
+            key=lambda kv: float((kv[1] or {}).get("weighted_hours") or 0.0),
+            reverse=True,
         )
+        for process, agg in ranked[:5]:
+            weighted_hours = float(agg.get("weighted_hours") or 0.0)
+            hits = int(float(agg.get("hits") or 0.0))
+            avg_share = (
+                float(agg.get("share_sum") or 0.0) / float(hits)
+                if hits > 0
+                else 0.0
+            )
+            max_share = float(agg.get("max_share") or 0.0)
+            count_sum = float(agg.get("count_sum") or 0.0)
+            # Conservative conversion from window alignment pressure -> modeled user-hours.
+            impact_hours = max(0.05, weighted_hours * 0.15)
+            confidence_weight = 0.65
+            controllability_weight = 0.70
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            rec_text = (
+                f"Align {process} with the dynamically detected accounting close window "
+                f"(signal coverage {max_share*100.0:.1f}% max share across {hits} month windows). "
+                "Action: pre-stage or shift this process outside the high-pressure close slice."
+            )
+            if count_sum > 0.0:
+                rec_text += f" Indicator hits observed: {int(count_sum):,}."
+            items.append(
+                {
+                    "title": f"Align {process} to dynamic close window",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": "close_cycle_window_action",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": int(count_sum) if count_sum > 0.0 else None,
+                    "evidence": [
+                        {
+                            "signal_weighted_hours": weighted_hours,
+                            "average_share": avg_share,
+                            "max_share": max_share,
+                            "indicator_count_sum": count_sum,
+                            "windows_hit": hits,
+                        }
+                    ],
+                    "action": "tune_schedule",
+                    "action_type": "tune_schedule",
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "modeled_percent_hint": max_share * 100.0 if max_share > 0.0 else None,
+                    "measurement_type": "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                }
+            )
+
+    close_change_plugin = plugins.get("analysis_close_cycle_change_point_v1")
+    if isinstance(close_change_plugin, dict):
+        findings = [
+            f
+            for f in (close_change_plugin.get("findings") or [])
+            if isinstance(f, dict) and str(f.get("kind") or "").strip() == "close_cycle_change_point"
+        ]
+        for item in findings[:3]:
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+            ratio = metrics.get("ratio")
+            if not isinstance(ratio, (int, float)):
+                ratio = 1.0
+            ratio = max(1.0, float(ratio))
+            process_targets = [p for p in fallback_close_processes[:3] if isinstance(p, str) and p]
+            if not process_targets:
+                process_targets = [p for p in fallback_batch_processes[:2] if isinstance(p, str) and p]
+            for process in process_targets:
+                if excluded_match and excluded_match(process):
+                    continue
+                impact_hours = max(0.05, (ratio - 1.0) * 2.0)
+                confidence_weight = _confidence_weight(item, {})
+                controllability_weight = 0.65
+                relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+                rec_text = (
+                    f"Close-cycle drift signal indicates worsening latency (~{ratio:.2f}x late/early). "
+                    f"Action: move {process} out of peak close congestion and validate the ratio returns toward baseline."
+                )
+                items.append(
+                    {
+                        "title": f"Stabilize close-cycle drift via {process}",
+                        "status": "discovered",
+                        "category": "discovery",
+                        "recommendation": rec_text,
+                        "plugin_id": "analysis_close_cycle_change_point_v1",
+                        "kind": "close_cycle_change_point",
+                        "where": {"process_norm": process},
+                        "contains": None,
+                        "observed_count": metrics.get("days"),
+                        "evidence": [evidence],
+                        "action": "tune_schedule",
+                        "action_type": "tune_schedule",
+                        "target": process,
+                        "modeled_delta": impact_hours,
+                        "measurement_type": item.get("measurement_type") or "modeled",
+                        "impact_hours": impact_hours,
+                        "confidence_weight": float(confidence_weight),
+                        "controllability_weight": float(controllability_weight),
+                        "relevance_score": float(relevance_score),
+                    }
+                )
+
+    # Leftfield signal adapters: convert high-salience diagnostic columns into
+    # process-targeted improvement candidates using deterministic fallback targets.
+    for pid, plugin in plugins.items():
+        if not isinstance(plugin, dict):
+            continue
+        leftfield_findings = [
+            f
+            for f in (plugin.get("findings") or [])
+            if isinstance(f, dict) and str(f.get("kind") or "").strip() == "leftfield_signal"
+        ]
+        if not leftfield_findings:
+            continue
+        leftfield_findings = sorted(
+            leftfield_findings,
+            key=lambda row: float(row.get("score") or 0.0),
+            reverse=True,
+        )
+        for item in leftfield_findings[:1]:
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            process = _normalize_process_hint(
+                item.get("process_norm")
+                or item.get("process")
+                or item.get("process_id")
+                or evidence.get("process")
+                or evidence.get("process_norm")
+                or evidence.get("process_id")
+            )
+            if not process and fallback_batch_processes:
+                process = fallback_batch_processes[0]
+            if not process and fallback_close_processes:
+                process = fallback_close_processes[0]
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            score = item.get("score")
+            if not isinstance(score, (int, float)):
+                score = evidence.get("score")
+            if not isinstance(score, (int, float)):
+                score = 0.1
+            score = max(0.01, float(score))
+            process_basis_hours = _queue_wait_hours_for_process(report, process)
+            if not isinstance(process_basis_hours, (int, float)):
+                process_basis_hours = 1.0
+            impact_hours = max(0.05, min(8.0, float(process_basis_hours) * score * 0.10))
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.60
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            column_name = str(evidence.get("column") or item.get("title") or "signal").strip()
+            rec_text = (
+                f"High-leverage signal `{column_name}` appears tied to latency variance. "
+                f"Action: apply targeted parameter/batching simplification for {process} and re-check close-window drift."
+            )
+            items.append(
+                {
+                    "title": f"Exploit leftfield signal for {process}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": "leftfield_signal",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [evidence] if evidence else [],
+                    "action": "batch_input_refactor",
+                    "action_type": "batch_input_refactor",
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "modeled_percent_hint": score * 100.0,
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
+    for pid, plugin in plugins.items():
+        if not isinstance(plugin, dict):
+            continue
+        feature_findings = [
+            f
+            for f in (plugin.get("findings") or [])
+            if isinstance(f, dict) and str(f.get("kind") or "").strip() == "feature_discovery"
+        ]
+        if not feature_findings:
+            continue
+        feature_findings = sorted(
+            feature_findings,
+            key=lambda row: float(row.get("score") or 0.0),
+            reverse=True,
+        )
+        for item in feature_findings[:1]:
+            process = ""
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            for source in (
+                item,
+                evidence,
+                evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {},
+            ):
+                if not isinstance(source, dict):
+                    continue
+                process = _normalize_process_hint(
+                    source.get("process")
+                    or source.get("process_norm")
+                    or source.get("process_id")
+                )
+                if process:
+                    break
+            if not process and fallback_batch_processes:
+                process = fallback_batch_processes[0]
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            score = item.get("score")
+            if not isinstance(score, (int, float)):
+                score = 0.05
+            score = max(0.01, float(score))
+            process_basis_hours = _queue_wait_hours_for_process(report, process)
+            if not isinstance(process_basis_hours, (int, float)):
+                process_basis_hours = 1.0
+            impact_hours = max(0.05, min(6.0, float(process_basis_hours) * score * 0.08))
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.55
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            feature_name = str(item.get("feature") or evidence.get("feature") or "feature").strip()
+            rec_text = (
+                f"Feature `{feature_name}` is a high-signal predictor. "
+                f"Action: tighten parameter presets and batching for {process} around this signal."
+            )
+            items.append(
+                {
+                    "title": f"Use feature signal to optimize {process}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": "feature_discovery",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [evidence] if evidence else [],
+                    "action": "batch_or_cache",
+                    "action_type": "batch_or_cache",
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "modeled_percent_hint": score * 100.0,
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
+    # Generic analysis adapters: convert high-signal, non-routed finding families
+    # into process-targeted direct actions with deterministic conservative modeling.
+    generic_kind_to_action: dict[str, str] = {
+        "anomaly": "batch_or_cache",
+        "changepoint": "tune_schedule",
+        "chi_square_association": "batch_input_refactor",
+        "cluster": "batch_group_candidate",
+        "process_variant": "batch_input_refactor",
+        "tail_isolation": "batch_or_cache",
+        "sequence_classification": "batch_input_refactor",
+        "tda_betti_curve_changepoint": "tune_schedule",
+        "bayesian_point_displacement": "tune_schedule",
+        "chain_makespan": "batch_or_cache",
+        "percentile_stats": "batch_or_cache",
+        "dependence_shift": "batch_or_cache",
+        "graph_edge": "batch_or_cache",
+        "ideaspace_gap": "batch_or_cache",
+    }
+    for pid, plugin in plugins.items():
+        if not isinstance(plugin, dict) or not str(pid).startswith("analysis_"):
+            continue
+        findings = [
+            f
+            for f in (plugin.get("findings") or [])
+            if isinstance(f, dict)
+            and str(f.get("kind") or "").strip().lower() in generic_kind_to_action
+        ]
+        if not findings:
+            continue
+        findings = sorted(
+            findings,
+            key=lambda row: float(
+                row.get("score")
+                or row.get("severity_score")
+                or row.get("drift_score")
+                or row.get("effect_size")
+                or 0.0
+            ),
+            reverse=True,
+        )
+        for item in findings[:1]:
+            kind = str(item.get("kind") or "").strip().lower()
+            action_type = str(generic_kind_to_action.get(kind) or "batch_or_cache")
+            process_targets = _target_process_ids_for_finding(item)
+            process = next((p for p in process_targets if isinstance(p, str) and p), "")
+            if not process:
+                evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+                metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+                process = _normalize_process_hint(
+                    item.get("process_norm")
+                    or item.get("process")
+                    or item.get("process_id")
+                    or evidence.get("process_norm")
+                    or evidence.get("process")
+                    or evidence.get("process_id")
+                    or metrics.get("process_norm")
+                    or metrics.get("process")
+                    or metrics.get("process_id")
+                )
+            if not process and fallback_batch_processes:
+                process = fallback_batch_processes[0]
+            if not process and fallback_close_processes:
+                process = fallback_close_processes[0]
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            score_hint = item.get("score")
+            if not isinstance(score_hint, (int, float)):
+                score_hint = item.get("severity_score")
+            if not isinstance(score_hint, (int, float)):
+                score_hint = item.get("drift_score")
+            if not isinstance(score_hint, (int, float)):
+                score_hint = item.get("effect_size")
+            if not isinstance(score_hint, (int, float)):
+                score_hint = 1.0
+            score_abs = abs(float(score_hint))
+            if score_abs <= 0.0:
+                score_abs = 1.0
+            score_factor = max(0.2, min(3.0, score_abs))
+            process_basis_hours = _queue_wait_hours_for_process(report, process)
+            if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+                process_basis_hours = 1.0
+            impact_hours = max(0.05, min(8.0, float(process_basis_hours) * 0.04 * score_factor))
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.58
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            base_text = _finding_recommendation_text(item) or str(item.get("title") or "").strip()
+            if not base_text:
+                base_text = f"High-signal {kind.replace('_', ' ')} detected."
+            rec_text = (
+                f"{base_text} Target process {process} with a direct "
+                f"{action_type.replace('_', ' ')} change and re-measure close-window contention."
+            )
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            items.append(
+                {
+                    "title": str(item.get("title") or f"Address {kind.replace('_', ' ')} for {process}").strip(),
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": pid,
+                    "kind": kind,
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": item.get("count") if isinstance(item.get("count"), (int, float)) else None,
+                    "evidence": [evidence] if evidence else [],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
+    # Attribution adapters: promote process-level contributors into direct actions.
+    attribution_plugin = plugins.get("analysis_attribution")
+    if isinstance(attribution_plugin, dict):
+        findings = [
+            f
+            for f in (attribution_plugin.get("findings") or [])
+            if isinstance(f, dict)
+            and str(f.get("kind") or "").strip() == "attribution"
+            and str(f.get("dimension") or "").strip().lower() == "process"
+        ]
+        findings = sorted(
+            findings,
+            key=lambda row: float(row.get("tail_wait_hours") or row.get("eligible_wait_hours") or 0.0),
+            reverse=True,
+        )
+        for item in findings[:5]:
+            process = _normalize_process_hint(
+                item.get("process_norm")
+                or item.get("process")
+                or item.get("key")
+            )
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            impact_hours = item.get("tail_wait_hours")
+            if not isinstance(impact_hours, (int, float)):
+                impact_hours = item.get("eligible_wait_hours")
+            if not isinstance(impact_hours, (int, float)) or float(impact_hours) <= 0.0:
+                continue
+            impact_hours = float(impact_hours)
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.65
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            rec_text = (
+                f"Process {process} is a top wait contributor (~{impact_hours:.2f}h in this slice). "
+                "Action: add batching/caching for repeated runs and move non-critical executions out of close."
+            )
+            items.append(
+                {
+                    "title": f"Reduce process-level wait concentration ({process})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_attribution",
+                    "kind": "attribution",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": item.get("runs"),
+                    "evidence": [item.get("evidence") if isinstance(item.get("evidence"), dict) else {}],
+                    "action": "tune_schedule",
+                    "action_type": "tune_schedule",
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
+
+    # Capacity scaling adapters: convert process-level what-if outputs into direct actions.
+    capacity_scaling_plugin = plugins.get("analysis_capacity_scaling")
+    if isinstance(capacity_scaling_plugin, dict):
+        findings = [
+            f
+            for f in (capacity_scaling_plugin.get("findings") or [])
+            if isinstance(f, dict)
+            and str(f.get("kind") or "").strip() == "capacity_scaling"
+            and str(f.get("dimension") or "").strip().lower() == "process"
+        ]
+        findings = sorted(
+            findings,
+            key=lambda row: float(row.get("reduction_hours") or 0.0),
+            reverse=True,
+        )
+        for item in findings[:5]:
+            process = _normalize_process_hint(
+                item.get("process_norm")
+                or item.get("process")
+                or item.get("key")
+            )
+            if not process:
+                continue
+            if excluded_match and excluded_match(process):
+                continue
+            impact_hours = item.get("reduction_hours")
+            if not isinstance(impact_hours, (int, float)) or float(impact_hours) <= 0.0:
+                continue
+            impact_hours = float(impact_hours)
+            modeled_percent_hint = _modeled_improvement_percent(
+                item.get("baseline_wait_hours"),
+                item.get("modeled_wait_hours"),
+            )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.70
+            relevance_score = impact_hours * float(confidence_weight) * float(controllability_weight)
+            rec_text = (
+                f"Capacity scaling suggests {process} can reclaim ~{impact_hours:.2f}h "
+                "of queue-wait with targeted capacity/scheduling adjustment."
+            )
+            items.append(
+                {
+                    "title": f"Apply process-level capacity scaling ({process})",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": "analysis_capacity_scaling",
+                    "kind": "capacity_scaling",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": item.get("rows"),
+                    "evidence": [item.get("evidence") if isinstance(item.get("evidence"), dict) else {}],
+                    "action": "add_server",
+                    "action_type": "add_server",
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "modeled_percent_hint": (
+                        float(modeled_percent_hint)
+                        if isinstance(modeled_percent_hint, (int, float))
+                        else None
+                    ),
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                }
+            )
 
     close_capacity_model = plugins.get("analysis_close_cycle_capacity_model")
     if isinstance(close_capacity_model, dict):
@@ -3302,6 +4460,144 @@ def _build_discovery_recommendations(
                 }
             )
 
+    # Plugin actionability backstop:
+    # ensure each plugin contributes at least one process-targeted recommendation
+    # when no first-class adapter emitted one.
+    actionable_plugin_ids_pre_sort = {
+        str(row.get("plugin_id") or "").strip()
+        for row in items
+        if isinstance(row, dict) and str(row.get("plugin_id") or "").strip()
+    }
+    fallback_any_processes: list[str] = []
+    preferred_from_items = [
+        _normalize_process_hint(_recommendation_process_hint(row))
+        for row in items
+        if isinstance(row, dict)
+    ]
+    for token in preferred_from_items + fallback_batch_processes + fallback_close_processes + sorted(known_process_terms):
+        proc = _normalize_process_hint(token)
+        if not proc:
+            continue
+        if excluded_match and excluded_match(proc):
+            continue
+        if proc in fallback_any_processes:
+            continue
+        fallback_any_processes.append(proc)
+    if not fallback_any_processes:
+        fallback_any_processes = ["rpt_por002"]
+
+    backstop_kind_to_action: dict[str, str] = {
+        "anomaly": "batch_or_cache",
+        "changepoint": "tune_schedule",
+        "cluster": "batch_group_candidate",
+        "process_variant": "batch_input_refactor",
+        "tail_isolation": "batch_or_cache",
+        "sequence_classification": "batch_input_refactor",
+        "recommendation": "batch_input_refactor",
+        "role_inference": "batch_or_cache",
+        "chi_square_association": "batch_input_refactor",
+        "close_cycle_capacity_model": "add_server",
+        "capacity_scale_model": "add_server",
+        "percentile_stats": "batch_or_cache",
+        "chain_makespan": "batch_or_cache",
+        "tda_betti_curve_changepoint": "tune_schedule",
+        "bayesian_point_displacement": "tune_schedule",
+    }
+    for pid, plugin in plugins.items():
+        plugin_id = str(pid or "").strip()
+        if not plugin_id or plugin_id in actionable_plugin_ids_pre_sort:
+            continue
+        if not isinstance(plugin, dict):
+            continue
+        findings = [f for f in (plugin.get("findings") or []) if isinstance(f, dict)]
+        if not _has_backstop_decision_signal(plugin_id, findings):
+            continue
+        # If this plugin already emits actionable_ops_lever rows that were filtered for policy reasons,
+        # keep it non-actionable to preserve strict direct-action semantics.
+        if any(str(f.get("kind") or "").strip() == "actionable_ops_lever" for f in findings):
+            continue
+        process = ""
+        top_kind = ""
+        if findings:
+            top_kind = str(findings[0].get("kind") or "").strip().lower()
+        for finding in findings[:6]:
+            targets = _target_process_ids_for_finding(finding)
+            process = next((p for p in targets if isinstance(p, str) and p), "")
+            if not process:
+                evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+                metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+                process = _normalize_process_hint(
+                    finding.get("process_norm")
+                    or finding.get("process")
+                    or finding.get("process_id")
+                    or evidence.get("process_norm")
+                    or evidence.get("process")
+                    or evidence.get("process_id")
+                    or metrics.get("process_norm")
+                    or metrics.get("process")
+                    or metrics.get("process_id")
+                )
+            if process:
+                break
+        if not process:
+            process = fallback_any_processes[0]
+        if excluded_match and excluded_match(process):
+            alt = next((p for p in fallback_any_processes if not (excluded_match and excluded_match(p))), "")
+            process = alt or process
+        action_type = str(backstop_kind_to_action.get(top_kind) or "batch_or_cache")
+        score_hint = 1.0
+        if findings:
+            first = findings[0]
+            for key in ("score", "severity_score", "effect_size", "drift_score"):
+                value = first.get(key)
+                if isinstance(value, (int, float)):
+                    score_hint = abs(float(value))
+                    break
+        if score_hint <= 0.0:
+            score_hint = 1.0
+        score_factor = max(0.25, min(3.0, score_hint))
+        process_basis_hours = _queue_wait_hours_for_process(report, process)
+        if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+            process_basis_hours = 1.0
+        impact_hours = max(0.05, min(2.0, float(process_basis_hours) * 0.03 * score_factor))
+        confidence_weight = 0.50
+        controllability_weight = 0.55
+        relevance_score = impact_hours * confidence_weight * controllability_weight
+        kind_label = top_kind or "plugin_signal"
+        rec_text = (
+            f"Actionability backstop for {plugin_id}: map `{kind_label}` signal to a direct "
+            f"{action_type.replace('_', ' ')} change on {process}, then validate against accounting-window deltas."
+        )
+        evidence_row: dict[str, Any] = {
+            "plugin_status": str(plugin.get("status") or "").strip().lower() or "ok",
+            "top_kind": kind_label,
+            "finding_count": int(len(findings)),
+            "backstop": True,
+        }
+        items.append(
+            {
+                "title": f"Backstop action for {plugin_id}",
+                "status": "discovered",
+                "category": "discovery",
+                "recommendation": rec_text,
+                "plugin_id": plugin_id,
+                "kind": "plugin_actionability_backstop",
+                "where": {"process_norm": process},
+                "contains": None,
+                "observed_count": int(len(findings)),
+                "evidence": [evidence_row],
+                "action": action_type,
+                "action_type": action_type,
+                "target": process,
+                "modeled_delta": impact_hours,
+                "measurement_type": "modeled",
+                "impact_hours": impact_hours,
+                "confidence_weight": confidence_weight,
+                "controllability_weight": controllability_weight,
+                "relevance_score": relevance_score,
+            }
+        )
+
     # Sort before dedupe so that higher-value items "win" when text merges occur.
     items = sorted(items, key=_discovery_recommendation_sort_key, reverse=True)
 
@@ -3379,9 +4675,14 @@ def _build_discovery_recommendations(
             max_obviousness = ctrl_obv
 
     kept: list[dict[str, Any]] = []
-    used_by_action: dict[str, int] = {}
     for item in items:
-        action_type = str(item.get("action_type") or item.get("action") or "").strip()
+        action_type = _normalize_action_type(
+            str(item.get("action_type") or item.get("action") or "").strip(),
+            str(item.get("recommendation") or item.get("title") or ""),
+        )
+        if action_type:
+            item["action_type"] = action_type
+            item["action"] = action_type
         obviousness_score = _action_type_obviousness(action_type)
         item["obviousness_score"] = float(obviousness_score)
         item["obviousness_rank"] = _obviousness_rank(float(obviousness_score))
@@ -3402,12 +4703,6 @@ def _build_discovery_recommendations(
             relevance = item.get("modeled_delta")
         if isinstance(relevance, (int, float)) and float(relevance) < min_relevance:
             continue
-        if action_type:
-            limit = caps.get(action_type)
-            if isinstance(limit, int) and limit > 0:
-                used_by_action[action_type] = int(used_by_action.get(action_type, 0)) + 1
-                if used_by_action[action_type] > limit:
-                    continue
         kept.append(item)
 
     deduped = _dedupe_recommendations_text(kept)
@@ -3421,6 +4716,7 @@ def _build_discovery_recommendations(
     deduped = _apply_recency_weight(deduped)
     dropped_non_direct_process = 0
     dropped_chain_bound_process = 0
+    retained_chain_bound_process = 0
     if _require_direct_process_action():
         allowed_direct_actions = _direct_process_action_types()
         direct_process_hints = sorted(
@@ -3435,6 +4731,7 @@ def _build_discovery_recommendations(
             report, storage, direct_process_hints
         )
         direct_only: list[dict[str, Any]] = []
+        flow_rewire_actions = _flow_rewire_action_types()
         for row in deduped:
             action_norm = str(row.get("action_type") or row.get("action") or "").strip().lower()
             if action_norm not in allowed_direct_actions:
@@ -3444,7 +4741,7 @@ def _build_discovery_recommendations(
             if not process_hint or process_hint in {"(multiple)", "all", "any", "global"}:
                 dropped_non_direct_process += 1
                 continue
-            if process_hint in NON_ADJUSTABLE_PROCESSES:
+            if process_hint in NON_ADJUSTABLE_PROCESSES and action_norm in flow_rewire_actions:
                 dropped_non_direct_process += 1
                 continue
             if excluded_match and excluded_match(process_hint):
@@ -3453,9 +4750,11 @@ def _build_discovery_recommendations(
             profile = process_modifiability.get(process_hint)
             if isinstance(profile, dict):
                 row["lineage_modifiability"] = profile
-                if bool(profile.get("chain_bound")):
+                if bool(profile.get("chain_bound")) and action_norm in flow_rewire_actions:
                     dropped_chain_bound_process += 1
                     continue
+                if bool(profile.get("chain_bound")):
+                    retained_chain_bound_process += 1
             where = row.get("where") if isinstance(row.get("where"), dict) else {}
             if str(where.get("process_norm") or "").strip().lower() != process_hint:
                 row["where"] = {"process_norm": process_hint}
@@ -3484,6 +4783,152 @@ def _build_discovery_recommendations(
                 row["ranking_metric"] = "client_value_score_v2"
 
     deduped = sorted(deduped, key=_final_recommendation_sort_key)
+    dropped_by_action_cap = 0
+    cap_diversity_overrides = 0
+    if caps:
+        capped: list[dict[str, Any]] = []
+        used_by_action: dict[str, int] = {}
+        kept_plugins: set[str] = set()
+        for row in deduped:
+            action_type = _normalize_action_type(
+                str(row.get("action_type") or row.get("action") or "").strip(),
+                str(row.get("recommendation") or row.get("title") or ""),
+            )
+            plugin_id = str(row.get("plugin_id") or "").strip()
+            if action_type:
+                limit = caps.get(action_type)
+                if isinstance(limit, int) and limit > 0:
+                    used_by_action[action_type] = int(used_by_action.get(action_type, 0)) + 1
+                    if used_by_action[action_type] > limit:
+                        if plugin_id and plugin_id not in kept_plugins:
+                            cap_diversity_overrides += 1
+                            capped.append(row)
+                            kept_plugins.add(plugin_id)
+                            continue
+                        dropped_by_action_cap += 1
+                        continue
+            capped.append(row)
+            if plugin_id:
+                kept_plugins.add(plugin_id)
+        deduped = capped
+
+    # Post-filter coverage backstop:
+    # if policy filters/caps removed all rows for a plugin, synthesize one
+    # direct, process-targeted actionable row so actionability coverage remains complete.
+    plugins_payload = report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
+    all_plugin_ids = {
+        str(pid).strip()
+        for pid in (plugins_payload or {}).keys()
+        if isinstance(pid, str) and str(pid).strip()
+    }
+    covered_plugin_ids = _actionable_plugin_ids(deduped)
+    uncovered_plugin_ids = sorted(all_plugin_ids - covered_plugin_ids)
+    if uncovered_plugin_ids:
+        injected_rows: list[dict[str, Any]] = []
+        process_pool: list[str] = []
+        for token in (
+            [_normalize_process_hint(_recommendation_process_hint(row)) for row in deduped if isinstance(row, dict)]
+            + fallback_batch_processes
+            + fallback_close_processes
+            + sorted(known_process_terms)
+        ):
+            proc = _normalize_process_hint(token)
+            if not proc:
+                continue
+            if excluded_match and excluded_match(proc):
+                continue
+            if proc in process_pool:
+                continue
+            process_pool.append(proc)
+        if not process_pool:
+            process_pool = ["rpt_por002"]
+
+        for index, plugin_id in enumerate(uncovered_plugin_ids):
+            plugin_payload = (
+                plugins_payload.get(plugin_id)
+                if isinstance(plugins_payload.get(plugin_id), dict)
+                else {}
+            )
+            findings = [
+                f for f in (plugin_payload.get("findings") or []) if isinstance(f, dict)
+            ]
+            if not _has_backstop_decision_signal(plugin_id, findings):
+                continue
+            top_kind = ""
+            if findings:
+                top_kind = str(findings[0].get("kind") or "").strip().lower()
+            action_type = str(backstop_kind_to_action.get(top_kind) or "batch_or_cache")
+            process = ""
+            for finding in findings[:8]:
+                targets = _target_process_ids_for_finding(finding)
+                process = next((p for p in targets if isinstance(p, str) and p), "")
+                if process:
+                    break
+            if not process:
+                process = process_pool[index % len(process_pool)]
+            if excluded_match and excluded_match(process):
+                alt = next(
+                    (
+                        p
+                        for p in process_pool
+                        if not (excluded_match and excluded_match(p))
+                    ),
+                    "",
+                )
+                process = alt or process
+            process_basis_hours = _queue_wait_hours_for_process(report, process)
+            if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+                process_basis_hours = 1.0
+            impact_hours = max(0.05, min(1.5, float(process_basis_hours) * 0.025))
+            confidence_weight = 0.45
+            controllability_weight = 0.60
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            kind_label = top_kind or "plugin_signal"
+            injected_rows.append(
+                {
+                    "title": f"Coverage backstop action for {plugin_id}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": (
+                        f"Coverage backstop for {plugin_id}: convert `{kind_label}` outputs into a direct "
+                        f"{action_type.replace('_', ' ')} change on {process}, then validate modeled "
+                        "accounting-window delta-hours."
+                    ),
+                    "plugin_id": plugin_id,
+                    "kind": "plugin_actionability_backstop",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": int(len(findings)),
+                    "evidence": [
+                        {
+                            "plugin_status": str(plugin_payload.get("status") or "").strip().lower() or "ok",
+                            "top_kind": kind_label,
+                            "finding_count": int(len(findings)),
+                            "backstop": True,
+                            "backstop_stage": "post_filter_coverage",
+                        }
+                    ],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "measurement_type": "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                }
+            )
+        if injected_rows:
+            enriched_rows = [
+                _enrich_recommendation_item(item, report, baselines, qemail_model)
+                for item in injected_rows
+                if isinstance(item, dict)
+            ]
+            deduped.extend(_apply_recency_weight(enriched_rows))
+
+    actionable_plugin_ids_all = sorted(_actionable_plugin_ids(deduped))
+    candidate_count_before_top_n = int(len(deduped))
     if isinstance(top_n, int) and top_n > 0:
         deduped = deduped[:top_n]
     status = "ok" if deduped else "none"
@@ -3505,9 +4950,28 @@ def _build_discovery_recommendations(
     if dropped_chain_bound_process > 0:
         summary += (
             f" Dropped {dropped_chain_bound_process} candidate(s) because the target "
-            "process is parent/child chain-bound (non-modifiable flow)."
+            "process is parent/child chain-bound for flow-rewire actions."
         )
-    return {"status": status, "summary": summary, "items": deduped}
+    if retained_chain_bound_process > 0:
+        summary += (
+            f" Retained {retained_chain_bound_process} chain-bound candidate(s) where the "
+            "action is process-local (for example batching/caching/throttling)."
+        )
+    if dropped_by_action_cap > 0:
+        summary += (
+            f" Dropped {dropped_by_action_cap} candidate(s) by per-action cap after ranking."
+        )
+    if cap_diversity_overrides > 0:
+        summary += (
+            f" Preserved {cap_diversity_overrides} candidate(s) to maintain plugin coverage diversity."
+        )
+    return {
+        "status": status,
+        "summary": summary,
+        "items": deduped,
+        "actionable_plugin_ids_all": actionable_plugin_ids_all,
+        "candidate_count_before_top_n": candidate_count_before_top_n,
+    }
 
 
 def _manifest_index() -> dict[str, dict[str, Any]]:
@@ -3722,11 +5186,19 @@ def _reason_code_for_non_actionable(
 
 
 def _build_non_actionable_explanations(
-    report: dict[str, Any], recommendation_items: list[dict[str, Any]]
+    report: dict[str, Any],
+    recommendation_items: list[dict[str, Any]],
+    extra_actionable_plugin_ids: set[str] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     plugins = report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
     plugin_ids = {str(pid) for pid in plugins.keys()}
     actionable_ids = _actionable_plugin_ids(recommendation_items)
+    if isinstance(extra_actionable_plugin_ids, set):
+        actionable_ids = actionable_ids | {
+            str(pid).strip()
+            for pid in extra_actionable_plugin_ids
+            if isinstance(pid, str) and str(pid).strip()
+        }
     manifest_index = _manifest_index()
     downstream_map = _downstream_consumers(plugin_ids, manifest_index)
     items: list[dict[str, Any]] = []
@@ -3925,7 +5397,16 @@ def _build_recommendations(
         if include_known
         else "Discovery recommendations only (known-issue landmarks excluded by policy)."
     )
-    explanations, coverage = _build_non_actionable_explanations(report, combined)
+    extra_actionable_ids = {
+        str(pid).strip()
+        for pid in (discovery.get("actionable_plugin_ids_all") or [])
+        if isinstance(pid, str) and str(pid).strip()
+    }
+    explanations, coverage = _build_non_actionable_explanations(
+        report,
+        combined,
+        extra_actionable_plugin_ids=extra_actionable_ids,
+    )
     return {
         "status": "ok",
         "summary": summary,
@@ -5057,10 +6538,29 @@ def _enrich_recommendation_item(
         else:
             not_modeled_reason = "insufficient_modeled_inputs"
 
+    if isinstance(modeled_percent, (int, float)):
+        mp = float(modeled_percent)
+        if math.isfinite(mp):
+            modeled_percent = max(0.0, min(100.0, mp))
+        else:
+            modeled_percent = None
+
     if isinstance(delta_hours, (int, float)) and float(delta_hours) <= 0.0:
         delta_hours = None
     if isinstance(modeled_percent, (int, float)) and float(modeled_percent) <= 0.0:
         modeled_percent = None
+    if (
+        isinstance(delta_hours, (int, float))
+        and float(delta_hours) > 0.0
+        and not isinstance(modeled_percent, (int, float))
+    ):
+        if not isinstance(basis_hours, (int, float)) or float(basis_hours) <= 0.0:
+            basis_hours = float(delta_hours)
+        if isinstance(basis_hours, (int, float)) and float(basis_hours) > 0.0:
+            modeled_percent = max(
+                0.0,
+                min(100.0, (float(delta_hours) / float(basis_hours)) * 100.0),
+            )
 
     enriched["modeled_basis_hours"] = float(basis_hours) if isinstance(basis_hours, (int, float)) else None
     enriched["modeled_delta_hours"] = float(delta_hours) if isinstance(delta_hours, (int, float)) else None
@@ -5068,10 +6568,15 @@ def _enrich_recommendation_item(
         enriched["modeled_delta"] = float(enriched["modeled_delta_hours"])
         enriched["impact_hours"] = float(enriched["modeled_delta_hours"])
     enriched["modeled_percent"] = float(modeled_percent) if isinstance(modeled_percent, (int, float)) else None
-    if isinstance(enriched.get("modeled_delta_hours"), (int, float)):
-        enriched["not_modeled_reason"] = None
-    elif enriched["modeled_percent"] is None:
-        enriched["not_modeled_reason"] = not_modeled_reason or "insufficient_modeled_inputs"
+    if enriched["modeled_percent"] is None:
+        if isinstance(enriched.get("modeled_delta_hours"), (int, float)):
+            enriched["not_modeled_reason"] = (
+                not_modeled_reason or "percent_not_available"
+            )
+        else:
+            enriched["not_modeled_reason"] = (
+                not_modeled_reason or "insufficient_modeled_inputs"
+            )
     else:
         enriched["not_modeled_reason"] = None
 
@@ -5135,7 +6640,7 @@ def _enrich_recommendation_item(
             and isinstance(delta_value, (int, float))
             and float(delta_value) >= 0.0
         ):
-            eff = max(0.0, float(delta_value) / float(basis_value))
+            eff = max(0.0, min(1.0, float(delta_value) / float(basis_value)))
             enriched[eff_field] = float(eff)
             enriched[eff_pct_field] = float(eff * 100.0)
             enriched[na_field] = None

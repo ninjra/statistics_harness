@@ -8,6 +8,13 @@ from pathlib import Path
 from typing import Any
 import yaml
 from statistic_harness.core.actionability_explanations import NON_ADJUSTABLE_PROCESSES
+from statistic_harness.core.report import _build_recommendations
+from statistic_harness.core.storage import Storage
+
+try:
+    from scripts.audit_plugin_actionability import _build_next_step_work_contract
+except ModuleNotFoundError:  # pragma: no cover - script execution import path fallback
+    from audit_plugin_actionability import _build_next_step_work_contract
 
 BAD_PLUGIN_STATUSES = ("skipped", "degraded", "error", "aborted")
 ACTIONABLE_SIGNAL_REASON_ALLOWLIST = {
@@ -301,8 +308,37 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
     report = _read_json(run_dir / "report.json")
     answers_summary = _read_json(run_dir / "answers_summary.json")
     report_plugins = report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
-    recommendation_items = _safe_recommendation_items(report)
-    explanation_items = _safe_explanation_items(report)
+    raw_recommendation_payload = (
+        report.get("recommendations") if isinstance(report.get("recommendations"), dict) else {}
+    )
+    raw_explanation_items = _safe_explanation_items(report)
+    legacy_non_decision_count = sum(
+        1
+        for item in raw_explanation_items
+        if str(item.get("reason_code") or "").strip() == "NON_DECISION_PLUGIN"
+    )
+    # Recompute recommendations only when artifact explanations are missing or clearly legacy.
+    recommendation_payload = raw_recommendation_payload
+    should_recompute = int(len(raw_explanation_items)) == 0 or int(legacy_non_decision_count) > 0
+    if should_recompute:
+        try:
+            db_path = root / "appdata" / "state.sqlite"
+            storage = Storage(db_path, tenant_id=None, mode="ro", initialize=False)
+            recomputed = _build_recommendations(report, storage=storage, run_dir=run_dir)
+            if isinstance(recomputed, dict):
+                recommendation_payload = recomputed
+        except Exception:
+            recommendation_payload = raw_recommendation_payload
+    recommendation_items = (
+        recommendation_payload.get("items")
+        if isinstance(recommendation_payload.get("items"), list)
+        else []
+    )
+    explanation_items = (
+        (recommendation_payload.get("explanations") or {}).get("items")
+        if isinstance(recommendation_payload.get("explanations"), dict)
+        else []
+    )
     recommendation_plugin_ids = {
         str(item.get("plugin_id") or "").strip()
         for item in recommendation_items
@@ -310,6 +346,11 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
     }
     explanation_reason_by_plugin = {
         str(item.get("plugin_id") or "").strip(): str(item.get("reason_code") or "").strip()
+        for item in explanation_items
+        if str(item.get("plugin_id") or "").strip()
+    }
+    explanation_by_plugin = {
+        str(item.get("plugin_id") or "").strip(): item
         for item in explanation_items
         if str(item.get("plugin_id") or "").strip()
     }
@@ -366,6 +407,39 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
                         "finding_count": int(len(typed_findings)),
                     }
                 )
+    work_contract_rows: list[dict[str, Any]] = []
+    for plugin_id in sorted(report_plugins.keys()):
+        if plugin_id in recommendation_plugin_ids:
+            work_contract_rows.append(
+                {
+                    "plugin_id": plugin_id,
+                    "actionability_state": "actionable",
+                    "reason_code": None,
+                    "recommended_next_step": None,
+                }
+            )
+            continue
+        explanation = explanation_by_plugin.get(plugin_id)
+        if isinstance(explanation, dict):
+            work_contract_rows.append(
+                {
+                    "plugin_id": plugin_id,
+                    "actionability_state": "explained_non_actionable",
+                    "reason_code": str(explanation.get("reason_code") or "").strip() or None,
+                    "recommended_next_step": str(explanation.get("recommended_next_step") or "").strip() or None,
+                }
+            )
+    next_step_work_contract = _build_next_step_work_contract(work_contract_rows)
+    next_step_unmapped_plugins = sorted(
+        str(v)
+        for v in (next_step_work_contract.get("unmapped_next_step_plugins") or [])
+        if str(v).strip()
+    )
+    next_step_blank_non_actionable_plugins = sorted(
+        str(v)
+        for v in (next_step_work_contract.get("blank_non_actionable_next_step_plugins") or [])
+        if str(v).strip()
+    )
     known_status = _known_status(report, answers_summary)
     known_mode = _known_mode_label(known_status)
     non_independent_known_items = _non_independent_known_items(report)
@@ -405,6 +479,9 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
         "legacy_explanation_reason_codes": legacy_explanation_reason_codes,
         "legacy_explanation_reason_code_count": int(len(legacy_explanation_reason_codes)),
         "allowed_non_actionable_reason_codes": sorted(ACTIONABLE_SIGNAL_REASON_ALLOWLIST),
+        "next_step_unmapped_plugins": next_step_unmapped_plugins,
+        "next_step_blank_non_actionable_plugins": next_step_blank_non_actionable_plugins,
+        "next_step_work_contract": next_step_work_contract,
     }
 
 
@@ -520,6 +597,20 @@ def verify_contract(
             0,
             int(primary.get("legacy_explanation_reason_code_count") or 0),
             "Legacy NOT_APPLICABLE reason codes are disallowed; explanations must use resolved deterministic reasons.",
+        )
+    )
+    checks.append(
+        _check(
+            "run.next_step_contract_covered",
+            int(len(primary.get("next_step_unmapped_plugins") or [])) == 0
+            and int(len(primary.get("next_step_blank_non_actionable_plugins") or [])) == 0,
+            {"unmapped": [], "blank_non_actionable": []},
+            {
+                "unmapped": primary.get("next_step_unmapped_plugins") or [],
+                "blank_non_actionable": primary.get("next_step_blank_non_actionable_plugins")
+                or [],
+            },
+            "Every non-actionable plugin must map to a deterministic recommended_next_step lane.",
         )
     )
     if compare is not None:

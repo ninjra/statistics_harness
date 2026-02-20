@@ -7233,6 +7233,7 @@ docs/kona_energy_ideaspace_architecture.md
 docs/non-actionable-reasons-resolution-plan.md
 docs/operator_playbook_autonomous_insights.md
 docs/perf_hotspots.md
+docs/plugin-actionability-recommended-next-steps-plan.md
 docs/plugin_class_actionability_matrix.json
 docs/plugin_class_actionability_matrix.md
 docs/plugin_class_taxonomy.yaml
@@ -7267,6 +7268,7 @@ docs/release_evidence/non_actionable_reason_before_after.json
 docs/release_evidence/non_actionable_reason_before_after.md
 docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv
 docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json
+docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json
 docs/repo_improvements_capability_map_v1.json
 docs/repo_improvements_catalog.normalized.schema.json
 docs/repo_improvements_catalog.raw.schema.json
@@ -9101,6 +9103,7 @@ tests/test_actionability_reason_codes.py
 tests/test_analysis_lane_orchestrator.py
 tests/test_append_only.py
 tests/test_atomic_writes.py
+tests/test_audit_plugin_actionability_contract.py
 tests/test_auth.py
 tests/test_binding_implementation_matrix.py
 tests/test_cli_plugins_validate.py
@@ -9142,6 +9145,7 @@ tests/test_matrix_override_files.py
 tests/test_migrations.py
 tests/test_missing_plugins.py
 tests/test_network_guard.py
+tests/test_next30_plugin_error_guards.py
 tests/test_next30_plugins_smoke.py
 tests/test_next30b_plugins_smoke.py
 tests/test_normalization_reuse.py

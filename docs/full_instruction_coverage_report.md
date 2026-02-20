@@ -1,7 +1,7 @@
 # Full Instruction Coverage Report
 
-- Source files scanned: 28
-- Requirement/reference items scanned: 1399
+- Source files scanned: 29
+- Requirement/reference items scanned: 1436
 - Missing/incomplete items detected: 0
 
 ## Matrix Status

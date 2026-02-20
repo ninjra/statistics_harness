@@ -17,6 +17,93 @@ from statistic_harness.core.storage import Storage
 
 ROOT = Path(__file__).resolve().parents[1]
 
+_NEXT_STEP_ADAPTER_PREFIX = "Add or extend recommendation adapters"
+_NEXT_STEP_DIRECT_ACTION_PREFIX = "Emit a direct-action finding kind"
+_NEXT_STEP_PROCESS_TARGET_PREFIX = "Emit process-level targets"
+_NEXT_STEP_SNAPSHOT = (
+    "Plugin executed but is missing from report.plugins snapshot; include it in report serialization."
+)
+_NEXT_STEP_POLICY_PARENT_PREFIX = "Current target is policy-blocked"
+_NEXT_STEP_CAPACITY_PREFIX = "Capacity impact was not applicable for current slices"
+_NEXT_STEP_DOWNSTREAM_PREFIX = "Review downstream plugin outputs for action decisions:"
+_NEXT_STEP_CONFIRM_PREFIX = "Confirm whether this plugin should have downstream consumers"
+
+
+def _classify_next_step_lane(row: dict[str, Any]) -> tuple[str, str]:
+    state = str(row.get("actionability_state") or "").strip().lower()
+    next_step = str(row.get("recommended_next_step") or "").strip()
+    if state == "actionable":
+        return "already_actionable", "actionable"
+    if next_step.startswith(_NEXT_STEP_ADAPTER_PREFIX):
+        return "adapter_extension", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_DIRECT_ACTION_PREFIX):
+        return "direct_action_contract", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_PROCESS_TARGET_PREFIX):
+        return "process_target_emission", "actionable_or_deterministic_explained_non_actionable"
+    if next_step == _NEXT_STEP_SNAPSHOT:
+        return "report_snapshot_serialization", "explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_POLICY_PARENT_PREFIX):
+        return "policy_parent_promotion", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_CAPACITY_PREFIX):
+        return "capacity_slice_expansion", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_DOWNSTREAM_PREFIX):
+        return "downstream_review_contract", "explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_CONFIRM_PREFIX):
+        return "standalone_or_downstream_decision", "explained_non_actionable"
+    if not next_step:
+        return "missing_next_step", "manual_triage_required"
+    return "unmapped_next_step", "manual_triage_required"
+
+
+def _build_next_step_work_contract(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    cluster_counts: Counter[str] = Counter()
+    state_transition_counts: Counter[str] = Counter()
+    unmapped_plugins: list[str] = []
+    blank_non_actionable_plugins: list[str] = []
+    pending_plugins: list[str] = []
+    contract_rows: list[dict[str, Any]] = []
+
+    for row in rows:
+        plugin_id = str(row.get("plugin_id") or "").strip()
+        lane_id, expected_post_state = _classify_next_step_lane(row)
+        cluster_counts[lane_id] += 1
+        current_state = str(row.get("actionability_state") or "").strip().lower()
+        reason_code = str(row.get("reason_code") or "").strip()
+        state_transition_counts[f"{reason_code or 'UNSPECIFIED'}->{lane_id}->{expected_post_state}"] += 1
+        recommended_next_step = str(row.get("recommended_next_step") or "").strip()
+        if current_state != "actionable":
+            pending_plugins.append(plugin_id)
+        if current_state != "actionable" and not recommended_next_step:
+            blank_non_actionable_plugins.append(plugin_id)
+        if lane_id in {"missing_next_step", "unmapped_next_step"} and current_state != "actionable":
+            unmapped_plugins.append(plugin_id)
+
+        contract_rows.append(
+            {
+                "plugin_id": plugin_id,
+                "current_reason_code": reason_code or None,
+                "current_actionability_state": current_state or None,
+                "recommended_next_step": recommended_next_step or None,
+                "next_step_lane_id": lane_id,
+                "expected_post_state": expected_post_state,
+                "implementation_status": (
+                    "already_actionable" if current_state == "actionable" else "pending_implementation"
+                ),
+            }
+        )
+
+    return {
+        "plugin_count": int(len(rows)),
+        "cluster_counts": {k: int(v) for k, v in sorted(cluster_counts.items())},
+        "state_transition_counts": {k: int(v) for k, v in sorted(state_transition_counts.items())},
+        "unmapped_next_step_plugins": sorted(p for p in unmapped_plugins if p),
+        "blank_non_actionable_next_step_plugins": sorted(
+            p for p in blank_non_actionable_plugins if p
+        ),
+        "pending_plugin_ids": sorted(p for p in pending_plugins if p),
+        "rows": contract_rows,
+    }
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     try:
@@ -106,15 +193,16 @@ def _recommendations_for_run(
     if not recompute:
         recs = report.get("recommendations")
         return recs if isinstance(recs, dict) else {}
-    # Fast path: recompute directly from report payload to avoid DB/run-dir I/O stalls.
-    # Falls back to storage-backed recompute if a plugin explicitly requires context.
+    run_dir = ROOT / "appdata" / "runs" / run_id
+    db_path = ROOT / "appdata" / "state.sqlite"
+    # Full-context recompute is the deterministic source of truth for actionability
+    # because modeled deltas and close-window context can depend on storage/run artifacts.
     try:
-        return _build_recommendations(report, storage=None, run_dir=None)
-    except Exception:
-        run_dir = ROOT / "appdata" / "runs" / run_id
-        db_path = ROOT / "appdata" / "state.sqlite"
         storage = Storage(db_path, tenant_id=None, mode="ro", initialize=False)
         return _build_recommendations(report, storage, run_dir=run_dir)
+    except Exception:
+        # Fallback keeps audit operational even if state DB or run_dir context is unavailable.
+        return _build_recommendations(report, storage=None, run_dir=None)
 
 
 def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
@@ -130,6 +218,12 @@ def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
     recommendation_items = (
         recommendations.get("items") if isinstance(recommendations.get("items"), list) else []
     )
+    discovery = recommendations.get("discovery") if isinstance(recommendations.get("discovery"), dict) else {}
+    discovery_actionable_ids = {
+        str(pid).strip()
+        for pid in (discovery.get("actionable_plugin_ids_all") or [])
+        if isinstance(pid, str) and str(pid).strip()
+    }
     explanation_items = (
         (recommendations.get("explanations") or {}).get("items")
         if isinstance(recommendations.get("explanations"), dict)
@@ -166,11 +260,15 @@ def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
         findings = plugin_payload.get("findings") if isinstance(plugin_payload.get("findings"), list) else []
         typed_findings = [item for item in findings if isinstance(item, dict)]
         rec_count = int(rec_count_by_plugin.get(plugin_id, 0))
+        actionable_via_discovery = plugin_id in discovery_actionable_ids
         explanation = explanation_by_plugin.get(plugin_id) if isinstance(explanation_by_plugin.get(plugin_id), dict) else {}
         reason_code = str(explanation.get("reason_code") or "").strip()
         reason_detail = str(explanation.get("reason_code_detail") or "").strip()
-        if rec_count > 0:
+        if rec_count > 0 or actionable_via_discovery:
             state = "actionable"
+            reason_code = ""
+            reason_detail = ""
+            explanation = {}
         elif explanation:
             state = "explained_non_actionable"
         elif executed_meta:
@@ -200,6 +298,7 @@ def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
                 ),
                 "actionability_state": state,
                 "recommendation_count": rec_count,
+                "actionable_via_discovery": bool(actionable_via_discovery),
                 "reason_code": reason_code or None,
                 "reason_code_detail": reason_detail or None,
                 "recommended_next_step": str(explanation.get("recommended_next_step") or "").strip() or None,
@@ -212,6 +311,20 @@ def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
                 ),
             }
         )
+    work_contract = _build_next_step_work_contract(rows)
+    lane_by_plugin = {
+        str(item.get("plugin_id") or "").strip(): item
+        for item in (work_contract.get("rows") or [])
+        if isinstance(item, dict) and str(item.get("plugin_id") or "").strip()
+    }
+    for row in rows:
+        pid = str(row.get("plugin_id") or "").strip()
+        if not pid:
+            continue
+        lane_row = lane_by_plugin.get(pid)
+        if isinstance(lane_row, dict):
+            row["next_step_lane_id"] = str(lane_row.get("next_step_lane_id") or "").strip() or None
+            row["expected_post_state"] = str(lane_row.get("expected_post_state") or "").strip() or None
 
     return {
         "run_id": run_id,
@@ -220,6 +333,7 @@ def audit_run(run_id: str, *, recompute: bool) -> dict[str, Any]:
         "state_counts": {k: int(v) for k, v in sorted(state_counts.items())},
         "reason_code_counts": {k: int(v) for k, v in sorted(reason_counts.items())},
         "missing_output_plugins": sorted(missing_plugins),
+        "next_step_work_contract": work_contract,
         "plugins": rows,
     }
 
@@ -233,9 +347,12 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         "plugin_status",
         "actionability_state",
         "recommendation_count",
+        "actionable_via_discovery",
         "reason_code",
         "reason_code_detail",
         "recommended_next_step",
+        "next_step_lane_id",
+        "expected_post_state",
         "finding_count",
         "finding_kind_preview",
         "plugin_summary",
@@ -257,6 +374,7 @@ def main() -> int:
     parser.add_argument("--recompute-recommendations", action="store_true")
     parser.add_argument("--strict-no-non-decision", action="store_true")
     parser.add_argument("--strict-no-missing-output", action="store_true")
+    parser.add_argument("--strict-next-step-covered", action="store_true")
     parser.add_argument("--out-json", default="")
     parser.add_argument("--out-csv", default="")
     args = parser.parse_args()
@@ -286,6 +404,14 @@ def main() -> int:
     if bool(args.strict_no_missing_output):
         if int(len(payload.get("missing_output_plugins") or [])) > 0:
             return 3
+    if bool(args.strict_next_step_covered):
+        contract = payload.get("next_step_work_contract")
+        if not isinstance(contract, dict):
+            return 4
+        unmapped = contract.get("unmapped_next_step_plugins")
+        blank_non_actionable = contract.get("blank_non_actionable_next_step_plugins")
+        if int(len(unmapped or [])) > 0 or int(len(blank_non_actionable or [])) > 0:
+            return 4
     return 0
 
 

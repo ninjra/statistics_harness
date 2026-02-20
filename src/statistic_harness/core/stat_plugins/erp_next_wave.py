@@ -34,10 +34,16 @@ def _artifact(ctx, plugin_id: str, name: str, payload: Any) -> PluginArtifact:
 
 def _pick_col_by_name(df: pd.DataFrame, candidates: list[str], hints: tuple[str, ...]) -> str | None:
     for hint in hints:
+        hint_s = str(hint).strip().lower()
+        if not hint_s:
+            continue
         for col in candidates:
-            if hint in col.lower():
+            col_s = str(col)
+            if hint_s in col_s.lower():
                 if col in df.columns:
-                    return col
+                    return str(col)
+                if col_s in df.columns:
+                    return col_s
     return None
 
 
@@ -272,17 +278,18 @@ def _dependency_critical_path_v1(
             debug={"gating_reason": "missing_columns", "id_col": id_col, "parent_col": parent_col},
         )
 
-    ids = df[id_col].astype(str)
-    parents = df[parent_col].astype(str)
+    ids = df[id_col]
+    parents = df[parent_col]
     mapping: dict[str, str | None] = {}
     for i, p in zip(ids.tolist(), parents.tolist(), strict=False):
-        if not i or i.lower() in {"nan", "none"}:
+        iv = str(i).strip()
+        if not iv or iv.lower() in {"nan", "none"}:
             continue
-        pv = p.strip()
+        pv = str(p).strip()
         if not pv or pv.lower() in {"nan", "none"}:
-            mapping[i] = None
+            mapping[iv] = None
         else:
-            mapping[i] = pv
+            mapping[iv] = pv
 
     max_depth = int(config.get("max_depth", 50))
     memo: dict[str, int] = {}

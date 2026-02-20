@@ -354,3 +354,37 @@ def test_verify_agent_execution_contract_fails_legacy_not_applicable_reason_code
     assert rc == 1
     checks = {str(item.get("id")): bool(item.get("ok")) for item in payload.get("checks", [])}
     assert checks["run.no_legacy_not_applicable_reason_codes"] is False
+
+
+def test_verify_agent_execution_contract_fails_blank_non_actionable_next_step(
+    tmp_path: Path,
+) -> None:
+    conn = _init_state(tmp_path)
+    try:
+        _insert_run(conn, "run_a", dataset_version_id="dataset_x", run_seed=1337, statuses=["ok"])
+    finally:
+        conn.close()
+    _write_run_artifacts(
+        tmp_path,
+        "run_a",
+        known_status="suppressed",
+        known_items=[],
+        plugins={
+            "analysis_example": {
+                "status": "ok",
+                "findings": [{"kind": "example"}],
+            }
+        },
+        recommendation_items=[],
+        explanation_items=[
+            {
+                "plugin_id": "analysis_example",
+                "reason_code": "NO_ACTIONABLE_FINDING_CLASS",
+                "recommended_next_step": "",
+            }
+        ],
+    )
+    rc, payload = _run_verifier(tmp_path, ["--expected-known-issues-mode", "off"])
+    assert rc == 1
+    checks = {str(item.get("id")): bool(item.get("ok")) for item in payload.get("checks", [])}
+    assert checks["run.next_step_contract_covered"] is False

@@ -80,3 +80,47 @@ def test_close_cycle_capacity_model_routes_only_when_modeled_improves(monkeypatc
     assert len(routed) == 1
     assert routed[0].get("action_type") == "add_server"
     assert float(routed[0].get("modeled_percent_hint") or 0.0) > 0.0
+
+
+def test_spillover_past_eom_emits_process_targeted_rows(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION", "1")
+    report = {
+        "plugins": {
+            "analysis_close_cycle_duration_shift": {
+                "findings": [
+                    {
+                        "kind": "spillover_past_eom",
+                        "measurement_type": "measured",
+                        "spillover_queue_wait_hours_total": 120.0,
+                        "spillover_rows_total": 500,
+                        "evidence": {
+                            "top_spillover_processes": [
+                                {
+                                    "process_norm": "rpt_por002",
+                                    "spillover_queue_wait_hours_total": 40.0,
+                                    "spillover_rows": 120,
+                                },
+                                {
+                                    "process_norm": "poextrprvn",
+                                    "spillover_queue_wait_hours_total": 30.0,
+                                    "spillover_rows": 80,
+                                },
+                            ]
+                        },
+                    }
+                ]
+            }
+        }
+    }
+    discovery = _build_discovery_recommendations(report, storage=None, run_dir=None)
+    items = discovery.get("items") if isinstance(discovery, dict) else None
+    assert isinstance(items, list)
+    routed = [
+        item
+        for item in items
+        if item.get("plugin_id") == "analysis_close_cycle_duration_shift"
+        and item.get("kind") == "spillover_past_eom"
+    ]
+    assert routed
+    assert any(item.get("where", {}).get("process_norm") == "rpt_por002" for item in routed)
+    assert any(item.get("where", {}).get("process_norm") == "poextrprvn" for item in routed)

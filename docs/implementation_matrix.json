@@ -2049,6 +2049,35 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "normative",
+      "doc_path": "docs/plugin-actionability-recommended-next-steps-plan.md",
+      "missing_paths": [],
+      "plugin_ids": [
+        "analysis_association_rules_apriori_v1",
+        "analysis_close_cycle_capacity_impact",
+        "llm_prompt_builder",
+        "llm_text2sql_local_generate_v1",
+        "profile_basic",
+        "report_bundle",
+        "report_plain_english_v1",
+        "transform_normalize_mixed",
+        "transform_sql_intents_pack_v1",
+        "transform_template"
+      ],
+      "referenced_paths": [
+        "scripts/audit_plugin_actionability.py",
+        "scripts/run_loaded_dataset_full.py",
+        "scripts/show_actionable_results.py",
+        "scripts/verify_agent_execution_contract.py",
+        "src/statistic_harness/core/actionability_explanations.py",
+        "src/statistic_harness/core/pipeline.py",
+        "src/statistic_harness/core/process_matcher.py",
+        "src/statistic_harness/core/report.py",
+        "tests/test_report_explanations_lane.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "generated",
       "doc_path": "docs/plugin_class_actionability_matrix.json",
       "missing_paths": [],
@@ -4130,6 +4159,14 @@
     },
     {
       "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
       "doc_path": "docs/repo_improvements_capability_map_v1.json",
       "missing_paths": [],
       "plugin_ids": [],
@@ -5193,6 +5230,7 @@
     "docs/non-actionable-reasons-resolution-plan.md",
     "docs/operator_playbook_autonomous_insights.md",
     "docs/perf_hotspots.md",
+    "docs/plugin-actionability-recommended-next-steps-plan.md",
     "docs/plugin_class_actionability_matrix.json",
     "docs/plugin_class_actionability_matrix.md",
     "docs/plugin_class_taxonomy.yaml",
@@ -5227,6 +5265,7 @@
     "docs/release_evidence/non_actionable_reason_before_after.md",
     "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
     "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+    "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json",
     "docs/repo_improvements_capability_map_v1.json",
     "docs/repo_improvements_catalog.normalized.schema.json",
     "docs/repo_improvements_catalog.raw.schema.json",

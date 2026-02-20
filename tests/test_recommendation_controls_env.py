@@ -95,7 +95,7 @@ def test_default_obviousness_filter_keeps_structural_actions(monkeypatch) -> Non
     items = discovery.get("items") if isinstance(discovery, dict) else None
     assert isinstance(items, list)
     action_types = {str(item.get("action_type") or "") for item in items}
-    assert action_types == {"batch_group_candidate"}
+    assert action_types == {"batch_group_candidate", "reduce_spillover_past_eom"}
     for item in items:
         if item.get("action_type") == "batch_group_candidate":
             assert item.get("obviousness_rank") == "needle"

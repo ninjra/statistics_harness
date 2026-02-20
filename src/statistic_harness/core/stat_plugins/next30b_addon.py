@@ -234,16 +234,22 @@ def _categorical_columns(df: pd.DataFrame, inferred: dict[str, Any], max_cols: i
 
 
 def _time_series(df: pd.DataFrame, inferred: dict[str, Any]) -> tuple[str | None, pd.Series | None]:
+    def _parse_time(series: pd.Series) -> pd.Series:
+        try:
+            return pd.to_datetime(series, errors="coerce", utc=False)
+        except Exception:
+            return pd.to_datetime(series.astype(str), errors="coerce", utc=False)
+
     time_col = inferred.get("time_column")
     if isinstance(time_col, str) and time_col in df.columns:
-        parsed = pd.to_datetime(df[time_col], errors="coerce", utc=False)
+        parsed = _parse_time(df[time_col])
         if parsed.notna().sum() >= 10:
             return time_col, parsed
     for col in df.columns:
         lname = str(col).lower()
         if "time" not in lname and "date" not in lname and not lname.endswith("_dt"):
             continue
-        parsed = pd.to_datetime(df[col], errors="coerce", utc=False)
+        parsed = _parse_time(df[col])
         if parsed.notna().sum() >= 10:
             return str(col), parsed
     return None, None
@@ -559,14 +565,19 @@ def _degree_assortativity(edges: pd.DataFrame) -> float:
 
 
 def _pagerank_power_iteration(edges: pd.DataFrame, alpha: float = 0.85, iters: int = 60) -> dict[str, float]:
-    nodes = sorted(set(edges["src"].tolist()) | set(edges["dst"].tolist()))
+    src_nodes = [str(v) for v in edges["src"].tolist()]
+    dst_nodes = [str(v) for v in edges["dst"].tolist()]
+    nodes = sorted(set(src_nodes) | set(dst_nodes))
     if not nodes:
         return {}
     idx = {n: i for i, n in enumerate(nodes)}
     n = len(nodes)
     out = [[] for _ in range(n)]
     for row in edges.itertuples(index=False):
-        out[idx[row.src]].append(idx[row.dst])
+        src = str(row.src)
+        dst = str(row.dst)
+        if src in idx and dst in idx:
+            out[idx[src]].append(idx[dst])
     pr = np.full(n, 1.0 / n, dtype=float)
     for _ in range(iters):
         new = np.full(n, (1.0 - alpha) / n, dtype=float)
@@ -2241,15 +2252,30 @@ def _handler_bootstrap_ci_effect_sizes_v1(
     B = max(20, min(B, 500))
     rng = np.random.default_rng(int(config.get("seed", 1337)))
     rows = []
+    timed_out = False
     for col in cols:
         left = pd.to_numeric(split.pre[col], errors="coerce").dropna().to_numpy(dtype=float)
         right = pd.to_numeric(split.post[col], errors="coerce").dropna().to_numpy(dtype=float)
         if len(left) < 20 or len(right) < 20:
             continue
-        obs, lo, hi = _bootstrap_effect_ci(left, right, B, rng, timer)
+        try:
+            obs, lo, hi = _bootstrap_effect_ci(left, right, B, rng, timer)
+        except Exception as exc:
+            if "time_budget_exceeded" in str(exc):
+                timed_out = True
+                break
+            raise
         rows.append({"column": col, "effect": obs, "ci_low": lo, "ci_high": hi})
     if not rows:
-        return _ok_with_reason(plugin_id, ctx, df, sample_meta, "insufficient_pre_post_numeric")
+        reason = "time_budget_exceeded_partial" if timed_out else "insufficient_pre_post_numeric"
+        return _ok_with_reason(
+            plugin_id,
+            ctx,
+            df,
+            sample_meta,
+            reason,
+            debug={"timeout_reached": bool(timed_out), "max_resamples": B},
+        )
     rows.sort(key=lambda r: (-abs(float(r["effect"])), str(r["column"])))
     findings = []
     for r in rows[: int(config.get("max_findings", 30))]:
@@ -2277,6 +2303,7 @@ def _handler_bootstrap_ci_effect_sizes_v1(
         findings,
         artifacts,
         extra_metrics={"runtime_ms": _runtime_ms(timer), "B": B, "effects_with_ci": len(rows)},
+        debug={"timeout_reached": bool(timed_out)},
     )
 
 
@@ -2450,14 +2477,18 @@ def _handler_distance_covariance_dependence_v1(
 
 
 def _triad_profile(edges: pd.DataFrame, max_nodes: int = 50) -> dict[str, int]:
-    nodes = sorted(set(edges["src"].tolist()) | set(edges["dst"].tolist()))
+    src_nodes = [str(v) for v in edges["src"].tolist()]
+    dst_nodes = [str(v) for v in edges["dst"].tolist()]
+    nodes = sorted(set(src_nodes) | set(dst_nodes))
     if len(nodes) > max_nodes:
         nodes = nodes[:max_nodes]
     idx = {n: i for i, n in enumerate(nodes)}
     A = np.zeros((len(nodes), len(nodes)), dtype=np.uint8)
     for row in edges.itertuples(index=False):
-        if row.src in idx and row.dst in idx:
-            A[idx[row.src], idx[row.dst]] = 1
+        src = str(row.src)
+        dst = str(row.dst)
+        if src in idx and dst in idx:
+            A[idx[src], idx[dst]] = 1
     out = Counter()
     for i, j, k in combinations(range(len(nodes)), 3):
         e = int(A[i, j] + A[j, i] + A[i, k] + A[k, i] + A[j, k] + A[k, j])
