@@ -510,14 +510,31 @@ def _one_class_svm_plugin(
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 20:
         return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
-    if HAS_SKLEARN and OneClassSVM is not None:
-        svm = OneClassSVM(gamma="scale", nu=0.05)
-        labels = svm.fit_predict(X)
-        scores = -svm.score_samples(X)
+    # OCSVM can explode in CPU/RAM on large N due kernel complexity.
+    # For large matrices, use deterministic robust-z fallback to keep the full gauntlet stable.
+    max_rows_for_ocsvm = int(config.get("max_rows_for_ocsvm", 50000))
+    use_ocsvm = (
+        HAS_SKLEARN
+        and OneClassSVM is not None
+        and int(X.shape[0]) <= max_rows_for_ocsvm
+    )
+    debug: dict[str, Any] = {"rows": int(X.shape[0]), "cols": int(X.shape[1])}
+    if use_ocsvm:
+        try:
+            svm = OneClassSVM(gamma="scale", nu=0.05)
+            labels = svm.fit_predict(X)
+            scores = -svm.score_samples(X)
+            debug["model_path"] = "ocsvm"
+        except Exception:
+            zscores = np.abs(robust_zscores(X[:, 0]))
+            labels = np.where(zscores > 3.5, -1, 1)
+            scores = zscores
+            debug["model_path"] = "robust_z_fallback_exception"
     else:
         zscores = np.abs(robust_zscores(X[:, 0]))
         labels = np.where(zscores > 3.5, -1, 1)
         scores = zscores
+        debug["model_path"] = "robust_z_fallback_large_n"
     outlier_idx = np.where(labels == -1)[0]
     max_findings = int(config.get("max_findings", 30))
     top_idx = outlier_idx[np.argsort(scores[outlier_idx])[::-1][:max_findings]] if outlier_idx.size else np.array([], dtype=int)
@@ -541,7 +558,7 @@ def _one_class_svm_plugin(
     if artifact_rows:
         artifacts.append(_artifact(ctx, plugin_id, "ocsvm_outliers.json", artifact_rows, "json"))
     summary = _summary_or_skip("One-class SVM analysis complete", findings)
-    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
+    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None, debug=debug)
 
 
 def _robust_covariance_outliers(

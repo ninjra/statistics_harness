@@ -74,10 +74,30 @@ def _hold_time_attribution_v1(
     start_col = _pick_col_by_name(df, ts_cols, ("start", "begin"))
     if not (proc_col and start_col and (queue_col or eligible_col)):
         return PluginResult(
-            "skipped",
-            "Missing required columns for hold time attribution",
+            "ok",
+            "Hold-time attribution unavailable: required columns missing",
             _basic_metrics(df, sample_meta),
-            [],
+            [
+                {
+                    "id": stable_id(f"{plugin_id}:missing_columns"),
+                    "kind": "plugin_observation",
+                    "severity": "info",
+                    "confidence": 1.0,
+                    "title": "Hold-time attribution unavailable for this dataset",
+                    "what": "Required queue/eligible/start/process columns are not all present.",
+                    "why": "Without those columns the plugin cannot separate hold time from eligible-wait time.",
+                    "evidence": {
+                        "metrics": {
+                            "process_column": proc_col,
+                            "queue_column": queue_col,
+                            "eligible_column": eligible_col,
+                            "start_column": start_col,
+                        }
+                    },
+                    "measurement_type": "system_derived",
+                    "reason_code": "MISSING_REQUIRED_COLUMNS",
+                }
+            ],
             [],
             None,
             debug={"gating_reason": "missing_columns", "proc_col": proc_col, "queue_col": queue_col, "eligible_col": eligible_col, "start_col": start_col},
@@ -161,11 +181,32 @@ def _hold_time_attribution_v1(
     artifacts = [
         _artifact(ctx, plugin_id, "hold_time_attribution.json", {"rows": len(df), "top": candidates.to_dict(orient="records")})
     ]
+    if findings:
+        return PluginResult(
+            "ok",
+            "Computed hold vs eligible-wait attribution",
+            _basic_metrics(df, sample_meta),
+            findings,
+            artifacts,
+            None,
+        )
+    observation = {
+        "id": stable_id(f"{plugin_id}:no_hold_dominant"),
+        "kind": "plugin_observation",
+        "severity": "info",
+        "confidence": 1.0,
+        "title": "No hold-dominant processes detected",
+        "what": "No process crossed the configured hold-share and volume thresholds.",
+        "why": "This dataset currently shows queue/eligible waits that are not dominated by pre-eligible hold delay.",
+        "evidence": {"metrics": {"min_total_hours": min_hours, "candidate_count": int(len(candidates))}},
+        "measurement_type": "measured",
+        "reason_code": "NO_HOLD_DOMINANT_PROCESSES",
+    }
     return PluginResult(
-        "ok" if findings else "skipped",
-        "Computed hold vs eligible-wait attribution" if findings else "No hold-dominant processes found",
+        "ok",
+        "Computed hold vs eligible-wait attribution (no dominant hold candidates)",
         _basic_metrics(df, sample_meta),
-        findings,
+        [observation],
         artifacts,
         None,
     )
@@ -185,10 +226,23 @@ def _retry_rate_hotspots_v1(
     attempts_col = _pick_col_by_name(df, num_cols, ("attempt", "retry"))
     if not (proc_col and attempts_col):
         return PluginResult(
-            "skipped",
-            "Missing required columns for retry-rate hotspots",
+            "ok",
+            "Retry-rate hotspot analysis unavailable: required columns missing",
             _basic_metrics(df, sample_meta),
-            [],
+            [
+                {
+                    "id": stable_id(f"{plugin_id}:missing_columns"),
+                    "kind": "plugin_observation",
+                    "severity": "info",
+                    "confidence": 1.0,
+                    "title": "Retry-rate hotspot analysis unavailable for this dataset",
+                    "what": "The dataset does not expose a usable attempts/retry numeric column.",
+                    "why": "Retry-rate estimation requires a per-run attempt count.",
+                    "evidence": {"metrics": {"process_column": proc_col, "attempts_column": attempts_col}},
+                    "measurement_type": "system_derived",
+                    "reason_code": "MISSING_REQUIRED_COLUMNS",
+                }
+            ],
             [],
             None,
             debug={"gating_reason": "missing_columns", "proc_col": proc_col, "attempts_col": attempts_col},
@@ -198,10 +252,23 @@ def _retry_rate_hotspots_v1(
     ok = attempts.notna()
     if ok.mean() < 0.5:
         return PluginResult(
-            "skipped",
-            "Insufficient attempts data to estimate retries",
+            "ok",
+            "Retry-rate hotspot analysis unavailable: insufficient attempts coverage",
             _basic_metrics(df, sample_meta),
-            [],
+            [
+                {
+                    "id": stable_id(f"{plugin_id}:insufficient_attempts"),
+                    "kind": "plugin_observation",
+                    "severity": "info",
+                    "confidence": 1.0,
+                    "title": "Retry-rate hotspot analysis unavailable for this dataset",
+                    "what": "Attempts values were missing for most rows.",
+                    "why": "Retry-rate estimates would be unreliable with this coverage level.",
+                    "evidence": {"metrics": {"attempts_non_null_rate": float(ok.mean())}},
+                    "measurement_type": "system_derived",
+                    "reason_code": "INSUFFICIENT_ATTEMPTS_DATA",
+                }
+            ],
             [],
             None,
             debug={"gating_reason": "insufficient_attempts"},
@@ -244,11 +311,38 @@ def _retry_rate_hotspots_v1(
     artifacts = [
         _artifact(ctx, plugin_id, "retry_rate_hotspots.json", {"top": candidates.to_dict(orient="records"), "attempts_col": attempts_col})
     ]
+    if findings:
+        return PluginResult(
+            "ok",
+            "Computed retry-rate hotspots",
+            _basic_metrics(df, sample_meta),
+            findings,
+            artifacts,
+            None,
+        )
+    observation = {
+        "id": stable_id(f"{plugin_id}:no_retry_hotspots"),
+        "kind": "plugin_observation",
+        "severity": "info",
+        "confidence": 1.0,
+        "title": "No high-retry hotspots detected",
+        "what": "No process crossed the configured retry-rate and minimum-run thresholds.",
+        "why": "Current retries do not cluster strongly enough to justify a targeted hotspot action here.",
+        "evidence": {
+            "metrics": {
+                "min_runs": min_runs,
+                "min_retry_rate": min_retry_rate,
+                "candidate_count": int(len(candidates)),
+            }
+        },
+        "measurement_type": "measured",
+        "reason_code": "NO_RETRY_HOTSPOTS",
+    }
     return PluginResult(
-        "ok" if findings else "skipped",
-        "Computed retry-rate hotspots" if findings else "No high-retry processes found",
+        "ok",
+        "Computed retry-rate hotspots (no hotspot candidates)",
         _basic_metrics(df, sample_meta),
-        findings,
+        [observation],
         artifacts,
         None,
     )

@@ -339,6 +339,26 @@ def _fetch_process_entity_counts(
     return out
 
 
+def _trim_proc_entities(
+    proc_entities: dict[str, list[tuple[int, int]]],
+    *,
+    max_total_entities: int,
+) -> dict[str, list[tuple[int, int]]]:
+    if int(max_total_entities) <= 0:
+        return proc_entities
+    used = 0
+    out: dict[str, list[tuple[int, int]]] = {}
+    for proc, rows in proc_entities.items():
+        if used >= int(max_total_entities):
+            out[proc] = []
+            continue
+        remaining = int(max_total_entities) - used
+        kept = rows[:remaining]
+        out[proc] = kept
+        used += len(kept)
+    return out
+
+
 def _fetch_entity_kv(conn, entity_ids: list[int], ignore_keys_re: re.Pattern[str] | None) -> dict[int, list[tuple[str, str]]]:
     if not entity_ids:
         return {}
@@ -484,6 +504,7 @@ def _simhash_clusters_for_process(
     bits: int,
     max_hamming: int,
     min_cluster_size: int,
+    max_pair_checks: int,
 ) -> list[list[int]]:
     if len(entity_counts) < min_cluster_size:
         return []
@@ -522,15 +543,26 @@ def _simhash_clusters_for_process(
     def hamming(a: int, b: int) -> int:
         return int((a ^ b).bit_count())
 
+    checks = 0
+    capped = max(1, int(max_pair_checks))
+    exhausted = False
     for eids in buckets.values():
         if len(eids) < 2:
             continue
         eids = sorted(eids)
         for i in range(len(eids)):
             for j in range(i + 1, len(eids)):
+                checks += 1
+                if checks > capped:
+                    exhausted = True
+                    break
                 a, b = eids[i], eids[j]
                 if hamming(fingerprints[a], fingerprints[b]) <= int(max_hamming):
                     union(a, b)
+            if exhausted:
+                break
+        if exhausted:
+            break
 
     clusters: dict[int, list[int]] = defaultdict(list)
     for eid in fingerprints.keys():
@@ -576,8 +608,9 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
     exclude_match = _exclude_matcher(ctx, config)
     ignore_re = _parse_ignore_regex(config)
 
-    max_processes = int(config.get("max_processes") or 60)
-    max_entities = int(config.get("max_entities_per_process") or 1500)
+    max_processes = int(config.get("max_processes") or 30)
+    max_entities = int(config.get("max_entities_per_process") or 600)
+    max_total_entities = int(config.get("max_total_entities") or 12000)
     num_perm = int(config.get("num_perm") or 128)
     thr = float(config.get("lsh_threshold") or 0.85)
     min_cluster = int(config.get("min_cluster_size") or 5)
@@ -595,6 +628,9 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
             max_processes=max_processes,
             max_entities_per_process=max_entities,
             exclude_match=exclude_match,
+        )
+        proc_entities = _trim_proc_entities(
+            proc_entities, max_total_entities=max_total_entities
         )
         # Preload kv for all entity_ids we will touch to keep queries bounded.
         all_eids = sorted({eid for rows in proc_entities.values() for eid, _n in rows})
@@ -660,11 +696,13 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
     exclude_match = _exclude_matcher(ctx, config)
     ignore_re = _parse_ignore_regex(config)
 
-    max_processes = int(config.get("max_processes") or 60)
-    max_entities = int(config.get("max_entities_per_process") or 3000)
+    max_processes = int(config.get("max_processes") or 30)
+    max_entities = int(config.get("max_entities_per_process") or 900)
+    max_total_entities = int(config.get("max_total_entities") or 15000)
     bits = int(config.get("fingerprint_bits") or 64)
     max_h = int(config.get("max_hamming_distance") or 3)
     min_cluster = int(config.get("min_cluster_size") or 5)
+    max_pair_checks = int(config.get("max_pair_checks") or 200000)
 
     findings: list[dict[str, Any]] = []
     artifacts: list[PluginArtifact] = []
@@ -680,6 +718,9 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
             max_entities_per_process=max_entities,
             exclude_match=exclude_match,
         )
+        proc_entities = _trim_proc_entities(
+            proc_entities, max_total_entities=max_total_entities
+        )
         all_eids = sorted({eid for rows in proc_entities.values() for eid, _n in rows})
         entity_kv = _fetch_entity_kv(conn, all_eids, ignore_re)
 
@@ -691,6 +732,7 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
             bits=bits,
             max_hamming=max_h,
             min_cluster_size=min_cluster,
+            max_pair_checks=max_pair_checks,
         )
         for c in clusters[:3]:
             key, distinct = _best_varying_key(c, entity_kv)

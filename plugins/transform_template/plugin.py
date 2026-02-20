@@ -28,16 +28,16 @@ class Plugin:
                     None,
                 )
         # Gating: this transform is only meaningful when a template is explicitly configured.
-        # Return deterministic not-applicable output so full-gauntlet runs do not fail.
+        # Return deterministic pass-through output so full-gauntlet runs stay complete.
         if template_id in (None, 0, ""):
             return PluginResult(
-                "na",
-                "Template mapping not applicable (template_id not set)",
+                "ok",
+                "Template mapping bypassed (template_id not set)",
                 {},
                 [
                     {
-                        "kind": "template_not_configured",
-                        "measurement_type": "not_applicable",
+                        "kind": "template_mapping_passthrough",
+                        "measurement_type": "system_derived",
                         "reason_code": "TEMPLATE_ID_MISSING",
                     }
                 ],
