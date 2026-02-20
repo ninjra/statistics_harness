@@ -7220,6 +7220,8 @@ docs/docs_non_plugin_tokens.json
 docs/docs_plugin_aliases.json
 docs/evaluation.md
 docs/first_release_execution_readout.md
+docs/frozen_plugin_surfaces.contract.json
+docs/frozen_surfaces_contract.md
 docs/full_instruction_coverage_report.json
 docs/full_instruction_coverage_report.md
 docs/full_repo_misses.json
@@ -8501,6 +8503,7 @@ scripts/download_text2sql_models.py
 scripts/ensure_dataset_indexes.py
 scripts/fix_wsl_dns.sh
 scripts/fixtures/sample.csv
+scripts/freeze_working_plugin_surfaces.py
 scripts/full_instruction_coverage_report.py
 scripts/full_repo_misses.py
 scripts/gen_missing_plugin_tests.py
@@ -8593,6 +8596,7 @@ scripts/validate_plugin_finding_quality.py
 scripts/validate_repo_improvement_dependencies.py
 scripts/verify_agent_execution_contract.py
 scripts/verify_docs_and_plugin_matrices.py
+scripts/verify_frozen_plugin_surfaces.py
 scripts/verify_network_dns.sh
 scripts/verify_topo_tda_addon_pack_plan.py
 scripts/watch_gauntlet.ps1
@@ -8624,6 +8628,7 @@ src/statistic_harness/core/erp_inference.py
 src/statistic_harness/core/evaluation.py
 src/statistic_harness/core/evaluator.py
 src/statistic_harness/core/four_pillars.py
+src/statistic_harness/core/frozen_surfaces.py
 src/statistic_harness/core/graph_builders.py
 src/statistic_harness/core/ideaspace_feature_extractor.py
 src/statistic_harness/core/known_issue_compiler.py
@@ -9093,6 +9098,7 @@ tests/plugins/test_tail_isolation.py
 tests/plugins/test_traceability_manifest_v2.py
 tests/plugins/test_transform_normalize_mixed.py
 tests/plugins/test_transform_sql_intents_pack_v1.py
+tests/plugins/test_transform_template_plugin.py
 tests/plugins/test_user_host_savings.py
 tests/plugins/test_wasserstein_shift_v1.py
 tests/plugins/test_waterfall_summary_v2.py
@@ -9122,10 +9128,12 @@ tests/test_docs_implementation_matrix.py
 tests/test_enertia_evaluation.py
 tests/test_env_placeholders.py
 tests/test_erp_inference.py
+tests/test_erp_next_wave_no_skip.py
 tests/test_evaluation.py
 tests/test_evaluator.py
 tests/test_feature_flags.py
 tests/test_four_pillars_scoring.py
+tests/test_frozen_surfaces_contract.py
 tests/test_full_repo_misses_report.py
 tests/test_generate_batch_sequence_validation_checklist.py
 tests/test_generate_codex_plugin_catalog.py
@@ -9154,6 +9162,7 @@ tests/test_parameter_normalization.py
 tests/test_performance_smoke.py
 tests/test_pipeline_analysis_no_findings_policy.py
 tests/test_pipeline_env_parsing.py
+tests/test_pipeline_frozen_surfaces.py
 tests/test_pipeline_golden_mode.py
 tests/test_pipeline_integration.py
 tests/test_pipeline_na_status_normalization.py

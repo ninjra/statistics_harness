@@ -11,7 +11,7 @@ settings:
   description: "analysis_quantile_mapping_drift_qq_v1"
   defaults:
     seed: 1337
-    time_budget_ms: 25000
+    time_budget_ms: 180000
     max_rows: 200000
     max_cols: 80
     max_pairs: 2000

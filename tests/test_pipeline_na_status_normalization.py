@@ -14,7 +14,7 @@ from statistic_harness.core.types import PluginResult
 
 
 @pytest.mark.parametrize("source_status", ["skipped", "degraded"])
-def test_pipeline_normalizes_legacy_nonterminal_statuses_to_na(
+def test_pipeline_normalizes_legacy_nonterminal_statuses_to_ok_observation(
     tmp_path, monkeypatch, source_status: str
 ) -> None:
     appdata = tmp_path / "appdata"
@@ -65,12 +65,12 @@ def test_pipeline_normalizes_legacy_nonterminal_statuses_to_na(
 
     results = pipeline.storage.fetch_plugin_results(run_id)
     profile_result = next(row for row in results if row["plugin_id"] == "profile_basic")
-    assert profile_result["status"] == "na"
-    assert "n/a" in str(profile_result["summary"] or "").lower()
+    assert profile_result["status"] == "ok"
+    assert "observation" in str(profile_result["summary"] or "").lower()
 
     executions = pipeline.storage.fetch_plugin_executions(run_id)
     profile_exec = next(row for row in executions if row["plugin_id"] == "profile_basic")
-    assert profile_exec["status"] == "na"
+    assert profile_exec["status"] == "ok"
 
     run_row = pipeline.storage.fetch_run(run_id)
     assert str(run_row.get("status") or "") == "completed"

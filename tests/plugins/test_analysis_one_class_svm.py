@@ -1,5 +1,6 @@
 import datetime as dt
 
+import numpy as np
 import pandas as pd
 
 from plugins.analysis_one_class_svm.plugin import Plugin
@@ -29,3 +30,19 @@ def test_analysis_one_class_svm_smoke(run_dir):
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
     assert result.status in ("ok", "skipped")
+
+
+def test_analysis_one_class_svm_large_n_uses_deterministic_fallback(run_dir):
+    rows = 60000
+    rng = np.random.default_rng(1337)
+    df = pd.DataFrame(
+        {
+            "metric": rng.normal(0.0, 1.0, rows),
+            "metric2": rng.normal(1.0, 2.0, rows),
+        }
+    )
+    ctx = make_context(run_dir, df, {})
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    debug = result.debug if isinstance(result.debug, dict) else {}
+    assert debug.get("model_path") == "robust_z_fallback_large_n"

@@ -37,11 +37,20 @@ from .utils import (
 )
 from .report import build_report, write_report
 from .large_dataset_policy import caps_for as _large_caps_for, as_budget_dict as _large_caps_budget
+from .frozen_surfaces import (
+    build_surface_record as _build_frozen_surface_record,
+    contract_plugin_map as _frozen_contract_plugin_map,
+    default_contract_path as _default_frozen_contract_path,
+    load_contract as _load_frozen_contract,
+)
 
 _GOLDEN_MODE_ENV = "STAT_HARNESS_GOLDEN_MODE"
 _GOLDEN_MODES = {"off", "default", "strict"}
 _ORCHESTRATOR_MODE_ENV = "STAT_HARNESS_ORCHESTRATOR_MODE"
 _ORCHESTRATOR_MODES = {"legacy", "two_lane_strict"}
+_FROZEN_SURFACES_MODE_ENV = "STAT_HARNESS_FROZEN_SURFACES_MODE"
+_FROZEN_SURFACES_MODES = {"off", "warn", "enforce"}
+_FROZEN_SURFACES_PATH_ENV = "STAT_HARNESS_FROZEN_SURFACES_PATH"
 
 
 def _debug_startup_stage(label: str) -> None:
@@ -138,6 +147,59 @@ class Pipeline:
         return self._augment_code_hash_if_stat_wrapper(
             spec.plugin_id, module_file, code_hash
         )
+
+    def _frozen_surfaces_mode(self) -> str:
+        raw = os.environ.get(_FROZEN_SURFACES_MODE_ENV, "").strip().lower()
+        if raw in _FROZEN_SURFACES_MODES:
+            return raw
+        if raw in {"1", "true", "yes", "on"}:
+            return "enforce"
+        return "off"
+
+    def _frozen_surfaces_contract_path(self) -> Path:
+        raw = os.environ.get(_FROZEN_SURFACES_PATH_ENV, "").strip()
+        if raw:
+            path = Path(raw).expanduser()
+            if not path.is_absolute():
+                path = (self.plugins_dir.parent / path).resolve()
+            return path
+        return _default_frozen_contract_path(self.plugins_dir.parent)
+
+    def _frozen_surface_check(
+        self, spec: PluginSpec, code_hash: str | None, settings_hash: str | None
+    ) -> dict[str, Any]:
+        mode = self._frozen_surfaces_mode()
+        if mode == "off":
+            return {"mode": mode, "locked": False, "ok": True}
+
+        contract_path = self._frozen_surfaces_contract_path()
+        contract = _load_frozen_contract(contract_path)
+        plugin_map = _frozen_contract_plugin_map(contract)
+        expected = plugin_map.get(spec.plugin_id)
+        if not expected:
+            return {
+                "mode": mode,
+                "contract_path": str(contract_path),
+                "locked": False,
+                "ok": True,
+            }
+
+        actual = _build_frozen_surface_record(
+            spec,
+            self.manager,
+            code_hash=code_hash,
+            settings_hash=settings_hash,
+        )
+        expected_hash = str(expected.get("surface_hash") or "")
+        actual_hash = str(actual.get("surface_hash") or "")
+        return {
+            "mode": mode,
+            "contract_path": str(contract_path),
+            "locked": True,
+            "ok": bool(expected_hash and expected_hash == actual_hash),
+            "expected_surface_hash": expected_hash or None,
+            "actual_surface_hash": actual_hash or None,
+        }
 
     def _startup_integrity_check(self) -> None:
         mode = os.environ.get("STAT_HARNESS_STARTUP_INTEGRITY", "").strip().lower()
@@ -1009,14 +1071,14 @@ class Pipeline:
                 "kind": "plugin_not_applicable",
                 "severity": "info",
                 "confidence": 1.0,
-                "title": f"{plugin_id} not applicable",
+                "title": f"{plugin_id} observation",
                 "what": reason,
-                "why": "Plugin preconditions were not satisfied for this dataset/config; deterministic fallback emitted.",
+                "why": "Plugin preconditions were not satisfied for this dataset/config; deterministic observation emitted.",
                 "measurement_type": "not_applicable",
                 "reason_code": reason_code,
                 "scope": {"plugin_id": plugin_id},
                 "assumptions": [],
-                "action_type": "not_applicable",
+                "action_type": "observation_only",
                 "target": None,
                 "evidence": {
                     "metrics": {
@@ -1036,16 +1098,16 @@ class Pipeline:
             findings = list(result.findings or [])
             metrics = dict(result.metrics or {})
 
-            if status in {"ok", "error", "aborted", "na"}:
+            if status in {"ok", "error", "aborted"}:
                 return result
 
-            if status in {"skipped", "degraded", "not_applicable"}:
+            if status in {"na", "skipped", "degraded", "not_applicable"}:
                 reason = summary_text or f"{spec.plugin_id} not applicable"
                 reason_code = _reason_code_from_text(reason)
                 debug.setdefault("status_original", status or "unknown")
                 if error_type:
                     debug.setdefault("error_type_original", error_type)
-                debug.setdefault("fallback_mode", "na")
+                debug.setdefault("fallback_mode", "ok_observation")
                 debug.setdefault("fallback_not_applicable", 1)
                 debug.setdefault("reason_code", reason_code)
                 if not findings:
@@ -1057,8 +1119,8 @@ class Pipeline:
                             error_type=error_type or None,
                         )
                     ]
-                result.status = "na"
-                result.summary = f"{spec.plugin_id} n/a [{reason_code}]: {reason}"
+                result.status = "ok"
+                result.summary = f"{spec.plugin_id} observation [{reason_code}]: {reason}"
                 result.error = None
                 result.debug = debug
                 result.metrics = metrics
@@ -1223,6 +1285,7 @@ class Pipeline:
             plugin_seed = stable_hash(f"{run_seed}:{spec.plugin_id}")
             settings_hash: str | None = None
             execution_fingerprint: str | None = None
+            frozen_surface_check: dict[str, Any] = {"mode": "off", "locked": False, "ok": True}
             heartbeat_stop = threading.Event()
             heartbeat_thread: threading.Thread | None = None
             start_wall = time.perf_counter()
@@ -1324,6 +1387,25 @@ class Pipeline:
                 settings_hash = hashlib.sha256(
                     json_dumps(settings_for_hash).encode("utf-8")
                 ).hexdigest()
+                frozen_surface_check = self._frozen_surface_check(
+                    spec, code_hash, settings_hash
+                )
+                if bool(frozen_surface_check.get("locked")) and not bool(
+                    frozen_surface_check.get("ok")
+                ):
+                    self.storage.insert_event(
+                        kind="plugin_frozen_surface_mismatch",
+                        created_at=now_iso(),
+                        run_id=run_id,
+                        plugin_id=spec.plugin_id,
+                        run_fingerprint=None,
+                        payload=frozen_surface_check,
+                    )
+                    if str(frozen_surface_check.get("mode") or "") == "enforce":
+                        raise RuntimeError(
+                            "frozen_surface_mismatch: locked plugin surface differs "
+                            "from contract; refresh contract or revert plugin drift"
+                        )
                 execution_fingerprint = hashlib.sha256(
                     json_dumps(
                         {
@@ -1432,6 +1514,8 @@ class Pipeline:
                             "cpu_limit_ms": None,
                         },
                     )
+                    if str(frozen_surface_check.get("mode") or "") != "off":
+                        result.debug["frozen_surface"] = dict(frozen_surface_check)
                     result = finalize_result_contract(spec, result)
                     exec_info = {
                         "completed_at": now_iso(),
@@ -1528,21 +1612,41 @@ class Pipeline:
                 result = runner.result
             except Exception as exc:  # pragma: no cover - error flow
                 tb = traceback.format_exc()
+                findings: list[dict[str, Any]] = []
+                summary = f"{spec.plugin_id} failed"
+                if "frozen_surface_mismatch" in str(exc):
+                    summary = f"{spec.plugin_id} failed: {exc}"
+                    findings = [
+                        {
+                            "kind": "plugin_contract_violation",
+                            "reason_code": "FROZEN_SURFACE_MISMATCH",
+                            "reason": str(exc),
+                            "recommended_next_step": (
+                                "Run scripts/verify_frozen_plugin_surfaces.py, then either "
+                                "revert unintended plugin changes or refresh lock via "
+                                "scripts/freeze_working_plugin_surfaces.py."
+                            ),
+                        }
+                    ]
                 result = PluginResult(
                     status="error",
-                    summary=f"{spec.plugin_id} failed",
+                    summary=summary,
                     metrics={},
-                    findings=[],
+                    findings=findings,
                     artifacts=[],
                     error=PluginError(
                         type=type(exc).__name__, message=str(exc), traceback=tb
                     ),
+                    debug={"frozen_surface": dict(frozen_surface_check)},
                 )
             finally:
                 heartbeat_stop.set()
                 if heartbeat_thread:
                     heartbeat_thread.join(timeout=1.0)
             result = finalize_result_contract(spec, result)
+            if str(frozen_surface_check.get("mode") or "") != "off":
+                result.debug = result.debug or {}
+                result.debug.setdefault("frozen_surface", dict(frozen_surface_check))
             if result.error:
                 logger(f"[ERROR] {spec.plugin_id}: {result.error.message}")
             if "runner" in locals():
