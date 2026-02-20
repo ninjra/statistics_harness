@@ -1292,6 +1292,35 @@ def _render_recommendations_plain_md(
     discovery = _as_items(recs.get("discovery"))
     flat = _as_items(recs.get("items"))
     explanations = _as_items(recs.get("explanations"))
+
+    def _window_metric_triplet(
+        item: dict[str, Any],
+        metric_a: str,
+        metric_s: str,
+        metric_d: str,
+        reason_a: str = "na_reason_accounting_month",
+        reason_s: str = "na_reason_close_static",
+        reason_d: str = "na_reason_close_dynamic",
+        pct: bool = False,
+        decimals: int = 2,
+    ) -> str:
+        def _fmt(metric_key: str, reason_key: str) -> str:
+            value = item.get(metric_key)
+            if isinstance(value, (int, float)):
+                rendered = f"{float(value):.{decimals}f}"
+                if pct:
+                    rendered += "%"
+                return rendered
+            reason = str(item.get(reason_key) or "").strip()
+            return f"N/A ({reason})" if reason else "N/A"
+
+        return " | ".join(
+            [
+                f"acct_month={_fmt(metric_a, reason_a)}",
+                f"close_static={_fmt(metric_s, reason_s)}",
+                f"close_dynamic={_fmt(metric_d, reason_d)}",
+            ]
+        )
     sections: list[tuple[str, list[dict[str, Any]]]] = []
     if known or discovery:
         discovery_close = [
@@ -1336,6 +1365,9 @@ def _render_recommendations_plain_md(
                     f"   Linked recommendation set: {linked} (same parameter/user sweep family)."
                 )
             lines.append(f"   Expected benefit: {_plain_hours(item)}")
+            lines.append(
+                "   Scale note: values are reported per accounting month and close cycle; annualized assumes 12 cycles."
+            )
             touches_reduced = item.get("modeled_user_touches_reduced")
             if isinstance(touches_reduced, (int, float)) and float(touches_reduced) > 0.0:
                 user_hint = str(item.get("affected_user_primary") or "").strip()
@@ -1382,6 +1414,39 @@ def _render_recommendations_plain_md(
             efficiency_pct = item.get("modeled_efficiency_gain_pct")
             if isinstance(efficiency_pct, (int, float)):
                 lines.append(f"   Efficiency gain (%): {float(efficiency_pct):.2f}%")
+            lines.append(
+                "   Delta hours by window (acct/static/dynamic): "
+                + _window_metric_triplet(
+                    item,
+                    "delta_hours_accounting_month",
+                    "delta_hours_close_static",
+                    "delta_hours_close_dynamic",
+                    pct=False,
+                    decimals=2,
+                )
+            )
+            lines.append(
+                "   Efficiency gain % by window (acct/static/dynamic): "
+                + _window_metric_triplet(
+                    item,
+                    "efficiency_gain_pct_accounting_month",
+                    "efficiency_gain_pct_close_static",
+                    "efficiency_gain_pct_close_dynamic",
+                    pct=True,
+                    decimals=3,
+                )
+            )
+            lines.append(
+                "   Efficiency index (dimensionless) by window (acct/static/dynamic): "
+                + _window_metric_triplet(
+                    item,
+                    "efficiency_gain_accounting_month",
+                    "efficiency_gain_close_static",
+                    "efficiency_gain_close_dynamic",
+                    pct=False,
+                    decimals=6,
+                )
+            )
             manual_pct = item.get("modeled_manual_run_reduction_pct")
             if isinstance(manual_pct, (int, float)):
                 lines.append(f"   Manual-work reduction (%): {float(manual_pct):.2f}%")
@@ -1567,6 +1632,7 @@ def main() -> int:
     os.environ["STAT_HARNESS_KNOWN_ISSUES_MODE"] = known_issues_mode
     os.environ["STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"] = "0" if known_issues_mode == "off" else "1"
     os.environ["STAT_HARNESS_ORCHESTRATOR_MODE"] = orchestrator_mode
+    os.environ.setdefault("STAT_HARNESS_GOLDEN_MODE", "strict")
     os.environ.setdefault("STAT_HARNESS_CLI_PROGRESS", "1")
     # Default to reuse-cache for operator UX on large datasets. Still safe for "updated plugins"
     # because cache keys include plugin code hash + settings hash + dataset hash.

@@ -212,6 +212,30 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
     try:
         result = handler(plugin_id, ctx, df, config, inferred, timer, sample_meta)
     except Exception as exc:  # pragma: no cover - runtime guard
+        if "time_budget_exceeded" in str(exc):
+            return PluginResult(
+                status="na",
+                summary="Not applicable: time_budget_exceeded",
+                metrics={"rows_seen": int(len(df)), "rows_used": int(len(df)), "cols_used": int(len(df.columns))},
+                findings=[
+                    {
+                        "kind": "plugin_not_applicable",
+                        "reason_code": "TIME_BUDGET_EXCEEDED",
+                        "reason": "time_budget_exceeded",
+                        "recommended_next_step": (
+                            "Increase plugin time budget or enable deterministic sampling/downsampling "
+                            "for this plugin path."
+                        ),
+                    }
+                ],
+                artifacts=[],
+                references=default_references_for_plugin(plugin_id),
+                debug={
+                    "warnings": ["exception"],
+                    "exception": str(exc),
+                    "gating_reason": "time_budget_exceeded",
+                },
+            )
         return PluginResult(
             status="error",
             summary=f"{plugin_id} failed",
@@ -1468,12 +1492,65 @@ def _graphical_lasso_dependency_network(
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 50:
         return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+    if X.shape[0] > int(config.get("max_rows_for_covariance", 20000)):
+        step = int(math.ceil(float(X.shape[0]) / float(config.get("max_rows_for_covariance", 20000))))
+        X = X[:: max(1, step), :]
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    finite_mask = np.all(np.isfinite(X), axis=1)
+    if finite_mask.any():
+        X = X[finite_mask]
+    if X.shape[0] < 50 or X.shape[1] < 2:
+        return PluginResult(
+            "na",
+            "Not applicable: insufficient_finite_numeric_data",
+            _basic_metrics(df, sample_meta),
+            [
+                {
+                    "kind": "plugin_not_applicable",
+                    "reason_code": "INSUFFICIENT_FINITE_NUMERIC_DATA",
+                    "reason": "insufficient_finite_numeric_data",
+                    "recommended_next_step": "Provide at least 50 finite rows across 2+ numeric columns.",
+                }
+            ],
+            [],
+            None,
+            debug={"gating_reason": "insufficient_finite_numeric_data"},
+        )
+    precision: np.ndarray | None = None
+    fit_error: str | None = None
     if HAS_SKLEARN and GraphicalLasso is not None:
-        model = GraphicalLasso(alpha=0.01, max_iter=100)
-        model.fit(X)
-        precision = model.precision_
-    else:
-        precision = np.linalg.pinv(np.cov(X, rowvar=False) + np.eye(X.shape[1]) * 1e-6)
+        try:
+            model = GraphicalLasso(alpha=0.01, max_iter=100)
+            model.fit(X)
+            precision = model.precision_
+        except Exception as exc:
+            fit_error = str(exc)
+    if precision is None:
+        try:
+            cov = np.cov(X, rowvar=False)
+            cov = np.nan_to_num(cov, nan=0.0, posinf=0.0, neginf=0.0)
+            precision = np.linalg.pinv(cov + np.eye(cov.shape[0]) * 1e-6)
+        except Exception as exc:
+            return PluginResult(
+                "na",
+                "Not applicable: ill_conditioned_dependency_covariance",
+                _basic_metrics(df, sample_meta),
+                [
+                    {
+                        "kind": "plugin_not_applicable",
+                        "reason_code": "ILL_CONDITIONED_DEPENDENCY_COVARIANCE",
+                        "reason": "ill_conditioned_dependency_covariance",
+                        "recommended_next_step": "Normalize inputs and reduce collinearity in numeric features for dependency inference.",
+                    }
+                ],
+                [],
+                None,
+                debug={
+                    "gating_reason": "ill_conditioned_dependency_covariance",
+                    "graphical_lasso_error": fit_error,
+                    "fallback_error": str(exc),
+                },
+            )
     edges = []
     for i in range(precision.shape[0]):
         for j in range(i + 1, precision.shape[1]):
@@ -2632,13 +2709,53 @@ def _kernel_two_sample_mmd(
     Y = Y[:max_points]
     if X.size == 0 or Y.size == 0:
         return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    Y = np.nan_to_num(Y, nan=0.0, posinf=0.0, neginf=0.0)
+    clip_abs = float(config.get("mmd_clip_abs", 1e6))
+    X = np.clip(X, -clip_abs, clip_abs)
+    Y = np.clip(Y, -clip_abs, clip_abs)
+    if not (np.isfinite(X).all() and np.isfinite(Y).all()):
+        return PluginResult(
+            "na",
+            "Not applicable: invalid_numeric_matrix",
+            _basic_metrics(df, sample_meta),
+            [
+                {
+                    "kind": "plugin_not_applicable",
+                    "reason_code": "INVALID_NUMERIC_MATRIX",
+                    "reason": "invalid_numeric_matrix",
+                    "recommended_next_step": "Ensure numeric columns contain finite values after normalization.",
+                }
+            ],
+            [],
+            None,
+            debug={"gating_reason": "invalid_numeric_matrix"},
+        )
     # RBF kernel with median heuristic
     combined = np.vstack([X, Y])
-    if HAS_SKLEARN and pairwise_distances is not None:
-        dists = pairwise_distances(combined, combined)
-        median = np.median(dists)
-    else:
-        median = np.median(np.linalg.norm(combined[:, None, :] - combined[None, :, :], axis=-1))
+    try:
+        if HAS_SKLEARN and pairwise_distances is not None:
+            dists = pairwise_distances(combined, combined)
+            median = np.median(dists)
+        else:
+            median = np.median(np.linalg.norm(combined[:, None, :] - combined[None, :, :], axis=-1))
+    except Exception as exc:
+        return PluginResult(
+            "na",
+            "Not applicable: mmd_distance_computation_failed",
+            _basic_metrics(df, sample_meta),
+            [
+                {
+                    "kind": "plugin_not_applicable",
+                    "reason_code": "MMD_DISTANCE_COMPUTATION_FAILED",
+                    "reason": "mmd_distance_computation_failed",
+                    "recommended_next_step": "Reduce feature scale and verify finite numeric values for MMD.",
+                }
+            ],
+            [],
+            None,
+            debug={"gating_reason": "mmd_distance_computation_failed", "exception": str(exc)},
+        )
     gamma = 1.0 / max(median ** 2, 1e-6)
 
     def _rbf(a: np.ndarray, b: np.ndarray) -> np.ndarray:

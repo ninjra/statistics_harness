@@ -15,6 +15,20 @@ NON_ADJUSTABLE_PROCESSES = {
     "rdimpairje",
 }
 
+_REASON_CODE_NORMALIZATION = {
+    "NOT_APPLICABLE": "PREREQUISITE_UNMET",
+    "CAPACITY_IMPACT_NOT_APPLICABLE": "CAPACITY_IMPACT_CONSTRAINT",
+    "NO_ACTIONABLE_RESULT": "NO_DECISION_SIGNAL",
+    "NO_ROUTING_RULE_MATCH": "ADAPTER_RULE_MISSING",
+}
+
+
+def _normalize_reason_code(code: str) -> str:
+    key = str(code or "").strip()
+    if not key:
+        return ""
+    return str(_REASON_CODE_NORMALIZATION.get(key, key))
+
 
 def derive_reason_code(
     *,
@@ -27,14 +41,14 @@ def derive_reason_code(
     debug_map = debug if isinstance(debug, dict) else {}
     code = str(debug_map.get("reason_code") or "").strip()
     if code:
-        return code
+        return _normalize_reason_code(code)
     typed_findings = [item for item in (findings or []) if isinstance(item, dict)]
     for item in typed_findings:
         if not isinstance(item, dict):
             continue
         candidate = str(item.get("reason_code") or "").strip()
         if candidate:
-            return candidate
+            return _normalize_reason_code(candidate)
     kinds = {str(item.get("kind") or "").strip() for item in typed_findings}
     if "close_cycle_capacity_impact" in kinds:
         if all(
@@ -42,7 +56,7 @@ def derive_reason_code(
             for item in typed_findings
             if str(item.get("kind") or "").strip() == "close_cycle_capacity_impact"
         ):
-            return "CAPACITY_IMPACT_NOT_APPLICABLE"
+            return "CAPACITY_IMPACT_CONSTRAINT"
     if "close_cycle_capacity_model" in kinds:
         modeled = [
             item
@@ -77,6 +91,12 @@ def derive_reason_code(
         if str(item.get("kind") or "").strip() == "close_cycle_share_shift"
     ):
         return "SHARE_SHIFT_BELOW_THRESHOLD"
+    if "plugin_not_applicable" in kinds:
+        return "NO_DECISION_SIGNAL"
+    if "plugin_observation" in kinds:
+        return "NO_DECISION_SIGNAL"
+    if "actionable_ops_lever" in kinds:
+        return "ADAPTER_RULE_MISSING"
     share_shift_rows = [
         item
         for item in typed_findings
@@ -94,14 +114,12 @@ def derive_reason_code(
     if status_norm == "error":
         return "PLUGIN_ERROR"
     if status_norm == "na":
-        return "NOT_APPLICABLE"
+        return "PREREQUISITE_UNMET"
     if int(finding_count or 0) <= 0:
         return "NO_FINDINGS"
     if int(blank_kind_count or 0) > 0:
         return "FINDING_KIND_MISSING"
-    # For deterministic non-actionable reporting, default to NOT_APPLICABLE
-    # instead of a routing-internal placeholder reason code.
-    return "NOT_APPLICABLE"
+    return "ADAPTER_RULE_MISSING"
 
 
 def plain_english_explanation(
@@ -125,8 +143,8 @@ def plain_english_explanation(
         )
     elif status_norm == "na":
         text = (
-            f"{pid} is not directly actionable in this run because it was marked not applicable: "
-            f"{summary or 'no applicable input'}."
+            f"{pid} is not directly actionable in this run because required prerequisites were not met: "
+            f"{summary or 'missing required input/coverage'}."
         )
     elif int(finding_count or 0) <= 0:
         text = f"{pid} completed but did not emit findings that can drive an action."

@@ -204,7 +204,7 @@ def build_matrix(run_id: str, taxonomy_path: Path) -> dict[str, Any]:
                 }
             elif plugin_status in {"na", "not_applicable"}:
                 actionability_state = "explained_na"
-                reason_code = "NOT_APPLICABLE"
+                reason_code = "PREREQUISITE_UNMET"
                 example = {
                     "kind": "non_actionable_explanation",
                     "reason_code": reason_code,

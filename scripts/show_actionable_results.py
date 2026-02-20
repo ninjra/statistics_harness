@@ -8,6 +8,7 @@ import re
 import sqlite3
 import statistics
 import sys
+import textwrap
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -861,12 +862,95 @@ def _target_processes(item: dict[str, Any]) -> str:
     return ""
 
 
+def _theme_enabled(theme: str) -> bool:
+    mode = str(theme or "auto").strip().lower()
+    if mode == "plain":
+        return False
+    if mode == "cyberpunk":
+        return True
+    if str(os.getenv("NO_COLOR") or "").strip():
+        return False
+    return bool(getattr(sys.stdout, "isatty", lambda: False)())
+
+
+class _AnsiTheme:
+    def __init__(self, enabled: bool) -> None:
+        self.enabled = bool(enabled)
+        self.reset = "\033[0m"
+        self.title = "\033[95m"  # magenta
+        self.section = "\033[94m"  # blue
+        self.label = "\033[96m"  # cyan
+        self.value = "\033[97m"  # white
+        self.hot = "\033[93m"  # yellow
+        self.cool = "\033[94m"  # blue
+        self.dim = "\033[90m"  # gray
+        self.acct = "\033[38;5;117m"  # soft cyan-blue
+        self.static = "\033[38;5;81m"  # azure
+        self.dynamic = "\033[38;5;183m"  # lavender
+        self.sep = "\033[97m"  # bright white separator
+        self.score_hi = "\033[92m"  # green
+        self.score_mid = "\033[96m"  # cyan
+        self.score_lo = "\033[37m"  # light gray
+
+    def c(self, text: str, code: str) -> str:
+        raw = str(text)
+        if not self.enabled:
+            return raw
+        return f"{code}{raw}{self.reset}"
+
+    def score(self, value: Any) -> str:
+        if not isinstance(value, (int, float)):
+            return self.c("N/A", self.dim)
+        val = float(value)
+        if val >= 6.0:
+            return self.c(f"{val:.2f}", self.score_hi)
+        if val >= 3.0:
+            return self.c(f"{val:.2f}", self.score_mid)
+        return self.c(f"{val:.2f}", self.score_lo)
+
+
+def _window_triplet(
+    theme: _AnsiTheme,
+    item: dict[str, Any],
+    keys: tuple[str, str, str],
+    decimals: int,
+    suffix: str = "",
+    reasons: tuple[str, str, str] | None = None,
+) -> str:
+    colors = (theme.acct, theme.static, theme.dynamic)
+    parts: list[str] = []
+    for idx, key in enumerate(keys):
+        value = item.get(key)
+        if isinstance(value, (int, float)):
+            rendered = f"{float(value):.{decimals}f}{suffix}"
+        else:
+            reason = ""
+            if reasons is not None:
+                reason_value = str(item.get(reasons[idx]) or "").strip()
+                if reason_value:
+                    reason = f" ({reason_value})"
+            rendered = f"N/A{reason}"
+        parts.append(theme.c(rendered, colors[idx]))
+    sep = theme.c("/", theme.sep)
+    return sep.join(parts)
+
+
+def _kv(theme: _AnsiTheme, key: str, value: str, value_color: str) -> str:
+    return theme.c(key, theme.label) + theme.c("=", theme.sep) + theme.c(value, value_color)
+
+
+def _join_semicolon(theme: _AnsiTheme, parts: list[str]) -> str:
+    return theme.c(" ; ", theme.sep).join(parts)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--top-n", type=int, default=25)
     ap.add_argument("--max-per-plugin", type=int, default=5)
+    ap.add_argument("--theme", choices=("auto", "cyberpunk", "plain"), default="auto")
     args = ap.parse_args()
+    theme = _AnsiTheme(_theme_enabled(args.theme))
 
     run_id = str(args.run_id).strip()
     run_dir = APPDATA / "runs" / run_id
@@ -899,7 +983,7 @@ def main() -> int:
         if len(items) >= int(args.top_n):
             break
 
-    print("# Actionable Results")
+    print(theme.c("# Actionable Results", theme.title))
     print("")
     print(f"- run_id: {run_id}")
     print(f"- run_dir: {run_dir}")
@@ -1081,27 +1165,21 @@ def main() -> int:
 
     requested_top_n = int(args.top_n)
     if top_n < requested_top_n:
-        print(f"## Top {requested_top_n} Recommendations (Grouped by Kind, showing {top_n} available)")
+        print(theme.c(f"## Top {requested_top_n} Recommendations (Grouped by Kind, showing {top_n} available)", theme.section))
     else:
-        print(f"## Top {top_n} Recommendations (Grouped by Kind)")
+        print(theme.c(f"## Top {top_n} Recommendations (Grouped by Kind)", theme.section))
     for key in sorted(grouped.keys(), key=_group_sort_key):
         block = grouped[key]
         label = str(block.get("label") or key)
         rows = block.get("rows") if isinstance(block.get("rows"), list) else []
         print("")
-        print(f"### {label} ({len(rows)})")
+        print(theme.c(f"### {label} ({len(rows)})", theme.title))
         for idx, item in rows:
             txt = str(item.get("recommendation") or item.get("title") or "").strip()
             if not txt:
                 continue
             plugin_id = str(item.get("plugin_id") or "")
             kind = str(item.get("kind") or "")
-            delta = item.get("modeled_delta")
-            if delta is None:
-                delta = item.get("impact_hours")
-            delta_txt = ""
-            if isinstance(delta, (int, float)) and float(delta) != 0.0:
-                delta_txt = f"{float(delta):.2f}h"
             obvious_rank = str(item.get("obviousness_rank") or "").strip()
             obvious_score = item.get("obviousness_score")
             obvious_txt = ""
@@ -1111,29 +1189,80 @@ def main() -> int:
                 else:
                     obvious_txt = obvious_rank
             targets = _target_processes(item)
-            meta_parts = []
-            if delta_txt:
-                meta_parts.append(f"expected_impact={delta_txt}")
-            modeled_pct = item.get("modeled_percent")
-            if isinstance(modeled_pct, (int, float)):
-                meta_parts.append(f"modeled_pct={float(modeled_pct):.2f}%")
+            score_value = item.get("client_value_score")
+            if not isinstance(score_value, (int, float)):
+                score_value = item.get("value_score_v2")
             scope_class = str(item.get("scope_class") or "").strip()
-            if scope_class:
-                meta_parts.append(f"scope={scope_class}")
+            process = str(
+                item.get("primary_process_id")
+                or item.get("process_id")
+                or (item.get("where") or {}).get("process_norm")
+                or targets
+                or "n/a"
+            ).strip()
+            wrapped = textwrap.fill(
+                txt,
+                width=110,
+                initial_indent=f"{idx}. ",
+                subsequent_indent="   ",
+            )
+            print(theme.c(wrapped, theme.value))
+            info_parts = [
+                theme.c("score", theme.label) + theme.c("=", theme.sep) + theme.score(score_value),
+                _kv(theme, "process", process, theme.cool),
+                _kv(theme, "scope", scope_class or "n/a", theme.value),
+            ]
+            print("   " + _join_semicolon(theme, info_parts))
+            print(
+                "   "
+                + theme.c("delta_h (acct|static|dyn)", theme.label)
+                + ": "
+                + _window_triplet(
+                    theme,
+                    item,
+                    ("delta_hours_accounting_month", "delta_hours_close_static", "delta_hours_close_dynamic"),
+                    decimals=2,
+                    reasons=("na_reason_accounting_month", "na_reason_close_static", "na_reason_close_dynamic"),
+                )
+            )
+            print(
+                "   "
+                + theme.c("eff_% (acct|static|dyn)", theme.label)
+                + ": "
+                + _window_triplet(
+                    theme,
+                    item,
+                    (
+                        "efficiency_gain_pct_accounting_month",
+                        "efficiency_gain_pct_close_static",
+                        "efficiency_gain_pct_close_dynamic",
+                    ),
+                    decimals=3,
+                    suffix="%",
+                    reasons=("na_reason_accounting_month", "na_reason_close_static", "na_reason_close_dynamic"),
+                )
+            )
+            print(
+                "   "
+                + theme.c("eff_idx (acct|static|dyn)", theme.label)
+                + ": "
+                + _window_triplet(
+                    theme,
+                    item,
+                    ("efficiency_gain_accounting_month", "efficiency_gain_close_static", "efficiency_gain_close_dynamic"),
+                    decimals=6,
+                    reasons=("na_reason_accounting_month", "na_reason_close_static", "na_reason_close_dynamic"),
+                )
+            )
+            tail_parts: list[str] = []
             if obvious_txt:
-                meta_parts.append(f"obviousness={obvious_txt}")
-            if targets:
-                meta_parts.append(f"targets={targets}")
+                tail_parts.append(f"obviousness={obvious_txt}")
             if plugin_id:
-                meta_parts.append(f"plugin={plugin_id}")
+                tail_parts.append(f"plugin={plugin_id}")
             if kind:
-                meta_parts.append(f"kind={kind}")
-            meta = " | ".join(meta_parts)
-            if meta:
-                print(f"{idx}. {txt}")
-                print(f"   {meta}")
-            else:
-                print(f"{idx}. {txt}")
+                tail_parts.append(f"kind={kind}")
+            if tail_parts:
+                print("   " + _join_semicolon(theme, [theme.c(part, theme.dim) for part in tail_parts]))
     print("")
     return 0
 

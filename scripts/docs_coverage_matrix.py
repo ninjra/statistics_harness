@@ -139,6 +139,8 @@ def scan_docs(docs_root: Path, plugins_root: Path) -> list[DocScan]:
         doc_rel = _normalize_doc_rel_path(doc)
         if doc_rel.startswith("docs/deprecated/"):
             doc_kind = "archived"
+        elif doc_rel.startswith("docs/release_evidence/"):
+            doc_kind = "generated"
         elif doc_rel in GENERATED_DOC_PATHS:
             doc_kind = "generated"
         else:

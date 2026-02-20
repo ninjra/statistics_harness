@@ -173,6 +173,9 @@ def _iter_binding_docs(
         # Archived docs are historical context and should not gate active binding coverage.
         if rel.startswith("docs/deprecated/"):
             continue
+        # Release evidence artifacts are run outputs, not binding spec docs.
+        if rel.startswith("docs/release_evidence/"):
+            continue
         if rel in exclude_paths:
             continue
         files.append(p)

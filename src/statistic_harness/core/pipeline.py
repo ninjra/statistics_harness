@@ -990,8 +990,8 @@ class Pipeline:
             if "missing" in lowered:
                 return "MISSING_PREREQUISITE"
             if "not applicable" in lowered or "n/a" in lowered:
-                return "NOT_APPLICABLE"
-            return "NO_ACTIONABLE_RESULT"
+                return "PREREQUISITE_UNMET"
+            return "NO_DECISION_SIGNAL"
 
         def _not_applicable_finding(
             plugin_id: str,
@@ -2070,6 +2070,15 @@ class Pipeline:
                 for spec in layer:
                     run_spec(spec)
 
+        # Final snapshot sync:
+        # regenerate canonical report artifacts after all plugin stages so report.plugins
+        # includes post-bundle report plugins and llm plugins executed later in the run.
+        if report_spec is not None:
+            refreshed_report = build_report(
+                self.storage, run_id, run_dir, Path("docs/report.schema.json")
+            )
+            write_report(refreshed_report, run_dir)
+
         plugin_results = self.storage.fetch_plugin_results(run_id)
         plugin_executions = self.storage.fetch_plugin_executions(run_id)
         lane_plugin_counts: dict[str, int] = {"decision": 0, "explanation": 0}
@@ -2192,8 +2201,28 @@ class Pipeline:
         try:
             report = build_report(self.storage, run_id, run_dir, Path("docs/report.schema.json"))
             write_report(report, run_dir)
-        except Exception:
-            pass
+        except Exception as exc:
+            err_payload = {
+                "type": type(exc).__name__,
+                "message": str(exc),
+                "traceback": traceback.format_exc(limit=25),
+            }
+            self.storage.insert_event(
+                kind="run_policy_violation",
+                created_at=now_iso(),
+                run_id=run_id,
+                run_fingerprint=run_fingerprint,
+                payload={
+                    "policy": "final_report_synthesis",
+                    "reason": "exception",
+                    "error": err_payload,
+                },
+            )
+            any_failures = True
+            final_status = "partial"
+            overall_outcome = "failed"
+            # Fail closed: do not leave run marked completed when final report synthesis failed.
+            self.storage.update_run_status(run_id, final_status, error=err_payload)
 
         # Build and persist a canonical run manifest for portable provenance.
         artifacts: list[dict[str, Any]] = []
