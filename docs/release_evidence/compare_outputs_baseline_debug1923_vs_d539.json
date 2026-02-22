@@ -1,0 +1,3469 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "signature_after": "182ee39f7753e6faa7572b71cade6487fdd439644d8d34e0796c184b5c72f87a",
+      "signature_before": "62bd785f786b387cfdc4f89205eebc7992d64e415760453e2f3831d24d33cb87",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Optimized action combo (MIP) with 8 actions",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "signature_after": "8df8a4cd9389e9897de9e18492c8398ff25ebff87bf1dc27429baaee436d8b7c",
+      "signature_before": "8e3d5339c72fcd0ed0701985cfa17e57b5ae8fe110d884b174b2ff56d7dde8b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Optimized action combo (annealing) with 8 actions",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "signature_after": "bb8f73a853aad86bed21415caab0a7498f2d1444d2b89cb482260fe8df8b0acc",
+      "signature_before": "7189d20953bb5a55badacb96320dd262f24cc5c44a82d162ada8cc5301f8c1f9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Generated 20 actionable lever recommendation(s)",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "43bd244427c22e234bdf74075e30eec1c3f089dd06c7b4c52e720311a9960870",
+      "signature_before": "4431bd47717ed554832f983fa32bffa3aa002b30d9ec2631c54335e9ccec0d14",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed AFT lognormal proxy model.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_anova_auto",
+      "signature_after": "e64adf31a5ae59ad3873fd2e3d94ac8468b254c8130b9cfb618e77c9b30f10ea",
+      "signature_before": "e8f30cde5550f2f25dae113747f065e998a0e19092834b21c48e2afd78d8cdac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "ANOVA: no eligible (process,group) slices under k-min/budget",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "signature_after": "2c5bc246f702b88176ae6a99704b8118e48ae5939019d4bdf4f1227e771a8a65",
+      "signature_before": "96b2a45c4dc47c0ddf39be8c43868d1ec547ec4b3b01ee677f4b06b460566e74",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mined 0 association rules",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "b5848bcc44af05b9df893a8147685af14add75c6a4bfebb3b20bcfaba7cc1528",
+      "signature_before": "32bfc5a8d9685c1a7d5be05d8f9377eef742781700aa3eee1b79f0db606c2a56",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Attributed eligible wait by dimension",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "f37c4b0f811dee7a11d20b629e75f493df946877ca4f9732b6c3328ecab84b7c",
+      "signature_before": "a01eb1afd0cb13ff4fc6428296f466f37130e851e857b23303d43a51c2646d19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust online changepoint score.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "signature_after": "52b223bb7091dc39a514797a104f005c5897db50c4738e8a72c21f47aee8f12a",
+      "signature_before": "8aa35d192cc35b0837d2e42644e8c49d043c26cae830cf7b82ab764d31b079ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Bayesian displacement columns=6 strong=1",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "9d5d2623007ac9d6baa7a49f59f513b05d0bc8f280dab998a9454fef22eecfd8",
+      "signature_before": "a94ce38ded0d15c3ff1c2885deea2261ab7376b2f0d7b6589f4f3aafbb1e1907",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Benford diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "signature_after": "40d039af96d29d0df5b25c204d733a5fb64ffc71ad3d7bf8b4902806d0ac4266",
+      "signature_before": "6023554703a1b5b2837c2ddc2c8ba787406139d29217be23c80a0f46d8994b7f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_beta_binomial_overdispersion_v1 not applicable: analysis_beta_binomial_overdispersion_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "signature_after": "7d4dc8b72edf719e2e1f3b139288af9fcf207e9414be3315d97e629ee9436083",
+      "signature_before": "2d494249b5e409544c8d1ed3ac092e18c33c6814e542cd34721e78413b8b6442",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_biclustering_cheng_church_v1 not applicable: analysis_biclustering_cheng_church_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "cdc74a43aa86780329e5ed9b07e51156cf9bf7f0a7b58710e68bb05b21276ee9",
+      "signature_before": "5334a069f41e9cbcd4e589fd4ebe7765cc496bb9e4da0016bec84e3e775707da",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed BOCPD changepoints",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "signature_after": "d09ef6bbdb8c642bea30493ad82c4ccbf543baa216615a1b74f493ba09a92117",
+      "signature_before": "e2f22dfc9c3f9c3aa1c5cc8f037ac98023466a77ee8d350feed0081685f56be0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_bootstrap_ci_effect_sizes_v1 not applicable: analysis_bootstrap_ci_effect_sizes_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "signature_after": "b1fd00560a34325bfac6ee7558b063c79dbbd29350ed316a0598fc10a7a55cbd",
+      "signature_before": "7b0a848a156811c0a2c6e214b72ce530991c6890cd19b45ca0bc407886c1fa1d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_bsts_intervention_counterfactual_v1 not applicable: analysis_bsts_intervention_counterfactual_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "signature_after": "565bd6a6f37ebee8be8377542b2a399a5ab09ae0db0f7cd28380c565bae01ee3",
+      "signature_before": "0ade8aa78b979ad3b5863e2dfb9285b65b63f7a406dc50600a4f578e6c02ef18",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Burst detection complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "signature_after": "731a6878034aed0492b6ced4d59aa65a22ec57334097807017d08ab277cf2428",
+      "signature_before": "b1a173d58b4be6b7838547c1ac62f9aed26e41d0d61ee6dd57afaa86e542dd62",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed burst proxy scores for 20 processes",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "signature_after": "e5fe0da32d45707206dc5225d9fc89291b04175735fe7dfc72272e3628d55aa3",
+      "signature_before": "b1faf1510c4f9046114a351dd405bb633d49ca7a6f41465a1c093aa3991dfb60",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed 247 busy periods",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "bccaf87fee9cf6c498e944a09aa78b94da5478ed8f5ef2c9dc3c19f3186603bb",
+      "signature_before": "e685c51b5a9dc1446e1329ccf3528c5fa0901158a9ad9ae06dadbbc2c9a8b9df",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed capacity frontier envelope.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "e060ee88285eb727b34ac09894e65297654278d7c8902a5ead2ac010cc3e4888",
+      "signature_before": "5b04829fb01d9597f59e04d38289eb51f86f34946371182fe3caf013ad150039",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Modeled capacity scaling impact",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "f1dc2eb12a587b17b55bc3aee41f2b5b8aebe951cab01c4c4b7040c9f79dbf6f",
+      "signature_before": "a814cc501f9121c964016dd046e45b74b982d2a385dbdc3e1a59345411b0c0a1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed cross-block CCA diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "74721f866e81a430bd2217166f417cd7efc983ca70a241b0ecf6a5d1806a682f",
+      "signature_before": "e728dba0633bbd0bf40d9b22954554e550cc22e6480d788af577b94ffa4cb9df",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed chain makespan statistics",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_impact_pre_post",
+      "signature_after": "ae72ff3541b4140083035a8dd4a29e5667487c8adfc494267a6a91533e873403",
+      "signature_before": "5a516f38bdb5cfdeebc5522e9d7a0c900af2be7493c2bdeb4c003390f302817e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Pre/post impact computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "signature_after": "321a84807745e722bbe6e547199abfdf03fa93c48da405b2a9dc538bbcc00c0a",
+      "signature_before": "829094f63a461f55ff9e59d3db53f0804f1c4be437072704c2205ea5d81c0bff",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_change_score_consensus_v1 not applicable: analysis_change_score_consensus_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "signature_after": "6362cd5ce402d3e0be1b605acd6a1decede9e35f506c3ce4b724e99d311e1057",
+      "signature_before": "69d2c1f809ff7edcae99fe6bf9dd8a08996b24db7f4c5156d92330cfeb62e521",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Energy changepoint detection complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "signature_after": "f38d97a5ff0906075e5ed0b18a01e59f8beee28f9ecb59a8fb00d9a8275df8de",
+      "signature_before": "b6afa54d19a29bca4a9e240afd3760abdd89ce0f2ccdc02e139c06d0d60d303a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Changepoint ensemble complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_pelt",
+      "signature_after": "a02fec61d8f4a84cdb8e4df664e0f94808206737725399b8dcc440061e3d1ad8",
+      "signature_before": "b8f83299862d2a31d3f9cff0771605fc2da2781320ca12861914ee6de154d9a3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Changepoint detection complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chi_square_association",
+      "signature_after": "35309f662ff6be12a49e76f0406276994224d72c35c26d5082e027269524c6d5",
+      "signature_before": "6d721bd5ea3a3d3876474de3e93be65bb4681be83483f82d3ff035240adca49f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Chi-square: computed=55 significant=2",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "0d6bd1af5318d81fc5231fec759e7bda5ee7f99911de6648af933102732607ab",
+      "signature_before": "85c189ffb87c31e55dba12085e3f9ed51f13b9ffb7def1ba3ecc456a9c1967c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed circular time-of-day drift metrics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "signature_after": "b6ab1fc91bc5f176e1f8555b83035ca666cec3c9ee50833291027acdf296092f",
+      "signature_before": "7ada5afca61e25d6d98c8aefd53830d752db320bc71ae0e43414f8b5122ab55b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed close-cycle capacity impact",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "signature_after": "e48175adaa007b818be06a491e5ac5a0c0763f2b4f6699b5991a27fe438ac9ff",
+      "signature_before": "65ffafa4f24980ee10b56ee6198a596fea75bdbed193e774dd088c9fb2733956",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed close-cycle capacity model",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "signature_after": "e6d9406889a7b218ebac19bca4d98fb83f4abb5fe9461c5442b13df12f64175a",
+      "signature_before": "5d1f1770a50192d5ae56fecddf0d6747647dbfde645f650a23dddc0ebe44cef1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_close_cycle_change_point_v1 not applicable: No close-cycle drift detected",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_contention",
+      "signature_after": "1986b82d937e1ed9bd7b378e0f27d9d8b669a0869babbd2f4f93251790545850",
+      "signature_before": "26c89c52a21b8690db2ac7c6c31a478202ca8ba7ccaf2bdaf406a11a72e716a3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No close-cycle contention candidates found",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "signature_after": "e2ca96e7fd2d373a00c79a6189b5cb379914e8cdd9d41c4727bbf3dee4a7c6bd",
+      "signature_before": "6c499c612611ad5304c77d0d2cc3e8d7f8032c3419eedf39e48aaf45b2442793",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected duration-shift candidates",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "signature_after": "0531bfd7f32e54b2c78f73400576314b35950eec42152fab99a271d85d4c0db1",
+      "signature_before": "513d05378f88e606129b04563073d1ca11a53b387b26c94e8a4fa4b30e437099",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "no_revenue_process_match",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "signature_after": "1237487b8086b42346f8f07d0a6e11577d7deb4bc6247eae42cc1b8eff7c40ff",
+      "signature_before": "7e18d0bc3ea6320746b4630ab3ab9867d99a52c09364f42c5b553d9a9d930136",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for close-start backtracking.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_uplift",
+      "signature_after": "9dc20d069629b0e50eb1c1b7a21c6ca1d0ea5345909e93ece3fa7ead5a848b86",
+      "signature_before": "560c8e699aa9676aad1d364e51f7435d422973710c2c2f14da30c2d30df73ddc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No close-cycle share-shift candidates found",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "signature_after": "61ed9e48480d7c333210c743220b8ad613305cac6b5e7f7f08e023f562506726",
+      "signature_before": "6bbddc8639b92a91391896f39e15a6842fcb856645c86fffb78be6e617d96b6d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for close cycle resolution.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "signature_after": "fd1b11cd076c751274c32e14193504f364a5ac0ea4b6b22101d84cb5cf36568f",
+      "signature_before": "f20e7887d7082cc612c7457564bdef9ead3ca722cc994405ffe33d4b5aef3a0e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Cluster analysis computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "signature_after": "a7e598e9658ae3b4618f895e81910a17c128812f56218282b91899cfc016fe3f",
+      "signature_before": "801d61a807b53ecd96b5f404e830146011e1b7b001fb2736f8e69c7ca3414658",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_competing_risks_cif_v1 not applicable: analysis_competing_risks_cif_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "a36b5d8df405eac248f837a9044a97c61586aabb585e7230ff7ef01a7a32f6b7",
+      "signature_before": "b6a063b5d552992e3445e6ba873a7f63868cd10597d929d59fdf1ca38e5b764b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Reconstructed concurrency timeline",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "914b52a4020c566a0cca1de6bc5258d51c7829b39a0dcb475b3e066f3ae54322",
+      "signature_before": "d0ca3df71697916eba1a7affc59a1816af740cac640263bc2254dd4c641c80e7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed conformal anomalies",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_alignments",
+      "signature_after": "7624d0b9a5624ffa9823ed57f4949894355e97fac3200ff06b1ee34084e05720",
+      "signature_before": "22410bf45fee97176fe5a48058a5fb91ed79b96e2014519bb40d5a187fc4e04f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Conformance alignment check complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_checking",
+      "signature_after": "6c0ebfcfeb1d0c2af1b4839451fccca8b3ed066ebdf5c0826bca94c8a0bf498f",
+      "signature_before": "c8fcb522647ba69bebd742b150786908b93a27828b8371f7d5c127532c4ed5cc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Conformance rate 0.00, 30 unexpected transitions.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "signature_after": "f43a1570195b8d3a304e53f6c39c1a39cb5521d410300c6ce02a7dfe7ee419fa",
+      "signature_before": "c4fc8ee1d668127e3716b6ca1663b7af4d6f7f62709afedcbdad5d1596c621d4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_constrained_clustering_cop_kmeans_v1 not applicable: analysis_constrained_clustering_cop_kmeans_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "signature_after": "fd9069ffbdfcfa3f0fecd820ad456c105fa30eb9b04cae57b5f52cf3f89951f6",
+      "signature_before": "159f675c6aa761ee5086039a01294dacc9b18f2e6068ab3832c1ec153af607c0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_constraints_violation_detector_v1 not applicable: analysis_constraints_violation_detector_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_cusum",
+      "signature_after": "949a91c4959a80c9894f29cf9591ca8405927f8635891339742c260330d12247",
+      "signature_before": "9f1bc0e6d89fb6e6efd6c9c9945084d3707536c7db1d9a959b52b479008e69d4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "CUSUM alarms detected",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_ewma",
+      "signature_after": "b35915de8285202df426b686ff8feccc8dc9417a49f599fa4f350ee751be4f82",
+      "signature_before": "283558cf2dbba2b770fd7bf5527daf393b9eb3e89297e3e64bcdfb0bee5e1008",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EWMA alarms detected",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_individuals",
+      "signature_after": "5a2367c87e600cdbdab0c1953fcd0c1fbbb4972af9e96c813778f7cf4a48575d",
+      "signature_before": "a472bba20c47764c4f729dbd92164479b3c124ed1e72b9898b05252fd873a40d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Individuals chart alarms detected",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "2264c153c9e3b174a7051760bbc0e81042cf4ea4de1df38162db323f444b6094",
+      "signature_before": "ab25f1c5332242ce6ad47580f5153c3df11bda375572215af9e8c90e684345c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 control-chart alarms.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_copula_dependence",
+      "signature_after": "43e6a52866a739518751801656ee9bb9b44493e58c47ceea36df4386da695b60",
+      "signature_before": "9be695c494967310821f43dd5900ad6a49b6077e9c588bc69282414c13dedcec",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Copula dependence screen complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "signature_after": "44bb41351ea895e6e727e2feb4ef85ecc659bc3fae2f452a92ecd7e9b7d7cd63",
+      "signature_before": "9ce639f836b2e3017f5a49d1841ef86364154c1f4c796625d545b5d61b321362",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed CUR decomposition (rank=6)",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "380dc3d016e06ac09cb176015160acfb65a58199040da7715ca217aaeefd8785",
+      "signature_before": "56de4ac58387b287d35d5d71f641ae3f6ea79dd4c9671a5d7e536bcd7a762d56",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed CUSUM on detrended residuals.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "782a450d1c4cd20711209e06e21ffeee850bebe1c497a14cbc5ebde54f4f5fd7",
+      "signature_before": "ae94ded8359ad33a1f0c1ef99d0bbf6e079e59be49884175922f28b95bacce6e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_daily_pattern_alignment_dtw_v1 not applicable: analysis_daily_pattern_alignment_dtw_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "e92376fd90baee3cac638391c071a466fb161977c13ecada85d000f9f89beced",
+      "signature_before": "21558c8f6de04517bab56541fca26678347997074a6e77f9af3511a681d88f81",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "HDBSCAN clustered 5000 entities into 2 clusters",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "f576d66f626c465459bf1a892f34f3f229fcd81c0b8e7ddd6d04c1473b2dc391",
+      "signature_before": "66584b972791170ff721357163b292a5d88035616150faba347eabae3d6923c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Leiden found 3 communities",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "signature_after": "a2ee136c84f474870c4666f36d465b763fddfa56493004d09682094794f8e4d2",
+      "signature_before": "3a2d98190d75a0e08d87db3669394f03b7cc21c6cfc190b27a5fbbbb5abd1658",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Louvain found 2 communities",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "signature_after": "b2355466333d6163d1c892f34dd9c77f35ba95008a638e58e7ddadb5bc0ee873",
+      "signature_before": "cd2935eabae0314dbbaf6ab65bff3446ee1df6f341717216d98f400d319781d5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_dependency_critical_path_v1 not applicable: Missing required columns for dependency critical path",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "signature_after": "8f7b8e7c13265c184bfd18d4c719d62fb209bdc848fa2611ceb17013dfa24ca6",
+      "signature_before": "eb393799209a7d5d1aab402321d4d2cfc82175baf823b8b06088996808bf48f0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Dependency graph change detection complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "074f1ea9b69399f82aa5ccabace8580801f65b7265d243efe435ad1c491a6ea6",
+      "signature_before": "adeffaadbf8e465fba45c113d1d652222609c7a94a31d1c4580835b331874f3f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed dependency lag distribution",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "98086a85dbf5f26a1850a9b7796ccdb44be7fa3ba67b21b37e030dc921f0efb7",
+      "signature_before": "f27779939ebbd1a0e456f20c466a716ae80fed80383f65870b9d4dfaee7ef5a8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Checked measurement_type discipline",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "signature_after": "77c0ebf3c6ad364464897b9fa875f2c7c90c8685d5877e9736f36d65b416705a",
+      "signature_before": "74d908d9ac5cef32ff00475b1b359485bcaad950d0ec4ef683bbc621ae7a904c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed diffusion maps manifold embedding",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "36632cfb6b039bb40d13792b3d7b5bd8cd13e7e8216e925155546f3cacebbbe1",
+      "signature_before": "a001f672eadba2f9ea5f6b83b1b371fc8487f75f22af659074ea0549cbd55e2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed categorical overdispersion proxy.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "signature_after": "9793e63c60f1c7418271c4cc1fb515116bbb539aa6d9f06fe12023fe5dcea5e0",
+      "signature_before": "cbe8924c5c8ee6376ba73640c521aeb715568fbf0680e107a39e842891dc5f3b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Simulation complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "signature_after": "213c1fde1d512d0f13d85bad1b3acc7bdca4c806452e17b2c0220734b33bca53",
+      "signature_before": "6b71c99342ec43786b345374dcc8976b2ada5d4a6d85ad0f932a34ec153afa42",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "signature_after": "0d51117d611399b3be1e0343ea115cfe49d6877f402b8bfff78eb1dcea664ec7",
+      "signature_before": "7be5c7e07ad9b718ee1b80af752177a51e7070d5c4e1fecb853d8b995c7cc89f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_distance_covariance_dependence_v1 not applicable: analysis_distance_covariance_dependence_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "2f968129b04b20ef17e8bedcfa3938c1eaea11df5a93db2d4b2a90d447130efc",
+      "signature_before": "bf7fd7434e6c334f614916180d754eae383aaee85beeff79d55c38ea367b8087",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No significant drift detected.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "signature_after": "0008d93a55657f94e1a0299454428671730b92392359186a90e474e7a08ebf9f",
+      "signature_before": "f690880533154f2cb58b413e7f71fa7c5304a6bb5ce414628faadf68da3e0b92",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed shift scores for 20 process(es)",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "signature_after": "66f58ba35fceab0747d8b86d40ba3b81a2774ad94f5aff8ffd206ec9b2956ae2",
+      "signature_before": "6bb638b7afaa63c8c576b8b126819f2173d534d23e329ef1d5cd0f7153c56d88",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed DMD over 12000 observations",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "ec6b30fd152f072d411a49ad978cc9a9df396d3ea7b55c9237d4d588731260f4",
+      "signature_before": "b810b9ee736305c12e43200c04e3bfc60ef01667544a90d1ce70e05f27da208a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed DP GMM clusters",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_drift_adwin",
+      "signature_after": "e2dd4e18e30782501b9076df78455b0d87d67cbf8ad35f2bd73ebff4a4dc88d8",
+      "signature_before": "52ee423c039f5d55ca949b2804f65ec990ccd77fda38fe2dd23bc39868419802",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "ADWIN drift check complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "7cee606c85fc6c5fdfc3fa1bfe55a46082e2fa171964676f32664c1f8afba15c",
+      "signature_before": "1a0b19c1fdacddbf4ff5ed44d1efbca5dd6a6173f636b419041a69491a06f455",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for dynamic close detection.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "signature_after": "aedf3840d6722c4a7179d925ca02b29c755261db9d7f3ac295ea13a1f230a35e",
+      "signature_before": "cba268bb54badc4c5fd5504072005086471bb4cba10be73f80fd186752e5a9e9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Verified 1 actions",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_effect_size_report",
+      "signature_after": "ee8655852a6d898242d19df46e156ca35139ea181b22a9ea992f95834d65a53f",
+      "signature_before": "0e25dfb59a7bc387d3de2a3c3086485058b3896bcdce7ebc00c247c1e736ea91",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Effect size report generated",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "signature_after": "d81197de113f1b00fa1b0974b6c5b7d1dc7347bded9df62dd41775669e2f10ad",
+      "signature_before": "963347de3eb152c912c860e6d3aa1c324adfe8b51d7e577d12f402812923207d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Shrinkage ranked 20 processes",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "signature_after": "072819c44ec97bc80f9bd1b920f4ce96ae09be9829969c4898476b98d092a7ae",
+      "signature_before": "3e46c2ab11dc590741224fd91946d59a8b51a9bab46bd024e20a2b1c7ddf1732",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_energy_distance_two_sample_v1 not applicable: analysis_energy_distance_two_sample_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "signature_after": "201a264cdfc8716c11f83e88424cf4b1c8d2bc11f8fbd5feb31177529a698409",
+      "signature_before": "74f11acbbcb3db3e710bc7692c0f04036899ee6b02f9d31b220b1b5e50977a75",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "BOCPD Poisson scan complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "signature_after": "bde176aad945dc0964ee750544aa728672107c40f9927f9fb28efc944dcf626d",
+      "signature_before": "6ba1dc2a5b9ae61dab0b692bdf5eef8be4b1e1363827d6ddc4f788c269d6a685",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EVT Gumbel tail analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "signature_after": "74f94e7fcbe75ec8c7458434508683f836144acf39bedf09e6e8c3e609ae22bc",
+      "signature_before": "a820249dd6d87a4373587cd12717f7ed3f4ee7195b69edd1d2ec89652bd7f7f8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EVT POT analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_analysis_auto",
+      "signature_after": "3ab3d63149537f53910afdb9663a69e8a81be023aaa3dfcc23db8bf07655c4d3",
+      "signature_before": "3ff78c578961a5556255c6838c06efab674219447e98658355d927c8d740315e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Factor/PCA summary computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "87226e9ad16374b848dee72113aa2ba446e528696b333ffb69fc9de07efa759a",
+      "signature_before": "31da3aa72ae6240e152988abd1bafde70df1790c99097123f0c8f169a259a299",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed varimax rotation diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "dc92c42a4a88490389866992a05c854b915d52133173d586cd7aab3848004281",
+      "signature_before": "9e4d0fadf1420d9d0e4d97912f8e12410d7440cf2ee1b5afb29b23a9bf673a2c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Fisher enrichment scan.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "signature_after": "7f7a570e9b16aee3facd89f010c56c9051757c050138aa4fee893a5ae529ae43",
+      "signature_before": "5a9a1112127a8097466a2dfdc473d9686823908e404bb779f850710875347ac5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built covariance sketch with Frequent Directions",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "signature_after": "ec5250d178419594a45b42d8d62ea08f2fcc3fc23dd74f75b27184d6c542075d",
+      "signature_before": "13dff741a376e50486c8782aa13d70ccfa7f84ac42e8a49b1a5ce4c9d86724ed",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mined 14 frequent itemsets",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "signature_after": "c636c99aab979307f3255e239b9b797fd94b1e0e64b41e81c2733375858a2154",
+      "signature_before": "77d356531d3637511a68d9a2c89fb882bcf9dc13f4fe1456b6c9c5911ebec90c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_fused_lasso_trend_filtering_v1 not applicable: analysis_fused_lasso_trend_filtering_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "03f0fdfb9783d895bf621907eea29e2b166c710b0360a05f303bf4aa7fbdcee8",
+      "signature_before": "2339dc4fc9b496d9d7f806dc80073a03f71f4c45a26c0278a0bede4a65322986",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spline regression diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "2ed9d74da5c0568c84cacbbdf9cb6dd0d8c0a7edea89922532c3e1d2d8958cbd",
+      "signature_before": "25adcf2a78ed6b1339ae1f43b7608cb89935c9b056be738def18ccb2b2db9f28",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed volatility shift ratio.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "f84731122486f1bb5fe69ca00d5c926c36f40bbdc247e821c1961d5abd70f054",
+      "signature_before": "f088111f4bc0afa622b070d9ae1f49aefc5b413a83da12791c246be4b6a9e01a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed copula shift",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "580a65d69b708e115796c1ef1c726ea6d72570c4a33d073d304806827c589592",
+      "signature_before": "15ce97bcfcc05abf07b461fd05cebfa3ba53a9fc9bf5d84b0f7bc507ded77c0e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed knockoff selection",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "signature_after": "2fe8a2ba2fc05ae969a5877887062e62e05c2f9414995b905f75cc6342b420dc",
+      "signature_before": "27f5c28706b18f5bdd282a47002cd6448a3e8544ccfad4305f1a38e76fb2cca9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "signature_after": "d50a23fa1dbf298ae9c58bf388d91ea7350e809231a150e5d078226f02dd8a36",
+      "signature_before": "4468b3e60bffbd6d01f56ee99a0f9a51d1def2444f13b2d4986b4e965f7372e7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built GES-style graph with 2 edges",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "7ebb4dbc38c162bd9eed9f90905a332174ec3e7590efa1ab68e1f5c2a6dd3267",
+      "signature_before": "7b2ee18c9d358b927d2dcb85afd897cbc6b8a1847c263d0afd06b589fad1bb8d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed graph assortativity shift.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "signature_after": "92972b2c71b361ba20cb0f8dbb7a2de1e1cf7c5c69171677f3a7364ab31e170f",
+      "signature_before": "31de3a3c3bcd6d692960e7a06fbbbcc0835e5c5103d5b878768972ede8aed150",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed minimum cut partition",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "signature_after": "c3bba6769f6bc889044aec084acdf27a20a13c03bc47dc0673cc3045d8713a68",
+      "signature_before": "5cc5b758b347a53b037a8a89cbf8c037d795a2dfd1f3e69f2d9171b02b19140d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_graph_motif_triads_shift_v1 not applicable: analysis_graph_motif_triads_shift_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "signature_after": "a2f1871234498faef812c46bd011775bc62f81ed5ffc9c2f81661b000552b26a",
+      "signature_before": "a93f8d2dae716cd81fec93f4090d0f3f63f7ef70fd68ae980dc4d8816c6ea8c3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_graph_pagerank_hotspots_v1 not applicable: analysis_graph_pagerank_hotspots_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "66012a791b6b2ddf1784704cfe7629dee7d314e3743f0cd9c7771a442f574f3c",
+      "signature_before": "c94b6094017581e391a7580c9b5697656919d0c2cf0f3f6088fb3ad06f839e65",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed topology curves (sampled 2000 of 500000)",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "signature_after": "ef210461ec8341866ef1787091408caabbfb231e7d28987b6d8efbbfba7bea8c",
+      "signature_before": "0d2110f4e7721f9228bb4204d429214fa587f215451b872ae3b2addda755958e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Graphical lasso network complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "signature_after": "97dd0c6c2dbefdceecd998149f155f13a9106c66f8d1d8ee69cdd167f3440578",
+      "signature_before": "72a43c924a85d4fb86348f919fc1504621e0acff7f709cbb29712fe2ad280213",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_haar_wavelet_transient_detector_v1 not applicable: analysis_haar_wavelet_transient_detector_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "signature_after": "e074b6455147a59cdd016f1385cdb0626958206cd4722775554dcbd14819eae3",
+      "signature_before": "06644f0c475850fb3c6073a69db95d387f1a43d491fbac456aae717902bf3e7e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Hawkes-style clustering check complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "194ba8f3ffdb3df824a646078edc054d9e3f12ba272f74c5e3fc8e164ce97cb0",
+      "signature_before": "73c585c9f90ad1d7a157d083e8b5bdf1236482ce17ff7b5791fa36c5ed6e6f8d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hill tail index.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "d16859dd34e7b7654669f1602fd899aacbba9412a75a0f70342d5a80e5a6e640",
+      "signature_before": "53fd626d615d26fa677e69a3cf3e6d23d0d49bde6d667dabb4a001e13ef5679d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Higuchi fractal dimension.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "signature_after": "f5fe7093f536d84e8f13b17092be8dbb2c4e7c447bdb95e38947e69b53c6ead8",
+      "signature_before": "b126b7ef8f163f572ce2c2c62df24c62225cd845d68d2d2f7f1bdd84ca516a98",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Latent state sequence complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "signature_after": "5fdf7b4032ad69c5f5068aab20b3354bf8b49bbd85329f46ed5e25c29d03f78d",
+      "signature_before": "cf91764d27cbc33d98e8fcdd2e3c1cf800c8399a4ad7db722e8944db530a71cf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_hold_time_attribution_v1 not applicable: No hold-dominant processes found",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "signature_after": "ff1ed39d1b251bfdedbf69d115a47c0e18dcf523b3063320c661572555867dc5",
+      "signature_before": "8c593bf760de387402d33417734efccbdd98e1329f0a09ff045a02f30c7e5213",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Scored HSIC for 21 feature pairs",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "6b38009200754a738af85fc8dad847ff2c14b63a7e15da4cc118d8946f338c37",
+      "signature_before": "56b8332a25b48f4bb33f694219b331de01c04bf98001b29e37c33ccc9c213c3b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hurst exponent long-memory diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "0198b7c75b4cb8dd22fa4431dee731d565585c554fd6d9c56359508d45565f31",
+      "signature_before": "376b6b28eaef2a0ee3f05ead79ec9b7bfb5b0e8f5ce2d2c486e5e45753a4bde8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ICA/PCA source separation.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "signature_after": "563cf3090d8826b6d1bc240ea70c49650f7ba204c2b93165897256956402120d",
+      "signature_before": "fe1e6abecbdc052ea8d9ab62dd74ebe07ac12faa9a7386f11ac8f2df29e3cadd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Evaluated invariance for 6 features",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "signature_after": "f7a07dde47706315f58629db301c973a4811610ce3aceb888ecf1296bb0ee67f",
+      "signature_before": "82737d6b598e01e1c2b74fd001b124f503a482e17bb7ccdd4e595e5936b37ffa",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Generated 1 deterministic action recommendations.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "signature_after": "7f648fe8fc10b7662da1174bece3ad0e0a7a8cb77098a610ea683a5959446636",
+      "signature_before": "13ed92ee30de1a77d08e02669f98e63d0ffe4164c8e0a1369fd943c9556b307c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ideaspace energy and breakdown.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "signature_after": "073f7bca0246c86dc381d550ae1bee3b5a6bd894ea37fdf67a247f7376836feb",
+      "signature_before": "acc511e0584d7006276d2d59a60bf699f7262181140774ded99b93fd99234dd7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ideaspace vectors, ideal reference, and gap vectors.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest",
+      "signature_after": "76a4d4d4e1beb8e586f3136b8cc4579dba2affb3d4bc052a8332020055e20605",
+      "signature_before": "626dc1eae5d558d7a93bebf6b7e3192fa267c352cf5d855a96864dc1942ebf9f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 anomalies.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "76a4d4d4e1beb8e586f3136b8cc4579dba2affb3d4bc052a8332020055e20605",
+      "signature_before": "626dc1eae5d558d7a93bebf6b7e3192fa267c352cf5d855a96864dc1942ebf9f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 anomalies.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_issue_cards_v2",
+      "signature_after": "1e1582ef4cde0188928db343053c598567c060fbe5d29415020c18e59dc1322e",
+      "signature_before": "3a68c42dab7b131dbd544abbdcdb99ec73f573714f514b4d42ed6b601c0827b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built 5 issue cards",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "signature_after": "32a7f5477c717a7fdc40b30fd54054feb4e2dda750eac4d567d26d9d449eea10",
+      "signature_before": "1a02e3d6180f45466d3e2de78e609487ecab57356bf5725080b671cc2915a91c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_kernel_two_sample_mmd not applicable: analysis_kernel_two_sample_mmd failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kingman_vut_approx",
+      "signature_after": "952875424c7a937c1f094efc11ae48fd913acf6ec9bb52d3401381d87062a34a",
+      "signature_before": "5557073a57047d7567019111163c8a0599f8c0d1b9d3e57b673bb119975c2b82",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Kingman VUT approximation complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "signature_after": "8b1c46a41e136791e5bdcb0ac767f8bf28fd6f9211ebca20d3776c6779bb8282",
+      "signature_before": "67546d05ff16d1473f42e8f81ef4c70c6d8f05750efc1abb7744a85be9101d53",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Completed kNN graph two-sample test",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "34dc2b711b5f5e2532a97466c8298bdbf67e61b76534d8679737382a2fe3e95e",
+      "signature_before": "d95293e3a001030823786e8971fb875826a2b1632044e7bd79eac2ce2ee5869b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed RF knockoff selection",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "signature_after": "66f9114bf6987e18319684e6b29fa26b99e3efb18d4ec2e54d841e5d03186cb1",
+      "signature_before": "9f9d06967ec6b6eb5f20c4f28fc2167dc65128b304123b38b8e0b86b97d77f9f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed KSD anomaly ratio",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lagged_predictability_test",
+      "signature_after": "e64cbe5ef498c51de491088cc3d1fa30df4e82373d2206fc7b17c20ad29c39cd",
+      "signature_before": "3c554cadbb445bd098b2a5fe8681c07a4ea13d505ffdcf415714a3593f35d29b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Lagged predictability check complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "signature_after": "782ac76303f548ecef5f1d8a752fac51f5f07bee5bf37e4e80efe722df593100",
+      "signature_before": "f0e44b2a3ab45aad45be3f2afd8504f87b864b4ab08f3de573fb0abae981b049",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Estimated LiNGAM-style edge hypotheses (1 edges)",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_littles_law_consistency",
+      "signature_after": "ea3d38ea6d8720c4fbb127a85518d381464308c9f4e48a7c383b2552aef4183f",
+      "signature_before": "688faf89bd3b8cecc801eb42f13a564e1b8a8284a6729044d4a5655539ab3a29",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Little's Law check complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_local_outlier_factor",
+      "signature_after": "2aaae170a85e0eab45c71f7e1cad03983069c4504f404a40743347b5647503ab",
+      "signature_before": "74fc29cfef336025fbb6fefd23ee780690d2a57eed1029d9b3a5623865f30aab",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "LOF analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_drain",
+      "signature_after": "6335d3f53d91b7fd1824cbb60fb5105fab7f757c79bad34c69d32279f01d1fa9",
+      "signature_before": "8d305857c41def65593ed38fd232bb1a2b21a5d42ebbff6f99dc43590059811f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Extracted 13 templates.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "6335d3f53d91b7fd1824cbb60fb5105fab7f757c79bad34c69d32279f01d1fa9",
+      "signature_before": "8d305857c41def65593ed38fd232bb1a2b21a5d42ebbff6f99dc43590059811f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Extracted 13 templates.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "68c4b4a7584caefbc10e773ea6574451f0330ea7d53e11950ff9e317fd4a3866",
+      "signature_before": "d0fa69b1805a672b2a81c33c587b76b91a80cb568e6e5e745c4830a03a12ad14",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed periodicity scan.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "signature_after": "dc66cf39af78e945c12c9beb6fecf7954a57b886b9f0206fc0cfe8b36355c321",
+      "signature_before": "f6898436030eef3cb28f54f4b360c267ed0d4d97b40fb8ae0f11be3360e57672",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_mann_kendall_trend_test_v1 not applicable: analysis_mann_kendall_trend_test_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "signature_after": "11acb518aa5db54cc21348b00a2f1d2773b26551ea4145240bf8bd5495dd6996",
+      "signature_before": "25a55d6df7c0a6d95278911c9a6fa587de6df430261a09715c5095f9826d717f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Karniski-style permutation test computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "32cdb454ecae196543526e364fef70a39af8a8a7600069c94173ad890a7d7eda",
+      "signature_before": "5eaa43180bd867fa6df2eb53984af2563e9b1c40ca2535f0a871e90134ff5f00",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed marked point-process intensity metrics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_markov_transition_shift",
+      "signature_after": "1a932ed67c07373c5789e41e251dcaa04bb48df9eaca73f048e3a415a5048c34",
+      "signature_before": "bb87b0df24605af9b8b3d5fefe73cbb60213fb0dc0d656945c0d86c5f27b65c6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Markov transition shift complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "signature_after": "512f6c0eb416aa750029af7579d7a55ba2f091b185d5ffb79b25f351b8c09c74",
+      "signature_before": "6ae7498deec6a8bd5f1f54c7ce1f0159f3dd7a37d18042c9846a1e5c218b1c01",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Matrix profile scan complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_message_entropy_drift",
+      "signature_after": "767e8151c24a244774082f50c87073a5517750f9785c8dc34c8c54def5d3ce7f",
+      "signature_before": "b3d3216a4a6ee081950844c4db676f8924decaa00e776e6abad8f748daaf7e8f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Message entropy drift complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "signature_after": "0a5a4612377505224e57c47ed57f531b8644361cd02a0d6f08a97932370c112c",
+      "signature_before": "181d0bfa8521fadac31707f0619ae303a1cedcacd6dc1dbccd83bea0fee09592",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Monte Carlo uncertainty iterations=200",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "f40f71c195fbdda0641dd4fbb07df4a2a25c082a767390f2a9ea5548498b8eab",
+      "signature_before": "aa942654604b6d672cf21365a16efa1c18da830b9219caa6b3571778834a30b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed VIF multicollinearity diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "signature_after": "60b9f3a30f82efc3f67b541fca1fe95af44da85356f07a0f501edc1379450362",
+      "signature_before": "7cbc30e1ba34c689024cf0093a88578dcb1e30122c169d76a29a3f62e3cd139f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "FDR screening completed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "signature_after": "8177be3d453fbc032d3727a7924c5e692c8ea04b8fc2fca7a491ff580fa67286",
+      "signature_before": "e1be348c125fabd0824d1496795af2dda21c3699f92f5cf864eaf753daef1320",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_multiscale_entropy_mse_v1 not applicable: analysis_multiscale_entropy_mse_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "5272d59ca56a369b7fe7096337d2712756c1765893705851b02e5ffc3ea3a5b1",
+      "signature_before": "09337768c4f408b82769734393c17c2897494a42c36e3d31cae6689988d599d8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No changepoints detected.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "6dbfa8ed5beaf514b9dd403ba95239cda0bae793c11ba8a4f4b3536baa33e1bd",
+      "signature_before": "27e88948b5c7fb0067914b9c6b146c2296a3589db7d80761130551aa08812205",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 multivariate shifts.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "signature_after": "eee76f070b5ddd65d6a10696e87e23367846fb1131eaa8c5bb59d3eac9eee97b",
+      "signature_before": "8de25fa537a30bd78d6396d1e4492889c44ef5041f436e05fd6840f88f9bc040",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Multivariate MEWMA control complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_t2_control",
+      "signature_after": "955b634c0563b5eb31bc6073169d33a00d33b94685490ed2f3a4b7e096867e22",
+      "signature_before": "f3fa1c90bb90a408f1480307ff4e917574c895f8417281a8be2193487680ce68",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Multivariate T\u00b2 control complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mutual_information_screen",
+      "signature_after": "354bee9e1d252f5254c0420852ba32c5dd60a32396ab89252d34eac96418e31e",
+      "signature_before": "a2026f2f0c2458699b723483717f4aecbcbad02ba197672c83df6928e000b2e1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mutual information screen complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "0c9c91a4743c5759a8dddef1945f6db7087eec078823ceadfcad8cce1c1f8d08",
+      "signature_before": "4fe0bb5247a4b9a11e50fd8f50e87645d447e40f7269100c7e467d52b7e3df23",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed negative-binomial overdispersion metrics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "signature_after": "d070f5aacab3c2f371095ce76c95abbec66a3b7a9a2d9c7e04fafae393e43dfe",
+      "signature_before": "39ad4530b5133def303b995141e2b0e0b98bb71dd22bb309f5103b4e056a5d98",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed NAM-style additive effect proxy",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "signature_after": "a2bbb5b462bd688b065c0affe627775469d1bc358b15f1700b88af33da27fe69",
+      "signature_before": "ae73c621f2fe27b58803fbd1b73fc28dd4c08f7d5f2298608c05a16810db29b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_node2vec_graph_embedding_drift_v1 not applicable: Need process sequence data for node embeddings",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "signature_after": "29f0831c100d74ecbe44685a3309ecbc55ca9b543eeb349734bc8e5479f8faec",
+      "signature_before": "6629db4ebe29a04792550e200e6ac82519a298c68083d008f5e6af4035f9ea2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed normalizing-flow-like density proxy",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "4adf6c7d5a8e21da21421b45f5851e1aa79afd64cb9053b5743ed99651c5cc36",
+      "signature_before": "c22406fb101beea87fc49004e2db22d8dc7286333cf8b10cc23a1109083207c1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Estimated graph",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_one_class_svm",
+      "signature_after": "15b994e7646f2afed57a46f806c6089865b59d83f166188cd2d747313f7caa0f",
+      "signature_before": "c0a1bdaa610055935cd2feac2f260fcd8d9aa6441d2c1e7bca89e7a1b575e46f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_one_class_svm not applicable: analysis_one_class_svm timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "78f194369401be53002f2f7cef6bb3290ea33daf6906f485a0bf735cdbe3bc5b",
+      "signature_before": "db05cec963ec214565666f6311598415af14644565bbeb37f0d8ab66eafb1016",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected changepoints",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "c74485f108ef4922ea0dec47dbd3f30e14aa80889c36b62f999434f5d409677c",
+      "signature_before": "318dff6be68ba67a46cefb00a395bfb9def9083a4b4054be344f3b57c54a37c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Cook's distance influence diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "signature_after": "0388a1e5980ab27a4656b3d6fad29f2511e41d7e7bdb2961542c6fff416c1cf4",
+      "signature_before": "169b54b49be2aa2697fbcc34d5614bee16cc1c55ffb6e86ad7e012df7bb30623",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_param_near_duplicate_minhash_v1 not applicable: analysis_param_near_duplicate_minhash_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "signature_after": "d38eefbe6c249a8486a1f6d54531a320e993d69ec1f7fb2ee6ffbf496043d5e6",
+      "signature_before": "3da58608124bb1dbd7326b89bb71cf2ada00f2e66890cb52949618ed5583c30e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_param_near_duplicate_simhash_v1 not applicable: analysis_param_near_duplicate_simhash_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "signature_after": "5948b39f9804839f94d571a718cb9b72842e09270d8dde7d3a1cc2222df3c507",
+      "signature_before": "777f2d542fb780013a13af69647281d5c9e67a6ba11bcd53b0be8cb6a18e3f91",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed param variant explosion",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "874dd440ceda82f853f52ffd1de95a851a5c85d8887a9c2f5288a29fbf4927da",
+      "signature_before": "78d7da348a84f8df3a63ee4d44d080575cf6151eb64164af62060d3567d84ffc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed partial-correlation network shift.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "signature_after": "bd2f304f17f10f2ba2df17aed8e85136d6eb0575e043e7d47eb14e8ac387d9da",
+      "signature_before": "c0f9962d88ae0fc687a2854519c7b404379da94c1483c6860fde05931c23efa3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built PC-style skeleton with 1 edges",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_auto",
+      "signature_after": "187d2fff53ba730b40e5ce1fa5570849b755ce3e25588b248d36890d884ffb73",
+      "signature_before": "6fe39e734d9d02adabee89ced3f36bef1815cee75299ee46b37d1360a53089d2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "PCA computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_control_chart",
+      "signature_after": "5bc7d1e3632e0786e996186c3d6d844668c149ef7142b97845cd7f8abeb31f12",
+      "signature_before": "ea741bff481634aa89c477492798711a4c892b36434c3548da1b12d1c633afbd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "PCA control chart complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "30ff1355fd23f776cbcf1da3d92cb18f6c8dec7b69ba0baa192e245b0410d21d",
+      "signature_before": "6192b75ab2f9e5a39778d163b0573c1f206a9d0e320bca6ab0d27476634d9148",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed percentile statistics",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "signature_after": "9caccdb343529e7c34fbd7a8364e00d2bcdc201a2f9708fbe2e4ead7218b599b",
+      "signature_before": "86d57d49fbc55098a94b196d752b8826b0b9c3e79e4be2ead67e9f0eae281307",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Spectral periodicity scan complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "47889532457baaada0c1fd0ff8a20a270840bb08d80467466f14dc099dd2eb67",
+      "signature_before": "1670161bcd95aa48f657c9bd3b24ef69cc3346d1e597802869222c553601419b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed permutation entropy drift.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "signature_after": "1dfac41bf89626441dd1d2c93042de0b5d24d54f27757de8e6abb9fed19f280a",
+      "signature_before": "8d395ff095d9d412d0caa0af5d8512c7c35af2566f7c81c120cf5ab5bb990516",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed PHATE-like trajectory embedding proxy",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "signature_after": "ad4e905a3638df94b60e090c8a35b2d3e9342b5eedcb5b84583ea693c5558226",
+      "signature_before": "b6197d519abedab84717d9f24d5f2b08e731f91c8cb3763bba6c082f6b53170c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_piecewise_linear_trend_changepoints_v1 not applicable: analysis_piecewise_linear_trend_changepoints_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "565504fe86169524f46ea7bd025a6022d69a040905181b3328df322d4d4ee3f1",
+      "signature_before": "bf86afd63494e29bb93c271680224d9551b3330344dda347cbabc868110a790c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Poisson-style rate driver model.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "4c9ed00ce895357543faded3c6f3521a2a9dd44e6f54377eef5de9ce1fb9f067",
+      "signature_before": "589c5ba8e8dd4c01f5e30cfa61d81e46a7dde1127932b6b15c3c8ca253283a1b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_process_counterfactuals not applicable: analysis_process_counterfactuals output validation failed: modeled finding missing assumptions; modeled finding missing scope",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "signature_after": "d3c1d644f9fe51e9b97a7b9929b4fec78c20883f2c7f0927025c05fcd8a8578a",
+      "signature_before": "e91749c8c225cc56d335854a1498c15b2a68a1bc91b9e75baee169bdb9cd5ac8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Process drift analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "6e6de46807e4bb9844c15d84186da56cc5ac3a9e3101e0eccc6f3550ecc19dc7",
+      "signature_before": "5561143c99a27d9e17cb33efcf5cd17dba2edb5cdb65a08f1a2154be711631d5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed process sequence variants",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "signature_after": "57fa2d0e4d8cba3d3bb9da6b056daf3978a18141f82137ce33abd214367f22b9",
+      "signature_before": "815f1ef8ab952eaabe752eb508f104e722224cfc5807ac9c72c00662a47397a1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_process_sequence_bottlenecks not applicable: Missing case/process/start columns",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "signature_after": "9e3feaf39dcae99dcf8b3a218b68d80bb542cec16a1a40abe7af913a19ce29d7",
+      "signature_before": "f8597f46be97f786d67acd046861ca14c81ca3f0b5db3ebe23309a757e8cc80c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Proportional hazards proxy complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "0ec776aa723f13b42f46f694a2d9118130bb066126418dbc634a1aac69d7b604",
+      "signature_before": "291dd195519b4499731355177485dd88497b4ed124c178d9ea1534131046daf5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile boosting diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "signature_after": "8368c28bf13b200a751dbc6493d4d9b8021267e8fe4f9956088ccc40f2a4dda1",
+      "signature_before": "9e7e1da46fed2b6a0be2efecbaee1f15400eec9a967c6c18d5e1c31ac067e3ba",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_quantile_mapping_drift_qq_v1 not applicable: analysis_quantile_mapping_drift_qq_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_duration",
+      "signature_after": "c2f8b630bb586e9db02b70a43facd7be8fabaf35de14d183aea1199f3f2c28b6",
+      "signature_before": "ab668dbf5c9aad87357dc154d5ac09fc4151cd54de2128324fd049e75ebfa010",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Quantile duration analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "1b17a053f17448d7f16ec08f111753ce76c14154d5b5963d982d59b16ede93ff",
+      "signature_before": "0d746bb123c1de1e781c6d1d01582343c8b43749e3af3cb888287f92c95312fe",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile regression forest diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "signature_after": "d28056b50775c3084d1cddeb99bd169a770c446a14ac8ef83a695783eb8283e8",
+      "signature_before": "e564d9c000736e4cd98e33cf733b30d542472e2e2b4313fe5eb6f16141b142d8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_quantile_sketch_p2_streaming_v1 not applicable: analysis_quantile_sketch_p2_streaming_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "signature_after": "3999d6a97d7859c9cd537016e238d5364188ae91ffbf67832f3a0dd4524b693d",
+      "signature_before": "35292d4af5da1d0545116994d4fa60c85d13c5b347a879b20f5cffd32e70464c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed queue delay decomposition",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_model_fit",
+      "signature_after": "0e4cbb25e79cc6a18cf4a4109b459e3f71ef0934600f40ed4e4976f15081e436",
+      "signature_before": "92d2aecfb5e977e69c480a40577f16c0d7f5a40254044b23b9d85b97d7f69988",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Queue model fit complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "1b47ca736a701bd431c7b7feb2e4515f3a9939e86458f951f2529aed8394deba",
+      "signature_before": "7b6bd0d9e5db8b1c2d77ff72b9ee5e68547c0dc567d445dac974af42fce7d9df",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed MP denoising diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "signature_after": "6a814029f13a58a7a4e27de5c35e551b116ea9894718ee8f300289413acf71cf",
+      "signature_before": "01af75b39af7216acd04e0aaaaf95daedf2c33f8b287f847f71ce91d0e16bc2c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_randomization_test_median_shift_v1 not applicable: analysis_randomization_test_median_shift_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "a9ddb925c199d3d64d01eb88f00079632ccecd56ea44bc631613e325f9e9df10",
+      "signature_before": "61a53137c3cbde52d1a57edd16a58a06a6a7e426634d09eb3d08c448956fb360",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Deduplicated 63 recommendations",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "signature_after": "b3fdf91634bcf639e4b374aab44963d3b970cc4280bbb1257dcbd0f30eb80f10",
+      "signature_before": "374b56688d86d081638054430f91f19101ad76c4161e1c77f0a1e3f8c96f7622",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_regression_auto",
+      "signature_after": "17f971cfa6af4509ca203dc2baeb2ecf1ab34fece94c845e7c875b6abd93ba57",
+      "signature_before": "0e64eb47a0324581e6e7c9d9b75ecb2deab2844317e9881c671495da5b3da8ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Regression drivers for 'CHILD_PROCESS_COUNT': top=12",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "signature_after": "da57e7444795640c0658014ab3750de67f8b2725872e9ae9364e0a7d2fd913a7",
+      "signature_before": "518d8b01add09a1a9bb4adab2514eaa7ca948cc29c23787349f5433d6b07f73e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_retry_rate_hotspots_v1 not applicable: Missing required columns for retry-rate hotspots",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "signature_after": "6e0c31f79d34c4e467788c8ccc85d0008cbd99107693197a2071fffcc719d3e7",
+      "signature_before": "75a68ab766eb85bffdd9e55742dcb3494bc512d9f33c00ba7ee123ea45db16cd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Robust covariance analysis complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_pcp",
+      "signature_after": "689f73ae0d1641a879e89846fbd13c1cad14d851f32dd4f67cc09b581853573f",
+      "signature_before": "be4b22cb2be9f18f2b99b3cd465696b3f0bf64e03e639ab6e61b718b7fdbca52",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 sparse outliers.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "689f73ae0d1641a879e89846fbd13c1cad14d851f32dd4f67cc09b581853573f",
+      "signature_before": "be4b22cb2be9f18f2b99b3cd465696b3f0bf64e03e639ab6e61b718b7fdbca52",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 sparse outliers.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "90cacdabc817e95b328d006317820d206df10b06266978d8bbe89eed74c4f0bf",
+      "signature_before": "f4b1fa2e22613c4276294c83f92b27ba4b99363cde0352ee0461f5174f518a2a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust regression diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "bf7f5e49e33cc5769467d7a2cef793b8af0483523a0ab7ac7ae572eb5653cdd5",
+      "signature_before": "cb81ca47e958ac81ff1e066672b352e9fd644199bba85ae588ebe268e484ed00",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sample entropy irregularity metrics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "622f293ee9a5ffaf8d77b0718c3227dc21c02f5162339bcbaf032be821e68ed7",
+      "signature_before": "e67f2fa2f6f185ef14eb5ac06b18524d673e7a025a37348355524e5c70a91c89",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed scan statistics",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "signature_after": "a415dfeff0d8d3d49759ae2c3127213e0274f1922429ad091203a34113d45ed2",
+      "signature_before": "99bdbd0eada4c4b2de6879611ac5a118b0189b501c70a031d76c767974850d04",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_seasonal_holt_winters_forecast_residuals_v1 not applicable: analysis_seasonal_holt_winters_forecast_residuals_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "102eb3a52f6e602344f00d1c62983e267a2573a53ca44ad5277ec6b75cda9f4a",
+      "signature_before": "b9f9f9c129a85bcef5973d96b3b7eaf46a89e6a2495ba5db64804560e58f3ea9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Classified standalone vs sequence-linked runs",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "signature_after": "73445400da021173a2a8b7cdc654d5782cb7f59d9418c59d8912a65dd003e453",
+      "signature_before": "3263ed6b8dd957cc775fd6d561f1e14d124121cab4e2afac850cb836c6bdd245",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed 10 repeated motifs",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "signature_after": "3ba411999effa2ae5c3de534f8259b3e8f8dd05e42f3d89825237bf7fd74fef5",
+      "signature_before": "7eafc8874034f8d358e2727432587b21acaacee9f98310adc63823d3682d38ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Sequential pattern mining complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "signature_after": "c31529f9783a8ada245525a9f05356daef8d3f460efbbbe8efedc1b2e89e8615",
+      "signature_before": "b2381e31b2f2cafa09592633d28d77cd9ab6d1d7f4941de266384cc6ed4dd5c6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Found 25 frequent sequences",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "signature_after": "a9c097a1ef1d01f27f91d5db4bfc1fe555bf4a8d2aea04524704b5c80859e7d9",
+      "signature_before": "7c367b20afa8bc5fde12d3232487022aeb140a6e0b45e69bb1ac421720fc7635",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_similarity_graph_spectral_clustering_v1 not applicable: analysis_similarity_graph_spectral_clustering_v1 timed out",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+      "signature_after": "1489c941a725acb69dcf4af7e4ecd3e7bb8ce4d6e77f2ddff60636fec5695c71",
+      "signature_before": "b3a11a91e8286843469b2c3daba3f93d9e95329ad3fefc65cc612eef5e57490f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Sinkhorn OT drift for 7 features",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "signature_after": "a47e23631c6b51a8c7b0a380219a86a90ccfbf43318b9f7bc9d22090b2416709",
+      "signature_before": "9cd5881ee55a3a7f73a78a5420c4a6ab9f77dbce71fd8e316ca7c6e18895bbe1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sparse PCA components.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "signature_after": "dc06d13e3d14f20b115a6513b508d73b86ab3bde8ebeecef85dcaa3c2febe403",
+      "signature_before": "aab9c5368edfadf0f7ba13f4c05c6d2868b84b44b12d47a561960aa63eec7c32",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spectral radius stability metrics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
+      "signature_after": "d1ff7b2e277d7a2abc308ab807a44b709aed2d18f87eb0145e60c0696c1741f6",
+      "signature_before": "7da3a73e5c26e8c974cafe42ec89c9b42c09699aa8fa6843d477715354abdc7c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed SSA changepoints over 15000 rows",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_kalman_residuals",
+      "signature_after": "3bc86a494d9a195f6a1edf65c124f001669ed8ef29c5ef5bfa5ea45eedf75d28",
+      "signature_before": "566760d6e2b3017bde0cb8036c4fe1bd940a2ffb7f75aa37268492d586a0cb99",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Kalman residual scan complete",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "signature_after": "f778f579fb91598c6e1f5751b3b39e402d82f733694b5cb4d7fcee9797c02943",
+      "signature_before": "b6a9e7189e8254cf0ea55c4ffe45b960b7dc6f00d03b4619d2541543edfb2d31",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed state-space smoother level shift.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "signature_after": "718cbbc2e37dc02c0d33c35578da4ab1c1923a06d7fab30873899f0d4d4c84c7",
+      "signature_before": "866e124e5f2abc5c3f7b55220f40d8ea99749d62000d3fac815b17542f91c56d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_stl_seasonal_decompose_v1 not applicable: analysis_stl_seasonal_decompose_v1 failed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
+      "signature_after": "be2e1f2197ee3325e6ef7ebbefa0726dd8068136104a7ebff5c0774cdad97a23",
+      "signature_before": "29e369876ac45c7f63a1b61c04054b055f0ddc1b20c6eecacf943b17f73043af",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Oja subspace tracking diagnostics.",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_surface_fabric_sso_eigen",
+      "signature_after": "4342f495abdad67b13f97415796bfb9b691d3196ea2f37ca8abd1f2c7d8eee04",
+      "signature_before": "bd7d084d320b76e53522fb37186a1b907f08723c620262f4bf4062b0d79be643",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Surface fabric eigen-analysis computed",
+      "summary_before": "REUSED from dryrun_debug_20260221T1630Z"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 54,
+    "budget_json": 146,
+    "debug_json": 249,
+    "error_json": 0,
+    "findings_json": 249,
+    "metrics_json": 240,
+    "references_json": 8,
+    "summary": 251
+  },
+  "material_changed_plugins": [
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_actionable_ops_levers_v1",
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_anova_auto",
+    "analysis_association_rules_apriori_v1",
+    "analysis_attribution",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_bayesian_point_displacement",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_bocpd_gaussian",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_burst_detection_kleinberg",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_capacity_scaling",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_chain_makespan",
+    "analysis_change_impact_pre_post",
+    "analysis_change_score_consensus_v1",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_uplift",
+    "analysis_close_cycle_window_resolver",
+    "analysis_cluster_analysis_auto",
+    "analysis_competing_risks_cif_v1",
+    "analysis_concurrency_reconstruction",
+    "analysis_conformal_feature_prediction",
+    "analysis_conformance_alignments",
+    "analysis_conformance_checking",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_constraints_violation_detector_v1",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_control_chart_suite",
+    "analysis_copula_dependence",
+    "analysis_cur_decomposition_explain_v1",
+    "analysis_cusum_on_model_residuals_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
+    "analysis_dependency_graph_change_detection",
+    "analysis_dependency_resolution_join",
+    "analysis_determinism_discipline",
+    "analysis_diffusion_maps_manifold_v1",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
+    "analysis_distribution_drift_suite",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_dmd_koopman_modes_v1",
+    "analysis_dp_gmm",
+    "analysis_drift_adwin",
+    "analysis_dynamic_close_detection",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_effect_size_report",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_energy_distance_two_sample_v1",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_frequent_directions_cov_sketch_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_gaussian_copula_shift",
+    "analysis_gaussian_knockoffs",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_ges_score_based_causal_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
+    "analysis_graph_topology_curves",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_haar_wavelet_transient_detector_v1",
+    "analysis_hawkes_self_exciting",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_hold_time_attribution_v1",
+    "analysis_hsic_independence_screen_v1",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
+    "analysis_ideaspace_action_planner",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ideaspace_normative_gap",
+    "analysis_isolation_forest",
+    "analysis_isolation_forest_anomaly",
+    "analysis_issue_cards_v2",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_knockoff_wrapper_rf",
+    "analysis_ksd_stein_discrepancy_anomaly_v1",
+    "analysis_lagged_predictability_test",
+    "analysis_lingam_causal_discovery_v1",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_log_template_mining_drain",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
+    "analysis_map_permutation_test_karniski",
+    "analysis_marked_point_process_intensity_v1",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multicollinearity_vif_screen_v1",
+    "analysis_multiple_testing_fdr",
+    "analysis_multiscale_entropy_mse_v1",
+    "analysis_multivariate_changepoint_pelt",
+    "analysis_multivariate_control_charts",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_negative_binomial_overdispersion_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_normalizing_flow_density_v1",
+    "analysis_notears_linear",
+    "analysis_one_class_svm",
+    "analysis_online_conformal_changepoint",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_partial_correlation_network_shift_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_percentile_analysis",
+    "analysis_periodicity_spectral_scan",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_phate_trajectory_embedding_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
+    "analysis_process_counterfactuals",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_process_sequence",
+    "analysis_process_sequence_bottlenecks",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
+    "analysis_quantile_regression_duration",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_recurrence_quantification_rqa_v1",
+    "analysis_regression_auto",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_robust_pca_sparse_outliers",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_scan_statistics",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
+    "analysis_sequence_classification",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_state_space_kalman_residuals",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tail_isolation",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_tensor_cp_parafac_decomp_v1",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_traceability_manifest_v2",
+    "analysis_transfer_entropy_directional",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_upload_linkage",
+    "analysis_user_host_savings",
+    "analysis_variant_differential",
+    "analysis_waterfall_summary_v2",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
+    "llm_text2sql_local_generate_v1",
+    "planner_basic",
+    "process_mining_conformance_v1",
+    "process_mining_discovery_v1",
+    "profile_eventlog",
+    "report_decision_bundle_v2",
+    "report_payout_report_v1",
+    "report_slide_kit_emitter_v2",
+    "transform_normalize_mixed",
+    "transform_sql_intents_pack_v1",
+    "transform_sqlpack_materialize_v1",
+    "transform_template"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 254,
+    "before": 254,
+    "material_payload_changed": 250,
+    "payload_changed": 253,
+    "removed": 0,
+    "status_changed": 0
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-16T18:22:20.025141+00:00",
+    "created_at": "2026-02-16T15:53:19.146110+00:00",
+    "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+    "requested_run_seed": 123,
+    "run_id": "d53963415b994c59b41e9ef5e23710e6",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "run_before": {
+    "completed_at": "2026-02-21T19:32:47.742178+00:00",
+    "created_at": "2026-02-21T19:23:18.304052+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "debug_fg_baseline_20260221T1923Z",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "ok": 254
+    },
+    "before": {
+      "ok": 254
+    }
+  }
+}

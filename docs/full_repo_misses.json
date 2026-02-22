@@ -3,19 +3,224 @@
   "hard_gaps": {
     "binding_missing_any": false,
     "docs_missing_any_normative": false,
-    "instruction_coverage_items": [],
+    "instruction_coverage_items": [
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 623,
+        "missing_paths": [
+          "plugins/ideaspace.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "plugins/ideaspace.py"
+        ],
+        "requirement_ids": [],
+        "source": "codex_kona_route_updates.md",
+        "text": "- `.../stat_plugins/ideaspace.py` (already)",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 63,
+        "missing_paths": [
+          "docs/release_evidence/plugins_validate_runbook_technique_map.json",
+          "docs/release_evidence/plugins_validate_runbook_technique_map.md"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/release_evidence/plugins_validate_runbook_technique_map.json",
+          "docs/release_evidence/plugins_validate_runbook_technique_map.md"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `docs/release_evidence/plugins_validate_runbook_technique_map.md`, `docs/release_evidence/plugins_validate_runbook_technique_map.json`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 75,
+        "missing_paths": [
+          "docs/release_evidence/plugins_validate_runbook_contract.md",
+          "docs/schemas/actionable_recommendation_contract_v2.json"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/release_evidence/plugins_validate_runbook_contract.md",
+          "docs/schemas/actionable_recommendation_contract_v2.json"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `docs/schemas/actionable_recommendation_contract_v2.json`, `docs/release_evidence/plugins_validate_runbook_contract.md`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 97,
+        "missing_paths": [
+          "docs/release_evidence/actionability_thresholds.md",
+          "src/statistic_harness/core/actionability_thresholds.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/release_evidence/actionability_thresholds.md",
+          "src/statistic_harness/core/actionability_thresholds.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `config/actionability_thresholds.yaml`, `src/statistic_harness/core/actionability_thresholds.py`, `docs/release_evidence/actionability_thresholds.md`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 147,
+        "missing_paths": [
+          "docs/release_evidence/plugins_validate_schema.json"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/plugins_validate_runbook.md",
+          "docs/release_evidence/plugins_validate_schema.json",
+          "src/statistic_harness/cli.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `src/statistic_harness/cli.py`, `docs/plugins_validate_runbook.md`, `docs/release_evidence/plugins_validate_schema.json`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 177,
+        "missing_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_metrics.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_metrics.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `src/statistic_harness/core/stat_plugins/actionability_metrics.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 187,
+        "missing_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_envelope.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_envelope.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `src/statistic_harness/core/stat_plugins/actionability_envelope.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 197,
+        "missing_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_contract.py",
+          "tests/test_actionability_contract_v2.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "src/statistic_harness/core/stat_plugins/actionability_contract.py",
+          "tests/test_actionability_contract_v2.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `src/statistic_harness/core/stat_plugins/actionability_contract.py`, `tests/test_actionability_contract_v2.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 212,
+        "missing_paths": [
+          "scripts/gen_plugins_validate_runbook_scaffold.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "scripts/gen_plugins_validate_runbook_scaffold.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `scripts/gen_plugins_validate_runbook_scaffold.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 363,
+        "missing_paths": [
+          "docs/release_evidence/freshman_top20_baseline_vs_synth.md"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/release_evidence/freshman_top20_baseline_vs_synth.md"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `docs/release_evidence/freshman_top20_baseline_vs_synth.md`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 379,
+        "missing_paths": [
+          "docs/release_evidence/plugin_runtime_matrix.json"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/release_evidence/plugin_runtime_matrix.json",
+          "scripts/runtime_stats.py",
+          "src/statistic_harness/core/pipeline.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `src/statistic_harness/core/pipeline.py`, `scripts/runtime_stats.py`, `docs/release_evidence/plugin_runtime_matrix.json`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 409,
+        "missing_paths": [
+          "docs/runbooks/cross_shell_execution.md"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "docs/runbooks/cross_shell_execution.md"
+        ],
+        "requirement_ids": [],
+        "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
+        "text": "- **Location**: `scripts/*.sh`, `scripts/*.ps1`, `docs/runbooks/cross_shell_execution.md`",
+        "unresolved_plugin_tokens": []
+      }
+    ],
     "plugin_data_access_unclassified": [],
     "plugin_missing_dep_edges": {},
     "redteam_missing_required_ids": []
   },
-  "has_hard_gaps": false,
+  "has_hard_gaps": true,
   "soft_gaps": {
     "optional_sql_not_using": [],
     "recommended_sql_not_using": [],
     "required_sql_not_using": []
   },
   "summary": {
-    "hard_gap_count": 0,
+    "hard_gap_count": 12,
     "optional_sql_not_using_count": 0,
     "recommended_sql_not_using_count": 0,
     "required_sql_not_using_count": 0

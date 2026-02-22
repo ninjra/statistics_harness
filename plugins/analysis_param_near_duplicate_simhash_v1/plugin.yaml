@@ -11,10 +11,16 @@ settings:
   description: Find near-duplicate executions using SimHash over tokenized params/text;
     propose batch, cache, or dedupe changes.
   defaults:
-    max_processes: 60
-    max_entities_per_process: 3000
+    max_processes: 40
+    max_entities_per_process: 1800
+    max_total_entities: 12000
+    max_entities_for_similarity: 900
+    max_tokens_per_entity: 120
+    max_token_chars: 96
     fingerprint_bits: 64
     max_hamming_distance: 3
+    max_pair_checks: 75000
+    max_pair_checks_total: 350000
     min_cluster_size: 5
     ignore_param_keys_regex: (run id|queue id|seq|slice|timestamp)
 capabilities:

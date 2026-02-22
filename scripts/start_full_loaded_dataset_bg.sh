@@ -72,8 +72,9 @@ export STAT_HARNESS_DISCOVERY_TOP_N="${STAT_HARNESS_DISCOVERY_TOP_N:-12}"
 export STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE="${STAT_HARNESS_RECOMMENDATION_MIN_RELEVANCE:-0.0}"
 export STAT_HARNESS_MAX_OBVIOUSNESS="${STAT_HARNESS_MAX_OBVIOUSNESS:-0.74}"
 export STAT_HARNESS_ALLOW_ACTION_TYPES="${STAT_HARNESS_ALLOW_ACTION_TYPES:-}"
-# Operator exclusion list: non-adjustable processes should not appear as recommendations.
-export STAT_HARNESS_EXCLUDE_PROCESSES="${STAT_HARNESS_EXCLUDE_PROCESSES:-losextchld,losloadcld,jbcreateje,jboachild,jbvalcdblk,jbinvoice,postwkfl,qemail,jbpreproof,rdimpairje}"
+# Operator exclusion list: default empty here; runner resolves dataset-scoped
+# exclusions from explicit input + historical settings for that dataset.
+export STAT_HARNESS_EXCLUDE_PROCESSES="${STAT_HARNESS_EXCLUDE_PROCESSES:-}"
 # Soft memory governor defaults (operator override via env):
 # - if system RAM usage exceeds this, the pipeline will delay starting additional analysis plugins
 #   to avoid multi-plugin RAM spikes.
@@ -93,13 +94,46 @@ export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
 export STAT_HARNESS_PROCESS_NICE_LEVEL="${STAT_HARNESS_PROCESS_NICE_LEVEL:-$default_nice_level}"
 export STAT_HARNESS_PROCESS_IONICE_CLASS="${STAT_HARNESS_PROCESS_IONICE_CLASS:-2}"
 export STAT_HARNESS_PROCESS_IONICE_PRIO="${STAT_HARNESS_PROCESS_IONICE_PRIO:-7}"
+export STAT_HARNESS_ROUTE_ENABLE="${STAT_HARNESS_ROUTE_ENABLE:-0}"
+export STAT_HARNESS_ROUTE_MAX_DEPTH="${STAT_HARNESS_ROUTE_MAX_DEPTH:-3}"
+export STAT_HARNESS_ROUTE_BEAM_WIDTH="${STAT_HARNESS_ROUTE_BEAM_WIDTH:-6}"
+export STAT_HARNESS_ROUTE_MIN_DELTA_ENERGY="${STAT_HARNESS_ROUTE_MIN_DELTA_ENERGY:-0.0}"
+export STAT_HARNESS_ROUTE_MIN_CONFIDENCE="${STAT_HARNESS_ROUTE_MIN_CONFIDENCE:-0.0}"
+export STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS="${STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS:-0}"
+export STAT_HARNESS_ROUTE_STOP_ENERGY_THRESHOLD="${STAT_HARNESS_ROUTE_STOP_ENERGY_THRESHOLD:-1.0}"
+export STAT_HARNESS_ROUTE_CANDIDATE_LIMIT="${STAT_HARNESS_ROUTE_CANDIDATE_LIMIT:-30}"
+export STAT_HARNESS_ROUTE_TIME_BUDGET_MS="${STAT_HARNESS_ROUTE_TIME_BUDGET_MS:-0}"
+export STAT_HARNESS_ROUTE_DISALLOWED_LEVER_IDS="${STAT_HARNESS_ROUTE_DISALLOWED_LEVER_IDS:-}"
+export STAT_HARNESS_ROUTE_DISALLOWED_ACTION_TYPES="${STAT_HARNESS_ROUTE_DISALLOWED_ACTION_TYPES:-}"
 
 LOG_PATH="$ROOT_DIR/appdata/full_run_${DATASET_VERSION_ID:0:8}_$(date -u +%Y%m%dT%H%M%SZ).log"
+route_args=()
+if [[ "$STAT_HARNESS_ROUTE_ENABLE" == "1" || "$STAT_HARNESS_ROUTE_ENABLE" == "true" || "$STAT_HARNESS_ROUTE_ENABLE" == "yes" || "$STAT_HARNESS_ROUTE_ENABLE" == "on" ]]; then
+  route_args+=(
+    --route-enable
+    --route-max-depth "$STAT_HARNESS_ROUTE_MAX_DEPTH"
+    --route-beam-width "$STAT_HARNESS_ROUTE_BEAM_WIDTH"
+    --route-min-delta-energy "$STAT_HARNESS_ROUTE_MIN_DELTA_ENERGY"
+    --route-min-confidence "$STAT_HARNESS_ROUTE_MIN_CONFIDENCE"
+    --route-stop-energy-threshold "$STAT_HARNESS_ROUTE_STOP_ENERGY_THRESHOLD"
+    --route-candidate-limit "$STAT_HARNESS_ROUTE_CANDIDATE_LIMIT"
+    --route-time-budget-ms "$STAT_HARNESS_ROUTE_TIME_BUDGET_MS"
+  )
+  if [[ "$STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS" == "1" || "$STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS" == "true" || "$STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS" == "yes" || "$STAT_HARNESS_ROUTE_ALLOW_CROSS_TARGET_STEPS" == "on" ]]; then
+    route_args+=(--route-allow-cross-target-steps)
+  fi
+  if [[ -n "$STAT_HARNESS_ROUTE_DISALLOWED_LEVER_IDS" ]]; then
+    route_args+=(--route-disallowed-lever-ids "$STAT_HARNESS_ROUTE_DISALLOWED_LEVER_IDS")
+  fi
+  if [[ -n "$STAT_HARNESS_ROUTE_DISALLOWED_ACTION_TYPES" ]]; then
+    route_args+=(--route-disallowed-action-types "$STAT_HARNESS_ROUTE_DISALLOWED_ACTION_TYPES")
+  fi
+fi
 
 if command -v ionice >/dev/null 2>&1; then
-  nohup ionice -c "${STAT_HARNESS_PROCESS_IONICE_CLASS}" -n "${STAT_HARNESS_PROCESS_IONICE_PRIO}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" >"$LOG_PATH" 2>&1 &
+  nohup ionice -c "${STAT_HARNESS_PROCESS_IONICE_CLASS}" -n "${STAT_HARNESS_PROCESS_IONICE_PRIO}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
 else
-  nohup nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" >"$LOG_PATH" 2>&1 &
+  nohup nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
 fi
 PID="$!"
 
@@ -140,4 +174,5 @@ echo "MAX_WORKERS_ANALYSIS=$STAT_HARNESS_MAX_WORKERS_ANALYSIS"
 echo "MEM_GOVERNOR_MAX_USED_PCT=$STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT"
 echo "PLUGIN_RLIMIT_AS_MB=$STAT_HARNESS_PLUGIN_RLIMIT_AS_MB"
 echo "PROCESS_NICE_LEVEL=$STAT_HARNESS_PROCESS_NICE_LEVEL"
+echo "ROUTE_ENABLE=$STAT_HARNESS_ROUTE_ENABLE"
 echo "LOG=$LOG_PATH"

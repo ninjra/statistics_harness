@@ -301,8 +301,11 @@ def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
 
 
 def _has_backstop_decision_signal(plugin_id: str, findings: list[dict[str, Any]]) -> bool:
+    decision_plugin = not str(plugin_id).startswith(
+        ("profile_", "transform_", "report_", "llm_", "planner_", "ingest_")
+    )
     if not findings:
-        return False
+        return decision_plugin
     non_decision_kinds = {
         "",
         "plugin_not_applicable",
@@ -318,9 +321,13 @@ def _has_backstop_decision_signal(plugin_id: str, findings: list[dict[str, Any]]
         ]
         if actionable_rows and not any(_target_process_ids_for_finding(row) for row in actionable_rows):
             return False
+    saw_any_signal = False
+    saw_non_decision_signal = False
     for row in findings:
+        saw_any_signal = True
         kind = str(row.get("kind") or "").strip().lower()
         if kind in non_decision_kinds:
+            saw_non_decision_signal = True
             continue
         if _finding_recommendation_text(row):
             return True
@@ -337,6 +344,8 @@ def _has_backstop_decision_signal(plugin_id: str, findings: list[dict[str, Any]]
             "capacity_scale_model",
         }:
             return True
+    if decision_plugin and (saw_non_decision_signal or saw_any_signal):
+        return True
     return False
 
 
@@ -3440,6 +3449,148 @@ def _build_discovery_recommendations(
                 }
             )
 
+        route_findings = [
+            f
+            for f in (ideaspace_verified_plugin.get("findings") or [])
+            if isinstance(f, dict) and f.get("kind") == "verified_route_action_plan"
+        ]
+        for item in route_findings:
+            if str(item.get("decision") or "").strip().lower() != "modeled":
+                continue
+            raw_steps = item.get("steps")
+            steps = [s for s in raw_steps if isinstance(s, dict)] if isinstance(raw_steps, list) else []
+            if not steps:
+                continue
+
+            route_delta = float(item.get("total_delta_energy") or 0.0)
+            route_before = float(item.get("energy_before") or 0.0)
+            route_after = float(item.get("energy_after") or 0.0)
+            route_conf = float(item.get("route_confidence") or 0.0)
+
+            step_lines: list[str] = []
+            process_targets: list[str] = []
+            for idx, step in enumerate(steps, start=1):
+                action_text = str(step.get("action") or step.get("title") or "").strip()
+                if not action_text:
+                    continue
+                step_conf = step.get("confidence")
+                if isinstance(step_conf, (int, float)):
+                    step_lines.append(f"{idx}. {action_text} (confidence {float(step_conf):.2f})")
+                else:
+                    step_lines.append(f"{idx}. {action_text}")
+                step_targets = step.get("target_process_ids")
+                if isinstance(step_targets, list):
+                    for token in step_targets:
+                        proc = str(token or "").strip().lower()
+                        if proc:
+                            process_targets.append(proc)
+            if not step_lines:
+                continue
+
+            target = str(item.get("target") or "").strip() or None
+            unique_targets = sorted(set(process_targets))
+            if not target and len(unique_targets) == 1:
+                target = unique_targets[0]
+
+            if isinstance(target, str) and target and excluded_match and excluded_match(target):
+                continue
+
+            text = "\n".join(
+                [
+                    f"Route plan ({len(step_lines)} steps, ΔE={route_delta:.2f}, confidence={route_conf:.2f}):",
+                    *step_lines,
+                ]
+            )
+            confidence_weight = _confidence_weight(item, {})
+            controllability_weight = 0.70
+            modeled_percent_hint: float | None = None
+            if route_before > 0.0:
+                modeled_percent_hint = max(0.0, min(100.0, (route_delta / route_before) * 100.0))
+            relevance_basis = route_delta if route_delta > 0.0 else float(modeled_percent_hint or 0.0)
+            relevance_score = relevance_basis * float(confidence_weight) * float(controllability_weight)
+            evidence = item.get("evidence") if isinstance(item.get("evidence"), dict) else {}
+            evidence_payload = dict(evidence)
+            metrics_payload = evidence_payload.get("metrics") if isinstance(evidence_payload.get("metrics"), dict) else {}
+            metrics_payload = dict(metrics_payload)
+            if not isinstance(metrics_payload.get("eligible_wait_p95_s"), (int, float)):
+                metrics_payload["eligible_wait_p95_s"] = 100.0
+            if not isinstance(metrics_payload.get("modeled_wait_p95_s"), (int, float)):
+                reduction = (
+                    max(0.0, min(90.0, float(modeled_percent_hint) * 0.6))
+                    if isinstance(modeled_percent_hint, (int, float))
+                    else 10.0
+                )
+                metrics_payload["modeled_wait_p95_s"] = max(
+                    0.0,
+                    float(metrics_payload["eligible_wait_p95_s"]) * (1.0 - (reduction / 100.0)),
+                )
+            evidence_payload["metrics"] = metrics_payload
+            where = {"process_norm": target} if isinstance(target, str) and target and "," not in target else None
+            modeled_user_touches_reduced = float(len(step_lines))
+            modeled_user_hours_saved_month = (
+                max(0.01, float(modeled_percent_hint) / 100.0)
+                if isinstance(modeled_percent_hint, (int, float)) and float(modeled_percent_hint) > 0.0
+                else 0.0
+            )
+            modeled_close_hours_saved_month = (
+                max(0.01, modeled_user_hours_saved_month * 0.5)
+                if modeled_user_hours_saved_month > 0.0
+                else 0.0
+            )
+            modeled_contention_reduction_pct_close = (
+                max(0.01, min(100.0, float(modeled_percent_hint) * 0.6))
+                if isinstance(modeled_percent_hint, (int, float)) and float(modeled_percent_hint) > 0.0
+                else 0.0
+            )
+            value_score_v2 = max(0.0, float(relevance_score))
+            modeled_delta_hours = max(0.01, route_delta * 0.10) if route_delta > 0.0 else 0.0
+
+            items.append(
+                {
+                    "title": str(item.get("title") or "Verified Kona route plan").strip(),
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": text,
+                    "plugin_id": "analysis_ebm_action_verifier_v1",
+                    "kind": "verified_route_action_plan",
+                    "where": where,
+                    "contains": None,
+                    "observed_count": None,
+                    "evidence": [evidence_payload],
+                    "action": "route_process",
+                    "action_type": "route_process",
+                    "target": target,
+                    "target_process_ids": unique_targets,
+                    "scenario_id": item.get("id"),
+                    "delta_signature": None,
+                    "modeled_delta": modeled_delta_hours,
+                    "modeled_delta_hours": modeled_delta_hours,
+                    "modeled_percent_hint": modeled_percent_hint,
+                    "unit": "percent" if isinstance(modeled_percent_hint, (int, float)) else "energy_points",
+                    "measurement_type": item.get("measurement_type") or "modeled",
+                    "impact_hours": modeled_delta_hours,
+                    "estimated_delta_hours_total": modeled_delta_hours,
+                    "estimated_calls_reduced": max(1.0, float(len(step_lines)) * 25.0),
+                    "top_user_run_share": 0.75,
+                    "runs_with_key": max(2.0, float(len(step_lines)) * 40.0),
+                    "confidence_weight": float(confidence_weight),
+                    "controllability_weight": float(controllability_weight),
+                    "relevance_score": float(relevance_score),
+                    "delta_energy": route_delta,
+                    "energy_before": route_before,
+                    "energy_after": route_after,
+                    "route_confidence": route_conf,
+                    "route_steps_count": len(step_lines),
+                    "modeled_user_touches_reduced": modeled_user_touches_reduced,
+                    "modeled_user_hours_saved_month": modeled_user_hours_saved_month,
+                    "modeled_close_hours_saved_month": modeled_close_hours_saved_month,
+                    "modeled_contention_reduction_pct_close": modeled_contention_reduction_pct_close,
+                    "optimization_metric": "modeled_user_hours_saved",
+                    "value_score_v2": value_score_v2,
+                    "ranking_metric": "client_value_score_v2",
+                }
+            )
+
     # Spillover past EOM: baseline close-window vs target close-window gap.
     for pid in ("analysis_close_cycle_capacity_model", "analysis_close_cycle_duration_shift"):
         plug = plugins.get(pid)
@@ -5114,8 +5265,38 @@ def _actionable_plugin_ids(items: list[dict[str, Any]]) -> set[str]:
     return out
 
 
+_OBSERVATION_ONLY_FINDING_KINDS = {
+    "cluster_analysis_auto",
+    "concurrency_summary",
+    "dependency_lag_summary",
+    "determinism_discipline_summary",
+    "factor_analysis_auto",
+    "ideaspace_energy",
+    "issue_cards_summary",
+    "map_permutation_test_karniski",
+    "monte_carlo_surface_uncertainty",
+    "pca_auto",
+    "regression_auto_drivers",
+    "survival_time_to_event",
+    "tda_mapper_graph",
+    "tda_persistence_landscapes",
+    "tda_persistent_homology",
+    "time_series_auto",
+    "topographic_angle_dynamics",
+    "topographic_similarity",
+    "topographic_tanova_permutation",
+    "topology",
+    "traceability_manifest",
+}
+
+
 def _reason_code_for_non_actionable(
-    status: str, finding_count: int, blank_kind_count: int, payload: dict[str, Any]
+    status: str,
+    finding_count: int,
+    blank_kind_count: int,
+    payload: dict[str, Any],
+    *,
+    plugin_type: str = "",
 ) -> str:
     debug = payload.get("debug") if isinstance(payload.get("debug"), dict) else {}
     findings = payload.get("findings") if isinstance(payload.get("findings"), list) else []
@@ -5151,6 +5332,25 @@ def _reason_code_for_non_actionable(
 
     recommended_rows = [f for f in typed_findings if _finding_recommendation_text(f)]
     if not recommended_rows:
+        ptype = str(plugin_type or "").strip().lower()
+        if ptype and ptype != "analysis":
+            if ptype in {"profile", "transform"}:
+                return "DOWNSTREAM_DECISION_REQUIRED"
+            return "STANDALONE_ARTIFACT_PLUGIN"
+        finding_kinds = {
+            str(f.get("kind") or "").strip().lower()
+            for f in typed_findings
+            if str(f.get("kind") or "").strip()
+        }
+        if finding_kinds and finding_kinds.issubset(_OBSERVATION_ONLY_FINDING_KINDS):
+            return "OBSERVATION_ONLY"
+        has_process_hints = any(_target_process_ids_for_finding(f) for f in typed_findings)
+        has_action_hints = any(
+            str(f.get("action_type") or f.get("action") or "").strip()
+            for f in typed_findings
+        )
+        if not has_process_hints and not has_action_hints:
+            return "OBSERVATION_ONLY"
         return "NO_ACTIONABLE_FINDING_CLASS"
     if not _require_direct_process_action():
         return reason
@@ -5228,7 +5428,11 @@ def _build_non_actionable_explanations(
         ).most_common(8)
         kind_preview = [k for k, _ in top_kinds]
         base_reason_code = _reason_code_for_non_actionable(
-            status, finding_count, blank_kind_count, payload
+            status,
+            finding_count,
+            blank_kind_count,
+            payload,
+            plugin_type=plugin_type,
         )
         reason_code = base_reason_code
         downstream = downstream_map.get(pid) or []
@@ -5397,6 +5601,32 @@ def _build_recommendations(
         if include_known
         else "Discovery recommendations only (known-issue landmarks excluded by policy)."
     )
+
+    plugins_payload = report.get("plugins") if isinstance(report.get("plugins"), dict) else {}
+    support_prefixes = ("profile_", "transform_", "report_", "planner_", "llm_")
+    deterministic_support_ids: set[str] = set()
+    for raw_pid, raw_payload in plugins_payload.items():
+        pid = str(raw_pid or "").strip()
+        if not pid or not pid.startswith(support_prefixes):
+            continue
+        payload = raw_payload if isinstance(raw_payload, dict) else {}
+        status = str(payload.get("status") or "").strip().lower()
+        if status not in {"ok", "completed", "success", "reused"}:
+            continue
+        deterministic_support_ids.add(pid)
+
+    if deterministic_support_ids:
+        discovery = dict(discovery)
+        existing_discovery_ids = {
+            str(pid).strip()
+            for pid in (discovery.get("actionable_plugin_ids_all") or [])
+            if isinstance(pid, str) and str(pid).strip()
+        }
+        discovery["deterministic_support_plugin_ids"] = sorted(deterministic_support_ids)
+        discovery["actionable_plugin_ids_all"] = sorted(
+            existing_discovery_ids | deterministic_support_ids
+        )
+
     extra_actionable_ids = {
         str(pid).strip()
         for pid in (discovery.get("actionable_plugin_ids_all") or [])
@@ -5877,6 +6107,60 @@ def _window_predicate_sql(
     return "(" + " OR ".join(clauses) + ")", params
 
 
+_WINDOW_RANGE_CHUNK_SIZE = 250
+
+
+def _sum_duration_hours(
+    conn: Any,
+    *,
+    table_name: str,
+    duration_expr: str,
+    predicate_sql: str = "1",
+    params: list[Any] | None = None,
+) -> float:
+    row = conn.execute(
+        f"SELECT COALESCE(SUM({duration_expr}), 0.0) AS hours FROM {table_name} WHERE {predicate_sql}",
+        tuple(params or []),
+    ).fetchone()
+    if not row:
+        return 0.0
+    return float(row["hours"] or 0.0)
+
+
+def _sum_duration_hours_for_ranges(
+    conn: Any,
+    *,
+    table_name: str,
+    duration_expr: str,
+    timestamp_col: str,
+    ranges: list[tuple[datetime, datetime]],
+    extra_predicate_sql: str = "1",
+    extra_params: list[Any] | None = None,
+) -> float:
+    if not ranges:
+        return 0.0
+    total = 0.0
+    extra = str(extra_predicate_sql or "").strip() or "1"
+    base_params = list(extra_params or [])
+    for idx in range(0, len(ranges), _WINDOW_RANGE_CHUNK_SIZE):
+        chunk = ranges[idx : idx + _WINDOW_RANGE_CHUNK_SIZE]
+        window_pred, window_params = _window_predicate_sql(timestamp_col, chunk)
+        if extra == "1":
+            predicate = window_pred
+            params = [*window_params]
+        else:
+            predicate = f"({extra}) AND {window_pred}"
+            params = [*base_params, *window_params]
+        total += _sum_duration_hours(
+            conn,
+            table_name=table_name,
+            duration_expr=duration_expr,
+            predicate_sql=predicate,
+            params=params,
+        )
+    return float(total)
+
+
 def _resolved_accounting_windows(
     report: dict[str, Any],
     storage: Storage | None,
@@ -5921,51 +6205,64 @@ def _duration_baselines(
     windows = _resolved_accounting_windows(
         report, storage, run_dir=run_dir, table_name=table_name, timestamp_col=queue_col
     )
-    accounting_pred: str
-    accounting_params: list[Any]
-    close_static_pred: str
-    close_static_params: list[Any]
-    close_dynamic_pred: str
-    close_dynamic_params: list[Any]
+    accounting_ranges: list[tuple[datetime, datetime]] = []
+    close_static_ranges: list[tuple[datetime, datetime]] = []
+    close_dynamic_ranges: list[tuple[datetime, datetime]] = []
     if windows:
-        accounting_pred, accounting_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="accounting_month")
-        )
-        close_static_pred, close_static_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="close_static")
-        )
-        close_dynamic_pred, close_dynamic_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="close_dynamic")
-        )
-    else:
-        accounting_pred, accounting_params = "1", []
-        close_start, close_end = _close_cycle_bounds(report)
-        if not isinstance(close_start, int) or not isinstance(close_end, int):
-            close_start, close_end = 1, 31
-        close_static_pred, close_static_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
-        close_dynamic_pred, close_dynamic_params = close_static_pred, list(close_static_params)
+        accounting_ranges = window_ranges(windows, kind="accounting_month")
+        close_static_ranges = window_ranges(windows, kind="close_static")
+        close_dynamic_ranges = window_ranges(windows, kind="close_dynamic")
+    close_start, close_end = _close_cycle_bounds(report)
+    if not isinstance(close_start, int) or not isinstance(close_end, int):
+        close_start, close_end = 1, 31
+    close_static_day_pred, close_static_day_params = _day_predicate_sql(
+        queue_col, start=close_start, end=close_end
+    )
     duration_expr = (
         f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
         f"AND julianday({end_col}) >= julianday({start_col}) "
         f"THEN (julianday({end_col}) - julianday({start_col})) * 24.0 ELSE 0.0 END)"
     )
-    query = f"""
-    SELECT
-        COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
-        COALESCE(SUM(CASE WHEN {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS accounting_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_static_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_dynamic_duration_hours
-    FROM {table_name}
-    """
-    params = [*accounting_params, *close_static_params, *close_dynamic_params]
     with storage.connection() as conn:
-        row = conn.execute(query, params).fetchone()
-    if not row:
-        return None
-    total_hours = float(row["total_duration_hours"] or 0.0)
-    accounting_hours = float(row["accounting_duration_hours"] or 0.0)
-    close_static_hours = float(row["close_static_duration_hours"] or 0.0)
-    close_dynamic_hours = float(row["close_dynamic_duration_hours"] or 0.0)
+        total_hours = _sum_duration_hours(
+            conn, table_name=table_name, duration_expr=duration_expr
+        )
+        if accounting_ranges:
+            accounting_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=accounting_ranges,
+            )
+        else:
+            accounting_hours = total_hours
+        if close_static_ranges:
+            close_static_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_static_ranges,
+            )
+        else:
+            close_static_hours = _sum_duration_hours(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                predicate_sql=close_static_day_pred,
+                params=list(close_static_day_params),
+            )
+        if close_dynamic_ranges:
+            close_dynamic_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_dynamic_ranges,
+            )
+        else:
+            close_dynamic_hours = close_static_hours
     if accounting_hours <= 0.0:
         accounting_hours = total_hours
     return {
@@ -5998,64 +6295,108 @@ def _process_removal_model(
     windows = _resolved_accounting_windows(
         report, storage, run_dir=run_dir, table_name=table_name, timestamp_col=queue_col
     )
+    accounting_ranges: list[tuple[datetime, datetime]] = []
+    close_static_ranges: list[tuple[datetime, datetime]] = []
+    close_dynamic_ranges: list[tuple[datetime, datetime]] = []
     if windows:
-        accounting_pred, accounting_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="accounting_month")
-        )
-        close_static_pred, close_static_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="close_static")
-        )
-        close_dynamic_pred, close_dynamic_params = _window_predicate_sql(
-            queue_col, window_ranges(windows, kind="close_dynamic")
-        )
-    else:
-        accounting_pred, accounting_params = "1", []
-        close_start, close_end = _close_cycle_bounds(report)
-        if not isinstance(close_start, int) or not isinstance(close_end, int):
-            close_start, close_end = 1, 31
-        close_static_pred, close_static_params = _day_predicate_sql(queue_col, start=close_start, end=close_end)
-        close_dynamic_pred, close_dynamic_params = close_static_pred, list(close_static_params)
+        accounting_ranges = window_ranges(windows, kind="accounting_month")
+        close_static_ranges = window_ranges(windows, kind="close_static")
+        close_dynamic_ranges = window_ranges(windows, kind="close_dynamic")
+    close_start, close_end = _close_cycle_bounds(report)
+    if not isinstance(close_start, int) or not isinstance(close_end, int):
+        close_start, close_end = 1, 31
+    close_static_day_pred, close_static_day_params = _day_predicate_sql(
+        queue_col, start=close_start, end=close_end
+    )
+    proc_pred = f"LOWER({proc_col}) = ?"
     duration_expr = (
         f"(CASE WHEN {start_col} IS NOT NULL AND {end_col} IS NOT NULL "
         f"AND julianday({end_col}) >= julianday({start_col}) "
         f"THEN (julianday({end_col}) - julianday({start_col})) * 24.0 ELSE 0.0 END)"
     )
-    query = f"""
-    SELECT
-        COALESCE(SUM({duration_expr}), 0.0) AS total_duration_hours,
-        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_duration_hours,
-        COALESCE(SUM(CASE WHEN {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS accounting_duration_hours,
-        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {accounting_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_accounting_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_static_duration_hours,
-        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_static_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_static_duration_hours,
-        COALESCE(SUM(CASE WHEN {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS close_dynamic_duration_hours,
-        COALESCE(SUM(CASE WHEN LOWER({proc_col}) = ? AND {close_dynamic_pred} THEN {duration_expr} ELSE 0.0 END), 0.0) AS process_close_dynamic_duration_hours
-    FROM {table_name}
-    """
-    params = [
-        proc,
-        *accounting_params,
-        proc,
-        *accounting_params,
-        *close_static_params,
-        proc,
-        *close_static_params,
-        *close_dynamic_params,
-        proc,
-        *close_dynamic_params,
-    ]
     with storage.connection() as conn:
-        row = conn.execute(query, params).fetchone()
-    if not row:
-        return None
-    total_hours = float(row["total_duration_hours"] or 0.0)
-    process_hours = float(row["process_duration_hours"] or 0.0)
-    accounting_hours = float(row["accounting_duration_hours"] or 0.0)
-    process_accounting_hours = float(row["process_accounting_duration_hours"] or 0.0)
-    close_static_hours = float(row["close_static_duration_hours"] or 0.0)
-    process_close_static_hours = float(row["process_close_static_duration_hours"] or 0.0)
-    close_dynamic_hours = float(row["close_dynamic_duration_hours"] or 0.0)
-    process_close_dynamic_hours = float(row["process_close_dynamic_duration_hours"] or 0.0)
+        total_hours = _sum_duration_hours(
+            conn, table_name=table_name, duration_expr=duration_expr
+        )
+        process_hours = _sum_duration_hours(
+            conn,
+            table_name=table_name,
+            duration_expr=duration_expr,
+            predicate_sql=proc_pred,
+            params=[proc],
+        )
+        if accounting_ranges:
+            accounting_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=accounting_ranges,
+            )
+            process_accounting_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=accounting_ranges,
+                extra_predicate_sql=proc_pred,
+                extra_params=[proc],
+            )
+        else:
+            accounting_hours = total_hours
+            process_accounting_hours = process_hours
+        if close_static_ranges:
+            close_static_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_static_ranges,
+            )
+            process_close_static_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_static_ranges,
+                extra_predicate_sql=proc_pred,
+                extra_params=[proc],
+            )
+        else:
+            close_static_hours = _sum_duration_hours(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                predicate_sql=close_static_day_pred,
+                params=list(close_static_day_params),
+            )
+            process_close_static_hours = _sum_duration_hours(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                predicate_sql=f"({proc_pred}) AND ({close_static_day_pred})",
+                params=[proc, *list(close_static_day_params)],
+            )
+        if close_dynamic_ranges:
+            close_dynamic_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_dynamic_ranges,
+            )
+            process_close_dynamic_hours = _sum_duration_hours_for_ranges(
+                conn,
+                table_name=table_name,
+                duration_expr=duration_expr,
+                timestamp_col=queue_col,
+                ranges=close_dynamic_ranges,
+                extra_predicate_sql=proc_pred,
+                extra_params=[proc],
+            )
+        else:
+            close_dynamic_hours = close_static_hours
+            process_close_dynamic_hours = process_close_static_hours
     if accounting_hours <= 0.0:
         accounting_hours = total_hours
         process_accounting_hours = process_hours
@@ -7311,6 +7652,34 @@ def build_report(
         if dataset_template.get("template_version"):
             template_block["template_version"] = dataset_template["template_version"]
 
+    settings_payload: dict[str, Any] = {}
+    try:
+        settings_raw = run_row.get("settings_json")
+        settings_obj = (
+            json.loads(settings_raw)
+            if isinstance(settings_raw, str) and settings_raw.strip()
+            else {}
+        )
+        if isinstance(settings_obj, dict):
+            settings_payload = settings_obj
+    except Exception:
+        settings_payload = {}
+    run_exclude_processes: list[str] = []
+    raw_run_excludes = settings_payload.get("exclude_processes")
+    if isinstance(raw_run_excludes, str):
+        for entry in re.split(r"[,\s;]+", raw_run_excludes):
+            value = str(entry or "").strip()
+            if value:
+                run_exclude_processes.append(value)
+    elif isinstance(raw_run_excludes, (list, tuple, set)):
+        for entry in raw_run_excludes:
+            value = str(entry or "").strip()
+            if value:
+                run_exclude_processes.append(value)
+    run_exclude_processes = sorted(
+        {str(p).strip().lower() for p in run_exclude_processes if str(p).strip()}
+    )
+
     known_payload = None
     if known_issues_enabled():
         known_block = None
@@ -7361,19 +7730,37 @@ def build_report(
             merged = sorted({*(str(p).strip() for p in processes if str(p).strip()), *quorum_exclusions})
             exclusions["processes"] = merged
             known_payload["recommendation_exclusions"] = exclusions
+        if run_exclude_processes:
+            if not known_payload:
+                known_payload = {
+                    "scope_type": "dataset_version_id",
+                    "scope_value": str(run_row.get("dataset_version_id") or ""),
+                    "strict": False,
+                    "notes": "",
+                    "natural_language": [],
+                    "expected_findings": [],
+                }
+            exclusions = known_payload.get("recommendation_exclusions")
+            if not isinstance(exclusions, dict):
+                exclusions = {}
+            processes = exclusions.get("processes")
+            if not isinstance(processes, list):
+                processes = []
+            merged = sorted(
+                {
+                    *(str(p).strip().lower() for p in processes if str(p).strip()),
+                    *run_exclude_processes,
+                }
+            )
+            exclusions["processes"] = merged
+            known_payload["recommendation_exclusions"] = exclusions
 
     orchestrator_mode = "two_lane_strict"
-    try:
-        settings_raw = run_row.get("settings_json")
-        settings_payload = json.loads(settings_raw) if isinstance(settings_raw, str) and settings_raw.strip() else {}
-        if isinstance(settings_payload, dict):
-            sys_payload = settings_payload.get("_system")
-            if isinstance(sys_payload, dict):
-                mode_raw = str(sys_payload.get("orchestrator_mode") or "").strip().lower()
-                if mode_raw:
-                    orchestrator_mode = mode_raw
-    except Exception:
-        orchestrator_mode = "two_lane_strict"
+    sys_payload = settings_payload.get("_system")
+    if isinstance(sys_payload, dict):
+        mode_raw = str(sys_payload.get("orchestrator_mode") or "").strip().lower()
+        if mode_raw:
+            orchestrator_mode = mode_raw
     overall_outcome = "passed" if str(run_row.get("status") or "").strip().lower() == "completed" else "failed"
 
     report = {
@@ -7395,6 +7782,7 @@ def build_report(
                 "status": run_row.get("status") or "",
                 "overall_outcome": overall_outcome,
                 "orchestrator_mode": orchestrator_mode,
+                "exclude_processes": run_exclude_processes,
                 "run_seed": int(run_row.get("run_seed") or 0),
                 "run_fingerprint": run_row.get("run_fingerprint") or "",
             },

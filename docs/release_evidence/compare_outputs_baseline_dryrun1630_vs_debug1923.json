@@ -1,0 +1,2654 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "signature_after": "62bd785f786b387cfdc4f89205eebc7992d64e415760453e2f3831d24d33cb87",
+      "signature_before": "bc3f777f122cecce372487461a0ff94a5e95218a45e6026dab39955a4122096b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "signature_after": "8e3d5339c72fcd0ed0701985cfa17e57b5ae8fe110d884b174b2ff56d7dde8b9",
+      "signature_before": "670103ab640ebadb963c9337dce8176d269edd43e58b317e6c9ec5e9abbaa3c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "signature_after": "7189d20953bb5a55badacb96320dd262f24cc5c44a82d162ada8cc5301f8c1f9",
+      "signature_before": "543ca6c714b01bbe40c86db1eab901c102a6c8cc93ab456c8ae0704ea0b25142",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "4431bd47717ed554832f983fa32bffa3aa002b30d9ec2631c54335e9ccec0d14",
+      "signature_before": "f3d38bc7f824aa1bfc638186bae5868ecc57fd8736445f524135f2c0a019ac71",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_anova_auto",
+      "signature_after": "e8f30cde5550f2f25dae113747f065e998a0e19092834b21c48e2afd78d8cdac",
+      "signature_before": "a674b5e2c92068a09d85348fe02560412fe16dcd73274261cfc8cf5ee70e40b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "signature_after": "96b2a45c4dc47c0ddf39be8c43868d1ec547ec4b3b01ee677f4b06b460566e74",
+      "signature_before": "b39497d801ca1793ff39b1c86f578bf718a664c6ff66f32a90d252dfb6a5169d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "32bfc5a8d9685c1a7d5be05d8f9377eef742781700aa3eee1b79f0db606c2a56",
+      "signature_before": "3c7f8e5aa3ee1d30306f3ff12c21ad2ed69a7591f44713c36999e52b72592eee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "a01eb1afd0cb13ff4fc6428296f466f37130e851e857b23303d43a51c2646d19",
+      "signature_before": "f264100ef36b72ff75a9afb9ac9705f1e504442dcc7e2eaa91c0d216a98275c8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "signature_after": "8aa35d192cc35b0837d2e42644e8c49d043c26cae830cf7b82ab764d31b079ac",
+      "signature_before": "6d3d2ec35126c21a72d688af59e3a4256362553809b12cf13ea9f87f3807832e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "a94ce38ded0d15c3ff1c2885deea2261ab7376b2f0d7b6589f4f3aafbb1e1907",
+      "signature_before": "6845a20aac7e0fa5fc2cecb0de40452e57fcc2c431862e1455aa391d55942783",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "signature_after": "6023554703a1b5b2837c2ddc2c8ba787406139d29217be23c80a0f46d8994b7f",
+      "signature_before": "bcb928eb4d6855c35bb4173df6677c682140095d6e0c133f5a3d5007233ab456",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "signature_after": "2d494249b5e409544c8d1ed3ac092e18c33c6814e542cd34721e78413b8b6442",
+      "signature_before": "425979ab32d2b76916dce1aa378f8b95e1f09827accadb5376c9c5d88a268fa4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "5334a069f41e9cbcd4e589fd4ebe7765cc496bb9e4da0016bec84e3e775707da",
+      "signature_before": "d400eb45b4fea17061446d018fe2eef88984ca21b15117a51b33b8979787bb28",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "signature_after": "e2f22dfc9c3f9c3aa1c5cc8f037ac98023466a77ee8d350feed0081685f56be0",
+      "signature_before": "6505bbd8f28dfc168ad03db96f7eccc4ed738a0dac20cee30a955ca6fb704644",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "signature_after": "7b0a848a156811c0a2c6e214b72ce530991c6890cd19b45ca0bc407886c1fa1d",
+      "signature_before": "8a113c66f93a424a135bbee3dfeed6ea66014161fd3ebc834822781925df628d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "signature_after": "0ade8aa78b979ad3b5863e2dfb9285b65b63f7a406dc50600a4f578e6c02ef18",
+      "signature_before": "c789ebafba80a809e1efcb4a82ee7ac72ab07f34f9ba79e5e6703dc3c5426dce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "signature_after": "b1a173d58b4be6b7838547c1ac62f9aed26e41d0d61ee6dd57afaa86e542dd62",
+      "signature_before": "be37da4f3451ab57fd917c920ca4fcb6b743e604b264f26c152ab55c5d35f9c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "signature_after": "b1faf1510c4f9046114a351dd405bb633d49ca7a6f41465a1c093aa3991dfb60",
+      "signature_before": "afc2f69ec246eb32b176589e0a51e5608fb592c098d89bc2068753b2ae5a627e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "e685c51b5a9dc1446e1329ccf3528c5fa0901158a9ad9ae06dadbbc2c9a8b9df",
+      "signature_before": "b7800ac8c16cdbe47c6dae3dd2b7165c03bf632b5a083c1dd1d7b6c8273f0513",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "5b04829fb01d9597f59e04d38289eb51f86f34946371182fe3caf013ad150039",
+      "signature_before": "29b1f03abb7f2f531b29e084432577f8675fce646d5e6f3197eec888b3a7a8b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "a814cc501f9121c964016dd046e45b74b982d2a385dbdc3e1a59345411b0c0a1",
+      "signature_before": "16d2db9508161a30360e1c16f9ffe49082d3a6966bfe3b3e43d41940ab219950",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "e728dba0633bbd0bf40d9b22954554e550cc22e6480d788af577b94ffa4cb9df",
+      "signature_before": "ac0cb702d58d98f32a9534a2cda5c9ce9c998055b257ac8d80d586de9ccf69c8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_impact_pre_post",
+      "signature_after": "5a516f38bdb5cfdeebc5522e9d7a0c900af2be7493c2bdeb4c003390f302817e",
+      "signature_before": "77e2b4371b497e78f149a3bef68fc7619bf5f0bc05731d14d7d611f59e5db4f9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "signature_after": "829094f63a461f55ff9e59d3db53f0804f1c4be437072704c2205ea5d81c0bff",
+      "signature_before": "c1b7656fe1250bb5825f20f0bb3054cfc77b9c91efda0b8c69aab4323ab589e0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "signature_after": "69d2c1f809ff7edcae99fe6bf9dd8a08996b24db7f4c5156d92330cfeb62e521",
+      "signature_before": "3232bcb9f213f1838100f89d8cdc3a47ae0115196a2a727e50eeabc8861b6b4e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "signature_after": "b6afa54d19a29bca4a9e240afd3760abdd89ce0f2ccdc02e139c06d0d60d303a",
+      "signature_before": "7ac9ea9be365d95f4987f4efd3364dfe122480c3a8fc455ec0ee95825e8a2383",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_pelt",
+      "signature_after": "b8f83299862d2a31d3f9cff0771605fc2da2781320ca12861914ee6de154d9a3",
+      "signature_before": "d12a07b10bbb29d160489da26e82a115b7b5d23b6a8d13461d4e8ddd0227b786",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chi_square_association",
+      "signature_after": "6d721bd5ea3a3d3876474de3e93be65bb4681be83483f82d3ff035240adca49f",
+      "signature_before": "9d837f50697f5bdd2fae6339beb234b412def8a790aad4977c6becf0e5484a7d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "85c189ffb87c31e55dba12085e3f9ed51f13b9ffb7def1ba3ecc456a9c1967c5",
+      "signature_before": "903b3260815ed35b5a52d4f8f471304da99b84e0cce1b99a42137dd25c30cfca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "signature_after": "7ada5afca61e25d6d98c8aefd53830d752db320bc71ae0e43414f8b5122ab55b",
+      "signature_before": "9c6cb7b1980f417d9cb4fb3fd62998ea6544c54321b786c29d678320fa6065b1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "signature_after": "65ffafa4f24980ee10b56ee6198a596fea75bdbed193e774dd088c9fb2733956",
+      "signature_before": "4cdc094923d800e6fa776143c0748d5b15efbe32e857f5d770bf711b230bfe2a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "signature_after": "5d1f1770a50192d5ae56fecddf0d6747647dbfde645f650a23dddc0ebe44cef1",
+      "signature_before": "06e1a54e5387bcf6a9a95231d03bec8cff2b50c86af87db402c72054f5f3b415",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_contention",
+      "signature_after": "26c89c52a21b8690db2ac7c6c31a478202ca8ba7ccaf2bdaf406a11a72e716a3",
+      "signature_before": "7f9adaf0fb646fa4d96564a6917ca6249ad9a57c6b763fa836586097ac03e76b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "signature_after": "6c499c612611ad5304c77d0d2cc3e8d7f8032c3419eedf39e48aaf45b2442793",
+      "signature_before": "bdbd02427fca34ede1b3d6131911ae9b7891aa25dea8913722c3f45ccacfdadd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "signature_after": "513d05378f88e606129b04563073d1ca11a53b387b26c94e8a4fa4b30e437099",
+      "signature_before": "89d87e78c50b8438f1cd19aa09d3e45192f8f0b7403db246933c02a96eb1b346",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "signature_after": "7e18d0bc3ea6320746b4630ab3ab9867d99a52c09364f42c5b553d9a9d930136",
+      "signature_before": "bc5da8efe4de4fdd3b4bc5f06b1bd05a99ed9e7d114415a461a4be5a11c1db01",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_uplift",
+      "signature_after": "560c8e699aa9676aad1d364e51f7435d422973710c2c2f14da30c2d30df73ddc",
+      "signature_before": "fcc7af6b7ee5ab8279c0e7900fd4bc65c2820d05e624d403c3029e0284b4d8e3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "signature_after": "6bbddc8639b92a91391896f39e15a6842fcb856645c86fffb78be6e617d96b6d",
+      "signature_before": "afbbef0fc935323527f3336b6e172b35abce3cc76af185053b550ad7754d8f3b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "signature_after": "f20e7887d7082cc612c7457564bdef9ead3ca722cc994405ffe33d4b5aef3a0e",
+      "signature_before": "d12d99c1d1036919f68b0303673fc6557933c3f7233ab40de06f6d59ff0cfea6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "signature_after": "801d61a807b53ecd96b5f404e830146011e1b7b001fb2736f8e69c7ca3414658",
+      "signature_before": "57bfab6dca9a8371b12615dbab0456c13f347053a98e1c0e1843a138df920ff5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "b6a063b5d552992e3445e6ba873a7f63868cd10597d929d59fdf1ca38e5b764b",
+      "signature_before": "e17b748007ff46244952e2bdec92d1eb5b9d12c4db97318a5a5ddd6f53e7e2d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "d0ca3df71697916eba1a7affc59a1816af740cac640263bc2254dd4c641c80e7",
+      "signature_before": "e705e6f9b9012b0ba8f80237c123470f8b6453537711e26d2174e1f5e83bfe77",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_alignments",
+      "signature_after": "22410bf45fee97176fe5a48058a5fb91ed79b96e2014519bb40d5a187fc4e04f",
+      "signature_before": "fabe788f913bdd0d5d7f7cbcd7bf5d12b55bdc1c297c8e6fc12f68c5837195cf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_checking",
+      "signature_after": "c8fcb522647ba69bebd742b150786908b93a27828b8371f7d5c127532c4ed5cc",
+      "signature_before": "44e4db7692e769e9df6f8389f94c8586374668745468d04a178be4c70a9e9cfc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "signature_after": "c4fc8ee1d668127e3716b6ca1663b7af4d6f7f62709afedcbdad5d1596c621d4",
+      "signature_before": "a5bef54201ed0a97a44de6d8f86fc3e0a89caa68357dabfcdcb488ecc790737f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "signature_after": "159f675c6aa761ee5086039a01294dacc9b18f2e6068ab3832c1ec153af607c0",
+      "signature_before": "55a08bace0ee67a757c43f1622149ce892e8f6cfb7ac3254b41e0807e638c4f2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_cusum",
+      "signature_after": "9f1bc0e6d89fb6e6efd6c9c9945084d3707536c7db1d9a959b52b479008e69d4",
+      "signature_before": "057e9d858b94b8b5947bee3ed61f3525295a53ae822dc5b7fea27a748d68a1c3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_ewma",
+      "signature_after": "283558cf2dbba2b770fd7bf5527daf393b9eb3e89297e3e64bcdfb0bee5e1008",
+      "signature_before": "9418dbeeb2684c294581cd5bc6aae77ebf57daa4bbe56cbdb2f22a11ae068249",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_individuals",
+      "signature_after": "a472bba20c47764c4f729dbd92164479b3c124ed1e72b9898b05252fd873a40d",
+      "signature_before": "dd2a02914b85d5b49fe275bc82aecfc195167ee06c4c73446217ca63e7a9c568",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "ab25f1c5332242ce6ad47580f5153c3df11bda375572215af9e8c90e684345c5",
+      "signature_before": "7d311cc4a88f81bae49e9f8666f41e8d0b3460dc2b61babd1d8843486f8bdf0e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_copula_dependence",
+      "signature_after": "9be695c494967310821f43dd5900ad6a49b6077e9c588bc69282414c13dedcec",
+      "signature_before": "dc22196f30c32b9a8e1fc72e5f4ea32cac9a022516cfdbe58b6c0a1f7fd7959c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "signature_after": "9ce639f836b2e3017f5a49d1841ef86364154c1f4c796625d545b5d61b321362",
+      "signature_before": "ae905cab0d6b85dd27be27ebed31166061247e015f1765c8b137e0ab424698b3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "56de4ac58387b287d35d5d71f641ae3f6ea79dd4c9671a5d7e536bcd7a762d56",
+      "signature_before": "0bbea3a6a86e265f2346b36e20715baff5e7321fb3cada7247d4ba1457260ded",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "ae94ded8359ad33a1f0c1ef99d0bbf6e079e59be49884175922f28b95bacce6e",
+      "signature_before": "5b14d85d5253c57b7a37512e3bea2a5e11228a532a26b1079ffc108820238223",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "21558c8f6de04517bab56541fca26678347997074a6e77f9af3511a681d88f81",
+      "signature_before": "92709a366ebe6dd1dfa24ef49c3b3a1362164500b8ff28c0f96567da5b5e49d3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "66584b972791170ff721357163b292a5d88035616150faba347eabae3d6923c5",
+      "signature_before": "9f08f63563daf972698acaf616eaf24c49293947f1ae781ec5ec02a88f6e0887",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "signature_after": "3a2d98190d75a0e08d87db3669394f03b7cc21c6cfc190b27a5fbbbb5abd1658",
+      "signature_before": "1bd613141a88ca7d95e1c0713d4ec0f9eecf590bbc60107d05f5a96d43dc5ca7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "signature_after": "cd2935eabae0314dbbaf6ab65bff3446ee1df6f341717216d98f400d319781d5",
+      "signature_before": "c5b7e37d3ed9fa1b69347e39fed6f3253d87dac9f764d232b56eb159dbc08211",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "signature_after": "eb393799209a7d5d1aab402321d4d2cfc82175baf823b8b06088996808bf48f0",
+      "signature_before": "aeec043cf22195240e990aff0bdf1e4e577a1d8b1ad95b384488771bd1eecf92",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "adeffaadbf8e465fba45c113d1d652222609c7a94a31d1c4580835b331874f3f",
+      "signature_before": "b84250f9837590dd8bdc79262cd7b4a68d3cd3f31cca0751932e5ea76d813929",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "f27779939ebbd1a0e456f20c466a716ae80fed80383f65870b9d4dfaee7ef5a8",
+      "signature_before": "a85193db92f81646f5f7b96ee628f4b9bbf88efd4ab86225b64be4b655f19ec1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "signature_after": "74d908d9ac5cef32ff00475b1b359485bcaad950d0ec4ef683bbc621ae7a904c",
+      "signature_before": "3792197e2576b89d6bfc0c84cad5cc1b569b635530982ba59e226bc64c43c55c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "a001f672eadba2f9ea5f6b83b1b371fc8487f75f22af659074ea0549cbd55e2f",
+      "signature_before": "1e3a2dc83b7e1909d8f409cd9b03f5ddabc9df926c79d901951aa9ddbdd05b96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "signature_after": "cbe8924c5c8ee6376ba73640c521aeb715568fbf0680e107a39e842891dc5f3b",
+      "signature_before": "14a721efe11e6c745e828a77ebc97e4f8262e32c69db1f39621019fd7f591f08",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "signature_after": "6b71c99342ec43786b345374dcc8976b2ada5d4a6d85ad0f932a34ec153afa42",
+      "signature_before": "3de39f84ae43dbdac9615aadf333c41f23ac326222978b882a6d2017515defb9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "signature_after": "7be5c7e07ad9b718ee1b80af752177a51e7070d5c4e1fecb853d8b995c7cc89f",
+      "signature_before": "4faa62de259c447d7f4a1d02a771b4a0fe1392335fdb2f75ffb9ddc2cbae6126",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "bf7fd7434e6c334f614916180d754eae383aaee85beeff79d55c38ea367b8087",
+      "signature_before": "d42974b956ba7625d71b89af0ccd0f8adb70fbea8d2e1567b3aaed92d3b52f9a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "signature_after": "f690880533154f2cb58b413e7f71fa7c5304a6bb5ce414628faadf68da3e0b92",
+      "signature_before": "b3c8a3a794206736b45969bed2a71477386728cfaae0c5a4ee2b439076bba275",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "signature_after": "6bb638b7afaa63c8c576b8b126819f2173d534d23e329ef1d5cd0f7153c56d88",
+      "signature_before": "9b48c224548d0cb001270ea371f0a09cfc9c4e27df865026803e5f530f9be9bf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "b810b9ee736305c12e43200c04e3bfc60ef01667544a90d1ce70e05f27da208a",
+      "signature_before": "1b40a5a63eb0ed30288c3c2f3bbcf4b56ff593ab7125e19ad2ef5eafb4197950",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_drift_adwin",
+      "signature_after": "52ee423c039f5d55ca949b2804f65ec990ccd77fda38fe2dd23bc39868419802",
+      "signature_before": "4cb80fe959d8a57d624dd5f9931ec56555e0f12df9c01002e025b72c615b6a9b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "1a0b19c1fdacddbf4ff5ed44d1efbca5dd6a6173f636b419041a69491a06f455",
+      "signature_before": "e17e5aa375fae7898f7d55cd45c37daed96a43a66c1c819fd95727f4f4035952",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "signature_after": "cba268bb54badc4c5fd5504072005086471bb4cba10be73f80fd186752e5a9e9",
+      "signature_before": "c6f247dba9908e0a61206dc49e5d9e1d7a15835469fcb4d1406cb5647e9b07c7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_effect_size_report",
+      "signature_after": "0e25dfb59a7bc387d3de2a3c3086485058b3896bcdce7ebc00c247c1e736ea91",
+      "signature_before": "034205f6bde81ab943868fc34d8b8cc4f29a557783932ab278795d66a47d4c0a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "signature_after": "963347de3eb152c912c860e6d3aa1c324adfe8b51d7e577d12f402812923207d",
+      "signature_before": "a38864430f6b447f6b7daed71564154a9cb2ef23ec271865c8d76b0ae133cc76",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "signature_after": "3e46c2ab11dc590741224fd91946d59a8b51a9bab46bd024e20a2b1c7ddf1732",
+      "signature_before": "bb9d5e6c85e6d3903c5916abda9f295ba4fbc0010ea5e5117485e0b7211d14b4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "signature_after": "74f11acbbcb3db3e710bc7692c0f04036899ee6b02f9d31b220b1b5e50977a75",
+      "signature_before": "9d282594dd3eb609ffde7df073269170611d4d637f57f89cbf737471e6801087",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "signature_after": "6ba1dc2a5b9ae61dab0b692bdf5eef8be4b1e1363827d6ddc4f788c269d6a685",
+      "signature_before": "0f299426ac2f8c74fe41fe2cfcab66b04f1fa21ceaea92680887409e1ec9f3b6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "signature_after": "a820249dd6d87a4373587cd12717f7ed3f4ee7195b69edd1d2ec89652bd7f7f8",
+      "signature_before": "fac60ebe7db5b98346f2efd910830b4a74bf0debf64b23ef95284a9344bdf181",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_analysis_auto",
+      "signature_after": "3ff78c578961a5556255c6838c06efab674219447e98658355d927c8d740315e",
+      "signature_before": "c38c65e72ba68379f07bc1ebeb24e31796a13caf29ed9695dee0ba34da1b792e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "31da3aa72ae6240e152988abd1bafde70df1790c99097123f0c8f169a259a299",
+      "signature_before": "6a965c300c185bc0d36f888f9d9872d419bd51f9ad9da0dd1eed3d9f858d6233",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "9e4d0fadf1420d9d0e4d97912f8e12410d7440cf2ee1b5afb29b23a9bf673a2c",
+      "signature_before": "17373d850c868b17683a1e6e9a33caf591d23036e3c23b7309776408de2b6f21",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "signature_after": "5a9a1112127a8097466a2dfdc473d9686823908e404bb779f850710875347ac5",
+      "signature_before": "39d8fadc840a1a6712000e2adf00af84b396ada1255d7056b8a41e0219b0a0e0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "signature_after": "13dff741a376e50486c8782aa13d70ccfa7f84ac42e8a49b1a5ce4c9d86724ed",
+      "signature_before": "f6c226d394cbabe01767398cfb0f85c1c3e4b40b073ff81471c406c638944862",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "signature_after": "77d356531d3637511a68d9a2c89fb882bcf9dc13f4fe1456b6c9c5911ebec90c",
+      "signature_before": "79b2b78a4ebea0e69b89ee98de6a856db09e5af653d4f80abfad7ffd2fffbee7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "2339dc4fc9b496d9d7f806dc80073a03f71f4c45a26c0278a0bede4a65322986",
+      "signature_before": "3e55e37107e7405fead7121787b258468f18324d762e77d34a52538b2e6adf10",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "25adcf2a78ed6b1339ae1f43b7608cb89935c9b056be738def18ccb2b2db9f28",
+      "signature_before": "d832a06999ac5b0b3a7b8f28b7a51a69e2185fe890b84780c0805f6c534d407c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "f088111f4bc0afa622b070d9ae1f49aefc5b413a83da12791c246be4b6a9e01a",
+      "signature_before": "79c171813e9f188956618cb115522764ea59cc31e40f8b478e41b636885ef843",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "15ce97bcfcc05abf07b461fd05cebfa3ba53a9fc9bf5d84b0f7bc507ded77c0e",
+      "signature_before": "512b2a8cfc44af4ffcc60d5fe8e5a00c7d9ca9dd81ba670eb21a8031db037b1c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "signature_after": "27f5c28706b18f5bdd282a47002cd6448a3e8544ccfad4305f1a38e76fb2cca9",
+      "signature_before": "2651ee85eabb9e3e3f17109c51672d78a1600e0bd011aaa0f32284fab8b71e75",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "signature_after": "4468b3e60bffbd6d01f56ee99a0f9a51d1def2444f13b2d4986b4e965f7372e7",
+      "signature_before": "71d418a7df4021a2ea8c7cc5c9f37754cae0b2530557e2065a65bc5337b618d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "7b2ee18c9d358b927d2dcb85afd897cbc6b8a1847c263d0afd06b589fad1bb8d",
+      "signature_before": "1e0bb512075b61a9bc508ff99159a64b2e43b5b6e1cdc0e506e52f7f2c375c4a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "signature_after": "31de3a3c3bcd6d692960e7a06fbbbcc0835e5c5103d5b878768972ede8aed150",
+      "signature_before": "1a312e2ab5d6758c5b25e9534058cdfa4f445b30bae42683146b956d97e38fad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "signature_after": "5cc5b758b347a53b037a8a89cbf8c037d795a2dfd1f3e69f2d9171b02b19140d",
+      "signature_before": "3950b5e4e2b56557252b552aad6db778ce7ead79666674bcc8057f55e3651194",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "signature_after": "a93f8d2dae716cd81fec93f4090d0f3f63f7ef70fd68ae980dc4d8816c6ea8c3",
+      "signature_before": "5cc8361e853e849c038b8aaa4114a7496a53af289bfabc13c7434d8e2514dfc4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "c94b6094017581e391a7580c9b5697656919d0c2cf0f3f6088fb3ad06f839e65",
+      "signature_before": "ad324dfbfb466da7a39f4a58c87eb833a0c9def461da7736838bc807d5090a54",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "signature_after": "0d2110f4e7721f9228bb4204d429214fa587f215451b872ae3b2addda755958e",
+      "signature_before": "fdae831491455677b2dcc3badfae78fc9746408aeb312f3c17241788fba4ec85",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "signature_after": "72a43c924a85d4fb86348f919fc1504621e0acff7f709cbb29712fe2ad280213",
+      "signature_before": "e32458c17c54cfefb14a25d0e8e891d66088b329ede5f2b57ddaf6b5d143df95",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "signature_after": "06644f0c475850fb3c6073a69db95d387f1a43d491fbac456aae717902bf3e7e",
+      "signature_before": "62a03fbe5478bfbe9ca63c3665b608f758cdde2b45f25946c894484670badcf0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "73c585c9f90ad1d7a157d083e8b5bdf1236482ce17ff7b5791fa36c5ed6e6f8d",
+      "signature_before": "1cf52cc9c286dd5496bc772831b2452dd391710971b53ed04fc31a36e00f83ef",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "53fd626d615d26fa677e69a3cf3e6d23d0d49bde6d667dabb4a001e13ef5679d",
+      "signature_before": "c388c422d58f31f4d7f2e54d366ae675529406f98a4fc51d46151ea0eb23d722",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "signature_after": "b126b7ef8f163f572ce2c2c62df24c62225cd845d68d2d2f7f1bdd84ca516a98",
+      "signature_before": "b2073c3cc03b88023d7ae0d67ab4a6be3431a7c8fd89d28dfc69c90e4f4af737",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "signature_after": "cf91764d27cbc33d98e8fcdd2e3c1cf800c8399a4ad7db722e8944db530a71cf",
+      "signature_before": "b7530b05236ce0ac5b20d1dea8076ea64789e9339b535de2d75f05a89926196b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "signature_after": "8c593bf760de387402d33417734efccbdd98e1329f0a09ff045a02f30c7e5213",
+      "signature_before": "3ebbee60eae19e589a468614a73cdd0eb9b68e772b7916da61afc5c8f0d41f52",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "56b8332a25b48f4bb33f694219b331de01c04bf98001b29e37c33ccc9c213c3b",
+      "signature_before": "25fa36dd71b663d2d88dfbf06ba5d92c237e87de637c0492b42e752ce6564e2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "376b6b28eaef2a0ee3f05ead79ec9b7bfb5b0e8f5ce2d2c486e5e45753a4bde8",
+      "signature_before": "51b0e8eb254bd491b5d25c2f2f18948526df08d66b9748f40aeab64289b2256d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "signature_after": "fe1e6abecbdc052ea8d9ab62dd74ebe07ac12faa9a7386f11ac8f2df29e3cadd",
+      "signature_before": "83b15feced545995b12e6dc033b120ecae3b397a50a848d56b9e0f7efae1f0d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "signature_after": "82737d6b598e01e1c2b74fd001b124f503a482e17bb7ccdd4e595e5936b37ffa",
+      "signature_before": "2d04a4abe03027f95248e0169b11679d8a4c9e56d9fcd90117bd3fe83e828bca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "signature_after": "13ed92ee30de1a77d08e02669f98e63d0ffe4164c8e0a1369fd943c9556b307c",
+      "signature_before": "6f214492e8989153344144cf5d0ea83757703bf25a9126006c7bb3a1dcccee44",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "signature_after": "acc511e0584d7006276d2d59a60bf699f7262181140774ded99b93fd99234dd7",
+      "signature_before": "81be2edcaf5e81aa6a75849ff44ae4970c760aadb65fff8c7e2c8d4e19c6e1ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest",
+      "signature_after": "626dc1eae5d558d7a93bebf6b7e3192fa267c352cf5d855a96864dc1942ebf9f",
+      "signature_before": "2c1c7e82716310ad7da2c02bcfa0e4091dba73a492e28d870a0b75902e244ad8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "626dc1eae5d558d7a93bebf6b7e3192fa267c352cf5d855a96864dc1942ebf9f",
+      "signature_before": "2c1c7e82716310ad7da2c02bcfa0e4091dba73a492e28d870a0b75902e244ad8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_issue_cards_v2",
+      "signature_after": "3a68c42dab7b131dbd544abbdcdb99ec73f573714f514b4d42ed6b601c0827b5",
+      "signature_before": "aa5bdf4ca783314839aa2b67153da4194812b5d055b6c442fa07f1b9d777bcc5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "signature_after": "1a02e3d6180f45466d3e2de78e609487ecab57356bf5725080b671cc2915a91c",
+      "signature_before": "7652b4a9813febbe98a76becfe3a3e4131425e75c49acfb6a3ae7c8549a699c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kingman_vut_approx",
+      "signature_after": "5557073a57047d7567019111163c8a0599f8c0d1b9d3e57b673bb119975c2b82",
+      "signature_before": "56a68e9e5331ef77274d53d5fd5d6a1914875f59c2b065935d89b7f3d3e8b1ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "signature_after": "67546d05ff16d1473f42e8f81ef4c70c6d8f05750efc1abb7744a85be9101d53",
+      "signature_before": "bd58dee279077869455171fd2634341f0b87e1766e30f8c3a15bf6523160a4b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "d95293e3a001030823786e8971fb875826a2b1632044e7bd79eac2ce2ee5869b",
+      "signature_before": "49eba81dcd369c0657cefcc989460230591b8cc034694bfb2227031061df14ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "signature_after": "9f9d06967ec6b6eb5f20c4f28fc2167dc65128b304123b38b8e0b86b97d77f9f",
+      "signature_before": "fc1074fda4bed3126b66a6eca3e1acbabb74bf93c9bd5c3731b013cc40c27af3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lagged_predictability_test",
+      "signature_after": "3c554cadbb445bd098b2a5fe8681c07a4ea13d505ffdcf415714a3593f35d29b",
+      "signature_before": "c22eaecc748a399b89fb34f2507dc02edc1b1a40b817792d5997bcad0e91e171",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "signature_after": "f0e44b2a3ab45aad45be3f2afd8504f87b864b4ab08f3de573fb0abae981b049",
+      "signature_before": "a9e3453c3e5e25e944d582f19dd564537b70930c5c8cc2bc06e18e4c2b59cace",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_littles_law_consistency",
+      "signature_after": "688faf89bd3b8cecc801eb42f13a564e1b8a8284a6729044d4a5655539ab3a29",
+      "signature_before": "56c5258e24e13a26ee3e9122126ee345187d2fa1a2627189c6605a7f3d8b8f3a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_local_outlier_factor",
+      "signature_after": "74fc29cfef336025fbb6fefd23ee780690d2a57eed1029d9b3a5623865f30aab",
+      "signature_before": "6b3e4ea3bd1608e76f7a98589f0b8db2e9f63af26a6f990bd6deed41f902cdac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_drain",
+      "signature_after": "8d305857c41def65593ed38fd232bb1a2b21a5d42ebbff6f99dc43590059811f",
+      "signature_before": "80d977d9c18e3887aab4ed9bca243854f603e9fc98af804fec18d6f9c4328c32",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "8d305857c41def65593ed38fd232bb1a2b21a5d42ebbff6f99dc43590059811f",
+      "signature_before": "80d977d9c18e3887aab4ed9bca243854f603e9fc98af804fec18d6f9c4328c32",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "d0fa69b1805a672b2a81c33c587b76b91a80cb568e6e5e745c4830a03a12ad14",
+      "signature_before": "28068b9d5dda8530e733bd9e0f916698157bda7f7c25cc10544dccd847f80c6b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "signature_after": "f6898436030eef3cb28f54f4b360c267ed0d4d97b40fb8ae0f11be3360e57672",
+      "signature_before": "854819a88c81ea6e4a624fff10ac5cee440e4d66d660176b9edbe8428d4e2e2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "signature_after": "25a55d6df7c0a6d95278911c9a6fa587de6df430261a09715c5095f9826d717f",
+      "signature_before": "0419e94f6372c98ecd2cc4a39884a975516f78e0c93d37e9a0cc9521bd2be098",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "5eaa43180bd867fa6df2eb53984af2563e9b1c40ca2535f0a871e90134ff5f00",
+      "signature_before": "65810b67398315e92772be8f144be83281dad3cf01f6cdc580b42b9ac6b22df1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_markov_transition_shift",
+      "signature_after": "bb87b0df24605af9b8b3d5fefe73cbb60213fb0dc0d656945c0d86c5f27b65c6",
+      "signature_before": "c6088679e2d50627efcb0f380b166e1e8d411103f7a83eca013607dc943cdffc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "signature_after": "6ae7498deec6a8bd5f1f54c7ce1f0159f3dd7a37d18042c9846a1e5c218b1c01",
+      "signature_before": "014bd45d7454bafce63fa777ce991e8733e8ac6684a695193efc43128c90c070",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_message_entropy_drift",
+      "signature_after": "b3d3216a4a6ee081950844c4db676f8924decaa00e776e6abad8f748daaf7e8f",
+      "signature_before": "94d459428949355c0122114e5aaea207f7a8c39d8f3f4497037a6ec247bc8722",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "signature_after": "181d0bfa8521fadac31707f0619ae303a1cedcacd6dc1dbccd83bea0fee09592",
+      "signature_before": "62b50e5b60d20aa30b9a28871162b69e2dd11c26134d58b4995a28966b482677",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "aa942654604b6d672cf21365a16efa1c18da830b9219caa6b3571778834a30b9",
+      "signature_before": "4063820d89138138388af7ec8104906024600855ee42a08f563066878a48cd83",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "signature_after": "7cbc30e1ba34c689024cf0093a88578dcb1e30122c169d76a29a3f62e3cd139f",
+      "signature_before": "1d007c2cedae02c41f9105ec4a230f2d6f1db27260b4ee5c23b414a8767a3cfa",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "signature_after": "e1be348c125fabd0824d1496795af2dda21c3699f92f5cf864eaf753daef1320",
+      "signature_before": "55c640a1c8af35fabee8be347fd19ea4b30d7c5263257ed6ebf2efacf96f78d0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "09337768c4f408b82769734393c17c2897494a42c36e3d31cae6689988d599d8",
+      "signature_before": "17f986a3acd4c02cc0d7bf74c3ca70f405f3a08eceb249e8abf4348aea4fd04d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "27e88948b5c7fb0067914b9c6b146c2296a3589db7d80761130551aa08812205",
+      "signature_before": "7d75e99cbcb21b8432a1d6432f93923d32de381aa6effd845f85e7b7739f9aaf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "signature_after": "8de25fa537a30bd78d6396d1e4492889c44ef5041f436e05fd6840f88f9bc040",
+      "signature_before": "b89fa0ca9ac468eaed3871c7cef0d1fdc9d1e778754ab8200215ea7d5cf776eb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_t2_control",
+      "signature_after": "f3fa1c90bb90a408f1480307ff4e917574c895f8417281a8be2193487680ce68",
+      "signature_before": "04ff1cd6e866418b8f94b61d5d76d42a8e0882c00ac77d8860eee3ffc190e857",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mutual_information_screen",
+      "signature_after": "a2026f2f0c2458699b723483717f4aecbcbad02ba197672c83df6928e000b2e1",
+      "signature_before": "996f7ff9ef8b45306d1e09f87756c7ddfbea9dcb1a3556e094d73df6c0077aea",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "4fe0bb5247a4b9a11e50fd8f50e87645d447e40f7269100c7e467d52b7e3df23",
+      "signature_before": "e254ff0d97ad591f752e74350e8d55fc349154df53197d57f37437cf8daac9f0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "signature_after": "39ad4530b5133def303b995141e2b0e0b98bb71dd22bb309f5103b4e056a5d98",
+      "signature_before": "989685b3fe8791e735ae69a01275b966b8238c5b57e8d528fa34daa6cd762900",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "signature_after": "ae73c621f2fe27b58803fbd1b73fc28dd4c08f7d5f2298608c05a16810db29b5",
+      "signature_before": "9bbbd60ca4e40d154bca517c708e39f6e9a1d9f6caa4092e0f8268404b971fc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "signature_after": "6629db4ebe29a04792550e200e6ac82519a298c68083d008f5e6af4035f9ea2d",
+      "signature_before": "aa1819d1d582081964bee4c71b3a43f293a410e41a8a4c141116f4e695df6ec1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "c22406fb101beea87fc49004e2db22d8dc7286333cf8b10cc23a1109083207c1",
+      "signature_before": "45eb1a5631101241d9fff04c0224e70c914747820e50e436e867f6a8c8502c33",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_one_class_svm",
+      "signature_after": "c0a1bdaa610055935cd2feac2f260fcd8d9aa6441d2c1e7bca89e7a1b575e46f",
+      "signature_before": "d76822228513b33b49c9ac5ba44448c4e3bf945c4f8ae14681bb0aa31070438c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "db05cec963ec214565666f6311598415af14644565bbeb37f0d8ab66eafb1016",
+      "signature_before": "d6e69398d040a87f19375e82a681937392b42e6627f7677ab31dd6b2b35cbba1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "318dff6be68ba67a46cefb00a395bfb9def9083a4b4054be344f3b57c54a37c4",
+      "signature_before": "0b01f222f34f706bed6e9a2997e863d0b48225254772cae99229840421e324ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "signature_after": "169b54b49be2aa2697fbcc34d5614bee16cc1c55ffb6e86ad7e012df7bb30623",
+      "signature_before": "c5e91d7439dc96ea18e9a0467293c383f7c3891b6090a3200999c584e72ee70a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "No strict MinHash clusters; emitted fallback duplicate-pressure recommendation"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "signature_after": "3da58608124bb1dbd7326b89bb71cf2ada00f2e66890cb52949618ed5583c30e",
+      "signature_before": "a4298dffdf7fed0ae4b3066e15faad1b89e24787bcec591549618e9cea395671",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "Found 1 near-duplicate cluster(s) via SimHash"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "signature_after": "777f2d542fb780013a13af69647281d5c9e67a6ba11bcd53b0be8cb6a18e3f91",
+      "signature_before": "a4a83d95c6f8d5fa5368e17f21b482e236f2d564a40212fba386e50fe806d365",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "78d7da348a84f8df3a63ee4d44d080575cf6151eb64164af62060d3567d84ffc",
+      "signature_before": "d8067ead2dae1509006a0639a0db6197649195c0106b150df5951ce5a448b6c2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "signature_after": "c0f9962d88ae0fc687a2854519c7b404379da94c1483c6860fde05931c23efa3",
+      "signature_before": "265cb8cf509d6ca13d949d65e4998a7c8b7fc8b16974996ce8b33b19a5512ae7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_auto",
+      "signature_after": "6fe39e734d9d02adabee89ced3f36bef1815cee75299ee46b37d1360a53089d2",
+      "signature_before": "d027489c1a516b24494392f343ac617f8250edc423286024a3004fefb0cf70f9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_control_chart",
+      "signature_after": "ea741bff481634aa89c477492798711a4c892b36434c3548da1b12d1c633afbd",
+      "signature_before": "65fb70b27abd2751b17df6b39b7dba3db22f82e77d959164450be50805a02695",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "6192b75ab2f9e5a39778d163b0573c1f206a9d0e320bca6ab0d27476634d9148",
+      "signature_before": "c4f1e569afd037ebfc8935c0677727ca9c774d2d8bc82e8530093ce6c9efa2db",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "signature_after": "86d57d49fbc55098a94b196d752b8826b0b9c3e79e4be2ead67e9f0eae281307",
+      "signature_before": "c4822b83460d482c4e9ed2376bbe89faf6b78427d14d684e0fefdd6678f4a9fd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "1670161bcd95aa48f657c9bd3b24ef69cc3346d1e597802869222c553601419b",
+      "signature_before": "48254a08b6540da5fb8990c0d30c8e64a61d35a40a6eb3326dc839c67a4ded7c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "signature_after": "8d395ff095d9d412d0caa0af5d8512c7c35af2566f7c81c120cf5ab5bb990516",
+      "signature_before": "3b4594cd76939440385312c396a63e5a89ab20302038d72a4e14e6821838ffda",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "signature_after": "b6197d519abedab84717d9f24d5f2b08e731f91c8cb3763bba6c082f6b53170c",
+      "signature_before": "001dd2a986798fdeef2175cb2258de022c49ca1379c0b1ec010405e2352a0b2e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "bf86afd63494e29bb93c271680224d9551b3330344dda347cbabc868110a790c",
+      "signature_before": "340b806ddd59b48d827124da6a2306f5c2a872aae94988b75ba731114c829dab",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "589c5ba8e8dd4c01f5e30cfa61d81e46a7dde1127932b6b15c3c8ca253283a1b",
+      "signature_before": "6f4e40ada2b18858af2d509c043803e9ee11c266ff679c00cf09f029a3952fc7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "signature_after": "e91749c8c225cc56d335854a1498c15b2a68a1bc91b9e75baee169bdb9cd5ac8",
+      "signature_before": "e0f7951bb922e804e18d0c91f6b6b18d29322d8a6edaaecc6f9d2342ac0b41eb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "5561143c99a27d9e17cb33efcf5cd17dba2edb5cdb65a08f1a2154be711631d5",
+      "signature_before": "d4896639943445f7e4a78f50993d7b25390efa4d2dcf1d7958b36e002ecd385e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "signature_after": "815f1ef8ab952eaabe752eb508f104e722224cfc5807ac9c72c00662a47397a1",
+      "signature_before": "ff08c8299ecb92ac1d02bc8afec227f7b60c19990ee1c4369c5f7879beb66b87",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "signature_after": "f8597f46be97f786d67acd046861ca14c81ca3f0b5db3ebe23309a757e8cc80c",
+      "signature_before": "23b3ec8bb2d9045da0ce6b3bcd3447b722d71e86ef19ac1268feb5a2a319efee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "291dd195519b4499731355177485dd88497b4ed124c178d9ea1534131046daf5",
+      "signature_before": "2ecd51dc12ab7259051c20163d53e4675ef8518eb49f5db4a9d3b350c894532f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "signature_after": "9e7e1da46fed2b6a0be2efecbaee1f15400eec9a967c6c18d5e1c31ac067e3ba",
+      "signature_before": "fdd03720d676ad78c744523747985e7c2bb1eb894b2cc6f6d07a4e1e422bbed5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_duration",
+      "signature_after": "ab668dbf5c9aad87357dc154d5ac09fc4151cd54de2128324fd049e75ebfa010",
+      "signature_before": "6fda1a6f942867293356db190ed98800e9b2b2e350a1c403934f55cca65c7004",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "0d746bb123c1de1e781c6d1d01582343c8b43749e3af3cb888287f92c95312fe",
+      "signature_before": "695407da05c63511c94ca5855e3d18c441c51505ae5c4a0957de9004d5def5ad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "signature_after": "e564d9c000736e4cd98e33cf733b30d542472e2e2b4313fe5eb6f16141b142d8",
+      "signature_before": "5e767a84ced00009db45cf2d85650680037ca8c15f1a5efd698365f6c4bee7bc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "signature_after": "35292d4af5da1d0545116994d4fa60c85d13c5b347a879b20f5cffd32e70464c",
+      "signature_before": "54656e1180777199cf636dfa8be87583faa08b4be25f0b679b3d43143758657a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_model_fit",
+      "signature_after": "92d2aecfb5e977e69c480a40577f16c0d7f5a40254044b23b9d85b97d7f69988",
+      "signature_before": "9a2610d401a0cb1160f16c73effd1b7f761920f4340dc3b9694889b03de30f1a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "7b6bd0d9e5db8b1c2d77ff72b9ee5e68547c0dc567d445dac974af42fce7d9df",
+      "signature_before": "1a2f85b601642521ae7affa4624ebf5f543f8c453eb671026f9f9a3c97676947",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "signature_after": "01af75b39af7216acd04e0aaaaf95daedf2c33f8b287f847f71ce91d0e16bc2c",
+      "signature_before": "a3eb0855935df66f44d255539a67197020b2ab34ff3022d2031751f0203d27ad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "61a53137c3cbde52d1a57edd16a58a06a6a7e426634d09eb3d08c448956fb360",
+      "signature_before": "80fa039df23a487eb6838833769c4a4ed10825e3440e22eee00819c18ba6d6e4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "signature_after": "374b56688d86d081638054430f91f19101ad76c4161e1c77f0a1e3f8c96f7622",
+      "signature_before": "af5dfb9bca7dddb25f7b38fe820c8f1892bae8dd62ed4ed80b295692c6ac1f27",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_regression_auto",
+      "signature_after": "0e64eb47a0324581e6e7c9d9b75ecb2deab2844317e9881c671495da5b3da8ac",
+      "signature_before": "d6d4c36dc8991a3db4053c61a3f073af2e332f831b8698bd5a2f1e315f417ca6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "signature_after": "518d8b01add09a1a9bb4adab2514eaa7ca948cc29c23787349f5433d6b07f73e",
+      "signature_before": "799fcf6b71118f9d6642563d4d8a324c5cfdb777f757b40ab7247a727eed6d2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "signature_after": "75a68ab766eb85bffdd9e55742dcb3494bc512d9f33c00ba7ee123ea45db16cd",
+      "signature_before": "d85d5c24f0b442158c99d58fcc7d3cf48fda05523928264c3bbcf08d492cc6fe",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_pcp",
+      "signature_after": "be4b22cb2be9f18f2b99b3cd465696b3f0bf64e03e639ab6e61b718b7fdbca52",
+      "signature_before": "2fb2a6a36f5ecaf35577737d000349a80c66b4101c93e17afa7847416aa4a297",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "be4b22cb2be9f18f2b99b3cd465696b3f0bf64e03e639ab6e61b718b7fdbca52",
+      "signature_before": "2fb2a6a36f5ecaf35577737d000349a80c66b4101c93e17afa7847416aa4a297",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "f4b1fa2e22613c4276294c83f92b27ba4b99363cde0352ee0461f5174f518a2a",
+      "signature_before": "b1ad24c499d42794878b88a4ecf11481d1e73130f1324ce8c573cdb575a1fdfd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "cb81ca47e958ac81ff1e066672b352e9fd644199bba85ae588ebe268e484ed00",
+      "signature_before": "55edc4f3c0616df6063111110f4e0aaffb82713315e315d1ce553d913939c359",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "e67f2fa2f6f185ef14eb5ac06b18524d673e7a025a37348355524e5c70a91c89",
+      "signature_before": "435118ed16e07b7e64011e60241128c33d2ba5d613482b46b6f48073c28a0164",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "signature_after": "99bdbd0eada4c4b2de6879611ac5a118b0189b501c70a031d76c767974850d04",
+      "signature_before": "6f2c3e9d52bee8274d0c1eed8c101445011bf3f1e50b7d84fc78be369da4737b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "b9f9f9c129a85bcef5973d96b3b7eaf46a89e6a2495ba5db64804560e58f3ea9",
+      "signature_before": "a1f4b28e5a7c6225848cdecca8961dfcfbf50340b2528cc0f37a79c52b35f409",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "signature_after": "3263ed6b8dd957cc775fd6d561f1e14d124121cab4e2afac850cb836c6bdd245",
+      "signature_before": "21cb10dd39c8b54e72ec5da1d2fdf51023be70e8cad9b4cce32e8cb7df4ee400",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "signature_after": "7eafc8874034f8d358e2727432587b21acaacee9f98310adc63823d3682d38ac",
+      "signature_before": "babceb2350a74d78fbd13ba63842d3075e8d4db62e13092af8897b71961aa449",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "signature_after": "b2381e31b2f2cafa09592633d28d77cd9ab6d1d7f4941de266384cc6ed4dd5c6",
+      "signature_before": "b4ff130799a2720b3ce9d30bed552e019a377a8639394b3dbf6ec666c0e7d847",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "signature_after": "7c367b20afa8bc5fde12d3232487022aeb140a6e0b45e69bb1ac421720fc7635",
+      "signature_before": "2b6db1a7bb36e3b87becc938646288dd9f1cd3170bfcd454a72de366276e4181",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+      "signature_after": "b3a11a91e8286843469b2c3daba3f93d9e95329ad3fefc65cc612eef5e57490f",
+      "signature_before": "3aa703e42d78fccf1adbd000c1ffd6889184cb306289c6fa0da81bbc7bb7763a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "signature_after": "9cd5881ee55a3a7f73a78a5420c4a6ab9f77dbce71fd8e316ca7c6e18895bbe1",
+      "signature_before": "9b857849d9614ed5cc2ba06a4d47c9538cd9d6407506babeb60de61e7d886bb5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "signature_after": "aab9c5368edfadf0f7ba13f4c05c6d2868b84b44b12d47a561960aa63eec7c32",
+      "signature_before": "d15945faaf4031eadc0d8e55bfa2437466f4dbfcb85da8962f359ec093bb49ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
+      "signature_after": "7da3a73e5c26e8c974cafe42ec89c9b42c09699aa8fa6843d477715354abdc7c",
+      "signature_before": "3d7a9c96dd276131f786e5aaae7b091282fb0832d9ea5c3e18ada88c73e53467",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_kalman_residuals",
+      "signature_after": "566760d6e2b3017bde0cb8036c4fe1bd940a2ffb7f75aa37268492d586a0cb99",
+      "signature_before": "a6f53c95ab49f7fa8dcdd294b54c459bf805a7a3beb6236c39c5dcb73237b35b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "signature_after": "b6a9e7189e8254cf0ea55c4ffe45b960b7dc6f00d03b4619d2541543edfb2d31",
+      "signature_before": "4330fa8e0644fc24d3583bbc39f251a85a20e130c3dc49bba7a275bba7aa2dee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "signature_after": "866e124e5f2abc5c3f7b55220f40d8ea99749d62000d3fac815b17542f91c56d",
+      "signature_before": "4f991dce4274e98f55bccb519cc8102c092e91ff4ee4e91226b749ada9910f5c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
+      "signature_after": "29e369876ac45c7f63a1b61c04054b055f0ddc1b20c6eecacf943b17f73043af",
+      "signature_before": "ac9ea453fb2dc488a6f1e61917b48678c5d2df630aa32392700a318e91d877a9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_surface_fabric_sso_eigen",
+      "signature_after": "bd7d084d320b76e53522fb37186a1b907f08723c620262f4bf4062b0d79be643",
+      "signature_before": "26ae5b56faa5edce5516afc5dcafa402029aa50d8bcfddd514d2086924c9fdbf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from dryrun_debug_20260221T1630Z",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 0,
+    "budget_json": 0,
+    "debug_json": 246,
+    "error_json": 0,
+    "findings_json": 0,
+    "metrics_json": 0,
+    "references_json": 0,
+    "summary": 246
+  },
+  "material_changed_plugins": [],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 254,
+    "before": 254,
+    "material_payload_changed": 0,
+    "payload_changed": 246,
+    "removed": 0,
+    "status_changed": 0
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-21T19:32:47.742178+00:00",
+    "created_at": "2026-02-21T19:23:18.304052+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "debug_fg_baseline_20260221T1923Z",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "run_before": {
+    "completed_at": "2026-02-21T16:42:53.788890+00:00",
+    "created_at": "2026-02-21T16:28:37.990394+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "dryrun_debug_20260221T1630Z",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "ok": 254
+    },
+    "before": {
+      "ok": 254
+    }
+  }
+}

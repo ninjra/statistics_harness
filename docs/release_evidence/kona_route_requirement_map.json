@@ -1,0 +1,46 @@
+{
+  "schema_version": "kona_route_requirement_map.v1",
+  "source_doc": "codex_kona_route_updates.md",
+  "items": [
+    {
+      "requirement": "kona_route_plan schema",
+      "target": "docs/schemas/kona_route_plan.schema.json",
+      "status": "implemented"
+    },
+    {
+      "requirement": "deterministic route solver core",
+      "target": "src/statistic_harness/core/ideaspace_route.py",
+      "status": "implemented"
+    },
+    {
+      "requirement": "verifier route config defaults",
+      "target": "plugins/analysis_ebm_action_verifier_v1/config.schema.json",
+      "status": "implemented"
+    },
+    {
+      "requirement": "verifier route integration + route finding kind",
+      "target": "src/statistic_harness/core/stat_plugins/ideaspace.py",
+      "status": "implemented"
+    },
+    {
+      "requirement": "route recommendation mapping",
+      "target": "src/statistic_harness/core/report.py",
+      "status": "implemented"
+    },
+    {
+      "requirement": "route extraction preference in dataset runner",
+      "target": "scripts/run_loaded_dataset_full.py",
+      "status": "implemented"
+    },
+    {
+      "requirement": "ideaspace cache hash includes route module",
+      "target": "src/statistic_harness/core/stat_plugins/code_hash.py",
+      "status": "implemented"
+    },
+    {
+      "requirement": "route schema and integration tests",
+      "target": "tests/test_kona_route_plan_schema.py",
+      "status": "implemented"
+    }
+  ]
+}

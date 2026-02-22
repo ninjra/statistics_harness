@@ -27,6 +27,10 @@ _NEXT_STEP_POLICY_PARENT_PREFIX = "Current target is policy-blocked"
 _NEXT_STEP_CAPACITY_PREFIX = "Capacity impact was not applicable for current slices"
 _NEXT_STEP_DOWNSTREAM_PREFIX = "Review downstream plugin outputs for action decisions:"
 _NEXT_STEP_CONFIRM_PREFIX = "Confirm whether this plugin should have downstream consumers"
+_NEXT_STEP_FAILURE_PREFIX = "Fix the plugin failure and rerun the full gauntlet."
+_NEXT_STEP_PREREQ_PREFIX = "Verify input prerequisites;"
+_NEXT_STEP_KIND_PREFIX = "Normalize finding kind values"
+_NEXT_STEP_COVERAGE_PREFIX = "Confirm data coverage and add plugin-native findings"
 
 
 def _classify_next_step_lane(row: dict[str, Any]) -> tuple[str, str]:
@@ -50,6 +54,14 @@ def _classify_next_step_lane(row: dict[str, Any]) -> tuple[str, str]:
         return "downstream_review_contract", "explained_non_actionable"
     if next_step.startswith(_NEXT_STEP_CONFIRM_PREFIX):
         return "standalone_or_downstream_decision", "explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_FAILURE_PREFIX):
+        return "failure_recovery_contract", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_PREREQ_PREFIX):
+        return "prerequisite_contract", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_KIND_PREFIX):
+        return "finding_schema_contract", "actionable_or_deterministic_explained_non_actionable"
+    if next_step.startswith(_NEXT_STEP_COVERAGE_PREFIX):
+        return "data_coverage_contract", "actionable_or_deterministic_explained_non_actionable"
     if not next_step:
         return "missing_next_step", "manual_triage_required"
     return "unmapped_next_step", "manual_triage_required"

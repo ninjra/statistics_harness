@@ -1,0 +1,255 @@
+plugin_id,plugin_type,plugin_name,plugin_status,actionability_state,recommendation_count,actionable_via_discovery,reason_code,reason_code_detail,recommended_next_step,next_step_lane_id,expected_post_state,finding_count,finding_kind_preview,plugin_summary
+analysis_action_search_mip_batched_scheduler_v1,analysis,Action Search (MIP Batched Scheduler),ok,actionable,2,True,,,,already_actionable,actionable,1,actionable_ops_lever,Optimized action combo (MIP) with 8 actions
+analysis_action_search_simulated_annealing_v1,analysis,Action Search (Simulated Annealing),ok,actionable,2,True,,,,already_actionable,actionable,1,actionable_ops_lever,Optimized action combo (annealing) with 8 actions
+analysis_actionable_ops_levers_v1,analysis,Actionable Ops Levers (v1),ok,actionable,8,True,,,,already_actionable,actionable,20,actionable_ops_lever,Generated 20 actionable lever recommendation(s)
+analysis_aft_survival_lognormal_v1,analysis,analysis_aft_survival_lognormal_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed AFT lognormal proxy model.
+analysis_anova_auto,analysis,Anova Auto,ok,actionable,1,True,,,,already_actionable,actionable,0,,"ANOVA: no eligible (process,group) slices under k-min/budget"
+analysis_association_rules_apriori_v1,analysis,Association Rules (Apriori),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_association_rules_apriori_v1 not applicable: No parameter keys found in parameter_kv
+analysis_attribution,analysis,Attribution Analysis,ok,actionable,5,True,,,,already_actionable,actionable,9,attribution,Attributed eligible wait by dimension
+analysis_bayesian_online_changepoint_studentt_v1,analysis,analysis_bayesian_online_changepoint_studentt_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed robust online changepoint score.
+analysis_bayesian_point_displacement,analysis,Bayesian Point Displacement,ok,actionable,1,True,,,,already_actionable,actionable,2,bayesian_point_displacement,Bayesian displacement columns=6 strong=2
+analysis_benfords_law_anomaly_v1,analysis,analysis_benfords_law_anomaly_v1,ok,actionable,1,True,,,,already_actionable,actionable,6,,Computed Benford diagnostics.
+analysis_beta_binomial_overdispersion_v1,analysis,analysis_beta_binomial_overdispersion_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_beta_binomial_overdispersion_v1 not applicable: analysis_beta_binomial_overdispersion_v1 failed
+analysis_biclustering_cheng_church_v1,analysis,Biclustering (Process×Param Coherence),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_biclustering_cheng_church_v1 not applicable: Insufficient process/param-key matrix for biclustering
+analysis_bocpd_gaussian,analysis,BOCPD Gaussian,ok,actionable,1,True,,,,already_actionable,actionable,7,changepoint,Computed BOCPD changepoints
+analysis_bootstrap_ci_effect_sizes_v1,analysis,analysis_bootstrap_ci_effect_sizes_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_bootstrap_ci_effect_sizes_v1 not applicable: analysis_bootstrap_ci_effect_sizes_v1 failed
+analysis_bsts_intervention_counterfactual_v1,analysis,analysis_bsts_intervention_counterfactual_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_bsts_intervention_counterfactual_v1 not applicable: analysis_bsts_intervention_counterfactual_v1 failed
+analysis_burst_detection_kleinberg,analysis,Burst Detection Kleinberg,ok,actionable,1,True,,,,already_actionable,actionable,1,,Burst detection complete
+analysis_burst_modeling_hawkes_v1,analysis,Burst Modeling (Hawkes-Style),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_burst_modeling_hawkes_v1 not applicable: No sufficient time series for burst model
+analysis_busy_period_segmentation_v2,analysis,Busy Period Segmentation v2,ok,actionable,1,True,,,,already_actionable,actionable,1,busy_period_summary,Computed 1 busy periods
+analysis_capacity_frontier_envelope_v1,analysis,analysis_capacity_frontier_envelope_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed capacity frontier envelope.
+analysis_capacity_scaling,analysis,Capacity Scaling Scenario,ok,actionable,5,True,,,,already_actionable,actionable,8,capacity_scaling,Modeled capacity scaling impact
+analysis_cca_crossblock_association_v1,analysis,analysis_cca_crossblock_association_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed cross-block CCA diagnostics.
+analysis_chain_makespan,analysis,Chain Makespan Analysis,ok,actionable,1,True,,,,already_actionable,actionable,10,chain_makespan,Computed chain makespan statistics
+analysis_change_impact_pre_post,analysis,Change Impact Pre Post,ok,actionable,1,True,,,,already_actionable,actionable,1,,Pre/post impact computed
+analysis_change_score_consensus_v1,analysis,analysis_change_score_consensus_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_change_score_consensus_v1 not applicable: analysis_change_score_consensus_v1 timed out
+analysis_changepoint_energy_edivisive,analysis,Changepoint Energy Edivisive,ok,actionable,1,True,,,,already_actionable,actionable,1,,Energy changepoint detection complete
+analysis_changepoint_method_survey_guided,analysis,Changepoint Method Survey Guided,ok,actionable,1,True,,,,already_actionable,actionable,21,,Changepoint ensemble complete
+analysis_changepoint_pelt,analysis,Changepoint Pelt,ok,actionable,1,True,,,,already_actionable,actionable,20,,Changepoint detection complete
+analysis_chi_square_association,analysis,Chi Square Association,ok,actionable,1,True,,,,already_actionable,actionable,8,chi_square_association,Chi-square: computed=66 significant=8
+analysis_circular_time_of_day_drift_v1,analysis,analysis_circular_time_of_day_drift_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed circular time-of-day drift metrics.
+analysis_close_cycle_capacity_impact,analysis,Close Cycle Capacity Impact,ok,actionable,1,True,,,,already_actionable,actionable,2,close_cycle_capacity_impact,Computed close-cycle capacity impact
+analysis_close_cycle_capacity_model,analysis,Close Cycle Capacity Model,ok,actionable,3,True,,,,already_actionable,actionable,7,close_cycle_capacity_model;spillover_past_eom,Computed close-cycle capacity model
+analysis_close_cycle_change_point_v1,analysis,Close Cycle Change Point (Heuristic),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_close_cycle_change_point_v1 not applicable: No close-cycle drift detected
+analysis_close_cycle_contention,analysis,Close Cycle Contention Analysis,ok,actionable,1,True,,,,already_actionable,actionable,0,,No close-cycle contention candidates found
+analysis_close_cycle_duration_shift,analysis,Close Cycle Duration Shift Analysis,ok,actionable,3,True,,,,already_actionable,actionable,1,spillover_past_eom,Detected duration-shift candidates
+analysis_close_cycle_revenue_compression,analysis,Close Cycle Revenue Compression,ok,actionable,1,True,,,,already_actionable,actionable,1,close_cycle_revenue_compression,no_revenue_process_match
+analysis_close_cycle_start_backtrack_v1,analysis,Close Cycle Start Backtrack v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,No accounting month markers found for close-start backtracking.
+analysis_close_cycle_uplift,analysis,Close Cycle Uplift Analysis,ok,actionable,1,True,,,,already_actionable,actionable,0,,No close-cycle share-shift candidates found
+analysis_close_cycle_window_resolver,analysis,Close Cycle Window Resolver,ok,actionable,1,True,,,,already_actionable,actionable,0,,No accounting month markers found for close cycle resolution.
+analysis_cluster_analysis_auto,analysis,Cluster Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,cluster_analysis_auto,Cluster analysis computed
+analysis_competing_risks_cif_v1,analysis,analysis_competing_risks_cif_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_competing_risks_cif_v1 not applicable: analysis_competing_risks_cif_v1 failed
+analysis_concurrency_reconstruction,analysis,Concurrency Reconstruction,ok,actionable,1,True,,,,already_actionable,actionable,7,concurrency_summary,Reconstructed concurrency timeline
+analysis_conformal_feature_prediction,analysis,Conformal Feature Prediction,ok,actionable,1,True,,,,already_actionable,actionable,828,anomaly,Computed conformal anomalies
+analysis_conformance_alignments,analysis,Conformance Alignments,ok,actionable,1,True,,,,already_actionable,actionable,1,,Conformance alignment check complete
+analysis_conformance_checking,analysis,Conformance Checking,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_conformance_checking not applicable: No transitions detected
+analysis_constrained_clustering_cop_kmeans_v1,analysis,Constrained Clustering (COP-KMeans),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_constrained_clustering_cop_kmeans_v1 not applicable: Insufficient data for constrained clustering
+analysis_constraints_violation_detector_v1,analysis,analysis_constraints_violation_detector_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_constraints_violation_detector_v1 not applicable: analysis_constraints_violation_detector_v1 failed
+analysis_control_chart_cusum,analysis,Control Chart Cusum,ok,actionable,1,True,,,,already_actionable,actionable,30,,CUSUM alarms detected
+analysis_control_chart_ewma,analysis,Control Chart Ewma,ok,actionable,1,True,,,,already_actionable,actionable,30,,EWMA alarms detected
+analysis_control_chart_individuals,analysis,Control Chart Individuals,ok,actionable,1,True,,,,already_actionable,actionable,30,,Individuals chart alarms detected
+analysis_control_chart_suite,analysis,Control Chart Suite,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 control-chart alarms.
+analysis_copula_dependence,analysis,Copula Dependence,ok,actionable,1,True,,,,already_actionable,actionable,1,,Copula dependence screen complete
+analysis_cur_decomposition_explain_v1,analysis,CUR Decomposition Explainability,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed CUR decomposition (rank=6)
+analysis_cusum_on_model_residuals_v1,analysis,analysis_cusum_on_model_residuals_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed CUSUM on detrended residuals.
+analysis_daily_pattern_alignment_dtw_v1,analysis,Daily Pattern Alignment (DTW),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_daily_pattern_alignment_dtw_v1 not applicable: Insufficient processes for DTW comparison
+analysis_density_clustering_hdbscan_v1,analysis,Density Clustering (HDBSCAN),ok,actionable,1,True,,,,already_actionable,actionable,20,actionable_ops_lever,HDBSCAN clustered 1384 entities into 29 clusters
+analysis_dependency_community_leiden_v1,analysis,Dependency Community Detection (Leiden),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_dependency_community_leiden_v1 not applicable: No transition edges found (graph empty)
+analysis_dependency_community_louvain_v1,analysis,Dependency Community Detection (Louvain),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_dependency_community_louvain_v1 not applicable: No transition edges found (graph empty)
+analysis_dependency_critical_path_v1,analysis,Dependency Critical Path (Proxy),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_dependency_critical_path_v1 not applicable: Missing required columns for dependency critical path
+analysis_dependency_graph_change_detection,analysis,Dependency Graph Change Detection,ok,actionable,1,True,,,,already_actionable,actionable,1,,Dependency graph change detection complete
+analysis_dependency_resolution_join,analysis,Dependency Resolution Join,ok,actionable,1,True,,,,already_actionable,actionable,1,dependency_lag_summary,Computed dependency lag distribution
+analysis_determinism_discipline,analysis,Determinism Discipline,ok,actionable,1,True,,,,already_actionable,actionable,1,determinism_discipline_summary,Checked measurement_type discipline
+analysis_diffusion_maps_manifold_v1,analysis,Diffusion Maps Manifold Drift,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed diffusion maps manifold embedding
+analysis_dirichlet_multinomial_categorical_overdispersion_v1,analysis,analysis_dirichlet_multinomial_categorical_overdispersion_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed categorical overdispersion proxy.
+analysis_discrete_event_queue_simulator_v1,analysis,Discrete-Event Queue Simulator,ok,actionable,1,True,,,,already_actionable,actionable,1,actionable_ops_lever,Simulation complete
+analysis_distance_correlation_screen_v1,analysis,analysis_distance_correlation_screen_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,No actionable result: quadratic_cap_exceeded
+analysis_distance_covariance_dependence_v1,analysis,analysis_distance_covariance_dependence_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_distance_covariance_dependence_v1 not applicable: analysis_distance_covariance_dependence_v1 failed
+analysis_distribution_drift_suite,analysis,Distribution Drift Suite,ok,actionable,1,True,,,,already_actionable,actionable,0,,No significant drift detected.
+analysis_distribution_shift_wasserstein_v1,analysis,Distribution Shift (Wasserstein/EMD),ok,actionable,1,True,,,,already_actionable,actionable,0,,No eligible processes for shift analysis after exclusions
+analysis_dmd_koopman_modes_v1,analysis,Dynamic Mode Decomposition Koopman Modes,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed DMD over 12000 observations
+analysis_dp_gmm,analysis,DP GMM,ok,actionable,1,True,,,,already_actionable,actionable,2,cluster,Computed DP GMM clusters
+analysis_drift_adwin,analysis,Drift Adwin,ok,actionable,1,True,,,,already_actionable,actionable,0,,ADWIN drift check complete
+analysis_dynamic_close_detection,analysis,Dynamic Close Window Detection,ok,actionable,1,True,,,,already_actionable,actionable,0,,No accounting month markers found for dynamic close detection.
+analysis_ebm_action_verifier_v1,analysis,EBM Action Verifier (Kona Layer),ok,actionable,1,True,,,,already_actionable,actionable,1,verified_action,Verified 1 actions
+analysis_effect_size_report,analysis,Effect Size Report,ok,actionable,1,True,,,,already_actionable,actionable,2,,Effect size report generated
+analysis_empirical_bayes_shrinkage_v1,analysis,Empirical Bayes Shrinkage Rankings,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_empirical_bayes_shrinkage_v1 not applicable: No per-process numeric stats available for shrinkage
+analysis_energy_distance_two_sample_v1,analysis,analysis_energy_distance_two_sample_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_energy_distance_two_sample_v1 not applicable: analysis_energy_distance_two_sample_v1 failed
+analysis_event_count_bocpd_poisson,analysis,Event Count Bocpd Poisson,ok,actionable,1,True,,,,already_actionable,actionable,1,,BOCPD Poisson scan complete
+analysis_evt_gumbel_tail,analysis,Evt Gumbel Tail,ok,actionable,1,True,,,,already_actionable,actionable,5,,EVT Gumbel tail analysis complete
+analysis_evt_peaks_over_threshold,analysis,Evt Peaks Over Threshold,ok,actionable,1,True,,,,already_actionable,actionable,2,,EVT POT analysis complete
+analysis_factor_analysis_auto,analysis,Factor Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,factor_analysis_auto,Factor/PCA summary computed
+analysis_factor_rotation_varimax_v1,analysis,analysis_factor_rotation_varimax_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed varimax rotation diagnostics.
+analysis_fisher_exact_enrichment_v1,analysis,analysis_fisher_exact_enrichment_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed Fisher enrichment scan.
+analysis_frequent_directions_cov_sketch_v1,analysis,Frequent Directions Covariance Sketch,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Built covariance sketch with Frequent Directions
+analysis_frequent_itemsets_fpgrowth_v1,analysis,Frequent Param Sets (FP-Growth),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_frequent_itemsets_fpgrowth_v1 not applicable: No parameter keys found in parameter_kv
+analysis_fused_lasso_trend_filtering_v1,analysis,analysis_fused_lasso_trend_filtering_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_fused_lasso_trend_filtering_v1 not applicable: analysis_fused_lasso_trend_filtering_v1 failed
+analysis_gam_spline_regression_v1,analysis,analysis_gam_spline_regression_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed spline regression diagnostics.
+analysis_garch_volatility_shift_v1,analysis,analysis_garch_volatility_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed volatility shift ratio.
+analysis_gaussian_copula_shift,analysis,Gaussian Copula Shift,ok,actionable,1,True,,,,already_actionable,actionable,5,dependence_shift,Computed copula shift
+analysis_gaussian_knockoffs,analysis,Gaussian Knockoffs,ok,actionable,1,True,,,,already_actionable,actionable,42,feature_discovery,Computed knockoff selection
+analysis_geometric_median_multivariate_location_v1,analysis,analysis_geometric_median_multivariate_location_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,No actionable result: quadratic_cap_exceeded
+analysis_ges_score_based_causal_v1,analysis,GES-style Score-based Causal Graph,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Built GES-style graph with 1 edges
+analysis_graph_assortativity_shift_v1,analysis,analysis_graph_assortativity_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed graph assortativity shift.
+analysis_graph_min_cut_partition_v1,analysis,Graph Minimum Cut Partition,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_graph_min_cut_partition_v1 not applicable: No transition edges found (graph empty)
+analysis_graph_motif_triads_shift_v1,analysis,analysis_graph_motif_triads_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_graph_motif_triads_shift_v1 not applicable: analysis_graph_motif_triads_shift_v1 failed
+analysis_graph_pagerank_hotspots_v1,analysis,analysis_graph_pagerank_hotspots_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_graph_pagerank_hotspots_v1 not applicable: analysis_graph_pagerank_hotspots_v1 failed
+analysis_graph_topology_curves,analysis,Graph Topology Curves,ok,actionable,1,True,,,,already_actionable,actionable,1,topology,Computed topology curves (sampled 2000 of 500000)
+analysis_graphical_lasso_dependency_network,analysis,Graphical Lasso Dependency Network,ok,actionable,1,True,,,,already_actionable,actionable,1,,Graphical lasso network complete
+analysis_haar_wavelet_transient_detector_v1,analysis,analysis_haar_wavelet_transient_detector_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_haar_wavelet_transient_detector_v1 not applicable: analysis_haar_wavelet_transient_detector_v1 failed
+analysis_hawkes_self_exciting,analysis,Hawkes Self Exciting,ok,actionable,1,True,,,,already_actionable,actionable,1,,Hawkes-style clustering check complete
+analysis_heavy_tail_index_hill_v1,analysis,analysis_heavy_tail_index_hill_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed Hill tail index.
+analysis_higuchi_fractal_dimension_v1,analysis,analysis_higuchi_fractal_dimension_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed Higuchi fractal dimension.
+analysis_hmm_latent_state_sequences,analysis,Hmm Latent State Sequences,ok,actionable,1,True,,,,already_actionable,actionable,1,,Latent state sequence complete
+analysis_hold_time_attribution_v1,analysis,Hold Time Attribution,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_hold_time_attribution_v1 not applicable: No hold-dominant processes found
+analysis_hsic_independence_screen_v1,analysis,HSIC Nonlinear Dependence Screen,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Scored HSIC for 21 feature pairs
+analysis_hurst_exponent_long_memory_v1,analysis,analysis_hurst_exponent_long_memory_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed Hurst exponent long-memory diagnostics.
+analysis_ica_source_separation_v1,analysis,analysis_ica_source_separation_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed ICA/PCA source separation.
+analysis_icp_invariant_causal_prediction_v1,analysis,Invariant Causal Prediction Screen,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Evaluated invariance for 6 features
+analysis_ideaspace_action_planner,analysis,Ideaspace Action Planner,ok,actionable,1,True,,,,already_actionable,actionable,1,ideaspace_action,Generated 1 deterministic action recommendations.
+analysis_ideaspace_energy_ebm_v1,analysis,Ideaspace Energy EBM (Kona Layer),ok,actionable,1,True,,,,already_actionable,actionable,1,ideaspace_energy,Computed ideaspace energy and breakdown.
+analysis_ideaspace_normative_gap,analysis,Ideaspace Normative Gap,ok,actionable,1,True,,,,already_actionable,actionable,26,ideaspace_gap,"Computed ideaspace vectors, ideal reference, and gap vectors."
+analysis_isolation_forest,analysis,Isolation Forest,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 anomalies.
+analysis_isolation_forest_anomaly,analysis,Isolation Forest Anomaly,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 anomalies.
+analysis_issue_cards_v2,analysis,Issue Cards v2,ok,actionable,1,True,,,,already_actionable,actionable,1,issue_cards_summary,Built 5 issue cards
+analysis_kernel_two_sample_mmd,analysis,Kernel Two Sample Mmd,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_kernel_two_sample_mmd not applicable: analysis_kernel_two_sample_mmd failed
+analysis_kingman_vut_approx,analysis,Kingman Vut Approx,ok,actionable,1,True,,,,already_actionable,actionable,1,,Kingman VUT approximation complete
+analysis_knn_graph_two_sample_test_v1,analysis,kNN Graph Two-sample Test,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Completed kNN graph two-sample test
+analysis_knockoff_wrapper_rf,analysis,Knockoff Wrapper RF,ok,actionable,1,True,,,,already_actionable,actionable,42,feature_discovery,Computed RF knockoff selection
+analysis_ksd_stein_discrepancy_anomaly_v1,analysis,KSD Stein Discrepancy Anomaly,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed KSD anomaly ratio
+analysis_lagged_predictability_test,analysis,Lagged Predictability Test,ok,actionable,1,True,,,,already_actionable,actionable,1,,Lagged predictability check complete
+analysis_lingam_causal_discovery_v1,analysis,LiNGAM-style Causal Discovery,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Estimated LiNGAM-style edge hypotheses (1 edges)
+analysis_littles_law_consistency,analysis,Littles Law Consistency,ok,actionable,1,True,,,,already_actionable,actionable,1,,Little's Law check complete
+analysis_local_outlier_factor,analysis,Local Outlier Factor,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_local_outlier_factor not applicable: analysis_local_outlier_factor timed out
+analysis_log_template_drain,analysis,Log Template Drain,ok,actionable,1,True,,,,already_actionable,actionable,0,,Extracted 1 templates.
+analysis_log_template_mining_drain,analysis,Log Template Mining (Drain),ok,actionable,1,True,,,,already_actionable,actionable,0,,Extracted 1 templates.
+analysis_lomb_scargle_periodogram_v1,analysis,analysis_lomb_scargle_periodogram_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed periodicity scan.
+analysis_mann_kendall_trend_test_v1,analysis,analysis_mann_kendall_trend_test_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_mann_kendall_trend_test_v1 not applicable: analysis_mann_kendall_trend_test_v1 failed
+analysis_map_permutation_test_karniski,analysis,Map Permutation Test Karniski,ok,actionable,1,True,,,,already_actionable,actionable,1,map_permutation_test_karniski,Karniski-style permutation test computed
+analysis_marked_point_process_intensity_v1,analysis,analysis_marked_point_process_intensity_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed marked point-process intensity metrics.
+analysis_markov_transition_shift,analysis,Markov Transition Shift,ok,actionable,1,True,,,,already_actionable,actionable,0,,Markov transition shift complete
+analysis_matrix_profile_motifs_discords,analysis,Matrix Profile Motifs Discords,ok,actionable,1,True,,,,already_actionable,actionable,1,,Matrix profile scan complete
+analysis_message_entropy_drift,analysis,Message Entropy Drift,ok,actionable,1,True,,,,already_actionable,actionable,1,,Message entropy drift complete
+analysis_monte_carlo_surface_uncertainty,analysis,Monte Carlo Surface Uncertainty,ok,actionable,1,True,,,,already_actionable,actionable,1,monte_carlo_surface_uncertainty,Monte Carlo uncertainty iterations=200
+analysis_multicollinearity_vif_screen_v1,analysis,analysis_multicollinearity_vif_screen_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed VIF multicollinearity diagnostics.
+analysis_multiple_testing_fdr,analysis,Multiple Testing Fdr,ok,actionable,1,True,,,,already_actionable,actionable,0,,FDR screening completed
+analysis_multiscale_entropy_mse_v1,analysis,analysis_multiscale_entropy_mse_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_multiscale_entropy_mse_v1 not applicable: analysis_multiscale_entropy_mse_v1 failed
+analysis_multivariate_changepoint_pelt,analysis,Multivariate Changepoint (PELT),ok,actionable,1,True,,,,already_actionable,actionable,0,,No changepoints detected.
+analysis_multivariate_control_charts,analysis,Multivariate Control Charts,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 multivariate shifts.
+analysis_multivariate_ewma_control,analysis,Multivariate Ewma Control,ok,actionable,1,True,,,,already_actionable,actionable,1,,Multivariate MEWMA control complete
+analysis_multivariate_t2_control,analysis,Multivariate T2 Control,ok,actionable,1,True,,,,already_actionable,actionable,1,,Multivariate T² control complete
+analysis_mutual_information_screen,analysis,Mutual Information Screen,ok,actionable,1,True,,,,already_actionable,actionable,1,,Mutual information screen complete
+analysis_negative_binomial_overdispersion_v1,analysis,analysis_negative_binomial_overdispersion_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed negative-binomial overdispersion metrics.
+analysis_neural_additive_model_nam_v1,analysis,Neural Additive Model Approximation,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed NAM-style additive effect proxy
+analysis_node2vec_graph_embedding_drift_v1,analysis,Node2Vec-style Graph Embedding Drift,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_node2vec_graph_embedding_drift_v1 not applicable: Need process sequence data for node embeddings
+analysis_normalizing_flow_density_v1,analysis,Normalizing Flow Density Approximation,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed normalizing-flow-like density proxy
+analysis_notears_linear,analysis,NOTEARS Linear,ok,actionable,1,True,,,,already_actionable,actionable,2,graph_edge,Estimated graph
+analysis_one_class_svm,analysis,One Class Svm,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_one_class_svm not applicable: analysis_one_class_svm timed out
+analysis_online_conformal_changepoint,analysis,Online Conformal Changepoint,ok,actionable,1,True,,,,already_actionable,actionable,3,changepoint,Detected changepoints
+analysis_outlier_influence_cooks_distance_v1,analysis,analysis_outlier_influence_cooks_distance_v1,ok,actionable,1,True,,,,already_actionable,actionable,10,,Computed Cook's distance influence diagnostics.
+analysis_param_near_duplicate_minhash_v1,analysis,Param Near-Duplicate Detection (MinHash/LSH),ok,actionable,1,True,,,,already_actionable,actionable,0,,No near-duplicate clusters found (MinHash)
+analysis_param_near_duplicate_simhash_v1,analysis,Param Near-Duplicate Detection (SimHash),ok,actionable,1,True,,,,already_actionable,actionable,0,,No near-duplicate clusters found (SimHash)
+analysis_param_variant_explosion_v1,analysis,Param Variant Explosion,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_param_variant_explosion_v1 not applicable: No variant explosion hotspots found
+analysis_partial_correlation_network_shift_v1,analysis,analysis_partial_correlation_network_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed partial-correlation network shift.
+analysis_pc_algorithm_causal_graph_v1,analysis,PC Algorithm Causal Skeleton,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Built PC-style skeleton with 1 edges
+analysis_pca_auto,analysis,Pca Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,pca_auto,PCA computed
+analysis_pca_control_chart,analysis,Pca Control Chart,ok,actionable,1,True,,,,already_actionable,actionable,1,,PCA control chart complete
+analysis_percentile_analysis,analysis,Percentile Analysis,ok,actionable,1,True,,,,already_actionable,actionable,10,percentile_stats,Computed percentile statistics
+analysis_periodicity_spectral_scan,analysis,Periodicity Spectral Scan,ok,actionable,1,True,,,,already_actionable,actionable,1,,Spectral periodicity scan complete
+analysis_permutation_entropy_drift_v1,analysis,analysis_permutation_entropy_drift_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed permutation entropy drift.
+analysis_phate_trajectory_embedding_v1,analysis,PHATE-like Trajectory Embedding,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed PHATE-like trajectory embedding proxy
+analysis_piecewise_linear_trend_changepoints_v1,analysis,analysis_piecewise_linear_trend_changepoints_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_piecewise_linear_trend_changepoints_v1 not applicable: analysis_piecewise_linear_trend_changepoints_v1 failed
+analysis_poisson_regression_rate_drivers_v1,analysis,analysis_poisson_regression_rate_drivers_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed Poisson-style rate driver model.
+analysis_process_counterfactuals,analysis,Process Counterfactuals,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_process_counterfactuals not applicable: analysis_process_counterfactuals output validation failed: modeled finding missing assumptions; modeled finding missing scope
+analysis_process_drift_conformance_over_time,analysis,Process Drift Conformance Over Time,ok,actionable,1,True,,,,already_actionable,actionable,1,,Process drift analysis complete
+analysis_process_sequence,analysis,Process Sequence Mining,ok,actionable,1,True,,,,already_actionable,actionable,20,process_variant,Computed process sequence variants
+analysis_process_sequence_bottlenecks,analysis,Process Sequence Bottlenecks,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_process_sequence_bottlenecks not applicable: Missing case/process/start columns
+analysis_proportional_hazards_duration,analysis,Proportional Hazards Duration,ok,actionable,1,True,,,,already_actionable,actionable,1,,Proportional hazards proxy complete
+analysis_quantile_loss_boosting_v1,analysis,analysis_quantile_loss_boosting_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed quantile boosting diagnostics.
+analysis_quantile_mapping_drift_qq_v1,analysis,analysis_quantile_mapping_drift_qq_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_quantile_mapping_drift_qq_v1 not applicable: analysis_quantile_mapping_drift_qq_v1 failed
+analysis_quantile_regression_duration,analysis,Quantile Regression Duration,ok,actionable,1,True,,,,already_actionable,actionable,1,,Quantile duration analysis complete
+analysis_quantile_regression_forest_v1,analysis,analysis_quantile_regression_forest_v1,ok,actionable,1,True,,,,already_actionable,actionable,10,,Computed quantile regression forest diagnostics.
+analysis_quantile_sketch_p2_streaming_v1,analysis,analysis_quantile_sketch_p2_streaming_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_quantile_sketch_p2_streaming_v1 not applicable: analysis_quantile_sketch_p2_streaming_v1 failed
+analysis_queue_delay_decomposition,analysis,Queue Delay Decomposition,ok,actionable,1,True,,,,already_actionable,actionable,10,capacity_scale_model;eligible_wait_process_stats,Computed queue delay decomposition
+analysis_queue_model_fit,analysis,Queue Model Fit,ok,actionable,1,True,,,,already_actionable,actionable,1,,Queue model fit complete
+analysis_random_matrix_marchenko_pastur_denoise_v1,analysis,analysis_random_matrix_marchenko_pastur_denoise_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed MP denoising diagnostics.
+analysis_randomization_test_median_shift_v1,analysis,analysis_randomization_test_median_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_randomization_test_median_shift_v1 not applicable: analysis_randomization_test_median_shift_v1 failed
+analysis_recommendation_dedupe_v2,analysis,Recommendation Dedupe v2,ok,actionable,1,True,,,,already_actionable,actionable,1,recommendation_dedupe_summary,Deduplicated 21 recommendations
+analysis_recurrence_quantification_rqa_v1,analysis,analysis_recurrence_quantification_rqa_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,No actionable result: quadratic_cap_exceeded
+analysis_regression_auto,analysis,Regression Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,regression_auto_drivers,Regression drivers for 'PRIORITY_CD': top=12
+analysis_retry_rate_hotspots_v1,analysis,Retry Rate Hotspots,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_retry_rate_hotspots_v1 not applicable: Missing required columns for retry-rate hotspots
+analysis_robust_covariance_outliers,analysis,Robust Covariance Outliers,ok,actionable,1,True,,,,already_actionable,actionable,1,,Robust covariance analysis complete
+analysis_robust_pca_pcp,analysis,Robust Pca Pcp,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 sparse outliers.
+analysis_robust_pca_sparse_outliers,analysis,Robust PCA Sparse Outliers,ok,actionable,1,True,,,,already_actionable,actionable,30,,Detected 30 sparse outliers.
+analysis_robust_regression_huber_ransac_v1,analysis,analysis_robust_regression_huber_ransac_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed robust regression diagnostics.
+analysis_sample_entropy_irregularity_v1,analysis,analysis_sample_entropy_irregularity_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed sample entropy irregularity metrics.
+analysis_scan_statistics,analysis,Scan Statistics,ok,actionable,1,True,,,,already_actionable,actionable,7,cluster,Computed scan statistics
+analysis_seasonal_holt_winters_forecast_residuals_v1,analysis,analysis_seasonal_holt_winters_forecast_residuals_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_seasonal_holt_winters_forecast_residuals_v1 not applicable: analysis_seasonal_holt_winters_forecast_residuals_v1 failed
+analysis_sequence_classification,analysis,Standalone vs Sequence Classification,ok,actionable,1,True,,,,already_actionable,actionable,10,sequence_classification,Classified standalone vs sequence-linked runs
+analysis_sequence_grammar_sequitur_v1,analysis,Sequence Grammar Inference (SEQUITUR),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_sequence_grammar_sequitur_v1 not applicable: No case sequences found
+analysis_sequential_patterns_prefixspan,analysis,Sequential Patterns Prefixspan,ok,actionable,1,True,,,,already_actionable,actionable,0,,Sequential pattern mining complete
+analysis_sequential_patterns_prefixspan_v1,analysis,Sequential Patterns (PrefixSpan),ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_sequential_patterns_prefixspan_v1 not applicable: No case sequences found
+analysis_similarity_graph_spectral_clustering_v1,analysis,Similarity Graph Spectral Clustering,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_similarity_graph_spectral_clustering_v1 not applicable: Insufficient processes for spectral clustering
+analysis_sinkhorn_ot_drift_v1,analysis,Sinkhorn OT Drift,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed Sinkhorn OT drift for 7 features
+analysis_sparse_pca_interpretable_components_v1,analysis,analysis_sparse_pca_interpretable_components_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed sparse PCA components.
+analysis_spectral_radius_stability_v1,analysis,analysis_spectral_radius_stability_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed spectral radius stability metrics.
+analysis_ssa_decomposition_changepoint_v1,analysis,SSA Decomposition and Changepoint,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Computed SSA changepoints over 15000 rows
+analysis_state_space_kalman_residuals,analysis,State Space Kalman Residuals,ok,actionable,1,True,,,,already_actionable,actionable,1,,Kalman residual scan complete
+analysis_state_space_smoother_level_shift_v1,analysis,analysis_state_space_smoother_level_shift_v1,ok,actionable,1,True,,,,already_actionable,actionable,0,,Computed state-space smoother level shift.
+analysis_stl_seasonal_decompose_v1,analysis,analysis_stl_seasonal_decompose_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_stl_seasonal_decompose_v1 not applicable: analysis_stl_seasonal_decompose_v1 failed
+analysis_subspace_tracking_oja_v1,analysis,analysis_subspace_tracking_oja_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed Oja subspace tracking diagnostics.
+analysis_surface_fabric_sso_eigen,analysis,Surface Fabric Sso Eigen,ok,actionable,1,True,,,,already_actionable,actionable,1,surface_fabric_sso_eigen,Surface fabric eigen-analysis computed
+analysis_surface_fractal_dimension_variogram,analysis,Surface Fractal Dimension Variogram,ok,actionable,1,True,,,,already_actionable,actionable,5,surface_fractal_dimension_variogram,Variogram fractal metrics columns=6
+analysis_surface_hydrology_flow_watershed,analysis,Surface Hydrology Flow Watershed,ok,actionable,1,True,,,,already_actionable,actionable,1,surface_hydrology_flow_watershed,Hydrology/watershed proxy computed
+analysis_surface_multiscale_wavelet_curvature,analysis,Surface Multiscale Wavelet Curvature,ok,actionable,1,True,,,,already_actionable,actionable,5,surface_multiscale_wavelet_curvature,Surface curvature computed for 6 columns
+analysis_surface_roughness_metrics,analysis,Surface Roughness Metrics,ok,actionable,1,True,,,,already_actionable,actionable,5,surface_roughness_metrics,Surface roughness computed for 6 columns
+analysis_surface_rugosity_index,analysis,Surface Rugosity Index,ok,actionable,1,True,,,,already_actionable,actionable,5,surface_rugosity_index,Rugosity computed for 6 columns
+analysis_surface_terrain_position_index,analysis,Surface Terrain Position Index,ok,actionable,1,True,,,,already_actionable,actionable,5,surface_terrain_position_index,Terrain position computed for 6 columns
+analysis_survival_kaplan_meier,analysis,Survival Kaplan Meier,ok,actionable,1,True,,,,already_actionable,actionable,1,,Survival analysis complete
+analysis_survival_time_to_event,analysis,Survival Time To Event,ok,actionable,1,True,,,,already_actionable,actionable,1,survival_time_to_event,Survival summary computed
+analysis_symbolic_regression_gp_v1,analysis,Symbolic Regression GP Approximation,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Selected symbolic-regression proxy expression
+analysis_tabpfn_foundation_tabular_v1,analysis,TabPFN-style Few-shot Tabular Baseline,ok,actionable,1,True,,,,already_actionable,actionable,1,leftfield_signal,Single-class target after binarization; emitted deterministic N/A fallback
+analysis_tail_isolation,analysis,Tail Isolation,ok,actionable,1,True,,,,already_actionable,actionable,14,tail_isolation,Isolated tail-eligible wait segments
+analysis_tda_betti_curve_changepoint,analysis,Tda Betti Curve Changepoint,ok,actionable,1,True,,,,already_actionable,actionable,228,tda_betti_curve_changepoint,Betti windows=9997 changepoints=228
+analysis_tda_mapper_graph,analysis,Tda Mapper Graph,ok,actionable,1,True,,,,already_actionable,actionable,1,tda_mapper_graph,Mapper-style graph computed
+analysis_tda_persistence_landscapes,analysis,Tda Persistence Landscapes,ok,actionable,1,True,,,,already_actionable,actionable,1,tda_persistence_landscapes,Persistence landscape proxy computed
+analysis_tda_persistent_homology,analysis,Tda Persistent Homology,ok,actionable,1,True,,,,already_actionable,actionable,1,tda_persistent_homology,Persistent homology proxy metrics computed
+analysis_template_drift_two_sample,analysis,Template Drift Two Sample,ok,actionable,1,True,,,,already_actionable,actionable,1,,Template drift analysis complete
+analysis_tensor_cp_parafac_decomp_v1,analysis,Tensor CP PARAFAC Decomposition,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_tensor_cp_parafac_decomp_v1 not applicable: No process column available for tensor decomposition
+analysis_term_burst_kleinberg,analysis,Term Burst Kleinberg,ok,actionable,1,True,,,,already_actionable,actionable,1,,Term burst detection complete
+analysis_time_series_analysis_auto,analysis,Time Series Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,time_series_auto,Time-series scan: metrics=6
+analysis_topic_model_lda,analysis,Topic Model Lda,ok,actionable,1,True,,,,already_actionable,actionable,1,,Topic modeling complete
+analysis_topographic_angle_dynamics,analysis,Topographic Angle Dynamics,ok,actionable,1,True,,,,already_actionable,actionable,1,topographic_angle_dynamics,Angle dynamics windows=9997
+analysis_topographic_similarity_angle_projection,analysis,Topographic Similarity Angle Projection,ok,actionable,1,True,,,,already_actionable,actionable,1,topographic_similarity,Topographic similarity computed for 6 grouping(s)
+analysis_topographic_tanova_permutation,analysis,Topographic Tanova Permutation,ok,actionable,1,True,,,,already_actionable,actionable,1,topographic_tanova_permutation,TANOVA permutation columns=8 significant=1
+analysis_traceability_manifest_v2,analysis,Traceability Manifest v2,ok,actionable,1,True,,,,already_actionable,actionable,1,traceability_manifest,Built 15 traceability claims
+analysis_transfer_entropy_directional,analysis,Transfer Entropy Directional,ok,actionable,1,True,,,,already_actionable,actionable,1,,Directional influence screen complete
+analysis_ttests_auto,analysis,Ttests Auto,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_ttests_auto not applicable: No k-anonymous binary group columns detected
+analysis_two_sample_categorical_chi2,analysis,Two Sample Categorical Chi2,ok,actionable,1,True,,,,already_actionable,actionable,13,,Categorical two-sample test completed
+analysis_two_sample_numeric_ad,analysis,Two Sample Numeric Ad,ok,actionable,1,True,,,,already_actionable,actionable,1,,Two-sample test completed
+analysis_two_sample_numeric_ks,analysis,Two Sample Numeric Ks,ok,actionable,1,True,,,,already_actionable,actionable,1,,Two-sample test completed
+analysis_two_sample_numeric_mann_whitney,analysis,Two Sample Numeric Mann Whitney,ok,actionable,1,True,,,,already_actionable,actionable,1,,Two-sample test completed
+analysis_upload_linkage,analysis,Upload to Revenue Linkage Analysis,ok,actionable,1,True,,,,already_actionable,actionable,0,,No XLSX uploads or BKRVNU rows found for linkage analysis.
+analysis_user_host_savings,analysis,User/Host Savings,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_user_host_savings not applicable: analysis_user_host_savings output validation failed: modeled finding missing assumptions; modeled finding missing scope
+analysis_variant_differential,analysis,Variant Differential,ok,actionable,1,True,,,,already_actionable,actionable,1,,Variant differential analysis complete
+analysis_waterfall_summary_v2,analysis,Waterfall Summary v2,ok,actionable,1,True,,,,already_actionable,actionable,1,waterfall_summary,Built waterfall summary
+analysis_wild_binary_segmentation_v1,analysis,analysis_wild_binary_segmentation_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,analysis_wild_binary_segmentation_v1 not applicable: analysis_wild_binary_segmentation_v1 timed out
+analysis_zero_inflated_count_model_v1,analysis,analysis_zero_inflated_count_model_v1,ok,actionable,1,True,,,,already_actionable,actionable,1,,Computed ZIP EM parameters.
+causal_recommendations_v1,analysis,Causal Recommendations v1,ok,actionable,1,True,,,,already_actionable,actionable,1,recommendation,Computed assumption-explicit causal recommendation
+changepoint_detection_v1,analysis,Changepoint Detection v1,ok,actionable,1,True,,,,already_actionable,actionable,1,changepoint,Computed deterministic changepoint candidate
+llm_prompt_builder,llm,LLM Prompt Builder,ok,actionable,0,True,,,,already_actionable,actionable,0,,Built LLM prompt
+llm_text2sql_local_generate_v1,llm,Local Text2SQL Pack Generator (v1),ok,actionable,0,True,,,,already_actionable,actionable,1,plugin_not_applicable,llm_text2sql_local_generate_v1 not applicable: Local text2sql generation disabled (set enabled=true for this plugin)
+planner_basic,planner,Planner Basic,ok,actionable,0,True,,,,already_actionable,actionable,101,plan,Planned plugin selection
+process_mining_conformance_v1,analysis,Process Mining Conformance v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,process_mining_conformance_v1 not applicable: Missing case/activity columns for process conformance
+process_mining_discovery_v1,analysis,Process Mining Discovery v1,ok,actionable,1,True,,,,already_actionable,actionable,1,plugin_not_applicable,process_mining_discovery_v1 not applicable: Missing case/activity columns for process discovery
+profile_basic,profile,Profile Basic,ok,actionable,0,True,,,,already_actionable,actionable,0,,Profiled dataset
+profile_eventlog,profile,Profile Eventlog,ok,actionable,0,True,,,,already_actionable,actionable,40,role_inference;role_confidence_low;time_to_completion,Inferred roles for 29 columns; computed time-to-completion stats
+report_bundle,report,Report Bundle,ok,actionable,0,True,,,,already_actionable,actionable,0,,Report generated; indexed 2284 vectors
+report_decision_bundle_v2,report,Decision Report Bundle v2,ok,actionable,0,True,,,,already_actionable,actionable,3,report_contract_violation;modeled_field_gaps;report_bundle_v2,report_decision_bundle_v2 not applicable: Decision report bundle generated (contract gaps)
+report_payout_report_v1,report,Payout Report (Batch/Multi-Input),ok,actionable,0,True,,,,already_actionable,actionable,1,payout_report,Generated payout report artifacts
+report_plain_english_v1,report,Plain-English Report (v1),ok,actionable,0,True,,,,already_actionable,actionable,0,,Wrote plain_report.md
+report_slide_kit_emitter_v2,report,Slide Kit Emitter v2,ok,actionable,0,True,,,,already_actionable,actionable,1,slide_kit_summary,Slide kit tables emitted
+transform_normalize_mixed,transform,Normalize Mixed Types,ok,actionable,0,True,,,,already_actionable,actionable,0,,REUSED from bab1fc097e7e4f1b97fa1062c1bbfc59
+transform_sql_intents_pack_v1,transform,SQL Intents Pack (v1),ok,actionable,0,True,,,,already_actionable,actionable,1,plugin_not_applicable,transform_sql_intents_pack_v1 not applicable: Schema snapshot unavailable (sql assist not wired)
+transform_sqlpack_materialize_v1,transform,SQL Pack Materializer (v1),ok,actionable,0,True,,,,already_actionable,actionable,1,plugin_not_applicable,transform_sqlpack_materialize_v1 not applicable: SQL pack materialization disabled (set enabled=true for this plugin)
+transform_template,transform,Template Transformer,ok,actionable,0,True,,,,already_actionable,actionable,0,,Not applicable: no template configured (template_id not set)

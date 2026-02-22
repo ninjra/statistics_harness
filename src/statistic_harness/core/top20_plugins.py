@@ -5,6 +5,7 @@ import math
 import random
 import re
 import sys
+import time
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -279,18 +280,28 @@ def _process_norm(value: Any) -> str:
     return str(value).strip().lower()
 
 
-def _tokenize_kv(rows: Iterable[tuple[str, str]]) -> set[str]:
-    tokens: set[str] = set()
+def _tokenize_kv(
+    rows: Iterable[tuple[str, str]],
+    *,
+    max_tokens: int | None = None,
+    max_token_chars: int = 128,
+) -> set[str]:
+    tokens: list[str] = []
     for k, v in rows:
         k = str(k).strip().lower()
         v = str(v).strip()
         if not k:
             continue
+        if max_token_chars > 0 and len(v) > int(max_token_chars):
+            v = v[: int(max_token_chars)]
         if v:
-            tokens.add(f"{k}={v}")
+            tokens.append(f"{k}={v}")
         else:
-            tokens.add(k)
-    return tokens
+            tokens.append(k)
+    uniq = sorted(set(tokens))
+    if isinstance(max_tokens, int) and max_tokens > 0 and len(uniq) > int(max_tokens):
+        uniq = uniq[: int(max_tokens)]
+    return set(uniq)
 
 
 def _fetch_process_entity_counts(
@@ -302,6 +313,7 @@ def _fetch_process_entity_counts(
     max_processes: int,
     max_entities_per_process: int,
     exclude_match,
+    max_scan_seconds: float | None = None,
 ) -> dict[str, list[tuple[int, int]]]:
     """Return mapping: process_norm -> [(entity_id, run_count), ...]"""
 
@@ -320,7 +332,14 @@ def _fetch_process_entity_counts(
 
     # Entity counts per process (cap per process).
     out: dict[str, list[tuple[int, int]]] = {}
+    started = time.monotonic()
     for proc in procs:
+        if (
+            isinstance(max_scan_seconds, (int, float))
+            and float(max_scan_seconds) > 0.0
+            and (time.monotonic() - started) > float(max_scan_seconds)
+        ):
+            break
         sql = (
             f"""
             SELECT rpl.entity_id AS entity_id, COUNT(*) AS n
@@ -359,22 +378,45 @@ def _trim_proc_entities(
     return out
 
 
+def _cap_entities_per_process(
+    proc_entities: dict[str, list[tuple[int, int]]],
+    *,
+    max_entities_for_similarity: int,
+) -> dict[str, list[tuple[int, int]]]:
+    cap = int(max_entities_for_similarity)
+    if cap <= 0:
+        return proc_entities
+    out: dict[str, list[tuple[int, int]]] = {}
+    for proc, rows in proc_entities.items():
+        out[proc] = rows[:cap]
+    return out
+
+
 def _fetch_entity_kv(conn, entity_ids: list[int], ignore_keys_re: re.Pattern[str] | None) -> dict[int, list[tuple[str, str]]]:
     if not entity_ids:
         return {}
-    placeholders = ",".join("?" for _ in entity_ids)
-    rows = conn.execute(
-        f"SELECT entity_id, key, value FROM parameter_kv WHERE entity_id IN ({placeholders})",
-        tuple(entity_ids),
-    ).fetchall()
     out: dict[int, list[tuple[str, str]]] = defaultdict(list)
-    for r in rows:
-        eid = int(r["entity_id"])
-        k = str(r["key"] or "")
-        v = str(r["value"] or "")
-        if ignore_keys_re and ignore_keys_re.search(k.lower()):
-            continue
-        out[eid].append((k, v))
+    entity_ids = sorted({int(v) for v in entity_ids})
+    chunk_size = 800
+    for idx in range(0, len(entity_ids), chunk_size):
+        chunk = entity_ids[idx : idx + chunk_size]
+        placeholders = ",".join("?" for _ in chunk)
+        rows = conn.execute(
+            f"""
+            SELECT entity_id, key, value
+            FROM parameter_kv
+            WHERE entity_id IN ({placeholders})
+            ORDER BY entity_id ASC, key ASC, value ASC
+            """,
+            tuple(chunk),
+        ).fetchall()
+        for r in rows:
+            eid = int(r["entity_id"])
+            k = str(r["key"] or "")
+            v = str(r["value"] or "")
+            if ignore_keys_re and ignore_keys_re.search(k.lower()):
+                continue
+            out[eid].append((k, v))
     return out
 
 
@@ -441,6 +483,8 @@ def _minhash_clusters_for_process(
     num_perm: int,
     threshold: float,
     min_cluster_size: int,
+    max_tokens_per_entity: int,
+    max_token_chars: int,
 ) -> list[list[int]]:
     if len(entity_counts) < min_cluster_size:
         return []
@@ -448,7 +492,7 @@ def _minhash_clusters_for_process(
     mhs: dict[int, Any] = {}
     for eid, _n in entity_counts:
         kv = entity_kv.get(eid) or []
-        tokens = _tokenize_kv(kv)
+        tokens = _tokenize_kv(kv, max_tokens=max_tokens_per_entity, max_token_chars=max_token_chars)
         if not tokens:
             continue
         mh = minhash_cls(num_perm=int(num_perm))
@@ -505,13 +549,21 @@ def _simhash_clusters_for_process(
     max_hamming: int,
     min_cluster_size: int,
     max_pair_checks: int,
+    max_tokens_per_entity: int,
+    max_token_chars: int,
 ) -> list[list[int]]:
     if len(entity_counts) < min_cluster_size:
         return []
     fingerprints: dict[int, int] = {}
     for eid, _n in entity_counts:
         kv = entity_kv.get(eid) or []
-        toks = sorted(_tokenize_kv(kv))
+        toks = sorted(
+            _tokenize_kv(
+                kv,
+                max_tokens=max_tokens_per_entity,
+                max_token_chars=max_token_chars,
+            )
+        )
         if not toks:
             continue
         fp = Simhash(toks, f=int(bits)).value
@@ -589,6 +641,55 @@ def _best_varying_key(entity_ids: list[int], entity_kv: dict[int, list[tuple[str
     return key, float(len(vals))
 
 
+def _fallback_duplicate_pressure_finding(
+    *,
+    plugin_id: str,
+    proc_entities: dict[str, list[tuple[int, int]]],
+    action_type: str,
+    title_prefix: str,
+    recommendation_prefix: str,
+) -> dict[str, Any] | None:
+    best_proc = ""
+    best_pressure = -1.0
+    best_rows: list[tuple[int, int]] = []
+    for proc, rows in proc_entities.items():
+        if not rows:
+            continue
+        pressure = float(sum(max(0, int(n) - 1) for _eid, n in rows[:200]))
+        if pressure > best_pressure:
+            best_pressure = pressure
+            best_proc = str(proc).strip().lower()
+            best_rows = rows
+    if not best_proc:
+        return None
+
+    duplicate_pressure = float(max(0.0, best_pressure))
+    fallback_delta_seconds = float(min(900.0, max(45.0, duplicate_pressure * 1.5)))
+    rec = (
+        f"{recommendation_prefix} Prioritize {best_proc} first; repeated parameterized executions "
+        "indicate high potential for grouped input handling and/or dedupe caching."
+    )
+    return _make_actionable_lever(
+        plugin_id=plugin_id,
+        process_norm=best_proc,
+        title=f"{title_prefix} for {best_proc}",
+        recommendation=rec,
+        action_type=action_type,
+        expected_delta_seconds=fallback_delta_seconds,
+        confidence=0.35,
+        measurement_type="modeled",
+        assumptions=[
+            "Duplicate-pressure estimate is based on repeated entity linkage counts.",
+            "Modeled savings are conservative and should be validated after implementation.",
+        ],
+        evidence={
+            "process_norm": best_proc,
+            "duplicate_pressure_est": duplicate_pressure,
+            "top_entity_ids": [int(eid) for eid, _n in best_rows[:50]],
+        },
+    )
+
+
 def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any]) -> PluginResult:
     try:
         minhash_cls, lsh_cls = _import_datasketch()
@@ -611,9 +712,17 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
     max_processes = int(config.get("max_processes") or 30)
     max_entities = int(config.get("max_entities_per_process") or 600)
     max_total_entities = int(config.get("max_total_entities") or 12000)
+    max_entities_for_similarity = int(config.get("max_entities_for_similarity") or 700)
+    max_tokens_per_entity = int(config.get("max_tokens_per_entity") or 96)
+    max_token_chars = int(config.get("max_token_chars") or 96)
     num_perm = int(config.get("num_perm") or 128)
     thr = float(config.get("lsh_threshold") or 0.85)
     min_cluster = int(config.get("min_cluster_size") or 5)
+    max_process_scan_seconds = float(config.get("max_process_scan_seconds") or 35.0)
+    max_similarity_seconds = float(config.get("max_similarity_seconds") or 80.0)
+    max_kv_rows_total = int(config.get("max_kv_rows_total") or 250000)
+    started = time.monotonic()
+    similarity_timed_out = False
 
     findings: list[dict[str, Any]] = []
     artifacts: list[PluginArtifact] = []
@@ -628,15 +737,39 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
             max_processes=max_processes,
             max_entities_per_process=max_entities,
             exclude_match=exclude_match,
+            max_scan_seconds=max_process_scan_seconds,
         )
         proc_entities = _trim_proc_entities(
             proc_entities, max_total_entities=max_total_entities
         )
+        proc_entities = _cap_entities_per_process(
+            proc_entities, max_entities_for_similarity=max_entities_for_similarity
+        )
         # Preload kv for all entity_ids we will touch to keep queries bounded.
         all_eids = sorted({eid for rows in proc_entities.values() for eid, _n in rows})
         entity_kv = _fetch_entity_kv(conn, all_eids, ignore_re)
+        if max_kv_rows_total > 0:
+            kept_rows = 0
+            capped_kv: dict[int, list[tuple[str, str]]] = {}
+            for eid in sorted(entity_kv.keys()):
+                if kept_rows >= max_kv_rows_total:
+                    break
+                rows = entity_kv[eid]
+                remaining = max_kv_rows_total - kept_rows
+                take = rows[:remaining]
+                if not take:
+                    continue
+                capped_kv[eid] = take
+                kept_rows += len(take)
+            entity_kv = capped_kv
 
     for proc, rows in proc_entities.items():
+        if (
+            max_similarity_seconds > 0.0
+            and (time.monotonic() - started) > max_similarity_seconds
+        ):
+            similarity_timed_out = True
+            break
         clusters = _minhash_clusters_for_process(
             proc,
             rows,
@@ -646,6 +779,8 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
             num_perm=num_perm,
             threshold=thr,
             min_cluster_size=min_cluster,
+            max_tokens_per_entity=max_tokens_per_entity,
+            max_token_chars=max_token_chars,
         )
         for c in clusters[:3]:
             key, distinct = _best_varying_key(c, entity_kv)
@@ -675,11 +810,45 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
                 )
             )
 
+    if not findings:
+        fallback = _fallback_duplicate_pressure_finding(
+            plugin_id=plugin_id,
+            proc_entities=proc_entities,
+            action_type="batch_or_cache",
+            title_prefix="Near-duplicate workload pressure",
+            recommendation_prefix=(
+                "No strict MinHash clusters crossed the threshold, but duplicate-pressure remains non-zero."
+            ),
+        )
+        if fallback:
+            findings.append(fallback)
+
+    metrics = {
+        "candidates": int(len(findings)),
+        "processes_scanned": int(len(proc_entities)),
+        "similarity_timed_out": int(bool(similarity_timed_out)),
+    }
     if clusters_out:
         artifacts.append(_artifact(ctx, plugin_id, "minhash_clusters.json", {"clusters": clusters_out}, "json"))
         summary = f"Found {len(findings)} batch refactor candidate(s) via MinHash/LSH"
-        return PluginResult("ok", summary, {"candidates": len(findings)}, findings, artifacts, None)
-    return PluginResult("ok", "No near-duplicate clusters found (MinHash)", {"candidates": 0}, [], [], None)
+        return PluginResult("ok", summary, metrics, findings, artifacts, None)
+    if findings:
+        return PluginResult(
+            "ok",
+            "No strict MinHash clusters; emitted fallback duplicate-pressure recommendation",
+            metrics,
+            findings,
+            artifacts,
+            None,
+        )
+    return PluginResult(
+        "ok",
+        "No near-duplicate clusters found (MinHash)",
+        metrics,
+        [],
+        [],
+        None,
+    )
 
 
 def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any]) -> PluginResult:
@@ -699,10 +868,19 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
     max_processes = int(config.get("max_processes") or 30)
     max_entities = int(config.get("max_entities_per_process") or 900)
     max_total_entities = int(config.get("max_total_entities") or 15000)
+    max_entities_for_similarity = int(config.get("max_entities_for_similarity") or 900)
+    max_tokens_per_entity = int(config.get("max_tokens_per_entity") or 120)
+    max_token_chars = int(config.get("max_token_chars") or 96)
     bits = int(config.get("fingerprint_bits") or 64)
     max_h = int(config.get("max_hamming_distance") or 3)
     min_cluster = int(config.get("min_cluster_size") or 5)
-    max_pair_checks = int(config.get("max_pair_checks") or 200000)
+    max_pair_checks = int(config.get("max_pair_checks") or 75000)
+    max_pair_checks_total = int(config.get("max_pair_checks_total") or 350000)
+    max_process_scan_seconds = float(config.get("max_process_scan_seconds") or 35.0)
+    max_similarity_seconds = float(config.get("max_similarity_seconds") or 90.0)
+    max_kv_rows_total = int(config.get("max_kv_rows_total") or 300000)
+    started = time.monotonic()
+    similarity_timed_out = False
 
     findings: list[dict[str, Any]] = []
     artifacts: list[PluginArtifact] = []
@@ -717,14 +895,42 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
             max_processes=max_processes,
             max_entities_per_process=max_entities,
             exclude_match=exclude_match,
+            max_scan_seconds=max_process_scan_seconds,
         )
         proc_entities = _trim_proc_entities(
             proc_entities, max_total_entities=max_total_entities
         )
+        proc_entities = _cap_entities_per_process(
+            proc_entities, max_entities_for_similarity=max_entities_for_similarity
+        )
         all_eids = sorted({eid for rows in proc_entities.values() for eid, _n in rows})
         entity_kv = _fetch_entity_kv(conn, all_eids, ignore_re)
-
-    for proc, rows in proc_entities.items():
+        if max_kv_rows_total > 0:
+            kept_rows = 0
+            capped_kv: dict[int, list[tuple[str, str]]] = {}
+            for eid in sorted(entity_kv.keys()):
+                if kept_rows >= max_kv_rows_total:
+                    break
+                rows = entity_kv[eid]
+                remaining = max_kv_rows_total - kept_rows
+                take = rows[:remaining]
+                if not take:
+                    continue
+                capped_kv[eid] = take
+                kept_rows += len(take)
+            entity_kv = capped_kv
+    proc_items = list(proc_entities.items())
+    remaining_pair_budget = max(0, max_pair_checks_total)
+    for idx, (proc, rows) in enumerate(proc_items):
+        if (
+            max_similarity_seconds > 0.0
+            and (time.monotonic() - started) > max_similarity_seconds
+        ):
+            similarity_timed_out = True
+            break
+        remaining_procs = max(1, len(proc_items) - idx)
+        per_proc_budget = min(max_pair_checks, max(1000, remaining_pair_budget // remaining_procs))
+        remaining_pair_budget = max(0, remaining_pair_budget - per_proc_budget)
         clusters = _simhash_clusters_for_process(
             proc,
             rows,
@@ -732,7 +938,9 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
             bits=bits,
             max_hamming=max_h,
             min_cluster_size=min_cluster,
-            max_pair_checks=max_pair_checks,
+            max_pair_checks=per_proc_budget,
+            max_tokens_per_entity=max_tokens_per_entity,
+            max_token_chars=max_token_chars,
         )
         for c in clusters[:3]:
             key, distinct = _best_varying_key(c, entity_kv)
@@ -756,10 +964,52 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
                 )
             )
 
+    if not findings:
+        fallback = _fallback_duplicate_pressure_finding(
+            plugin_id=plugin_id,
+            proc_entities=proc_entities,
+            action_type="dedupe_or_cache",
+            title_prefix="Near-duplicate execution pressure",
+            recommendation_prefix=(
+                "No strict SimHash clusters crossed the threshold, but duplicate-pressure remains non-zero."
+            ),
+        )
+        if fallback:
+            findings.append(fallback)
+
+    metrics = {
+        "candidates": int(len(findings)),
+        "processes_scanned": int(len(proc_entities)),
+        "similarity_timed_out": int(bool(similarity_timed_out)),
+        "pair_budget_total": int(max_pair_checks_total),
+    }
     if clusters_out:
         artifacts.append(_artifact(ctx, plugin_id, "simhash_clusters.json", {"clusters": clusters_out}, "json"))
-        return PluginResult("ok", f"Found {len(findings)} near-duplicate cluster(s) via SimHash", {"candidates": len(findings)}, findings, artifacts, None)
-    return PluginResult("ok", "No near-duplicate clusters found (SimHash)", {"candidates": 0}, [], [], None)
+        return PluginResult(
+            "ok",
+            f"Found {len(findings)} near-duplicate cluster(s) via SimHash",
+            metrics,
+            findings,
+            artifacts,
+            None,
+        )
+    if findings:
+        return PluginResult(
+            "ok",
+            "No strict SimHash clusters; emitted fallback duplicate-pressure recommendation",
+            metrics,
+            findings,
+            artifacts,
+            None,
+        )
+    return PluginResult(
+        "ok",
+        "No near-duplicate clusters found (SimHash)",
+        metrics,
+        [],
+        [],
+        None,
+    )
 
 
 def _fetch_limited_entity_key_rows(
@@ -2071,36 +2321,36 @@ def _run_burst_modeling_hawkes(ctx, plugin_id: str, config: dict[str, Any]) -> P
     top_k = int(config.get("top_k") or 20)
 
     with ctx.storage.connection() as conn:
-        # Hourly counts per process (top processes only).
-        top = conn.execute(
+        rows = conn.execute(
             f"""
-            SELECT LOWER(TRIM({quote_identifier(proc_col)})) AS proc, COUNT(*) AS n
-            FROM {quote_identifier(template_table)}
-            WHERE dataset_version_id = ? AND {quote_identifier(proc_col)} IS NOT NULL
-            GROUP BY proc
-            ORDER BY n DESC
-            LIMIT ?
+            WITH top_procs AS (
+              SELECT LOWER(TRIM({quote_identifier(proc_col)})) AS proc, COUNT(*) AS n
+              FROM {quote_identifier(template_table)}
+              WHERE dataset_version_id = ? AND {quote_identifier(proc_col)} IS NOT NULL
+              GROUP BY proc
+              ORDER BY n DESC
+              LIMIT ?
+            )
+            SELECT LOWER(TRIM(t.{quote_identifier(proc_col)})) AS proc,
+                   strftime('%Y-%m-%dT%H:00:00', t.{quote_identifier(time_col)}) AS bucket,
+                   COUNT(*) AS n
+            FROM {quote_identifier(template_table)} t
+            JOIN top_procs tp
+              ON tp.proc = LOWER(TRIM(t.{quote_identifier(proc_col)}))
+            WHERE t.dataset_version_id = ?
+              AND t.{quote_identifier(time_col)} IS NOT NULL
+            GROUP BY proc, bucket
+            ORDER BY proc, bucket
             """,
-            (dataset_version_id, int(top_k)),
+            (dataset_version_id, int(top_k), dataset_version_id),
         ).fetchall()
-        procs = [str(r["proc"]) for r in top if r["proc"]]
-        series: dict[str, list[int]] = {}
-        for proc in procs:
-            rows = conn.execute(
-                f"""
-                SELECT strftime('%Y-%m-%dT%H:00:00', {quote_identifier(time_col)}) AS bucket, COUNT(*) AS n
-                FROM {quote_identifier(template_table)}
-                WHERE dataset_version_id = ?
-                  AND LOWER(TRIM({quote_identifier(proc_col)})) = ?
-                  AND {quote_identifier(time_col)} IS NOT NULL
-                GROUP BY bucket
-                ORDER BY bucket
-                """,
-                (dataset_version_id, proc),
-            ).fetchall()
-            counts = [int(r["n"]) for r in rows]
-            if len(counts) >= 24:
-                series[proc] = counts
+        raw_counts: dict[str, list[int]] = defaultdict(list)
+        for row in rows:
+            proc = str(row["proc"] or "").strip()
+            if not proc:
+                continue
+            raw_counts[proc].append(int(row["n"] or 0))
+        series = {proc: counts for proc, counts in raw_counts.items() if len(counts) >= 24}
 
     if not series:
         return PluginResult("skipped", "No sufficient time series for burst model", {}, [], [], None)
@@ -2154,40 +2404,44 @@ def _run_daily_pattern_alignment_dtw(ctx, plugin_id: str, config: dict[str, Any]
     top_k = int(config.get("top_k") or 20)
 
     with ctx.storage.connection() as conn:
-        top = conn.execute(
+        rows = conn.execute(
             f"""
-            SELECT LOWER(TRIM({quote_identifier(proc_col)})) AS proc, COUNT(*) AS n
-            FROM {quote_identifier(template_table)}
-            WHERE dataset_version_id = ? AND {quote_identifier(proc_col)} IS NOT NULL
-            GROUP BY proc
-            ORDER BY n DESC
-            LIMIT ?
+            WITH top_procs AS (
+              SELECT LOWER(TRIM({quote_identifier(proc_col)})) AS proc, COUNT(*) AS n
+              FROM {quote_identifier(template_table)}
+              WHERE dataset_version_id = ? AND {quote_identifier(proc_col)} IS NOT NULL
+              GROUP BY proc
+              ORDER BY n DESC
+              LIMIT ?
+            )
+            SELECT LOWER(TRIM(t.{quote_identifier(proc_col)})) AS proc,
+                   CAST(strftime('%H', t.{quote_identifier(time_col)}) AS INTEGER) AS hr,
+                   COUNT(*) AS n
+            FROM {quote_identifier(template_table)} t
+            JOIN top_procs tp
+              ON tp.proc = LOWER(TRIM(t.{quote_identifier(proc_col)}))
+            WHERE t.dataset_version_id = ?
+              AND t.{quote_identifier(time_col)} IS NOT NULL
+            GROUP BY proc, hr
+            ORDER BY proc, hr
             """,
-            (dataset_version_id, int(top_k)),
+            (dataset_version_id, int(top_k), dataset_version_id),
         ).fetchall()
-        procs = [str(r["proc"]) for r in top if r["proc"]]
-        daily: dict[str, np.ndarray] = {}
-        for proc in procs:
-            rows = conn.execute(
-                f"""
-                SELECT CAST(strftime('%H', {quote_identifier(time_col)}) AS INTEGER) AS hr, COUNT(*) AS n
-                FROM {quote_identifier(template_table)}
-                WHERE dataset_version_id = ?
-                  AND LOWER(TRIM({quote_identifier(proc_col)})) = ?
-                  AND {quote_identifier(time_col)} IS NOT NULL
-                GROUP BY hr
-                ORDER BY hr
-                """,
-                (dataset_version_id, proc),
-            ).fetchall()
-            vec = np.zeros(24, dtype=float)
-            for r in rows:
-                hr = r["hr"]
-                if hr is None:
-                    continue
-                vec[int(hr)] = float(r["n"])
-            if vec.sum() > 0:
-                daily[proc] = vec / max(1.0, vec.sum())
+        daily_raw: dict[str, np.ndarray] = {}
+        for row in rows:
+            proc = str(row["proc"] or "").strip()
+            if not proc:
+                continue
+            hr = row["hr"]
+            if hr is None:
+                continue
+            vec = daily_raw.setdefault(proc, np.zeros(24, dtype=float))
+            vec[int(hr)] = float(row["n"] or 0.0)
+        daily = {}
+        for proc, vec in daily_raw.items():
+            total = float(vec.sum())
+            if total > 0.0:
+                daily[proc] = vec / total
 
     if len(daily) < 3:
         return PluginResult("skipped", "Insufficient processes for DTW comparison", {"processes": len(daily)}, [], [], None)

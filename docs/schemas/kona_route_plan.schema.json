@@ -1,0 +1,311 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kona Route Plan Artifact Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plugin_id",
+    "generated_at",
+    "decision",
+    "config",
+    "steps",
+    "totals"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "kona_route_plan.v1"
+    },
+    "plugin_id": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "modeled",
+        "not_applicable"
+      ]
+    },
+    "target_signature": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_max_depth",
+        "route_beam_width",
+        "route_min_delta_energy",
+        "route_min_confidence",
+        "route_allow_cross_target_steps",
+        "route_stop_energy_threshold",
+        "route_candidate_limit",
+        "route_time_budget_ms",
+        "route_disallowed_lever_ids",
+        "route_disallowed_action_types"
+      ],
+      "properties": {
+        "route_max_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "route_beam_width": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "route_min_delta_energy": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "route_min_confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "route_allow_cross_target_steps": {
+          "type": "boolean"
+        },
+        "route_stop_energy_threshold": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "route_candidate_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "route_time_budget_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "route_disallowed_lever_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "route_disallowed_action_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "not_applicable": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reason_code",
+            "message"
+          ],
+          "properties": {
+            "reason_code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "details": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "step_index",
+          "lever_id",
+          "action_type",
+          "title",
+          "action",
+          "confidence",
+          "target_entity_keys",
+          "target_process_ids",
+          "energy_before",
+          "energy_after",
+          "delta_energy",
+          "modeled_metrics_after"
+        ],
+        "properties": {
+          "step_index": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "lever_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "target_entity_keys": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "target_process_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "energy_before": {
+            "type": "number",
+            "minimum": 0.0
+          },
+          "energy_after": {
+            "type": "number",
+            "minimum": 0.0
+          },
+          "delta_energy": {
+            "type": "number",
+            "minimum": 0.0
+          },
+          "modeled_metrics_after": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "energy_before",
+        "energy_after",
+        "total_delta_energy",
+        "route_confidence",
+        "stop_reason",
+        "expanded_states"
+      ],
+      "properties": {
+        "energy_before": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "energy_after": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "total_delta_energy": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "route_confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "stop_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expanded_states": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "debug": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "modeled"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "not_applicable": {
+            "type": "null"
+          },
+          "steps": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "not_applicable"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "required": [
+          "not_applicable"
+        ],
+        "properties": {
+          "not_applicable": {
+            "type": "object",
+            "required": [
+              "reason_code",
+              "message"
+            ]
+          },
+          "steps": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

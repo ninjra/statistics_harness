@@ -11,9 +11,13 @@ settings:
   description: Find near-duplicate executions by MinHash+LSH over tokenized params
     to propose batch/multi-input refactors.
   defaults:
-    max_processes: 60
-    max_entities_per_process: 1500
-    num_perm: 128
+    max_processes: 40
+    max_entities_per_process: 1200
+    max_total_entities: 9000
+    max_entities_for_similarity: 700
+    max_tokens_per_entity: 96
+    max_token_chars: 96
+    num_perm: 96
     lsh_threshold: 0.85
     min_cluster_size: 5
     ignore_param_keys_regex: (run id|queue id|seq|slice|timestamp)

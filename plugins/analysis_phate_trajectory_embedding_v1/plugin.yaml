@@ -10,7 +10,8 @@ settings:
   description: Diffusion-potential trajectory embedding approximation for process-state
     progression analysis.
   defaults:
-    max_rows: 5000
+    max_rows: 3000
+    max_kernel_rows: 1800
     max_features: 10
     n_components: 3
     top_k: 8

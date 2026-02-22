@@ -19,8 +19,15 @@
         "null"
       ]
     },
+    "max_kernel_rows": {
+      "default": 1800,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
     "max_rows": {
-      "default": 5000,
+      "default": 3000,
       "type": [
         "integer",
         "null"

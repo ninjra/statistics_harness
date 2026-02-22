@@ -2119,6 +2119,9 @@ class Pipeline:
         # - Some report plugins need report.json as input (e.g. report_plain_english_v1).
         #   Ensure report_bundle runs before those, while still running report_bundle late enough
         #   to include pre-bundle report-plugin results in report.json.
+        disable_report_bundle = os.environ.get(
+            "STAT_HARNESS_DISABLE_REPORT_BUNDLE", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
         report_ids = {
             pid
             for pid in selected
@@ -2149,14 +2152,20 @@ class Pipeline:
                     for spec in layer:
                         run_spec(spec)
 
-            # Now generate the canonical report bundle from the DB state.
-            run_spec(report_spec)
+            if disable_report_bundle:
+                logger(
+                    "[WARN] report_bundle disabled via STAT_HARNESS_DISABLE_REPORT_BUNDLE=1; "
+                    "skipping report_bundle and post-bundle report plugins."
+                )
+            else:
+                # Now generate the canonical report bundle from the DB state.
+                run_spec(report_spec)
 
-            if post_bundle:
-                layers = self._toposort_layers(specs, post_bundle)
-                for layer in layers:
-                    for spec in layer:
-                        run_spec(spec)
+                if post_bundle:
+                    layers = self._toposort_layers(specs, post_bundle)
+                    for layer in layers:
+                        for spec in layer:
+                            run_spec(spec)
 
         # Fail-closed: even if report_bundle didn't emit files, synthesize the report from DB.
         report_json = run_dir / "report.json"

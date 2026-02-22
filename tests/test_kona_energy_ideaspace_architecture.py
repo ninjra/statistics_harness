@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+from jsonschema import validate as jsonschema_validate
 
 from statistic_harness.core.report_v2_utils import filter_excluded_processes
 from statistic_harness.core.stat_plugins.registry import run_plugin
@@ -190,3 +191,91 @@ def test_payout_report_batch_cli_merges_multiple_inputs(tmp_path: Path, monkeypa
     sources = {row.get("source") for row in payload.get("per_source") or [] if isinstance(row, dict)}
     assert "payout_multi_input_a.csv" in sources
     assert "payout_multi_input_b.csv" in sources
+
+
+def test_verifier_emits_route_plan_when_enabled(run_dir: Path) -> None:
+    art_action = run_dir / "artifacts" / "analysis_ideaspace_action_planner"
+    art_energy = run_dir / "artifacts" / "analysis_ideaspace_energy_ebm_v1"
+    art_action.mkdir(parents=True, exist_ok=True)
+    art_energy.mkdir(parents=True, exist_ok=True)
+
+    actions = [
+        {
+            "lever_id": "tune_schedule_qemail_frequency_v1",
+            "title": "Tune QEMAIL schedule frequency",
+            "action": "Increase QEMAIL interval",
+            "confidence": 0.92,
+            "evidence": {"metrics": {}},
+        },
+        {
+            "lever_id": "split_batches",
+            "title": "Split oversized batches",
+            "action": "Split oversized batches for payout extraction.",
+            "confidence": 0.78,
+            "evidence": {"metrics": {}},
+        },
+    ]
+    (art_action / "recommendations.json").write_text(json.dumps(actions), encoding="utf-8")
+
+    energy = {
+        "schema_version": "v1",
+        "ideal_mode": "baseline",
+        "weights": {
+            "queue_delay_p95": 2.0,
+            "duration_p95": 1.0,
+            "background_overhead_per_min": 1.0,
+            "rate_per_min": 0.5,
+        },
+        "entities": [
+            {
+                "entity_key": "ALL",
+                "entity_label": "ALL",
+                "observed": {
+                    "queue_delay_p95": 120.0,
+                    "duration_p95": 220.0,
+                    "background_overhead_per_min": 8.0,
+                    "rate_per_min": 1.0,
+                },
+                "ideal": {
+                    "queue_delay_p95": 60.0,
+                    "duration_p95": 120.0,
+                    "background_overhead_per_min": 1.0,
+                    "rate_per_min": 1.2,
+                },
+                "energy_constraints": 10.0,
+            }
+        ],
+    }
+    (art_energy / "energy_state_vector.json").write_text(json.dumps(energy), encoding="utf-8")
+
+    df = pd.DataFrame({"x": [1, 2, 3]})
+    from tests.conftest import make_context
+
+    ctx = make_context(
+        run_dir,
+        df,
+        settings={
+            "max_findings": 10,
+            "route_max_depth": 2,
+            "route_beam_width": 4,
+            "route_candidate_limit": 10,
+        },
+        run_seed=11,
+        populate=True,
+    )
+    result = run_plugin("analysis_ebm_action_verifier_v1", ctx)
+    assert result.status == "ok"
+
+    route_path = run_dir / "artifacts" / "analysis_ebm_action_verifier_v1" / "route_plan.json"
+    assert route_path.exists()
+    route_payload = json.loads(route_path.read_text(encoding="utf-8"))
+    schema = json.loads(Path("docs/schemas/kona_route_plan.schema.json").read_text(encoding="utf-8"))
+    jsonschema_validate(instance=route_payload, schema=schema)
+    assert str(route_payload.get("decision") or "") == "modeled"
+    assert isinstance(route_payload.get("steps"), list) and route_payload.get("steps")
+
+    route_findings = [f for f in result.findings if isinstance(f, dict) and f.get("kind") == "verified_route_action_plan"]
+    assert route_findings
+    assert isinstance(route_findings[0].get("steps"), list) and route_findings[0].get("steps")
+    assert isinstance(route_findings[0].get("scope"), dict)
+    assert isinstance(route_findings[0].get("assumptions"), list) and route_findings[0].get("assumptions")

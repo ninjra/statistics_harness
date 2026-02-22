@@ -29,15 +29,18 @@ DEFAULTS = {
 }
 
 
-def _group_slices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.DataFrame]]:
-    slices: list[tuple[str, pd.DataFrame]] = [("ALL", df)]
+def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.Index]]:
+    slices: list[tuple[str, pd.Index]] = [("ALL", df.index)]
     for col in group_cols:
         if col not in df.columns:
             continue
         counts = df[col].value_counts(dropna=False)
         for value in counts.index[:max_groups]:
             label = f"{col}={value}"
-            slices.append((label, df.loc[df[col] == value]))
+            row_idx = df.index[df[col].eq(value)]
+            if row_idx.empty:
+                continue
+            slices.append((label, row_idx))
     return slices
 
 
@@ -98,10 +101,10 @@ class Plugin:
         findings: list[dict[str, Any]] = []
         artifacts_payload: list[dict[str, Any]] = []
 
-        for label, slice_df in _group_slices(df, group_cols, max_groups):
+        for label, row_idx in _group_row_indices(df, group_cols, max_groups):
             if timer.exceeded():
                 break
-            matrix = slice_df[value_cols].dropna().to_numpy(dtype=float)
+            matrix = df.loc[row_idx, value_cols].dropna().to_numpy(dtype=float)
             if matrix.shape[0] < min_points:
                 continue
             standardized, centers, scales = _standardize_matrix(matrix)
@@ -115,8 +118,6 @@ class Plugin:
             mewma_stat = (z_t**2).sum(axis=1)
             mewma_threshold = np.quantile(mewma_stat, threshold_quantile)
 
-            baseline_count = max(5, int(standardized.shape[0] * float(settings.get("baseline_fraction", 0.3))))
-            baseline = standardized[:baseline_count]
             components_setting = settings.get("pca_components", "auto")
             if components_setting == "auto":
                 components = min(5, standardized.shape[1])

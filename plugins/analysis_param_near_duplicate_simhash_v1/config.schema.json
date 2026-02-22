@@ -27,7 +27,49 @@
       ]
     },
     "max_entities_per_process": {
-      "default": 3000,
+      "default": 1800,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_entities_for_similarity": {
+      "default": 900,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_pair_checks": {
+      "default": 75000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_pair_checks_total": {
+      "default": 350000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_token_chars": {
+      "default": 96,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_tokens_per_entity": {
+      "default": 120,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_total_entities": {
+      "default": 12000,
       "type": [
         "integer",
         "null"
@@ -41,7 +83,7 @@
       ]
     },
     "max_processes": {
-      "default": 60,
+      "default": 40,
       "type": [
         "integer",
         "null"

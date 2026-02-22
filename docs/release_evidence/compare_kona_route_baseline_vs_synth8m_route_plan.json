@@ -1,0 +1,32 @@
+{
+  "after": {
+    "decision": "modeled",
+    "energy_after": 0.0046048212,
+    "energy_before": 0.0341322314,
+    "expanded_states": 1,
+    "modeled": true,
+    "route_confidence": 0.6,
+    "step_count": 1,
+    "stop_reason": "threshold_reached",
+    "total_delta_energy": 0.0295274102
+  },
+  "before": {
+    "decision": "modeled",
+    "energy_after": 80.3474654311,
+    "energy_before": 202.9988022159,
+    "expanded_states": 55,
+    "modeled": true,
+    "route_confidence": 0.5986078836,
+    "step_count": 3,
+    "stop_reason": "max_depth",
+    "total_delta_energy": 122.6513367848
+  },
+  "delta": {
+    "modeled_percent_after": 86.50887735397224,
+    "modeled_percent_before": 60.419734227965435,
+    "route_confidence_diff": 0.001392116400000032,
+    "step_count_diff": -2,
+    "total_delta_energy_diff": -122.62180937459999
+  },
+  "schema_version": "kona_route_compare.v1"
+}

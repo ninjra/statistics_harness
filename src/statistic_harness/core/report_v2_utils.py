@@ -78,7 +78,7 @@ def _apply_quorum_exclusions(
     processes = exclusions.get("processes")
     if not isinstance(processes, list):
         processes = []
-    quorum_exclusions = {"postwkfl", "bkrvnu", "cwowfndrls", "los", "qemail", "qpec"}
+    quorum_exclusions = {"postwkfl", "bkrvnu", "cwowfndrls"}
     merged = sorted({*(str(p).strip() for p in processes if str(p).strip()), *quorum_exclusions})
     exclusions["processes"] = merged
     known_payload["recommendation_exclusions"] = exclusions
@@ -138,7 +138,43 @@ def load_known_issues(
     if not known_payload:
         known_payload = _load_known_issues_fallback(run_dir)
 
+    run_exclude_processes: list[str] = []
+    if isinstance(run_row, dict):
+        try:
+            settings_raw = run_row.get("settings_json")
+            settings_obj = (
+                json.loads(settings_raw)
+                if isinstance(settings_raw, str) and settings_raw.strip()
+                else {}
+            )
+        except Exception:
+            settings_obj = {}
+        if isinstance(settings_obj, dict):
+            raw_excludes = settings_obj.get("exclude_processes")
+            if isinstance(raw_excludes, str):
+                tokens = [str(x).strip() for x in re.split(r"[,\s;]+", raw_excludes) if str(x).strip()]
+                run_exclude_processes.extend(tokens)
+            elif isinstance(raw_excludes, (list, tuple, set)):
+                run_exclude_processes.extend(str(x).strip() for x in raw_excludes if str(x).strip())
+    run_exclude_processes = sorted(
+        {str(p).strip().lower() for p in run_exclude_processes if str(p).strip()}
+    )
+
     known_payload = _apply_quorum_exclusions(known_payload, project_row)
+    if known_payload and run_exclude_processes:
+        exclusions = known_payload.get("recommendation_exclusions")
+        if not isinstance(exclusions, dict):
+            exclusions = {}
+        processes = exclusions.get("processes")
+        if not isinstance(processes, list):
+            processes = []
+        exclusions["processes"] = sorted(
+            {
+                *(str(p).strip().lower() for p in processes if str(p).strip()),
+                *run_exclude_processes,
+            }
+        )
+        known_payload["recommendation_exclusions"] = exclusions
     return known_payload
 
 

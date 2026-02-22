@@ -16,6 +16,12 @@ def run(ctx) -> PluginResult:
         prepared.summary = f"{PLUGIN_ID}: {prepared.summary}"
         return prepared
     x = prepared.matrix
+    max_kernel_rows = max(200, int(config.get("max_kernel_rows") or 1800))
+    if x.shape[0] > max_kernel_rows:
+        seed = int(config.get("seed") or getattr(ctx, "run_seed", 0) or 0)
+        local_rng = np.random.default_rng(seed)
+        keep = np.sort(local_rng.choice(x.shape[0], size=max_kernel_rows, replace=False))
+        x = x[keep, :]
     k = rbf_kernel(x)
     p = k / np.maximum(1e-9, k.sum(axis=1, keepdims=True))
     p2 = p @ p
@@ -26,6 +32,24 @@ def run(ctx) -> PluginResult:
     emb = u[:, :n_components] * s[:n_components]
     steps = np.linalg.norm(np.diff(emb, axis=0), axis=1) if emb.shape[0] > 1 else np.array([0.0])
     volatility = float(np.mean(steps))
-    artifacts = [artifact(ctx, PLUGIN_ID, "phate_trajectory_embedding_proxy.json", {"volatility": volatility, "embedding_sample": emb[:200].tolist()})]
+    artifacts = [
+        artifact(
+            ctx,
+            PLUGIN_ID,
+            "phate_trajectory_embedding_proxy.json",
+            {
+                "volatility": volatility,
+                "rows_used": int(x.shape[0]),
+                "embedding_sample": emb[:200].tolist(),
+            },
+        )
+    ]
     findings = [finding(PLUGIN_ID, "Trajectory embedding indicates transition volatility", "Higher trajectory volatility indicates unstable process progression; focus on transition smoothing and dependency readiness.", volatility, {"volatility": volatility})]
-    return PluginResult("ok", "Computed PHATE-like trajectory embedding proxy", {"trajectory_volatility": volatility}, findings, artifacts, None)
+    return PluginResult(
+        "ok",
+        "Computed PHATE-like trajectory embedding proxy",
+        {"trajectory_volatility": volatility, "rows_used_for_kernel": int(x.shape[0])},
+        findings,
+        artifacts,
+        None,
+    )

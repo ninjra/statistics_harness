@@ -388,3 +388,42 @@ def test_verify_agent_execution_contract_fails_blank_non_actionable_next_step(
     assert rc == 1
     checks = {str(item.get("id")): bool(item.get("ok")) for item in payload.get("checks", [])}
     assert checks["run.next_step_contract_covered"] is False
+
+
+def test_verify_agent_execution_contract_exposes_recompute_mode_metadata(
+    tmp_path: Path,
+) -> None:
+    conn = _init_state(tmp_path)
+    try:
+        _insert_run(conn, "run_a", dataset_version_id="dataset_x", run_seed=1337, statuses=["ok"])
+    finally:
+        conn.close()
+    _write_run_artifacts(
+        tmp_path,
+        "run_a",
+        known_status="suppressed",
+        known_items=[],
+        plugins={
+            "analysis_example": {
+                "status": "ok",
+                "findings": [{"kind": "plugin_observation"}],
+            }
+        },
+        recommendation_items=[],
+        explanation_items=[
+            {
+                "plugin_id": "analysis_example",
+                "reason_code": "OBSERVATION_ONLY",
+                "recommended_next_step": "Add or extend recommendation adapters for this plugin's finding families.",
+            }
+        ],
+    )
+    rc, payload = _run_verifier(
+        tmp_path,
+        ["--expected-known-issues-mode", "off", "--recompute-recommendations", "never"],
+    )
+    assert rc == 0
+    primary = payload.get("primary_run") if isinstance(payload, dict) else {}
+    assert isinstance(primary, dict)
+    assert primary.get("recommendations_recompute_mode") == "never"
+    assert primary.get("recommendations_recomputed") is False

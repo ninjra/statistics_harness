@@ -33,8 +33,36 @@
         "null"
       ]
     },
+    "max_entities_for_similarity": {
+      "default": 700,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_token_chars": {
+      "default": 96,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_tokens_per_entity": {
+      "default": 96,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_total_entities": {
+      "default": 9000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
     "max_processes": {
-      "default": 60,
+      "default": 40,
       "type": [
         "integer",
         "null"
@@ -48,7 +76,7 @@
       ]
     },
     "num_perm": {
-      "default": 128,
+      "default": 96,
       "type": [
         "integer",
         "null"

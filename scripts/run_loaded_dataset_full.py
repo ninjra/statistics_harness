@@ -693,6 +693,100 @@ def _parse_exclude_processes(raw: str | None) -> list[str]:
     return out
 
 
+def _parse_exclude_processes_value(raw: Any) -> list[str]:
+    if isinstance(raw, str):
+        return _parse_exclude_processes(raw)
+    if isinstance(raw, (list, tuple, set)):
+        parts: list[str] = []
+        for entry in raw:
+            text = str(entry or "").strip()
+            if text:
+                parts.append(text)
+        return _parse_exclude_processes(",".join(parts))
+    return []
+
+
+def _merge_exclude_processes(*sources: list[str]) -> list[str]:
+    merged: list[str] = []
+    seen: set[str] = set()
+    for source in sources:
+        for token in source:
+            text = str(token or "").strip()
+            if not text:
+                continue
+            key = text.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(text)
+    return merged
+
+
+def _infer_dataset_exclude_processes(
+    db_path: Path, dataset_version_id: str, max_runs: int = 400
+) -> list[str]:
+    if not dataset_version_id:
+        return []
+    conn = _connect(db_path)
+    try:
+        rows = conn.execute(
+            """
+            SELECT settings_json
+            FROM runs
+            WHERE dataset_version_id = ?
+            ORDER BY created_at DESC
+            LIMIT ?
+            """,
+            (dataset_version_id, int(max_runs)),
+        ).fetchall()
+    finally:
+        conn.close()
+
+    counts: dict[tuple[str, ...], int] = {}
+    first_seen_order: dict[tuple[str, ...], int] = {}
+    representative: dict[tuple[str, ...], list[str]] = {}
+
+    for idx, row in enumerate(rows):
+        raw = row["settings_json"]
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        try:
+            payload = json.loads(raw)
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+        parsed = _parse_exclude_processes_value(payload.get("exclude_processes"))
+        if not parsed:
+            continue
+        key = tuple(sorted({item.strip().lower() for item in parsed if item.strip()}))
+        if not key:
+            continue
+        counts[key] = int(counts.get(key, 0)) + 1
+        if key not in first_seen_order:
+            first_seen_order[key] = idx
+            representative[key] = parsed
+
+    if not counts:
+        return []
+
+    best_key = sorted(
+        counts.keys(),
+        key=lambda key: (
+            -int(counts.get(key, 0)),
+            int(first_seen_order.get(key, 10**9)),
+            -len(key),
+        ),
+    )[0]
+    inferred = list(representative.get(best_key) or [])
+    lowered = [item.strip().lower() for item in inferred if item.strip()]
+    has_los_family = any(item.startswith("los") for item in lowered)
+    has_los_wildcard = any(item in {"los*", "los%", "los?"} for item in lowered)
+    if has_los_family and not has_los_wildcard:
+        inferred.append("LOS*")
+    return _merge_exclude_processes(inferred)
+
+
 def _extract_known_issue_checks(recs: dict[str, Any]) -> dict[str, Any]:
     known = recs.get("known")
     if not isinstance(known, dict):
@@ -738,10 +832,12 @@ def _extract_known_issue_checks(recs: dict[str, Any]) -> dict[str, Any]:
 def _extract_ideaspace_route_map(run_dir: Path, max_steps: int = 12) -> dict[str, Any]:
     energy_path = run_dir / "artifacts" / "analysis_ideaspace_energy_ebm_v1" / "energy_state_vector.json"
     verified_path = run_dir / "artifacts" / "analysis_ebm_action_verifier_v1" / "verified_actions.json"
+    route_plan_path = run_dir / "artifacts" / "analysis_ebm_action_verifier_v1" / "route_plan.json"
     out: dict[str, Any] = {"available": False, "summary": "No Kona route map artifacts found.", "actions": []}
 
     energy: dict[str, Any] = {}
     verified: dict[str, Any] = {}
+    route_plan: dict[str, Any] = {}
     if energy_path.exists():
         try:
             payload = _load_json(energy_path)
@@ -756,6 +852,13 @@ def _extract_ideaspace_route_map(run_dir: Path, max_steps: int = 12) -> dict[str
                 verified = payload
         except Exception:
             verified = {}
+    if route_plan_path.exists():
+        try:
+            payload = _load_json(route_plan_path)
+            if isinstance(payload, dict):
+                route_plan = payload
+        except Exception:
+            route_plan = {}
 
     entities = energy.get("entities") if isinstance(energy.get("entities"), list) else []
     entity_all = None
@@ -769,36 +872,80 @@ def _extract_ideaspace_route_map(run_dir: Path, max_steps: int = 12) -> dict[str
             entity_all = first
 
     route_actions: list[dict[str, Any]] = []
-    raw_actions = verified.get("verified_actions") if isinstance(verified.get("verified_actions"), list) else []
-    for rec in raw_actions:
-        if not isinstance(rec, dict):
-            continue
-        delta = rec.get("delta_energy")
-        before = rec.get("energy_before")
-        pct = None
-        if isinstance(delta, (int, float)) and isinstance(before, (int, float)) and float(before) > 0.0:
-            pct = max(0.0, min(100.0, (float(delta) / float(before)) * 100.0))
-        route_actions.append(
-            {
-                "lever_id": str(rec.get("lever_id") or "").strip(),
-                "title": str(rec.get("title") or "").strip(),
-                "action": str(rec.get("action") or "").strip(),
-                "target": str(rec.get("target") or "").strip(),
-                "delta_energy": float(delta) if isinstance(delta, (int, float)) else None,
-                "energy_before": float(before) if isinstance(before, (int, float)) else None,
-                "energy_after": float(rec.get("energy_after")) if isinstance(rec.get("energy_after"), (int, float)) else None,
-                "modeled_percent": float(pct) if isinstance(pct, (int, float)) else None,
-                "confidence": float(rec.get("confidence")) if isinstance(rec.get("confidence"), (int, float)) else None,
-            }
-        )
-    route_actions.sort(
-        key=lambda r: (
-            -float(r.get("delta_energy") or 0.0),
-            -float(r.get("modeled_percent") or 0.0),
-            str(r.get("lever_id") or ""),
-        )
+    route_modeled = (
+        str(route_plan.get("decision") or "").strip().lower() == "modeled"
+        and isinstance(route_plan.get("steps"), list)
+        and bool(route_plan.get("steps"))
     )
-    route_actions = route_actions[: max(1, int(max_steps))]
+    if route_modeled:
+        totals = route_plan.get("totals") if isinstance(route_plan.get("totals"), dict) else {}
+        for step in route_plan.get("steps") or []:
+            if not isinstance(step, dict):
+                continue
+            delta = step.get("delta_energy")
+            before = step.get("energy_before")
+            pct = None
+            if isinstance(delta, (int, float)) and isinstance(before, (int, float)) and float(before) > 0.0:
+                pct = max(0.0, min(100.0, (float(delta) / float(before)) * 100.0))
+            route_actions.append(
+                {
+                    "lever_id": str(step.get("lever_id") or "").strip(),
+                    "title": str(step.get("title") or "").strip(),
+                    "action": str(step.get("action") or "").strip(),
+                    "target": ",".join(
+                        str(v).strip()
+                        for v in (step.get("target_process_ids") or [])
+                        if str(v).strip()
+                    ),
+                    "delta_energy": float(delta) if isinstance(delta, (int, float)) else None,
+                    "energy_before": float(before) if isinstance(before, (int, float)) else None,
+                    "energy_after": float(step.get("energy_after")) if isinstance(step.get("energy_after"), (int, float)) else None,
+                    "modeled_percent": float(pct) if isinstance(pct, (int, float)) else None,
+                    "confidence": float(step.get("confidence")) if isinstance(step.get("confidence"), (int, float)) else None,
+                    "route_total_delta_energy": (
+                        float(totals.get("total_delta_energy"))
+                        if isinstance(totals.get("total_delta_energy"), (int, float))
+                        else None
+                    ),
+                    "route_confidence": (
+                        float(totals.get("route_confidence"))
+                        if isinstance(totals.get("route_confidence"), (int, float))
+                        else None
+                    ),
+                }
+            )
+        route_actions = route_actions[: max(1, int(max_steps))]
+    else:
+        raw_actions = verified.get("verified_actions") if isinstance(verified.get("verified_actions"), list) else []
+        for rec in raw_actions:
+            if not isinstance(rec, dict):
+                continue
+            delta = rec.get("delta_energy")
+            before = rec.get("energy_before")
+            pct = None
+            if isinstance(delta, (int, float)) and isinstance(before, (int, float)) and float(before) > 0.0:
+                pct = max(0.0, min(100.0, (float(delta) / float(before)) * 100.0))
+            route_actions.append(
+                {
+                    "lever_id": str(rec.get("lever_id") or "").strip(),
+                    "title": str(rec.get("title") or "").strip(),
+                    "action": str(rec.get("action") or "").strip(),
+                    "target": str(rec.get("target") or "").strip(),
+                    "delta_energy": float(delta) if isinstance(delta, (int, float)) else None,
+                    "energy_before": float(before) if isinstance(before, (int, float)) else None,
+                    "energy_after": float(rec.get("energy_after")) if isinstance(rec.get("energy_after"), (int, float)) else None,
+                    "modeled_percent": float(pct) if isinstance(pct, (int, float)) else None,
+                    "confidence": float(rec.get("confidence")) if isinstance(rec.get("confidence"), (int, float)) else None,
+                }
+            )
+        route_actions.sort(
+            key=lambda r: (
+                -float(r.get("delta_energy") or 0.0),
+                -float(r.get("modeled_percent") or 0.0),
+                str(r.get("lever_id") or ""),
+            )
+        )
+        route_actions = route_actions[: max(1, int(max_steps))]
 
     current: dict[str, Any] = {}
     if isinstance(entity_all, dict):
@@ -814,7 +961,11 @@ def _extract_ideaspace_route_map(run_dir: Path, max_steps: int = 12) -> dict[str
     available = bool(current or route_actions)
     out = {
         "available": available,
-        "summary": "Current-to-ideal route extracted from Kona EBM artifacts."
+        "summary": (
+            "Current-to-ideal route extracted from route_plan.json."
+            if route_modeled
+            else "Current-to-ideal route extracted from Kona EBM artifacts."
+        )
         if available
         else "No Kona route map artifacts found.",
         "ideal_mode": str(energy.get("ideal_mode") or "").strip(),
@@ -1604,6 +1755,11 @@ def main() -> int:
         help="Optional denylist of plugin ids for planner auto mode (comma/space/semicolon-separated).",
     )
     parser.add_argument(
+        "--exclude-plugin-ids",
+        default="",
+        help="Optional plugin IDs to exclude from execution (comma/space/semicolon-separated).",
+    )
+    parser.add_argument(
         "--allow-structural-not-applicable",
         action="store_true",
         help="Allow gauntlet execution when structural preflight predicts role/column blockers.",
@@ -1619,6 +1775,68 @@ def main() -> int:
         choices=["legacy", "two_lane_strict"],
         default=str(os.environ.get("STAT_HARNESS_ORCHESTRATOR_MODE", "two_lane_strict") or "two_lane_strict"),
         help="legacy=mixed analysis DAG, two_lane_strict=decision lane first then explanation lane.",
+    )
+    parser.add_argument(
+        "--route-enable",
+        action="store_true",
+        help="Enable Kona current-to-ideal route planning in analysis_ebm_action_verifier_v1.",
+    )
+    parser.add_argument(
+        "--route-max-depth",
+        type=int,
+        default=3,
+        help="Route planning max depth when --route-enable is set.",
+    )
+    parser.add_argument(
+        "--route-beam-width",
+        type=int,
+        default=6,
+        help="Route planning beam width when --route-enable is set.",
+    )
+    parser.add_argument(
+        "--route-min-delta-energy",
+        type=float,
+        default=0.0,
+        help="Minimum modeled total delta energy for route acceptance.",
+    )
+    parser.add_argument(
+        "--route-min-confidence",
+        type=float,
+        default=0.0,
+        help="Minimum per-step confidence threshold for route candidates.",
+    )
+    parser.add_argument(
+        "--route-allow-cross-target-steps",
+        action="store_true",
+        help="Allow mixed target signatures across route steps.",
+    )
+    parser.add_argument(
+        "--route-stop-energy-threshold",
+        type=float,
+        default=1.0,
+        help="Early-stop threshold for modeled route energy_after.",
+    )
+    parser.add_argument(
+        "--route-candidate-limit",
+        type=int,
+        default=30,
+        help="Maximum verified actions considered for route solving.",
+    )
+    parser.add_argument(
+        "--route-time-budget-ms",
+        type=int,
+        default=0,
+        help="Optional route solver time budget in ms (0 disables explicit budget).",
+    )
+    parser.add_argument(
+        "--route-disallowed-lever-ids",
+        default="",
+        help="Optional disallowed lever IDs for route planner (comma/space/semicolon-separated).",
+    )
+    parser.add_argument(
+        "--route-disallowed-action-types",
+        default="",
+        help="Optional disallowed action types for route planner (comma/space/semicolon-separated).",
     )
     args = parser.parse_args()
     _debug_stage("args_parsed")
@@ -1663,11 +1881,25 @@ def main() -> int:
 
     dataset_version_id = str(dataset["dataset_version_id"])
     run_id = str(args.run_id or "").strip() or make_run_id()
-    exclude_processes = _parse_exclude_processes(
+    explicit_exclude_processes = _parse_exclude_processes(
         str(args.exclude_processes or os.environ.get("STAT_HARNESS_EXCLUDE_PROCESSES", ""))
     )
+    inferred_exclude_processes = _infer_dataset_exclude_processes(db_path, dataset_version_id)
+    exclude_processes = _merge_exclude_processes(
+        explicit_exclude_processes,
+        inferred_exclude_processes,
+    )
+    exclude_processes_source = "none"
+    if explicit_exclude_processes and inferred_exclude_processes:
+        exclude_processes_source = "explicit+historical_dataset"
+    elif explicit_exclude_processes:
+        exclude_processes_source = "explicit"
+    elif inferred_exclude_processes:
+        exclude_processes_source = "historical_dataset"
     if exclude_processes:
         os.environ["STAT_HARNESS_EXCLUDE_PROCESSES"] = ",".join(exclude_processes)
+    else:
+        os.environ.pop("STAT_HARNESS_EXCLUDE_PROCESSES", None)
     if int(args.recommendations_top_n or 0) > 0:
         os.environ["STAT_HARNESS_DISCOVERY_TOP_N"] = str(int(args.recommendations_top_n))
     if float(args.recommendations_min_relevance or 0.0) > 0.0:
@@ -1701,6 +1933,7 @@ def main() -> int:
             os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "2")
 
     plugin_ids: list[str]
+    excluded_plugin_ids = set(_parse_exclude_processes(str(args.exclude_plugin_ids or "")))
     if args.plugin_set == "auto":
         plugin_ids = ["auto"]
     else:
@@ -1714,6 +1947,8 @@ def main() -> int:
         reports = _discover_plugin_ids({"report"})
         llm = _discover_plugin_ids({"llm"})
         plugin_ids = [*profiles, *planners, *transforms, *analyses, *reports, *llm]
+        if excluded_plugin_ids:
+            plugin_ids = [pid for pid in plugin_ids if pid not in excluded_plugin_ids]
         _debug_stage("discover_plugins_done")
 
     preflight_dir = ctx.tenant_root / "tmp" / "preflight" / run_id
@@ -1729,6 +1964,8 @@ def main() -> int:
         f"blocking:{int(preflight.get('blocking_count') or 0)}",
         flush=True,
     )
+    if excluded_plugin_ids:
+        print("EXCLUDED_PLUGIN_IDS=" + ",".join(sorted(excluded_plugin_ids)), flush=True)
     if int(preflight.get("blocking_count") or 0) > 0 and not bool(args.allow_structural_not_applicable):
         raise SystemExit(
             "Structural preflight failed; resolve missing roles/columns first "
@@ -1741,6 +1978,21 @@ def main() -> int:
         "exclude_processes": exclude_processes,
         "_system": {"orchestrator_mode": orchestrator_mode},
     }
+    if bool(args.route_enable):
+        route_disallowed_lever_ids = _parse_exclude_processes(str(args.route_disallowed_lever_ids or ""))
+        route_disallowed_action_types = _parse_exclude_processes(str(args.route_disallowed_action_types or ""))
+        run_settings["analysis_ebm_action_verifier_v1"] = {
+            "route_max_depth": max(2, int(args.route_max_depth)),
+            "route_beam_width": max(1, int(args.route_beam_width)),
+            "route_min_delta_energy": max(0.0, float(args.route_min_delta_energy)),
+            "route_min_confidence": max(0.0, min(1.0, float(args.route_min_confidence))),
+            "route_allow_cross_target_steps": bool(args.route_allow_cross_target_steps),
+            "route_stop_energy_threshold": max(0.0, float(args.route_stop_energy_threshold)),
+            "route_candidate_limit": max(1, int(args.route_candidate_limit)),
+            "route_time_budget_ms": max(0, int(args.route_time_budget_ms)),
+            "route_disallowed_lever_ids": route_disallowed_lever_ids,
+            "route_disallowed_action_types": route_disallowed_action_types,
+        }
     if planner_allow or planner_deny:
         planner_settings: dict[str, Any] = {}
         if planner_allow:
@@ -1788,6 +2040,7 @@ def main() -> int:
         "runtime_trend": runtime_trend,
         "erp_baseline_comparison": erp_baseline,
         "exclude_processes": exclude_processes,
+        "exclude_processes_source": exclude_processes_source,
         "planner_allow": planner_allow,
         "planner_deny": planner_deny,
         "recommendations": recs,
@@ -1821,6 +2074,9 @@ def main() -> int:
     print(f"DATASET_VERSION_ID={dataset_version_id}")
     print(f"KNOWN_ISSUES_MODE={known_issues_mode}")
     print(f"ORCHESTRATOR_MODE={orchestrator_mode}")
+    print(f"EXCLUDE_PROCESSES_SOURCE={exclude_processes_source}")
+    if exclude_processes:
+        print(f"EXCLUDE_PROCESSES={','.join(exclude_processes)}")
     print(f"ROWS={int(dataset.get('row_count') or 0)} COLS={int(dataset.get('column_count') or 0)}")
     print(f"RUN_ID={run_id}")
     if runtime_trend:

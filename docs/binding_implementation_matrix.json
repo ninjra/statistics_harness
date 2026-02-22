@@ -121,6 +121,36 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/each-plugin-delivering-actionable-results-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_param_near_duplicate_minhash_v1",
+        "analysis_param_near_duplicate_simhash_v1",
+        "planner_basic",
+        "transform_normalize_mixed"
+      ],
+      "referenced_paths": [
+        "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+        "docs/report.schema.json",
+        "scripts/audit_plugin_actionability.py",
+        "scripts/finalize_optimal_4pillars.py",
+        "scripts/run_loaded_dataset_full.py",
+        "scripts/verify_agent_execution_contract.py",
+        "src/statistic_harness/core/actionability_explanations.py",
+        "src/statistic_harness/core/process_matcher.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/stat_plugins/registry.py",
+        "src/statistic_harness/core/top20_plugins.py",
+        "tests/test_top20_hawkes_dtw_smoke.py",
+        "tests/test_top20_simhash_plugin_smoke.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/evaluation.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -464,6 +494,65 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/kona-current-to-ideal-pathfinding-actionability-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_ebm_action_verifier_v1",
+        "analysis_ideaspace_action_planner",
+        "analysis_ideaspace_energy_ebm_v1"
+      ],
+      "referenced_paths": [
+        "docs/schemas/kona_route_plan.schema.json",
+        "plugins/analysis_ebm_action_verifier_v1/config.schema.json",
+        "plugins/analysis_ebm_action_verifier_v1/plugin.yaml",
+        "scripts/compare_kona_route_quality.py",
+        "scripts/run_loaded_dataset_full.py",
+        "scripts/show_actionable_results.py",
+        "src/statistic_harness/core/actionability_explanations.py",
+        "src/statistic_harness/core/ideaspace_route.py",
+        "src/statistic_harness/core/plugin_runner.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/report_v2_utils.py",
+        "src/statistic_harness/core/stat_plugins/ideaspace.py",
+        "tests/test_kona_energy_ideaspace_architecture.py",
+        "tests/test_report_discovery_recommendations.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
+      "doc_path": "docs/kona-route-updates-plan.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [
+        "analysis_ebm_action_verifier_v1"
+      ],
+      "referenced_paths": [
+        "docs/kona-current-to-ideal-pathfinding-actionability-plan.md",
+        "docs/release_evidence/kona_route_requirement_map.json",
+        "docs/release_evidence/kona_route_skill_rationale.md",
+        "docs/schemas/kona_route_plan.schema.json",
+        "plugins/analysis_ebm_action_verifier_v1/config.schema.json",
+        "plugins/analysis_ebm_action_verifier_v1/plugin.yaml",
+        "scripts/compare_kona_route_quality.py",
+        "scripts/run_loaded_dataset_full.py",
+        "src/statistic_harness/core/actionability_explanations.py",
+        "src/statistic_harness/core/ideaspace_route.py",
+        "src/statistic_harness/core/report.py",
+        "src/statistic_harness/core/stat_plugins/code_hash.py",
+        "src/statistic_harness/core/stat_plugins/ideaspace.py",
+        "tests/test_kona_energy_ideaspace_architecture.py",
+        "tests/test_kona_route_plan_schema.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/kona_energy_ideaspace_architecture.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -543,6 +632,22 @@
         "scripts/generate_plugin_example_cards.py",
         "scripts/show_actionable_results.py",
         "scripts/verify_agent_execution_contract.py"
+      ],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
+      "doc_path": "docs/optimal_4pillars_execution_path.md",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [
+        "scripts/compare_plugin_actionability_runs.py",
+        "scripts/compare_run_outputs.py",
+        "scripts/finalize_optimal_4pillars.py",
+        "scripts/optimal_4pillars_path.py"
       ],
       "requirement_enforcement_paths": {},
       "requirement_ids": [],
@@ -2632,6 +2737,17 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/schemas/kona_route_plan.schema.json",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/schemas/process_mining.schema.json",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -3585,6 +3701,7 @@
     "docs/db_normalization_top10.md",
     "docs/docs_non_plugin_tokens.json",
     "docs/docs_plugin_aliases.json",
+    "docs/each-plugin-delivering-actionable-results-plan.md",
     "docs/evaluation.md",
     "docs/first_release_execution_readout.md",
     "docs/frozen_plugin_surfaces.contract.json",
@@ -3592,9 +3709,12 @@
     "docs/golden_release_delta_map.json",
     "docs/ideaspace_baseline.schema.json",
     "docs/insight_quality_contract.md",
+    "docs/kona-current-to-ideal-pathfinding-actionability-plan.md",
+    "docs/kona-route-updates-plan.md",
     "docs/kona_energy_ideaspace_architecture.md",
     "docs/non-actionable-reasons-resolution-plan.md",
     "docs/operator_playbook_autonomous_insights.md",
+    "docs/optimal_4pillars_execution_path.md",
     "docs/perf_hotspots.md",
     "docs/plugin-actionability-recommended-next-steps-plan.md",
     "docs/plugin_class_taxonomy.yaml",
@@ -3617,6 +3737,7 @@
     "docs/run_manifest.schema.json",
     "docs/schemas/causal.schema.json",
     "docs/schemas/changepoints.schema.json",
+    "docs/schemas/kona_route_plan.schema.json",
     "docs/schemas/process_mining.schema.json",
     "docs/sql_adoption_execution_order.md",
     "docs/sql_adoption_partition_matrix.json",

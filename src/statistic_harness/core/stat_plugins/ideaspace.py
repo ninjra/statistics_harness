@@ -4,6 +4,7 @@ from typing import Any, Callable
 
 import json
 import math
+import time
 from pathlib import Path
 
 import numpy as np
@@ -24,6 +25,11 @@ from statistic_harness.core.ideaspace_feature_extractor import (
 from statistic_harness.core.lever_library import (
     LeverRecommendation,
     build_default_lever_recommendations,
+)
+from statistic_harness.core.ideaspace_route import (
+    RouteCandidate,
+    RouteConfig,
+    solve_kona_route_plan,
 )
 from statistic_harness.core.stat_plugins import (
     BudgetTimer,
@@ -1139,6 +1145,136 @@ def _ideaspace_energy_ebm_v1(
     )
 
 
+def _energy_gap_for_metrics(
+    observed: dict[str, Any],
+    ideal: dict[str, Any],
+    weights: dict[str, float],
+) -> float:
+    _, e_gap = _energy_terms(observed, ideal, weights)
+    return float(e_gap)
+
+
+def _apply_modeled_lever_transform(
+    lever_id: str,
+    observed: dict[str, Any],
+    evidence_metrics: dict[str, Any],
+    estimated_improvement_pct: float | None = None,
+) -> dict[str, float]:
+    modeled: dict[str, float] = {
+        str(k): float(v)
+        for k, v in observed.items()
+        if isinstance(v, (int, float)) and math.isfinite(float(v))
+    }
+    if lever_id == "tune_schedule_qemail_frequency_v1":
+        if "background_overhead_per_min" in modeled:
+            modeled["background_overhead_per_min"] *= 0.15
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.75
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.88
+        if "rate_per_min" in modeled:
+            modeled["rate_per_min"] *= 1.08
+    elif lever_id == "add_qpec_capacity_plus_one_v1":
+        host_count = int(evidence_metrics.get("qpec_host_count") or 0)
+        if host_count <= 0:
+            host_count = 1
+        factor = float(host_count / float(host_count + 1))
+        for key in ("queue_delay_p95", "duration_p95"):
+            if key in modeled:
+                modeled[key] *= factor
+        if "rate_per_min" in modeled:
+            modeled["rate_per_min"] *= 1.0 / max(factor, 1e-9)
+    elif lever_id == "split_batches":
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.70
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.85
+    elif lever_id == "priority_isolation":
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.70
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.92
+    elif lever_id == "retry_backoff":
+        if "error_rate" in modeled:
+            modeled["error_rate"] *= 0.65
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.90
+    elif lever_id == "cap_concurrency":
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.82
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.85
+    elif lever_id == "blackout_scheduled_jobs":
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.80
+        if "background_overhead_per_min" in modeled:
+            modeled["background_overhead_per_min"] *= 0.85
+    elif lever_id == "resource_affinity":
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.90
+        if "error_rate" in modeled:
+            modeled["error_rate"] *= 0.90
+    elif lever_id == "parallelize_branches":
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.80
+        if "rate_per_min" in modeled:
+            modeled["rate_per_min"] *= 1.10
+    elif lever_id == "prestage_prereqs":
+        if "queue_delay_p95" in modeled:
+            modeled["queue_delay_p95"] *= 0.88
+        if "duration_p95" in modeled:
+            modeled["duration_p95"] *= 0.94
+    else:
+        pct = estimated_improvement_pct
+        if not isinstance(pct, (int, float)):
+            raw = evidence_metrics.get("estimated_improvement_pct")
+            pct = float(raw) if isinstance(raw, (int, float)) else None
+        if isinstance(pct, (int, float)) and math.isfinite(float(pct)):
+            frac = max(0.0, min(0.80, float(pct) / 100.0))
+            if frac > 0.0:
+                for key in ("queue_delay_p95", "duration_p95", "background_overhead_per_min", "error_rate"):
+                    if key in modeled:
+                        modeled[key] *= 1.0 - frac
+    return modeled
+
+
+def _canonical_route_action_info(
+    lever_id: str,
+    action_text: str,
+    evidence_metrics: dict[str, Any],
+) -> tuple[str, tuple[str, ...]]:
+    text = str(action_text or "").strip().lower()
+    if lever_id == "tune_schedule_qemail_frequency_v1" or "qemail" in text:
+        return ("tune_schedule", ("qemail",))
+    if lever_id == "add_qpec_capacity_plus_one_v1" or "qpec" in text:
+        return ("add_server", ("qpec",))
+    if lever_id == "split_batches":
+        focus = evidence_metrics.get("focus_processes")
+        if isinstance(focus, list):
+            process_ids = tuple(str(v).strip().lower() for v in focus if str(v).strip())
+            if process_ids:
+                return ("batch_input_refactor", process_ids)
+        return ("batch_input_refactor", tuple())
+    if lever_id == "priority_isolation":
+        return ("orchestrate_macro", tuple())
+    if lever_id == "retry_backoff":
+        return ("dedupe_or_cache", tuple())
+    if lever_id == "cap_concurrency":
+        return ("cap_concurrency", tuple())
+    if lever_id == "blackout_scheduled_jobs":
+        return ("schedule_shift_target", tuple())
+    return ("ideaspace_action", tuple())
+
+
+def _parse_target_entity_keys(raw: Any) -> tuple[str, ...]:
+    if not isinstance(raw, str):
+        return ("ALL",)
+    values = [token.strip() for token in raw.split(",") if token.strip()]
+    if not values:
+        return ("ALL",)
+    return tuple(values)
+
+
 def _ebm_action_verifier_v1(
     plugin_id: str,
     ctx,
@@ -1161,7 +1297,10 @@ def _ebm_action_verifier_v1(
             artifacts=[],
             error=None,
             references=[],
-            debug={"gating_reason": "missing_artifacts", "missing": [str(p) for p in (action_path, energy_path) if not p.exists()]},
+            debug={
+                "gating_reason": "missing_artifacts",
+                "missing": [str(p) for p in (action_path, energy_path) if not p.exists()],
+            },
         )
 
     try:
@@ -1200,23 +1339,22 @@ def _ebm_action_verifier_v1(
         )
 
     ent_map: dict[str, dict[str, Any]] = {}
-    for e in entities:
-        if isinstance(e, dict) and isinstance(e.get("entity_key"), str):
-            ent_map[e["entity_key"]] = e
+    for entity in entities:
+        if isinstance(entity, dict) and isinstance(entity.get("entity_key"), str):
+            ent_map[entity["entity_key"]] = entity
 
     def _energy_for_entity(observed: dict[str, Any], ideal: dict[str, Any]) -> float:
-        _, e_gap = _energy_terms(observed, ideal, weights_f)
-        return float(e_gap)
+        return _energy_gap_for_metrics(observed, ideal, weights_f)
 
     def _constraint_after_for_action(
         lever_id: str,
         observed: dict[str, Any],
         modeled: dict[str, Any],
         before_constraints: float,
+        evidence_metrics: dict[str, Any] | None = None,
     ) -> float:
         if before_constraints <= 0.0:
             return 0.0
-        # Conservative generic coupling between metric gains and constraint reduction.
         improvements: list[float] = []
         for key in ENERGY_MINIMIZE_KEYS:
             cur = observed.get(key)
@@ -1227,8 +1365,7 @@ def _ebm_action_verifier_v1(
             nxt_f = float(nxt)
             if not (math.isfinite(cur_f) and math.isfinite(nxt_f)):
                 continue
-            denom = max(abs(cur_f), 1.0)
-            improvements.append(max(0.0, (cur_f - nxt_f) / denom))
+            improvements.append(max(0.0, (cur_f - nxt_f) / max(abs(cur_f), 1.0)))
         for key in ENERGY_MAXIMIZE_KEYS:
             cur = observed.get(key)
             nxt = modeled.get(key)
@@ -1238,13 +1375,11 @@ def _ebm_action_verifier_v1(
             nxt_f = float(nxt)
             if not (math.isfinite(cur_f) and math.isfinite(nxt_f)):
                 continue
-            denom = max(abs(cur_f), 1.0)
-            improvements.append(max(0.0, (nxt_f - cur_f) / denom))
+            improvements.append(max(0.0, (nxt_f - cur_f) / max(abs(cur_f), 1.0)))
 
         mean_gain = float(sum(improvements) / len(improvements)) if improvements else 0.0
         max_gain = float(max(improvements)) if improvements else 0.0
         gain_score = max(mean_gain, max_gain)
-
         lever_floor: dict[str, float] = {
             "tune_schedule_qemail_frequency_v1": 0.35,
             "add_qpec_capacity_plus_one_v1": 0.30,
@@ -1257,8 +1392,7 @@ def _ebm_action_verifier_v1(
             "parallelize_branches": 0.15,
             "prestage_prereqs": 0.10,
         }
-        base_floor = float(lever_floor.get(lever_id, 0.0))
-        reduction_ratio = max(base_floor, min(0.85, gain_score))
+        reduction_ratio = max(float(lever_floor.get(lever_id, 0.0)), min(0.85, gain_score))
         return float(before_constraints * (1.0 - reduction_ratio))
 
     verified: list[dict[str, Any]] = []
@@ -1268,7 +1402,7 @@ def _ebm_action_verifier_v1(
         if not isinstance(action, dict):
             continue
         lever_id = str(action.get("lever_id") or "").strip() or "unknown"
-        confidence = float(action.get("confidence") or 0.0)
+        confidence = float(max(0.0, min(1.0, float(action.get("confidence") or 0.0))))
         evidence = action.get("evidence") if isinstance(action.get("evidence"), dict) else {}
         metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
 
@@ -1278,16 +1412,14 @@ def _ebm_action_verifier_v1(
             if isinstance(keys, list):
                 target_entities = [str(k) for k in keys if isinstance(k, str) and k]
         if not target_entities:
-            # Default scoring scope: ALL entity.
             target_entities = ["ALL"]
         if lever_id == "split_batches":
-            focus = metrics.get("focus_processes") if isinstance(metrics, dict) else None
+            focus = metrics.get("focus_processes")
             if isinstance(focus, list):
                 proc_targets = [str(v).strip().lower() for v in focus if str(v).strip()]
                 if proc_targets:
                     target_entities = proc_targets
 
-        # Modeled delta is applied to each target entity independently and summed.
         delta_energy = 0.0
         energy_before = 0.0
         energy_after = 0.0
@@ -1300,106 +1432,55 @@ def _ebm_action_verifier_v1(
             before_gap = _energy_for_entity(observed, ideal)
             before_constraints = float(ent.get("energy_constraints") or 0.0)
             before = float(before_gap + before_constraints)
-            modeled = dict(observed)
-
-            if lever_id == "tune_schedule_qemail_frequency_v1":
-                # Primary effect: reduce background overhead volume; secondary: modest reduction
-                # in queue pressure (conservative).
-                if "background_overhead_per_min" in modeled and isinstance(modeled.get("background_overhead_per_min"), (int, float)):
-                    modeled["background_overhead_per_min"] = float(modeled["background_overhead_per_min"]) * 0.15
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.75
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.88
-                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
-                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * 1.08
-            elif lever_id == "add_qpec_capacity_plus_one_v1":
-                host_count = int(metrics.get("qpec_host_count") or 0)
-                if host_count <= 0:
-                    host_count = 1
-                factor = float(host_count / float(host_count + 1))
-                for key in ("queue_delay_p95", "duration_p95"):
-                    if key in modeled and isinstance(modeled.get(key), (int, float)):
-                        modeled[key] = float(modeled[key]) * factor
-                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
-                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * (1.0 / max(factor, 1e-9))
-            elif lever_id == "split_batches":
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.70
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.85
-            elif lever_id == "priority_isolation":
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.70
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.92
-            elif lever_id == "retry_backoff":
-                if "error_rate" in modeled and isinstance(modeled.get("error_rate"), (int, float)):
-                    modeled["error_rate"] = float(modeled["error_rate"]) * 0.65
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.90
-            elif lever_id == "cap_concurrency":
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.82
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.85
-            elif lever_id == "blackout_scheduled_jobs":
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.80
-                if "background_overhead_per_min" in modeled and isinstance(modeled.get("background_overhead_per_min"), (int, float)):
-                    modeled["background_overhead_per_min"] = float(modeled["background_overhead_per_min"]) * 0.85
-            elif lever_id == "resource_affinity":
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.90
-                if "error_rate" in modeled and isinstance(modeled.get("error_rate"), (int, float)):
-                    modeled["error_rate"] = float(modeled["error_rate"]) * 0.90
-            elif lever_id == "parallelize_branches":
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.80
-                if "rate_per_min" in modeled and isinstance(modeled.get("rate_per_min"), (int, float)):
-                    modeled["rate_per_min"] = float(modeled["rate_per_min"]) * 1.10
-            elif lever_id == "prestage_prereqs":
-                if "queue_delay_p95" in modeled and isinstance(modeled.get("queue_delay_p95"), (int, float)):
-                    modeled["queue_delay_p95"] = float(modeled["queue_delay_p95"]) * 0.88
-                if "duration_p95" in modeled and isinstance(modeled.get("duration_p95"), (int, float)):
-                    modeled["duration_p95"] = float(modeled["duration_p95"]) * 0.94
-            else:
-                pct = action.get("estimated_improvement_pct")
-                if isinstance(pct, (int, float)) and math.isfinite(float(pct)):
-                    frac = max(0.0, min(0.80, float(pct) / 100.0))
-                    if frac > 0.0:
-                        for key in ("queue_delay_p95", "duration_p95", "background_overhead_per_min", "error_rate"):
-                            if key in modeled and isinstance(modeled.get(key), (int, float)):
-                                modeled[key] = float(modeled[key]) * (1.0 - frac)
-
+            modeled = _apply_modeled_lever_transform(
+                lever_id,
+                observed,
+                metrics,
+                float(action.get("estimated_improvement_pct"))
+                if isinstance(action.get("estimated_improvement_pct"), (int, float))
+                else None,
+            )
             after_gap = _energy_for_entity(modeled, ideal)
-            after_constraints = _constraint_after_for_action(lever_id, observed, modeled, before_constraints)
+            after_constraints = _constraint_after_for_action(lever_id, observed, modeled, before_constraints, metrics)
             after = float(after_gap + after_constraints)
             energy_before += before
             energy_after += after
-            delta_energy += (before - after)
+            delta_energy += before - after
 
+        action_text = str(action.get("action") or "")
+        route_action_type, target_process_ids = _canonical_route_action_info(lever_id, action_text, metrics)
         record = {
             "lever_id": lever_id,
-            "action": str(action.get("action") or ""),
+            "action": action_text,
             "title": str(action.get("title") or ""),
             "target": ",".join(target_entities),
             "delta_energy": float(delta_energy),
             "energy_before": float(energy_before),
             "energy_after": float(energy_after),
-            "confidence": float(max(0.0, min(1.0, confidence))),
+            "confidence": confidence,
             "constraints_passed": True,
             "blocked_reason": "",
             "evidence": evidence,
+            "action_type": route_action_type,
+            "target_process_ids": list(target_process_ids),
+            "estimated_improvement_pct": (
+                float(action.get("estimated_improvement_pct"))
+                if isinstance(action.get("estimated_improvement_pct"), (int, float))
+                else None
+            ),
         }
         verified.append(record)
 
     verified.sort(
-        key=lambda r: (-float(r.get("delta_energy", 0.0)), -float(r.get("confidence", 0.0)), str(r.get("lever_id", "")))
+        key=lambda r: (
+            -float(r.get("delta_energy", 0.0)),
+            -float(r.get("confidence", 0.0)),
+            str(r.get("lever_id", "")),
+        )
     )
 
     max_findings = int(config.get("max_findings", 30))
-    findings = []
+    findings: list[dict[str, Any]] = []
     for rec in verified[:max_findings]:
         action_text = str(rec.get("action") or "").strip()
         modeled_scope = {"plugin_id": plugin_id, "target": rec.get("target")}
@@ -1445,12 +1526,167 @@ def _ebm_action_verifier_v1(
     blocked_path = artifacts_dir / "blocked_actions.json"
     write_json(verified_path, {"schema_version": "v1", "verified_actions": verified})
     write_json(blocked_path, {"schema_version": "v1", "blocked_actions": blocked})
+
+    route_debug: dict[str, Any] = {
+        "enabled": bool(
+            int(config.get("route_max_depth", 0)) >= 2 and int(config.get("route_beam_width", 0)) >= 1
+        )
+    }
+    route_artifact: PluginArtifact | None = None
+    if route_debug["enabled"]:
+        route_config = RouteConfig(
+            route_max_depth=max(0, int(config.get("route_max_depth", 0))),
+            route_beam_width=max(0, int(config.get("route_beam_width", 0))),
+            route_min_delta_energy=max(0.0, float(config.get("route_min_delta_energy", 0.0))),
+            route_min_confidence=max(0.0, min(1.0, float(config.get("route_min_confidence", 0.0)))),
+            route_allow_cross_target_steps=bool(config.get("route_allow_cross_target_steps", False)),
+            route_stop_energy_threshold=max(0.0, float(config.get("route_stop_energy_threshold", 1.0))),
+            route_candidate_limit=max(1, int(config.get("route_candidate_limit", 50))),
+            route_time_budget_ms=max(0, int(config.get("route_time_budget_ms", 0))),
+            route_disallowed_lever_ids=tuple(str(v).strip() for v in config.get("route_disallowed_lever_ids", []) if str(v).strip()),
+            route_disallowed_action_types=tuple(
+                str(v).strip() for v in config.get("route_disallowed_action_types", []) if str(v).strip()
+            ),
+        )
+        route_candidates: list[RouteCandidate] = []
+        for rec in verified[: route_config.route_candidate_limit]:
+            evidence = rec.get("evidence") if isinstance(rec.get("evidence"), dict) else {}
+            evidence_metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+            action_type = str(rec.get("action_type") or "ideaspace_action")
+            target_process_ids = tuple(
+                str(v).strip().lower() for v in rec.get("target_process_ids") or [] if str(v).strip()
+            )
+            route_candidates.append(
+                RouteCandidate(
+                    lever_id=str(rec.get("lever_id") or ""),
+                    title=str(rec.get("title") or ""),
+                    action=str(rec.get("action") or ""),
+                    action_type=action_type,
+                    confidence=float(max(0.0, min(1.0, float(rec.get("confidence") or 0.0)))),
+                    target_entity_keys=_parse_target_entity_keys(rec.get("target")),
+                    target_process_ids=target_process_ids,
+                    evidence_metrics={
+                        **evidence_metrics,
+                        "estimated_improvement_pct": rec.get("estimated_improvement_pct"),
+                    },
+                    delta_energy_single=float(rec.get("delta_energy") or 0.0),
+                    energy_before_single=float(rec.get("energy_before") or 0.0),
+                )
+            )
+
+        route_entities: dict[str, dict[str, Any]] = {}
+        for entity_key, payload in ent_map.items():
+            observed = payload.get("observed") if isinstance(payload.get("observed"), dict) else {}
+            ideal = payload.get("ideal") if isinstance(payload.get("ideal"), dict) else {}
+            if not observed or not ideal:
+                continue
+            route_entities[entity_key] = {
+                "observed": observed,
+                "ideal": ideal,
+                "energy_constraints": float(payload.get("energy_constraints") or 0.0),
+            }
+
+        route_plan = solve_kona_route_plan(
+            plugin_id=plugin_id,
+            generated_at=str(getattr(ctx, "run_id", "")),
+            entities=route_entities,
+            weights=weights_f,
+            candidates=route_candidates,
+            config=route_config,
+            apply_lever=lambda lever, observed_metrics, evidence_metrics: _apply_modeled_lever_transform(
+                lever,
+                dict(observed_metrics),
+                dict(evidence_metrics or {}),
+                float(evidence_metrics.get("estimated_improvement_pct"))
+                if isinstance(evidence_metrics.get("estimated_improvement_pct"), (int, float))
+                else None,
+            ),
+            energy_gap=lambda observed_metrics, ideal_metrics, weight_map: _energy_gap_for_metrics(
+                dict(observed_metrics), dict(ideal_metrics), dict(weight_map)
+            ),
+            update_constraints=lambda lever, observed_metrics, modeled_metrics, before_constraints, evidence_metrics: _constraint_after_for_action(
+                lever,
+                dict(observed_metrics),
+                dict(modeled_metrics),
+                float(before_constraints),
+                dict(evidence_metrics or {}),
+            ),
+            time_now_ms=lambda: float(time.monotonic() * 1000.0),
+        )
+        route_plan_path = artifacts_dir / "route_plan.json"
+        write_json(route_plan_path, route_plan)
+        route_artifact = PluginArtifact(
+            path=str(route_plan_path.relative_to(ctx.run_dir)),
+            type="json",
+            description="route_plan.json",
+        )
+        route_debug["decision"] = route_plan.get("decision")
+        route_debug["stop_reason"] = ((route_plan.get("totals") or {}).get("stop_reason"))
+        if (
+            route_plan.get("decision") == "modeled"
+            and isinstance(route_plan.get("steps"), list)
+            and route_plan.get("steps")
+        ):
+            totals = route_plan.get("totals") if isinstance(route_plan.get("totals"), dict) else {}
+            route_delta = float(totals.get("total_delta_energy") or 0.0)
+            route_before = float(totals.get("energy_before") or 0.0)
+            route_after = float(totals.get("energy_after") or 0.0)
+            route_conf = float(totals.get("route_confidence") or 0.0)
+            target_signature = str(route_plan.get("target_signature") or "").strip()
+            route_steps = [step for step in route_plan.get("steps") if isinstance(step, dict)]
+            findings.append(
+                {
+                    "id": stable_id(f"{plugin_id}:route:{target_signature or 'all'}"),
+                    "kind": "verified_route_action_plan",
+                    "severity": "warn" if route_delta > 0.0 else "info",
+                    "confidence": route_conf,
+                    "title": "Kona current→ideal route plan",
+                    "what": f"{len(route_steps)} steps; ΔE={route_delta:.6f}; confidence={route_conf:.3f}",
+                    "why": "Deterministic beam search over verified actions to produce an ordered current-to-ideal route.",
+                    "decision": "modeled",
+                    "target": target_signature or None,
+                    "total_delta_energy": route_delta,
+                    "energy_before": route_before,
+                    "energy_after": route_after,
+                    "route_confidence": route_conf,
+                    "steps": route_steps,
+                    "scope": {
+                        "plugin_id": plugin_id,
+                        "target_signature": target_signature or "all",
+                        "window_scope": "accounting_month/close_static/close_dynamic",
+                    },
+                    "assumptions": [
+                        "Route plan optimizes deterministic energy objective over verified actions.",
+                        "Modeled deltas and confidence scores are point estimates from plugin-level heuristics.",
+                    ],
+                    "modeled_scope": {
+                        "plugin_id": plugin_id,
+                        "target_signature": target_signature or "all",
+                        "window_scope": "accounting_month/close_static/close_dynamic",
+                    },
+                    "modeled_assumptions": [
+                        "Route plan optimizes deterministic energy objective over verified actions.",
+                        "Modeled deltas and confidence scores are point estimates from plugin-level heuristics.",
+                    ],
+                    "evidence": {
+                        "route_plan_artifact": str(route_plan_path.relative_to(ctx.run_dir)),
+                        "source_plugin": plugin_id,
+                    },
+                    "measurement_type": "modeled",
+                }
+            )
+
     artifacts = [
         PluginArtifact(path=str(verified_path.relative_to(ctx.run_dir)), type="json", description="verified_actions.json"),
         PluginArtifact(path=str(blocked_path.relative_to(ctx.run_dir)), type="json", description="blocked_actions.json"),
-        _artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)),
     ]
+    if route_artifact is not None:
+        artifacts.append(route_artifact)
+    artifacts.append(_artifact(ctx, plugin_id, "freshness.json", _freshness_payload(ctx, plugin_id, config)))
+
     summary = f"Verified {len(verified)} actions"
+    if route_artifact is not None:
+        summary = f"{summary}; route planning enabled"
     if not verified:
         summary = "No actions to verify"
     return PluginResult(
@@ -1461,7 +1697,7 @@ def _ebm_action_verifier_v1(
         artifacts=artifacts,
         error=None,
         references=[],
-        debug={"scored_actions": len(verified)},
+        debug={"scored_actions": len(verified), "route": route_debug},
     )
 
 

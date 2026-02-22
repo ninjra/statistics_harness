@@ -57,6 +57,9 @@ def stat_plugin_effective_code_hash(plugin_id: str) -> str | None:
         path = base / "ideaspace.py"
         if path.exists():
             files.append(path)
+        route_path = base.parent / "ideaspace_route.py"
+        if route_path.exists():
+            files.append(route_path)
     else:
         path = base / "registry.py"
         if path.exists():
@@ -73,4 +76,3 @@ def stat_plugin_effective_code_hash(plugin_id: str) -> str | None:
         h.update(str(path.name).encode("utf-8"))
         h.update(digest.encode("utf-8"))
     return h.hexdigest()
-

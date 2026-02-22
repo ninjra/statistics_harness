@@ -258,6 +258,53 @@ def test_discovery_recommendations_include_client_value_metrics(monkeypatch) -> 
     row = items[0]
     assert row.get("scope_type") == "single_process"
     assert row.get("primary_process_id") == "rpt_por002"
+
+
+def test_verified_route_action_plan_maps_to_discovery_recommendation(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_REQUIRE_MODELED_HOURS", "0")
+    report = {
+        "plugins": {
+            "analysis_ebm_action_verifier_v1": {
+                "findings": [
+                    {
+                        "id": "route-1",
+                        "kind": "verified_route_action_plan",
+                        "decision": "modeled",
+                        "title": "Kona current→ideal route plan",
+                        "total_delta_energy": 3.0,
+                        "energy_before": 12.0,
+                        "energy_after": 9.0,
+                        "route_confidence": 0.84,
+                        "measurement_type": "modeled",
+                        "target": "rpt_por002",
+                        "steps": [
+                            {
+                                "step_index": 1,
+                                "action": "Convert payout extract to batch input mode.",
+                                "confidence": 0.90,
+                                "target_process_ids": ["rpt_por002"],
+                            },
+                            {
+                                "step_index": 2,
+                                "action": "Split oversized batches for payout extraction.",
+                                "confidence": 0.78,
+                                "target_process_ids": ["rpt_por002"],
+                            },
+                        ],
+                        "evidence": {"route_plan_artifact": "artifacts/analysis_ebm_action_verifier_v1/route_plan.json"},
+                    }
+                ]
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    rows = [r for r in payload.get("items") or [] if r.get("kind") == "verified_route_action_plan"]
+    assert rows
+    row = rows[0]
+    assert row.get("action_type") == "route_process"
+    assert "1. Convert payout extract to batch input mode." in str(row.get("recommendation") or "")
+    assert "2. Split oversized batches for payout extraction." in str(row.get("recommendation") or "")
+    assert float(row.get("modeled_percent_hint") or 0.0) > 0.0
     assert row.get("target_process_ids") == ["rpt_por002"]
     assert float(row.get("modeled_user_touches_reduced") or 0.0) > 0.0
     assert float(row.get("modeled_user_hours_saved_month") or 0.0) > 0.0

@@ -11,6 +11,16 @@ settings:
   description: Re-rank deterministic lever candidates by modeled energy reduction.
   defaults:
     max_findings: 30
+    route_max_depth: 0
+    route_beam_width: 0
+    route_min_delta_energy: 0.0
+    route_min_confidence: 0.0
+    route_allow_cross_target_steps: false
+    route_stop_energy_threshold: 1.0
+    route_candidate_limit: 50
+    route_time_budget_ms: 0
+    route_disallowed_lever_ids: []
+    route_disallowed_action_types: []
 capabilities:
   - needs_numeric
 config_schema: config.schema.json
@@ -21,4 +31,3 @@ sandbox:
     - appdata
     - plugins
     - run_dir
-

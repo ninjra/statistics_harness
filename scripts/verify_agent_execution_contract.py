@@ -302,7 +302,13 @@ def _check(
     }
 
 
-def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[str, Any]:
+def _build_snapshot(
+    root: Path,
+    conn: sqlite3.Connection,
+    run_id: str,
+    *,
+    recompute_recommendations: str = "auto",
+) -> dict[str, Any]:
     row = _fetch_run_row(conn, run_id)
     run_dir = root / "appdata" / "runs" / run_id
     report = _read_json(run_dir / "report.json")
@@ -317,9 +323,22 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
         for item in raw_explanation_items
         if str(item.get("reason_code") or "").strip() == "NON_DECISION_PLUGIN"
     )
-    # Recompute recommendations only when artifact explanations are missing or clearly legacy.
+    # Recompute recommendations when explicitly requested, or automatically for
+    # missing/legacy explanation payloads.
     recommendation_payload = raw_recommendation_payload
-    should_recompute = int(len(raw_explanation_items)) == 0 or int(legacy_non_decision_count) > 0
+    recompute_mode = str(recompute_recommendations or "auto").strip().lower()
+    if recompute_mode not in {"auto", "always", "never"}:
+        recompute_mode = "auto"
+    should_recompute = (
+        recompute_mode == "always"
+        or (
+            recompute_mode == "auto"
+            and (
+                int(len(raw_explanation_items)) == 0
+                or int(legacy_non_decision_count) > 0
+            )
+        )
+    )
     if should_recompute:
         try:
             db_path = root / "appdata" / "state.sqlite"
@@ -458,6 +477,8 @@ def _build_snapshot(root: Path, conn: sqlite3.Connection, run_id: str) -> dict[s
         "run_seed": row["run_seed"],
         "requested_run_seed": row["requested_run_seed"],
         "created_at": row["created_at"],
+        "recommendations_recompute_mode": recompute_mode,
+        "recommendations_recomputed": bool(should_recompute),
         "known_status": known_status,
         "known_issues_mode": known_mode,
         "known_non_independent_items": non_independent_known_items,
@@ -685,6 +706,11 @@ def main() -> int:
     parser.add_argument("--state-db", default="")
     parser.add_argument("--expected-known-issues-mode", choices=("any", "on", "off"), default="any")
     parser.add_argument("--require-known-signature", action="append", default=[])
+    parser.add_argument(
+        "--recompute-recommendations",
+        choices=("auto", "always", "never"),
+        default="auto",
+    )
     parser.add_argument("--out", default="")
     args = parser.parse_args()
 
@@ -697,11 +723,21 @@ def main() -> int:
     conn = sqlite3.connect(str(state_db))
     conn.row_factory = sqlite3.Row
     try:
-        primary = _build_snapshot(root, conn, str(args.run_id).strip())
+        primary = _build_snapshot(
+            root,
+            conn,
+            str(args.run_id).strip(),
+            recompute_recommendations=str(args.recompute_recommendations).strip().lower(),
+        )
         compare = None
         compare_run_id = str(args.compare_run_id or "").strip()
         if compare_run_id:
-            compare = _build_snapshot(root, conn, compare_run_id)
+            compare = _build_snapshot(
+                root,
+                conn,
+                compare_run_id,
+                recompute_recommendations=str(args.recompute_recommendations).strip().lower(),
+            )
     finally:
         conn.close()
 

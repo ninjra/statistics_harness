@@ -3,7 +3,63 @@
   "type": "object",
   "additionalProperties": true,
   "properties": {
-    "max_findings": { "type": "integer", "minimum": 1 }
+    "max_findings": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "route_max_depth": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "route_beam_width": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "route_min_delta_energy": {
+      "type": "number",
+      "minimum": 0.0,
+      "default": 0.0
+    },
+    "route_min_confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.0
+    },
+    "route_allow_cross_target_steps": {
+      "type": "boolean",
+      "default": false
+    },
+    "route_stop_energy_threshold": {
+      "type": "number",
+      "minimum": 0.0,
+      "default": 1.0
+    },
+    "route_candidate_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 50
+    },
+    "route_time_budget_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "route_disallowed_lever_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "route_disallowed_action_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
   }
 }
-

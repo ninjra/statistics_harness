@@ -1,0 +1,3469 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "signature_after": "182ee39f7753e6faa7572b71cade6487fdd439644d8d34e0796c184b5c72f87a",
+      "signature_before": "bc3f777f122cecce372487461a0ff94a5e95218a45e6026dab39955a4122096b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Optimized action combo (MIP) with 8 actions",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "signature_after": "8df8a4cd9389e9897de9e18492c8398ff25ebff87bf1dc27429baaee436d8b7c",
+      "signature_before": "670103ab640ebadb963c9337dce8176d269edd43e58b317e6c9ec5e9abbaa3c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Optimized action combo (annealing) with 8 actions",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "signature_after": "bb8f73a853aad86bed21415caab0a7498f2d1444d2b89cb482260fe8df8b0acc",
+      "signature_before": "543ca6c714b01bbe40c86db1eab901c102a6c8cc93ab456c8ae0704ea0b25142",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Generated 20 actionable lever recommendation(s)",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "43bd244427c22e234bdf74075e30eec1c3f089dd06c7b4c52e720311a9960870",
+      "signature_before": "f3d38bc7f824aa1bfc638186bae5868ecc57fd8736445f524135f2c0a019ac71",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed AFT lognormal proxy model.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_anova_auto",
+      "signature_after": "e64adf31a5ae59ad3873fd2e3d94ac8468b254c8130b9cfb618e77c9b30f10ea",
+      "signature_before": "a674b5e2c92068a09d85348fe02560412fe16dcd73274261cfc8cf5ee70e40b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "ANOVA: no eligible (process,group) slices under k-min/budget",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "signature_after": "2c5bc246f702b88176ae6a99704b8118e48ae5939019d4bdf4f1227e771a8a65",
+      "signature_before": "b39497d801ca1793ff39b1c86f578bf718a664c6ff66f32a90d252dfb6a5169d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mined 0 association rules",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "b5848bcc44af05b9df893a8147685af14add75c6a4bfebb3b20bcfaba7cc1528",
+      "signature_before": "3c7f8e5aa3ee1d30306f3ff12c21ad2ed69a7591f44713c36999e52b72592eee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Attributed eligible wait by dimension",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "f37c4b0f811dee7a11d20b629e75f493df946877ca4f9732b6c3328ecab84b7c",
+      "signature_before": "f264100ef36b72ff75a9afb9ac9705f1e504442dcc7e2eaa91c0d216a98275c8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust online changepoint score.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "signature_after": "52b223bb7091dc39a514797a104f005c5897db50c4738e8a72c21f47aee8f12a",
+      "signature_before": "6d3d2ec35126c21a72d688af59e3a4256362553809b12cf13ea9f87f3807832e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Bayesian displacement columns=6 strong=1",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "9d5d2623007ac9d6baa7a49f59f513b05d0bc8f280dab998a9454fef22eecfd8",
+      "signature_before": "6845a20aac7e0fa5fc2cecb0de40452e57fcc2c431862e1455aa391d55942783",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Benford diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "signature_after": "40d039af96d29d0df5b25c204d733a5fb64ffc71ad3d7bf8b4902806d0ac4266",
+      "signature_before": "bcb928eb4d6855c35bb4173df6677c682140095d6e0c133f5a3d5007233ab456",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_beta_binomial_overdispersion_v1 not applicable: analysis_beta_binomial_overdispersion_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "signature_after": "7d4dc8b72edf719e2e1f3b139288af9fcf207e9414be3315d97e629ee9436083",
+      "signature_before": "425979ab32d2b76916dce1aa378f8b95e1f09827accadb5376c9c5d88a268fa4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_biclustering_cheng_church_v1 not applicable: analysis_biclustering_cheng_church_v1 timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "cdc74a43aa86780329e5ed9b07e51156cf9bf7f0a7b58710e68bb05b21276ee9",
+      "signature_before": "d400eb45b4fea17061446d018fe2eef88984ca21b15117a51b33b8979787bb28",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed BOCPD changepoints",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "signature_after": "d09ef6bbdb8c642bea30493ad82c4ccbf543baa216615a1b74f493ba09a92117",
+      "signature_before": "6505bbd8f28dfc168ad03db96f7eccc4ed738a0dac20cee30a955ca6fb704644",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_bootstrap_ci_effect_sizes_v1 not applicable: analysis_bootstrap_ci_effect_sizes_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "signature_after": "b1fd00560a34325bfac6ee7558b063c79dbbd29350ed316a0598fc10a7a55cbd",
+      "signature_before": "8a113c66f93a424a135bbee3dfeed6ea66014161fd3ebc834822781925df628d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_bsts_intervention_counterfactual_v1 not applicable: analysis_bsts_intervention_counterfactual_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "signature_after": "565bd6a6f37ebee8be8377542b2a399a5ab09ae0db0f7cd28380c565bae01ee3",
+      "signature_before": "c789ebafba80a809e1efcb4a82ee7ac72ab07f34f9ba79e5e6703dc3c5426dce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Burst detection complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "signature_after": "731a6878034aed0492b6ced4d59aa65a22ec57334097807017d08ab277cf2428",
+      "signature_before": "be37da4f3451ab57fd917c920ca4fcb6b743e604b264f26c152ab55c5d35f9c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed burst proxy scores for 20 processes",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "signature_after": "e5fe0da32d45707206dc5225d9fc89291b04175735fe7dfc72272e3628d55aa3",
+      "signature_before": "afc2f69ec246eb32b176589e0a51e5608fb592c098d89bc2068753b2ae5a627e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed 247 busy periods",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "bccaf87fee9cf6c498e944a09aa78b94da5478ed8f5ef2c9dc3c19f3186603bb",
+      "signature_before": "b7800ac8c16cdbe47c6dae3dd2b7165c03bf632b5a083c1dd1d7b6c8273f0513",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed capacity frontier envelope.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "e060ee88285eb727b34ac09894e65297654278d7c8902a5ead2ac010cc3e4888",
+      "signature_before": "29b1f03abb7f2f531b29e084432577f8675fce646d5e6f3197eec888b3a7a8b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Modeled capacity scaling impact",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "f1dc2eb12a587b17b55bc3aee41f2b5b8aebe951cab01c4c4b7040c9f79dbf6f",
+      "signature_before": "16d2db9508161a30360e1c16f9ffe49082d3a6966bfe3b3e43d41940ab219950",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed cross-block CCA diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "74721f866e81a430bd2217166f417cd7efc983ca70a241b0ecf6a5d1806a682f",
+      "signature_before": "ac0cb702d58d98f32a9534a2cda5c9ce9c998055b257ac8d80d586de9ccf69c8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed chain makespan statistics",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_impact_pre_post",
+      "signature_after": "ae72ff3541b4140083035a8dd4a29e5667487c8adfc494267a6a91533e873403",
+      "signature_before": "77e2b4371b497e78f149a3bef68fc7619bf5f0bc05731d14d7d611f59e5db4f9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Pre/post impact computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "signature_after": "321a84807745e722bbe6e547199abfdf03fa93c48da405b2a9dc538bbcc00c0a",
+      "signature_before": "c1b7656fe1250bb5825f20f0bb3054cfc77b9c91efda0b8c69aab4323ab589e0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_change_score_consensus_v1 not applicable: analysis_change_score_consensus_v1 timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "signature_after": "6362cd5ce402d3e0be1b605acd6a1decede9e35f506c3ce4b724e99d311e1057",
+      "signature_before": "3232bcb9f213f1838100f89d8cdc3a47ae0115196a2a727e50eeabc8861b6b4e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Energy changepoint detection complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "signature_after": "f38d97a5ff0906075e5ed0b18a01e59f8beee28f9ecb59a8fb00d9a8275df8de",
+      "signature_before": "7ac9ea9be365d95f4987f4efd3364dfe122480c3a8fc455ec0ee95825e8a2383",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Changepoint ensemble complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_pelt",
+      "signature_after": "a02fec61d8f4a84cdb8e4df664e0f94808206737725399b8dcc440061e3d1ad8",
+      "signature_before": "d12a07b10bbb29d160489da26e82a115b7b5d23b6a8d13461d4e8ddd0227b786",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Changepoint detection complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chi_square_association",
+      "signature_after": "35309f662ff6be12a49e76f0406276994224d72c35c26d5082e027269524c6d5",
+      "signature_before": "9d837f50697f5bdd2fae6339beb234b412def8a790aad4977c6becf0e5484a7d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Chi-square: computed=55 significant=2",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "0d6bd1af5318d81fc5231fec759e7bda5ee7f99911de6648af933102732607ab",
+      "signature_before": "903b3260815ed35b5a52d4f8f471304da99b84e0cce1b99a42137dd25c30cfca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed circular time-of-day drift metrics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "signature_after": "b6ab1fc91bc5f176e1f8555b83035ca666cec3c9ee50833291027acdf296092f",
+      "signature_before": "9c6cb7b1980f417d9cb4fb3fd62998ea6544c54321b786c29d678320fa6065b1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed close-cycle capacity impact",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "signature_after": "e48175adaa007b818be06a491e5ac5a0c0763f2b4f6699b5991a27fe438ac9ff",
+      "signature_before": "4cdc094923d800e6fa776143c0748d5b15efbe32e857f5d770bf711b230bfe2a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed close-cycle capacity model",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "signature_after": "e6d9406889a7b218ebac19bca4d98fb83f4abb5fe9461c5442b13df12f64175a",
+      "signature_before": "06e1a54e5387bcf6a9a95231d03bec8cff2b50c86af87db402c72054f5f3b415",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_close_cycle_change_point_v1 not applicable: No close-cycle drift detected",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_contention",
+      "signature_after": "1986b82d937e1ed9bd7b378e0f27d9d8b669a0869babbd2f4f93251790545850",
+      "signature_before": "7f9adaf0fb646fa4d96564a6917ca6249ad9a57c6b763fa836586097ac03e76b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No close-cycle contention candidates found",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "signature_after": "e2ca96e7fd2d373a00c79a6189b5cb379914e8cdd9d41c4727bbf3dee4a7c6bd",
+      "signature_before": "bdbd02427fca34ede1b3d6131911ae9b7891aa25dea8913722c3f45ccacfdadd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected duration-shift candidates",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "signature_after": "0531bfd7f32e54b2c78f73400576314b35950eec42152fab99a271d85d4c0db1",
+      "signature_before": "89d87e78c50b8438f1cd19aa09d3e45192f8f0b7403db246933c02a96eb1b346",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "no_revenue_process_match",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "signature_after": "1237487b8086b42346f8f07d0a6e11577d7deb4bc6247eae42cc1b8eff7c40ff",
+      "signature_before": "bc5da8efe4de4fdd3b4bc5f06b1bd05a99ed9e7d114415a461a4be5a11c1db01",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for close-start backtracking.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_uplift",
+      "signature_after": "9dc20d069629b0e50eb1c1b7a21c6ca1d0ea5345909e93ece3fa7ead5a848b86",
+      "signature_before": "fcc7af6b7ee5ab8279c0e7900fd4bc65c2820d05e624d403c3029e0284b4d8e3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No close-cycle share-shift candidates found",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "signature_after": "61ed9e48480d7c333210c743220b8ad613305cac6b5e7f7f08e023f562506726",
+      "signature_before": "afbbef0fc935323527f3336b6e172b35abce3cc76af185053b550ad7754d8f3b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for close cycle resolution.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "signature_after": "fd1b11cd076c751274c32e14193504f364a5ac0ea4b6b22101d84cb5cf36568f",
+      "signature_before": "d12d99c1d1036919f68b0303673fc6557933c3f7233ab40de06f6d59ff0cfea6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Cluster analysis computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "signature_after": "a7e598e9658ae3b4618f895e81910a17c128812f56218282b91899cfc016fe3f",
+      "signature_before": "57bfab6dca9a8371b12615dbab0456c13f347053a98e1c0e1843a138df920ff5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_competing_risks_cif_v1 not applicable: analysis_competing_risks_cif_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "a36b5d8df405eac248f837a9044a97c61586aabb585e7230ff7ef01a7a32f6b7",
+      "signature_before": "e17b748007ff46244952e2bdec92d1eb5b9d12c4db97318a5a5ddd6f53e7e2d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Reconstructed concurrency timeline",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "914b52a4020c566a0cca1de6bc5258d51c7829b39a0dcb475b3e066f3ae54322",
+      "signature_before": "e705e6f9b9012b0ba8f80237c123470f8b6453537711e26d2174e1f5e83bfe77",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed conformal anomalies",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_alignments",
+      "signature_after": "7624d0b9a5624ffa9823ed57f4949894355e97fac3200ff06b1ee34084e05720",
+      "signature_before": "fabe788f913bdd0d5d7f7cbcd7bf5d12b55bdc1c297c8e6fc12f68c5837195cf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Conformance alignment check complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_checking",
+      "signature_after": "6c0ebfcfeb1d0c2af1b4839451fccca8b3ed066ebdf5c0826bca94c8a0bf498f",
+      "signature_before": "44e4db7692e769e9df6f8389f94c8586374668745468d04a178be4c70a9e9cfc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Conformance rate 0.00, 30 unexpected transitions.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "signature_after": "f43a1570195b8d3a304e53f6c39c1a39cb5521d410300c6ce02a7dfe7ee419fa",
+      "signature_before": "a5bef54201ed0a97a44de6d8f86fc3e0a89caa68357dabfcdcb488ecc790737f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_constrained_clustering_cop_kmeans_v1 not applicable: analysis_constrained_clustering_cop_kmeans_v1 timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "signature_after": "fd9069ffbdfcfa3f0fecd820ad456c105fa30eb9b04cae57b5f52cf3f89951f6",
+      "signature_before": "55a08bace0ee67a757c43f1622149ce892e8f6cfb7ac3254b41e0807e638c4f2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_constraints_violation_detector_v1 not applicable: analysis_constraints_violation_detector_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_cusum",
+      "signature_after": "949a91c4959a80c9894f29cf9591ca8405927f8635891339742c260330d12247",
+      "signature_before": "057e9d858b94b8b5947bee3ed61f3525295a53ae822dc5b7fea27a748d68a1c3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "CUSUM alarms detected",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_ewma",
+      "signature_after": "b35915de8285202df426b686ff8feccc8dc9417a49f599fa4f350ee751be4f82",
+      "signature_before": "9418dbeeb2684c294581cd5bc6aae77ebf57daa4bbe56cbdb2f22a11ae068249",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EWMA alarms detected",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_individuals",
+      "signature_after": "5a2367c87e600cdbdab0c1953fcd0c1fbbb4972af9e96c813778f7cf4a48575d",
+      "signature_before": "dd2a02914b85d5b49fe275bc82aecfc195167ee06c4c73446217ca63e7a9c568",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Individuals chart alarms detected",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "2264c153c9e3b174a7051760bbc0e81042cf4ea4de1df38162db323f444b6094",
+      "signature_before": "7d311cc4a88f81bae49e9f8666f41e8d0b3460dc2b61babd1d8843486f8bdf0e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 control-chart alarms.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_copula_dependence",
+      "signature_after": "43e6a52866a739518751801656ee9bb9b44493e58c47ceea36df4386da695b60",
+      "signature_before": "dc22196f30c32b9a8e1fc72e5f4ea32cac9a022516cfdbe58b6c0a1f7fd7959c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Copula dependence screen complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "signature_after": "44bb41351ea895e6e727e2feb4ef85ecc659bc3fae2f452a92ecd7e9b7d7cd63",
+      "signature_before": "ae905cab0d6b85dd27be27ebed31166061247e015f1765c8b137e0ab424698b3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed CUR decomposition (rank=6)",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "380dc3d016e06ac09cb176015160acfb65a58199040da7715ca217aaeefd8785",
+      "signature_before": "0bbea3a6a86e265f2346b36e20715baff5e7321fb3cada7247d4ba1457260ded",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed CUSUM on detrended residuals.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "782a450d1c4cd20711209e06e21ffeee850bebe1c497a14cbc5ebde54f4f5fd7",
+      "signature_before": "5b14d85d5253c57b7a37512e3bea2a5e11228a532a26b1079ffc108820238223",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_daily_pattern_alignment_dtw_v1 not applicable: analysis_daily_pattern_alignment_dtw_v1 timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "e92376fd90baee3cac638391c071a466fb161977c13ecada85d000f9f89beced",
+      "signature_before": "92709a366ebe6dd1dfa24ef49c3b3a1362164500b8ff28c0f96567da5b5e49d3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "HDBSCAN clustered 5000 entities into 2 clusters",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "f576d66f626c465459bf1a892f34f3f229fcd81c0b8e7ddd6d04c1473b2dc391",
+      "signature_before": "9f08f63563daf972698acaf616eaf24c49293947f1ae781ec5ec02a88f6e0887",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Leiden found 3 communities",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "signature_after": "a2ee136c84f474870c4666f36d465b763fddfa56493004d09682094794f8e4d2",
+      "signature_before": "1bd613141a88ca7d95e1c0713d4ec0f9eecf590bbc60107d05f5a96d43dc5ca7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Louvain found 2 communities",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "signature_after": "b2355466333d6163d1c892f34dd9c77f35ba95008a638e58e7ddadb5bc0ee873",
+      "signature_before": "c5b7e37d3ed9fa1b69347e39fed6f3253d87dac9f764d232b56eb159dbc08211",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_dependency_critical_path_v1 not applicable: Missing required columns for dependency critical path",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "signature_after": "8f7b8e7c13265c184bfd18d4c719d62fb209bdc848fa2611ceb17013dfa24ca6",
+      "signature_before": "aeec043cf22195240e990aff0bdf1e4e577a1d8b1ad95b384488771bd1eecf92",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Dependency graph change detection complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "074f1ea9b69399f82aa5ccabace8580801f65b7265d243efe435ad1c491a6ea6",
+      "signature_before": "b84250f9837590dd8bdc79262cd7b4a68d3cd3f31cca0751932e5ea76d813929",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed dependency lag distribution",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "98086a85dbf5f26a1850a9b7796ccdb44be7fa3ba67b21b37e030dc921f0efb7",
+      "signature_before": "a85193db92f81646f5f7b96ee628f4b9bbf88efd4ab86225b64be4b655f19ec1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Checked measurement_type discipline",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "signature_after": "77c0ebf3c6ad364464897b9fa875f2c7c90c8685d5877e9736f36d65b416705a",
+      "signature_before": "3792197e2576b89d6bfc0c84cad5cc1b569b635530982ba59e226bc64c43c55c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed diffusion maps manifold embedding",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "36632cfb6b039bb40d13792b3d7b5bd8cd13e7e8216e925155546f3cacebbbe1",
+      "signature_before": "1e3a2dc83b7e1909d8f409cd9b03f5ddabc9df926c79d901951aa9ddbdd05b96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed categorical overdispersion proxy.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "signature_after": "9793e63c60f1c7418271c4cc1fb515116bbb539aa6d9f06fe12023fe5dcea5e0",
+      "signature_before": "14a721efe11e6c745e828a77ebc97e4f8262e32c69db1f39621019fd7f591f08",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Simulation complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "signature_after": "213c1fde1d512d0f13d85bad1b3acc7bdca4c806452e17b2c0220734b33bca53",
+      "signature_before": "3de39f84ae43dbdac9615aadf333c41f23ac326222978b882a6d2017515defb9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "signature_after": "0d51117d611399b3be1e0343ea115cfe49d6877f402b8bfff78eb1dcea664ec7",
+      "signature_before": "4faa62de259c447d7f4a1d02a771b4a0fe1392335fdb2f75ffb9ddc2cbae6126",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_distance_covariance_dependence_v1 not applicable: analysis_distance_covariance_dependence_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "2f968129b04b20ef17e8bedcfa3938c1eaea11df5a93db2d4b2a90d447130efc",
+      "signature_before": "d42974b956ba7625d71b89af0ccd0f8adb70fbea8d2e1567b3aaed92d3b52f9a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No significant drift detected.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "signature_after": "0008d93a55657f94e1a0299454428671730b92392359186a90e474e7a08ebf9f",
+      "signature_before": "b3c8a3a794206736b45969bed2a71477386728cfaae0c5a4ee2b439076bba275",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed shift scores for 20 process(es)",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "signature_after": "66f58ba35fceab0747d8b86d40ba3b81a2774ad94f5aff8ffd206ec9b2956ae2",
+      "signature_before": "9b48c224548d0cb001270ea371f0a09cfc9c4e27df865026803e5f530f9be9bf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed DMD over 12000 observations",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "ec6b30fd152f072d411a49ad978cc9a9df396d3ea7b55c9237d4d588731260f4",
+      "signature_before": "1b40a5a63eb0ed30288c3c2f3bbcf4b56ff593ab7125e19ad2ef5eafb4197950",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed DP GMM clusters",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_drift_adwin",
+      "signature_after": "e2dd4e18e30782501b9076df78455b0d87d67cbf8ad35f2bd73ebff4a4dc88d8",
+      "signature_before": "4cb80fe959d8a57d624dd5f9931ec56555e0f12df9c01002e025b72c615b6a9b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "ADWIN drift check complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "7cee606c85fc6c5fdfc3fa1bfe55a46082e2fa171964676f32664c1f8afba15c",
+      "signature_before": "e17e5aa375fae7898f7d55cd45c37daed96a43a66c1c819fd95727f4f4035952",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No accounting month markers found for dynamic close detection.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "signature_after": "aedf3840d6722c4a7179d925ca02b29c755261db9d7f3ac295ea13a1f230a35e",
+      "signature_before": "c6f247dba9908e0a61206dc49e5d9e1d7a15835469fcb4d1406cb5647e9b07c7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Verified 1 actions",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_effect_size_report",
+      "signature_after": "ee8655852a6d898242d19df46e156ca35139ea181b22a9ea992f95834d65a53f",
+      "signature_before": "034205f6bde81ab943868fc34d8b8cc4f29a557783932ab278795d66a47d4c0a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Effect size report generated",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "signature_after": "d81197de113f1b00fa1b0974b6c5b7d1dc7347bded9df62dd41775669e2f10ad",
+      "signature_before": "a38864430f6b447f6b7daed71564154a9cb2ef23ec271865c8d76b0ae133cc76",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Shrinkage ranked 20 processes",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "signature_after": "072819c44ec97bc80f9bd1b920f4ce96ae09be9829969c4898476b98d092a7ae",
+      "signature_before": "bb9d5e6c85e6d3903c5916abda9f295ba4fbc0010ea5e5117485e0b7211d14b4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_energy_distance_two_sample_v1 not applicable: analysis_energy_distance_two_sample_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "signature_after": "201a264cdfc8716c11f83e88424cf4b1c8d2bc11f8fbd5feb31177529a698409",
+      "signature_before": "9d282594dd3eb609ffde7df073269170611d4d637f57f89cbf737471e6801087",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "BOCPD Poisson scan complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "signature_after": "bde176aad945dc0964ee750544aa728672107c40f9927f9fb28efc944dcf626d",
+      "signature_before": "0f299426ac2f8c74fe41fe2cfcab66b04f1fa21ceaea92680887409e1ec9f3b6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EVT Gumbel tail analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "signature_after": "74f94e7fcbe75ec8c7458434508683f836144acf39bedf09e6e8c3e609ae22bc",
+      "signature_before": "fac60ebe7db5b98346f2efd910830b4a74bf0debf64b23ef95284a9344bdf181",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "EVT POT analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_analysis_auto",
+      "signature_after": "3ab3d63149537f53910afdb9663a69e8a81be023aaa3dfcc23db8bf07655c4d3",
+      "signature_before": "c38c65e72ba68379f07bc1ebeb24e31796a13caf29ed9695dee0ba34da1b792e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Factor/PCA summary computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "87226e9ad16374b848dee72113aa2ba446e528696b333ffb69fc9de07efa759a",
+      "signature_before": "6a965c300c185bc0d36f888f9d9872d419bd51f9ad9da0dd1eed3d9f858d6233",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed varimax rotation diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "dc92c42a4a88490389866992a05c854b915d52133173d586cd7aab3848004281",
+      "signature_before": "17373d850c868b17683a1e6e9a33caf591d23036e3c23b7309776408de2b6f21",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Fisher enrichment scan.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "signature_after": "7f7a570e9b16aee3facd89f010c56c9051757c050138aa4fee893a5ae529ae43",
+      "signature_before": "39d8fadc840a1a6712000e2adf00af84b396ada1255d7056b8a41e0219b0a0e0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built covariance sketch with Frequent Directions",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "signature_after": "ec5250d178419594a45b42d8d62ea08f2fcc3fc23dd74f75b27184d6c542075d",
+      "signature_before": "f6c226d394cbabe01767398cfb0f85c1c3e4b40b073ff81471c406c638944862",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mined 14 frequent itemsets",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "signature_after": "c636c99aab979307f3255e239b9b797fd94b1e0e64b41e81c2733375858a2154",
+      "signature_before": "79b2b78a4ebea0e69b89ee98de6a856db09e5af653d4f80abfad7ffd2fffbee7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_fused_lasso_trend_filtering_v1 not applicable: analysis_fused_lasso_trend_filtering_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "03f0fdfb9783d895bf621907eea29e2b166c710b0360a05f303bf4aa7fbdcee8",
+      "signature_before": "3e55e37107e7405fead7121787b258468f18324d762e77d34a52538b2e6adf10",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spline regression diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "2ed9d74da5c0568c84cacbbdf9cb6dd0d8c0a7edea89922532c3e1d2d8958cbd",
+      "signature_before": "d832a06999ac5b0b3a7b8f28b7a51a69e2185fe890b84780c0805f6c534d407c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed volatility shift ratio.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "f84731122486f1bb5fe69ca00d5c926c36f40bbdc247e821c1961d5abd70f054",
+      "signature_before": "79c171813e9f188956618cb115522764ea59cc31e40f8b478e41b636885ef843",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed copula shift",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "580a65d69b708e115796c1ef1c726ea6d72570c4a33d073d304806827c589592",
+      "signature_before": "512b2a8cfc44af4ffcc60d5fe8e5a00c7d9ca9dd81ba670eb21a8031db037b1c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed knockoff selection",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "signature_after": "2fe8a2ba2fc05ae969a5877887062e62e05c2f9414995b905f75cc6342b420dc",
+      "signature_before": "2651ee85eabb9e3e3f17109c51672d78a1600e0bd011aaa0f32284fab8b71e75",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "signature_after": "d50a23fa1dbf298ae9c58bf388d91ea7350e809231a150e5d078226f02dd8a36",
+      "signature_before": "71d418a7df4021a2ea8c7cc5c9f37754cae0b2530557e2065a65bc5337b618d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built GES-style graph with 2 edges",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "7ebb4dbc38c162bd9eed9f90905a332174ec3e7590efa1ab68e1f5c2a6dd3267",
+      "signature_before": "1e0bb512075b61a9bc508ff99159a64b2e43b5b6e1cdc0e506e52f7f2c375c4a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed graph assortativity shift.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "signature_after": "92972b2c71b361ba20cb0f8dbb7a2de1e1cf7c5c69171677f3a7364ab31e170f",
+      "signature_before": "1a312e2ab5d6758c5b25e9534058cdfa4f445b30bae42683146b956d97e38fad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed minimum cut partition",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "signature_after": "c3bba6769f6bc889044aec084acdf27a20a13c03bc47dc0673cc3045d8713a68",
+      "signature_before": "3950b5e4e2b56557252b552aad6db778ce7ead79666674bcc8057f55e3651194",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_graph_motif_triads_shift_v1 not applicable: analysis_graph_motif_triads_shift_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "signature_after": "a2f1871234498faef812c46bd011775bc62f81ed5ffc9c2f81661b000552b26a",
+      "signature_before": "5cc8361e853e849c038b8aaa4114a7496a53af289bfabc13c7434d8e2514dfc4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_graph_pagerank_hotspots_v1 not applicable: analysis_graph_pagerank_hotspots_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "66012a791b6b2ddf1784704cfe7629dee7d314e3743f0cd9c7771a442f574f3c",
+      "signature_before": "ad324dfbfb466da7a39f4a58c87eb833a0c9def461da7736838bc807d5090a54",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed topology curves (sampled 2000 of 500000)",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "signature_after": "ef210461ec8341866ef1787091408caabbfb231e7d28987b6d8efbbfba7bea8c",
+      "signature_before": "fdae831491455677b2dcc3badfae78fc9746408aeb312f3c17241788fba4ec85",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Graphical lasso network complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "signature_after": "97dd0c6c2dbefdceecd998149f155f13a9106c66f8d1d8ee69cdd167f3440578",
+      "signature_before": "e32458c17c54cfefb14a25d0e8e891d66088b329ede5f2b57ddaf6b5d143df95",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_haar_wavelet_transient_detector_v1 not applicable: analysis_haar_wavelet_transient_detector_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "signature_after": "e074b6455147a59cdd016f1385cdb0626958206cd4722775554dcbd14819eae3",
+      "signature_before": "62a03fbe5478bfbe9ca63c3665b608f758cdde2b45f25946c894484670badcf0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Hawkes-style clustering check complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "194ba8f3ffdb3df824a646078edc054d9e3f12ba272f74c5e3fc8e164ce97cb0",
+      "signature_before": "1cf52cc9c286dd5496bc772831b2452dd391710971b53ed04fc31a36e00f83ef",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hill tail index.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "d16859dd34e7b7654669f1602fd899aacbba9412a75a0f70342d5a80e5a6e640",
+      "signature_before": "c388c422d58f31f4d7f2e54d366ae675529406f98a4fc51d46151ea0eb23d722",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Higuchi fractal dimension.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "signature_after": "f5fe7093f536d84e8f13b17092be8dbb2c4e7c447bdb95e38947e69b53c6ead8",
+      "signature_before": "b2073c3cc03b88023d7ae0d67ab4a6be3431a7c8fd89d28dfc69c90e4f4af737",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Latent state sequence complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "signature_after": "5fdf7b4032ad69c5f5068aab20b3354bf8b49bbd85329f46ed5e25c29d03f78d",
+      "signature_before": "b7530b05236ce0ac5b20d1dea8076ea64789e9339b535de2d75f05a89926196b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_hold_time_attribution_v1 not applicable: No hold-dominant processes found",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "signature_after": "ff1ed39d1b251bfdedbf69d115a47c0e18dcf523b3063320c661572555867dc5",
+      "signature_before": "3ebbee60eae19e589a468614a73cdd0eb9b68e772b7916da61afc5c8f0d41f52",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Scored HSIC for 21 feature pairs",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "6b38009200754a738af85fc8dad847ff2c14b63a7e15da4cc118d8946f338c37",
+      "signature_before": "25fa36dd71b663d2d88dfbf06ba5d92c237e87de637c0492b42e752ce6564e2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Hurst exponent long-memory diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "0198b7c75b4cb8dd22fa4431dee731d565585c554fd6d9c56359508d45565f31",
+      "signature_before": "51b0e8eb254bd491b5d25c2f2f18948526df08d66b9748f40aeab64289b2256d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ICA/PCA source separation.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "signature_after": "563cf3090d8826b6d1bc240ea70c49650f7ba204c2b93165897256956402120d",
+      "signature_before": "83b15feced545995b12e6dc033b120ecae3b397a50a848d56b9e0f7efae1f0d6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Evaluated invariance for 6 features",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "signature_after": "f7a07dde47706315f58629db301c973a4811610ce3aceb888ecf1296bb0ee67f",
+      "signature_before": "2d04a4abe03027f95248e0169b11679d8a4c9e56d9fcd90117bd3fe83e828bca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Generated 1 deterministic action recommendations.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "signature_after": "7f648fe8fc10b7662da1174bece3ad0e0a7a8cb77098a610ea683a5959446636",
+      "signature_before": "6f214492e8989153344144cf5d0ea83757703bf25a9126006c7bb3a1dcccee44",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ideaspace energy and breakdown.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "signature_after": "073f7bca0246c86dc381d550ae1bee3b5a6bd894ea37fdf67a247f7376836feb",
+      "signature_before": "81be2edcaf5e81aa6a75849ff44ae4970c760aadb65fff8c7e2c8d4e19c6e1ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed ideaspace vectors, ideal reference, and gap vectors.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest",
+      "signature_after": "76a4d4d4e1beb8e586f3136b8cc4579dba2affb3d4bc052a8332020055e20605",
+      "signature_before": "2c1c7e82716310ad7da2c02bcfa0e4091dba73a492e28d870a0b75902e244ad8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 anomalies.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "76a4d4d4e1beb8e586f3136b8cc4579dba2affb3d4bc052a8332020055e20605",
+      "signature_before": "2c1c7e82716310ad7da2c02bcfa0e4091dba73a492e28d870a0b75902e244ad8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 anomalies.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_issue_cards_v2",
+      "signature_after": "1e1582ef4cde0188928db343053c598567c060fbe5d29415020c18e59dc1322e",
+      "signature_before": "aa5bdf4ca783314839aa2b67153da4194812b5d055b6c442fa07f1b9d777bcc5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built 5 issue cards",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "signature_after": "32a7f5477c717a7fdc40b30fd54054feb4e2dda750eac4d567d26d9d449eea10",
+      "signature_before": "7652b4a9813febbe98a76becfe3a3e4131425e75c49acfb6a3ae7c8549a699c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_kernel_two_sample_mmd not applicable: analysis_kernel_two_sample_mmd failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kingman_vut_approx",
+      "signature_after": "952875424c7a937c1f094efc11ae48fd913acf6ec9bb52d3401381d87062a34a",
+      "signature_before": "56a68e9e5331ef77274d53d5fd5d6a1914875f59c2b065935d89b7f3d3e8b1ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Kingman VUT approximation complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "signature_after": "8b1c46a41e136791e5bdcb0ac767f8bf28fd6f9211ebca20d3776c6779bb8282",
+      "signature_before": "bd58dee279077869455171fd2634341f0b87e1766e30f8c3a15bf6523160a4b9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Completed kNN graph two-sample test",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "34dc2b711b5f5e2532a97466c8298bdbf67e61b76534d8679737382a2fe3e95e",
+      "signature_before": "49eba81dcd369c0657cefcc989460230591b8cc034694bfb2227031061df14ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed RF knockoff selection",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "signature_after": "66f9114bf6987e18319684e6b29fa26b99e3efb18d4ec2e54d841e5d03186cb1",
+      "signature_before": "fc1074fda4bed3126b66a6eca3e1acbabb74bf93c9bd5c3731b013cc40c27af3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed KSD anomaly ratio",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lagged_predictability_test",
+      "signature_after": "e64cbe5ef498c51de491088cc3d1fa30df4e82373d2206fc7b17c20ad29c39cd",
+      "signature_before": "c22eaecc748a399b89fb34f2507dc02edc1b1a40b817792d5997bcad0e91e171",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Lagged predictability check complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "signature_after": "782ac76303f548ecef5f1d8a752fac51f5f07bee5bf37e4e80efe722df593100",
+      "signature_before": "a9e3453c3e5e25e944d582f19dd564537b70930c5c8cc2bc06e18e4c2b59cace",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Estimated LiNGAM-style edge hypotheses (1 edges)",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_littles_law_consistency",
+      "signature_after": "ea3d38ea6d8720c4fbb127a85518d381464308c9f4e48a7c383b2552aef4183f",
+      "signature_before": "56c5258e24e13a26ee3e9122126ee345187d2fa1a2627189c6605a7f3d8b8f3a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Little's Law check complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_local_outlier_factor",
+      "signature_after": "2aaae170a85e0eab45c71f7e1cad03983069c4504f404a40743347b5647503ab",
+      "signature_before": "6b3e4ea3bd1608e76f7a98589f0b8db2e9f63af26a6f990bd6deed41f902cdac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "LOF analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_drain",
+      "signature_after": "6335d3f53d91b7fd1824cbb60fb5105fab7f757c79bad34c69d32279f01d1fa9",
+      "signature_before": "80d977d9c18e3887aab4ed9bca243854f603e9fc98af804fec18d6f9c4328c32",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Extracted 13 templates.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "6335d3f53d91b7fd1824cbb60fb5105fab7f757c79bad34c69d32279f01d1fa9",
+      "signature_before": "80d977d9c18e3887aab4ed9bca243854f603e9fc98af804fec18d6f9c4328c32",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Extracted 13 templates.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "68c4b4a7584caefbc10e773ea6574451f0330ea7d53e11950ff9e317fd4a3866",
+      "signature_before": "28068b9d5dda8530e733bd9e0f916698157bda7f7c25cc10544dccd847f80c6b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed periodicity scan.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "signature_after": "dc66cf39af78e945c12c9beb6fecf7954a57b886b9f0206fc0cfe8b36355c321",
+      "signature_before": "854819a88c81ea6e4a624fff10ac5cee440e4d66d660176b9edbe8428d4e2e2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_mann_kendall_trend_test_v1 not applicable: analysis_mann_kendall_trend_test_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "signature_after": "11acb518aa5db54cc21348b00a2f1d2773b26551ea4145240bf8bd5495dd6996",
+      "signature_before": "0419e94f6372c98ecd2cc4a39884a975516f78e0c93d37e9a0cc9521bd2be098",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Karniski-style permutation test computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "32cdb454ecae196543526e364fef70a39af8a8a7600069c94173ad890a7d7eda",
+      "signature_before": "65810b67398315e92772be8f144be83281dad3cf01f6cdc580b42b9ac6b22df1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed marked point-process intensity metrics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_markov_transition_shift",
+      "signature_after": "1a932ed67c07373c5789e41e251dcaa04bb48df9eaca73f048e3a415a5048c34",
+      "signature_before": "c6088679e2d50627efcb0f380b166e1e8d411103f7a83eca013607dc943cdffc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Markov transition shift complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "signature_after": "512f6c0eb416aa750029af7579d7a55ba2f091b185d5ffb79b25f351b8c09c74",
+      "signature_before": "014bd45d7454bafce63fa777ce991e8733e8ac6684a695193efc43128c90c070",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Matrix profile scan complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_message_entropy_drift",
+      "signature_after": "767e8151c24a244774082f50c87073a5517750f9785c8dc34c8c54def5d3ce7f",
+      "signature_before": "94d459428949355c0122114e5aaea207f7a8c39d8f3f4497037a6ec247bc8722",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Message entropy drift complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "signature_after": "0a5a4612377505224e57c47ed57f531b8644361cd02a0d6f08a97932370c112c",
+      "signature_before": "62b50e5b60d20aa30b9a28871162b69e2dd11c26134d58b4995a28966b482677",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Monte Carlo uncertainty iterations=200",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "f40f71c195fbdda0641dd4fbb07df4a2a25c082a767390f2a9ea5548498b8eab",
+      "signature_before": "4063820d89138138388af7ec8104906024600855ee42a08f563066878a48cd83",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed VIF multicollinearity diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "signature_after": "60b9f3a30f82efc3f67b541fca1fe95af44da85356f07a0f501edc1379450362",
+      "signature_before": "1d007c2cedae02c41f9105ec4a230f2d6f1db27260b4ee5c23b414a8767a3cfa",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "FDR screening completed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "signature_after": "8177be3d453fbc032d3727a7924c5e692c8ea04b8fc2fca7a491ff580fa67286",
+      "signature_before": "55c640a1c8af35fabee8be347fd19ea4b30d7c5263257ed6ebf2efacf96f78d0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_multiscale_entropy_mse_v1 not applicable: analysis_multiscale_entropy_mse_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "5272d59ca56a369b7fe7096337d2712756c1765893705851b02e5ffc3ea3a5b1",
+      "signature_before": "17f986a3acd4c02cc0d7bf74c3ca70f405f3a08eceb249e8abf4348aea4fd04d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No changepoints detected.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "6dbfa8ed5beaf514b9dd403ba95239cda0bae793c11ba8a4f4b3536baa33e1bd",
+      "signature_before": "7d75e99cbcb21b8432a1d6432f93923d32de381aa6effd845f85e7b7739f9aaf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 multivariate shifts.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "signature_after": "eee76f070b5ddd65d6a10696e87e23367846fb1131eaa8c5bb59d3eac9eee97b",
+      "signature_before": "b89fa0ca9ac468eaed3871c7cef0d1fdc9d1e778754ab8200215ea7d5cf776eb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Multivariate MEWMA control complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_t2_control",
+      "signature_after": "955b634c0563b5eb31bc6073169d33a00d33b94685490ed2f3a4b7e096867e22",
+      "signature_before": "04ff1cd6e866418b8f94b61d5d76d42a8e0882c00ac77d8860eee3ffc190e857",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Multivariate T\u00b2 control complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mutual_information_screen",
+      "signature_after": "354bee9e1d252f5254c0420852ba32c5dd60a32396ab89252d34eac96418e31e",
+      "signature_before": "996f7ff9ef8b45306d1e09f87756c7ddfbea9dcb1a3556e094d73df6c0077aea",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Mutual information screen complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "0c9c91a4743c5759a8dddef1945f6db7087eec078823ceadfcad8cce1c1f8d08",
+      "signature_before": "e254ff0d97ad591f752e74350e8d55fc349154df53197d57f37437cf8daac9f0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed negative-binomial overdispersion metrics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "signature_after": "d070f5aacab3c2f371095ce76c95abbec66a3b7a9a2d9c7e04fafae393e43dfe",
+      "signature_before": "989685b3fe8791e735ae69a01275b966b8238c5b57e8d528fa34daa6cd762900",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed NAM-style additive effect proxy",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "signature_after": "a2bbb5b462bd688b065c0affe627775469d1bc358b15f1700b88af33da27fe69",
+      "signature_before": "9bbbd60ca4e40d154bca517c708e39f6e9a1d9f6caa4092e0f8268404b971fc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_node2vec_graph_embedding_drift_v1 not applicable: Need process sequence data for node embeddings",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "signature_after": "29f0831c100d74ecbe44685a3309ecbc55ca9b543eeb349734bc8e5479f8faec",
+      "signature_before": "aa1819d1d582081964bee4c71b3a43f293a410e41a8a4c141116f4e695df6ec1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed normalizing-flow-like density proxy",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "4adf6c7d5a8e21da21421b45f5851e1aa79afd64cb9053b5743ed99651c5cc36",
+      "signature_before": "45eb1a5631101241d9fff04c0224e70c914747820e50e436e867f6a8c8502c33",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Estimated graph",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_one_class_svm",
+      "signature_after": "15b994e7646f2afed57a46f806c6089865b59d83f166188cd2d747313f7caa0f",
+      "signature_before": "d76822228513b33b49c9ac5ba44448c4e3bf945c4f8ae14681bb0aa31070438c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_one_class_svm not applicable: analysis_one_class_svm timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "78f194369401be53002f2f7cef6bb3290ea33daf6906f485a0bf735cdbe3bc5b",
+      "signature_before": "d6e69398d040a87f19375e82a681937392b42e6627f7677ab31dd6b2b35cbba1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected changepoints",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "c74485f108ef4922ea0dec47dbd3f30e14aa80889c36b62f999434f5d409677c",
+      "signature_before": "0b01f222f34f706bed6e9a2997e863d0b48225254772cae99229840421e324ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Cook's distance influence diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "signature_after": "0388a1e5980ab27a4656b3d6fad29f2511e41d7e7bdb2961542c6fff416c1cf4",
+      "signature_before": "c5e91d7439dc96ea18e9a0467293c383f7c3891b6090a3200999c584e72ee70a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_param_near_duplicate_minhash_v1 not applicable: analysis_param_near_duplicate_minhash_v1 timed out",
+      "summary_before": "No strict MinHash clusters; emitted fallback duplicate-pressure recommendation"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "signature_after": "d38eefbe6c249a8486a1f6d54531a320e993d69ec1f7fb2ee6ffbf496043d5e6",
+      "signature_before": "a4298dffdf7fed0ae4b3066e15faad1b89e24787bcec591549618e9cea395671",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_param_near_duplicate_simhash_v1 not applicable: analysis_param_near_duplicate_simhash_v1 timed out",
+      "summary_before": "Found 1 near-duplicate cluster(s) via SimHash"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "signature_after": "5948b39f9804839f94d571a718cb9b72842e09270d8dde7d3a1cc2222df3c507",
+      "signature_before": "a4a83d95c6f8d5fa5368e17f21b482e236f2d564a40212fba386e50fe806d365",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed param variant explosion",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "874dd440ceda82f853f52ffd1de95a851a5c85d8887a9c2f5288a29fbf4927da",
+      "signature_before": "d8067ead2dae1509006a0639a0db6197649195c0106b150df5951ce5a448b6c2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed partial-correlation network shift.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "signature_after": "bd2f304f17f10f2ba2df17aed8e85136d6eb0575e043e7d47eb14e8ac387d9da",
+      "signature_before": "265cb8cf509d6ca13d949d65e4998a7c8b7fc8b16974996ce8b33b19a5512ae7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Built PC-style skeleton with 1 edges",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_auto",
+      "signature_after": "187d2fff53ba730b40e5ce1fa5570849b755ce3e25588b248d36890d884ffb73",
+      "signature_before": "d027489c1a516b24494392f343ac617f8250edc423286024a3004fefb0cf70f9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "PCA computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_control_chart",
+      "signature_after": "5bc7d1e3632e0786e996186c3d6d844668c149ef7142b97845cd7f8abeb31f12",
+      "signature_before": "65fb70b27abd2751b17df6b39b7dba3db22f82e77d959164450be50805a02695",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "PCA control chart complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "30ff1355fd23f776cbcf1da3d92cb18f6c8dec7b69ba0baa192e245b0410d21d",
+      "signature_before": "c4f1e569afd037ebfc8935c0677727ca9c774d2d8bc82e8530093ce6c9efa2db",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed percentile statistics",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "signature_after": "9caccdb343529e7c34fbd7a8364e00d2bcdc201a2f9708fbe2e4ead7218b599b",
+      "signature_before": "c4822b83460d482c4e9ed2376bbe89faf6b78427d14d684e0fefdd6678f4a9fd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Spectral periodicity scan complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "47889532457baaada0c1fd0ff8a20a270840bb08d80467466f14dc099dd2eb67",
+      "signature_before": "48254a08b6540da5fb8990c0d30c8e64a61d35a40a6eb3326dc839c67a4ded7c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed permutation entropy drift.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "signature_after": "1dfac41bf89626441dd1d2c93042de0b5d24d54f27757de8e6abb9fed19f280a",
+      "signature_before": "3b4594cd76939440385312c396a63e5a89ab20302038d72a4e14e6821838ffda",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed PHATE-like trajectory embedding proxy",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "signature_after": "ad4e905a3638df94b60e090c8a35b2d3e9342b5eedcb5b84583ea693c5558226",
+      "signature_before": "001dd2a986798fdeef2175cb2258de022c49ca1379c0b1ec010405e2352a0b2e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_piecewise_linear_trend_changepoints_v1 not applicable: analysis_piecewise_linear_trend_changepoints_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "565504fe86169524f46ea7bd025a6022d69a040905181b3328df322d4d4ee3f1",
+      "signature_before": "340b806ddd59b48d827124da6a2306f5c2a872aae94988b75ba731114c829dab",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Poisson-style rate driver model.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "4c9ed00ce895357543faded3c6f3521a2a9dd44e6f54377eef5de9ce1fb9f067",
+      "signature_before": "6f4e40ada2b18858af2d509c043803e9ee11c266ff679c00cf09f029a3952fc7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_process_counterfactuals not applicable: analysis_process_counterfactuals output validation failed: modeled finding missing assumptions; modeled finding missing scope",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "signature_after": "d3c1d644f9fe51e9b97a7b9929b4fec78c20883f2c7f0927025c05fcd8a8578a",
+      "signature_before": "e0f7951bb922e804e18d0c91f6b6b18d29322d8a6edaaecc6f9d2342ac0b41eb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Process drift analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "6e6de46807e4bb9844c15d84186da56cc5ac3a9e3101e0eccc6f3550ecc19dc7",
+      "signature_before": "d4896639943445f7e4a78f50993d7b25390efa4d2dcf1d7958b36e002ecd385e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed process sequence variants",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "signature_after": "57fa2d0e4d8cba3d3bb9da6b056daf3978a18141f82137ce33abd214367f22b9",
+      "signature_before": "ff08c8299ecb92ac1d02bc8afec227f7b60c19990ee1c4369c5f7879beb66b87",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_process_sequence_bottlenecks not applicable: Missing case/process/start columns",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "signature_after": "9e3feaf39dcae99dcf8b3a218b68d80bb542cec16a1a40abe7af913a19ce29d7",
+      "signature_before": "23b3ec8bb2d9045da0ce6b3bcd3447b722d71e86ef19ac1268feb5a2a319efee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Proportional hazards proxy complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "0ec776aa723f13b42f46f694a2d9118130bb066126418dbc634a1aac69d7b604",
+      "signature_before": "2ecd51dc12ab7259051c20163d53e4675ef8518eb49f5db4a9d3b350c894532f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile boosting diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "signature_after": "8368c28bf13b200a751dbc6493d4d9b8021267e8fe4f9956088ccc40f2a4dda1",
+      "signature_before": "fdd03720d676ad78c744523747985e7c2bb1eb894b2cc6f6d07a4e1e422bbed5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_quantile_mapping_drift_qq_v1 not applicable: analysis_quantile_mapping_drift_qq_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_duration",
+      "signature_after": "c2f8b630bb586e9db02b70a43facd7be8fabaf35de14d183aea1199f3f2c28b6",
+      "signature_before": "6fda1a6f942867293356db190ed98800e9b2b2e350a1c403934f55cca65c7004",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Quantile duration analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "1b17a053f17448d7f16ec08f111753ce76c14154d5b5963d982d59b16ede93ff",
+      "signature_before": "695407da05c63511c94ca5855e3d18c441c51505ae5c4a0957de9004d5def5ad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed quantile regression forest diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "signature_after": "d28056b50775c3084d1cddeb99bd169a770c446a14ac8ef83a695783eb8283e8",
+      "signature_before": "5e767a84ced00009db45cf2d85650680037ca8c15f1a5efd698365f6c4bee7bc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_quantile_sketch_p2_streaming_v1 not applicable: analysis_quantile_sketch_p2_streaming_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "signature_after": "3999d6a97d7859c9cd537016e238d5364188ae91ffbf67832f3a0dd4524b693d",
+      "signature_before": "54656e1180777199cf636dfa8be87583faa08b4be25f0b679b3d43143758657a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed queue delay decomposition",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_model_fit",
+      "signature_after": "0e4cbb25e79cc6a18cf4a4109b459e3f71ef0934600f40ed4e4976f15081e436",
+      "signature_before": "9a2610d401a0cb1160f16c73effd1b7f761920f4340dc3b9694889b03de30f1a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Queue model fit complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "1b47ca736a701bd431c7b7feb2e4515f3a9939e86458f951f2529aed8394deba",
+      "signature_before": "1a2f85b601642521ae7affa4624ebf5f543f8c453eb671026f9f9a3c97676947",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed MP denoising diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "signature_after": "6a814029f13a58a7a4e27de5c35e551b116ea9894718ee8f300289413acf71cf",
+      "signature_before": "a3eb0855935df66f44d255539a67197020b2ab34ff3022d2031751f0203d27ad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_randomization_test_median_shift_v1 not applicable: analysis_randomization_test_median_shift_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "a9ddb925c199d3d64d01eb88f00079632ccecd56ea44bc631613e325f9e9df10",
+      "signature_before": "80fa039df23a487eb6838833769c4a4ed10825e3440e22eee00819c18ba6d6e4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Deduplicated 63 recommendations",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "signature_after": "b3fdf91634bcf639e4b374aab44963d3b970cc4280bbb1257dcbd0f30eb80f10",
+      "signature_before": "af5dfb9bca7dddb25f7b38fe820c8f1892bae8dd62ed4ed80b295692c6ac1f27",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "No actionable result: quadratic_cap_exceeded",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_regression_auto",
+      "signature_after": "17f971cfa6af4509ca203dc2baeb2ecf1ab34fece94c845e7c875b6abd93ba57",
+      "signature_before": "d6d4c36dc8991a3db4053c61a3f073af2e332f831b8698bd5a2f1e315f417ca6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Regression drivers for 'CHILD_PROCESS_COUNT': top=12",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "signature_after": "da57e7444795640c0658014ab3750de67f8b2725872e9ae9364e0a7d2fd913a7",
+      "signature_before": "799fcf6b71118f9d6642563d4d8a324c5cfdb777f757b40ab7247a727eed6d2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_retry_rate_hotspots_v1 not applicable: Missing required columns for retry-rate hotspots",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "signature_after": "6e0c31f79d34c4e467788c8ccc85d0008cbd99107693197a2071fffcc719d3e7",
+      "signature_before": "d85d5c24f0b442158c99d58fcc7d3cf48fda05523928264c3bbcf08d492cc6fe",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Robust covariance analysis complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_pcp",
+      "signature_after": "689f73ae0d1641a879e89846fbd13c1cad14d851f32dd4f67cc09b581853573f",
+      "signature_before": "2fb2a6a36f5ecaf35577737d000349a80c66b4101c93e17afa7847416aa4a297",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 sparse outliers.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "689f73ae0d1641a879e89846fbd13c1cad14d851f32dd4f67cc09b581853573f",
+      "signature_before": "2fb2a6a36f5ecaf35577737d000349a80c66b4101c93e17afa7847416aa4a297",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Detected 30 sparse outliers.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "90cacdabc817e95b328d006317820d206df10b06266978d8bbe89eed74c4f0bf",
+      "signature_before": "b1ad24c499d42794878b88a4ecf11481d1e73130f1324ce8c573cdb575a1fdfd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed robust regression diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "bf7f5e49e33cc5769467d7a2cef793b8af0483523a0ab7ac7ae572eb5653cdd5",
+      "signature_before": "55edc4f3c0616df6063111110f4e0aaffb82713315e315d1ce553d913939c359",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sample entropy irregularity metrics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "622f293ee9a5ffaf8d77b0718c3227dc21c02f5162339bcbaf032be821e68ed7",
+      "signature_before": "435118ed16e07b7e64011e60241128c33d2ba5d613482b46b6f48073c28a0164",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed scan statistics",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "signature_after": "a415dfeff0d8d3d49759ae2c3127213e0274f1922429ad091203a34113d45ed2",
+      "signature_before": "6f2c3e9d52bee8274d0c1eed8c101445011bf3f1e50b7d84fc78be369da4737b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_seasonal_holt_winters_forecast_residuals_v1 not applicable: analysis_seasonal_holt_winters_forecast_residuals_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "102eb3a52f6e602344f00d1c62983e267a2573a53ca44ad5277ec6b75cda9f4a",
+      "signature_before": "a1f4b28e5a7c6225848cdecca8961dfcfbf50340b2528cc0f37a79c52b35f409",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Classified standalone vs sequence-linked runs",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "signature_after": "73445400da021173a2a8b7cdc654d5782cb7f59d9418c59d8912a65dd003e453",
+      "signature_before": "21cb10dd39c8b54e72ec5da1d2fdf51023be70e8cad9b4cce32e8cb7df4ee400",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed 10 repeated motifs",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "signature_after": "3ba411999effa2ae5c3de534f8259b3e8f8dd05e42f3d89825237bf7fd74fef5",
+      "signature_before": "babceb2350a74d78fbd13ba63842d3075e8d4db62e13092af8897b71961aa449",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Sequential pattern mining complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "signature_after": "c31529f9783a8ada245525a9f05356daef8d3f460efbbbe8efedc1b2e89e8615",
+      "signature_before": "b4ff130799a2720b3ce9d30bed552e019a377a8639394b3dbf6ec666c0e7d847",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Found 25 frequent sequences",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "signature_after": "a9c097a1ef1d01f27f91d5db4bfc1fe555bf4a8d2aea04524704b5c80859e7d9",
+      "signature_before": "2b6db1a7bb36e3b87becc938646288dd9f1cd3170bfcd454a72de366276e4181",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_similarity_graph_spectral_clustering_v1 not applicable: analysis_similarity_graph_spectral_clustering_v1 timed out",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+      "signature_after": "1489c941a725acb69dcf4af7e4ecd3e7bb8ce4d6e77f2ddff60636fec5695c71",
+      "signature_before": "3aa703e42d78fccf1adbd000c1ffd6889184cb306289c6fa0da81bbc7bb7763a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Sinkhorn OT drift for 7 features",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "signature_after": "a47e23631c6b51a8c7b0a380219a86a90ccfbf43318b9f7bc9d22090b2416709",
+      "signature_before": "9b857849d9614ed5cc2ba06a4d47c9538cd9d6407506babeb60de61e7d886bb5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed sparse PCA components.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "signature_after": "dc06d13e3d14f20b115a6513b508d73b86ab3bde8ebeecef85dcaa3c2febe403",
+      "signature_before": "d15945faaf4031eadc0d8e55bfa2437466f4dbfcb85da8962f359ec093bb49ac",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed spectral radius stability metrics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
+      "signature_after": "d1ff7b2e277d7a2abc308ab807a44b709aed2d18f87eb0145e60c0696c1741f6",
+      "signature_before": "3d7a9c96dd276131f786e5aaae7b091282fb0832d9ea5c3e18ada88c73e53467",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed SSA changepoints over 15000 rows",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_kalman_residuals",
+      "signature_after": "3bc86a494d9a195f6a1edf65c124f001669ed8ef29c5ef5bfa5ea45eedf75d28",
+      "signature_before": "a6f53c95ab49f7fa8dcdd294b54c459bf805a7a3beb6236c39c5dcb73237b35b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Kalman residual scan complete",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "signature_after": "f778f579fb91598c6e1f5751b3b39e402d82f733694b5cb4d7fcee9797c02943",
+      "signature_before": "4330fa8e0644fc24d3583bbc39f251a85a20e130c3dc49bba7a275bba7aa2dee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed state-space smoother level shift.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "signature_after": "718cbbc2e37dc02c0d33c35578da4ab1c1923a06d7fab30873899f0d4d4c84c7",
+      "signature_before": "4f991dce4274e98f55bccb519cc8102c092e91ff4ee4e91226b749ada9910f5c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "analysis_stl_seasonal_decompose_v1 not applicable: analysis_stl_seasonal_decompose_v1 failed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
+      "signature_after": "be2e1f2197ee3325e6ef7ebbefa0726dd8068136104a7ebff5c0774cdad97a23",
+      "signature_before": "ac9ea453fb2dc488a6f1e61917b48678c5d2df630aa32392700a318e91d877a9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Computed Oja subspace tracking diagnostics.",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_surface_fabric_sso_eigen",
+      "signature_after": "4342f495abdad67b13f97415796bfb9b691d3196ea2f37ca8abd1f2c7d8eee04",
+      "signature_before": "26ae5b56faa5edce5516afc5dcafa402029aa50d8bcfddd514d2086924c9fdbf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Surface fabric eigen-analysis computed",
+      "summary_before": "REUSED from baseline_optimal_20260221T0210Z"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 54,
+    "budget_json": 146,
+    "debug_json": 249,
+    "error_json": 0,
+    "findings_json": 249,
+    "metrics_json": 240,
+    "references_json": 8,
+    "summary": 251
+  },
+  "material_changed_plugins": [
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_actionable_ops_levers_v1",
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_anova_auto",
+    "analysis_association_rules_apriori_v1",
+    "analysis_attribution",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_bayesian_point_displacement",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_bocpd_gaussian",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_burst_detection_kleinberg",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_capacity_scaling",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_chain_makespan",
+    "analysis_change_impact_pre_post",
+    "analysis_change_score_consensus_v1",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_uplift",
+    "analysis_close_cycle_window_resolver",
+    "analysis_cluster_analysis_auto",
+    "analysis_competing_risks_cif_v1",
+    "analysis_concurrency_reconstruction",
+    "analysis_conformal_feature_prediction",
+    "analysis_conformance_alignments",
+    "analysis_conformance_checking",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_constraints_violation_detector_v1",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_control_chart_suite",
+    "analysis_copula_dependence",
+    "analysis_cur_decomposition_explain_v1",
+    "analysis_cusum_on_model_residuals_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
+    "analysis_dependency_graph_change_detection",
+    "analysis_dependency_resolution_join",
+    "analysis_determinism_discipline",
+    "analysis_diffusion_maps_manifold_v1",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
+    "analysis_distribution_drift_suite",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_dmd_koopman_modes_v1",
+    "analysis_dp_gmm",
+    "analysis_drift_adwin",
+    "analysis_dynamic_close_detection",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_effect_size_report",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_energy_distance_two_sample_v1",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_frequent_directions_cov_sketch_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_gaussian_copula_shift",
+    "analysis_gaussian_knockoffs",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_ges_score_based_causal_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
+    "analysis_graph_topology_curves",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_haar_wavelet_transient_detector_v1",
+    "analysis_hawkes_self_exciting",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_hold_time_attribution_v1",
+    "analysis_hsic_independence_screen_v1",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
+    "analysis_ideaspace_action_planner",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ideaspace_normative_gap",
+    "analysis_isolation_forest",
+    "analysis_isolation_forest_anomaly",
+    "analysis_issue_cards_v2",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_knockoff_wrapper_rf",
+    "analysis_ksd_stein_discrepancy_anomaly_v1",
+    "analysis_lagged_predictability_test",
+    "analysis_lingam_causal_discovery_v1",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_log_template_mining_drain",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
+    "analysis_map_permutation_test_karniski",
+    "analysis_marked_point_process_intensity_v1",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multicollinearity_vif_screen_v1",
+    "analysis_multiple_testing_fdr",
+    "analysis_multiscale_entropy_mse_v1",
+    "analysis_multivariate_changepoint_pelt",
+    "analysis_multivariate_control_charts",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_negative_binomial_overdispersion_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_normalizing_flow_density_v1",
+    "analysis_notears_linear",
+    "analysis_one_class_svm",
+    "analysis_online_conformal_changepoint",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_partial_correlation_network_shift_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_percentile_analysis",
+    "analysis_periodicity_spectral_scan",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_phate_trajectory_embedding_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
+    "analysis_process_counterfactuals",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_process_sequence",
+    "analysis_process_sequence_bottlenecks",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
+    "analysis_quantile_regression_duration",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_recurrence_quantification_rqa_v1",
+    "analysis_regression_auto",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_robust_pca_sparse_outliers",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_scan_statistics",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
+    "analysis_sequence_classification",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_state_space_kalman_residuals",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tail_isolation",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_tensor_cp_parafac_decomp_v1",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_traceability_manifest_v2",
+    "analysis_transfer_entropy_directional",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_upload_linkage",
+    "analysis_user_host_savings",
+    "analysis_variant_differential",
+    "analysis_waterfall_summary_v2",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
+    "llm_text2sql_local_generate_v1",
+    "planner_basic",
+    "process_mining_conformance_v1",
+    "process_mining_discovery_v1",
+    "profile_eventlog",
+    "report_decision_bundle_v2",
+    "report_payout_report_v1",
+    "report_slide_kit_emitter_v2",
+    "transform_normalize_mixed",
+    "transform_sql_intents_pack_v1",
+    "transform_sqlpack_materialize_v1",
+    "transform_template"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 254,
+    "before": 254,
+    "material_payload_changed": 250,
+    "payload_changed": 253,
+    "removed": 0,
+    "status_changed": 0
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-16T18:22:20.025141+00:00",
+    "created_at": "2026-02-16T15:53:19.146110+00:00",
+    "dataset_version_id": "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66",
+    "requested_run_seed": 123,
+    "run_id": "d53963415b994c59b41e9ef5e23710e6",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "run_before": {
+    "completed_at": "2026-02-21T16:42:53.788890+00:00",
+    "created_at": "2026-02-21T16:28:37.990394+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "dryrun_debug_20260221T1630Z",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "ok": 254
+    },
+    "before": {
+      "ok": 254
+    }
+  }
+}

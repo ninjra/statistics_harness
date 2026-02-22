@@ -285,16 +285,18 @@ def _artifact(ctx, plugin_id: str, name: str, payload: Any, kind: str) -> Plugin
 
 def _group_slices(
     df: pd.DataFrame, group_cols: list[str], max_groups: int
-) -> list[tuple[str, pd.DataFrame, dict[str, Any]]]:
-    slices: list[tuple[str, pd.DataFrame, dict[str, Any]]] = [("ALL", df, {})]
+) -> list[tuple[str, pd.Index, dict[str, Any]]]:
+    slices: list[tuple[str, pd.Index, dict[str, Any]]] = [("ALL", df.index, {})]
     for col in group_cols:
         if col not in df.columns:
             continue
         counts = df[col].value_counts(dropna=False)
         for value in counts.index[:max_groups]:
             label = f"{col}={value}"
-            slice_df = df.loc[df[col] == value]
-            slices.append((label, slice_df, {"group": {col: value}}))
+            row_idx = df.index[df[col].eq(value)]
+            if row_idx.empty:
+                continue
+            slices.append((label, row_idx, {"group": {col: value}}))
     return slices
 
 
@@ -460,14 +462,29 @@ def _local_outlier_factor(
     if X.size == 0 or X.shape[0] < 20:
         return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
-    if HAS_SKLEARN and LocalOutlierFactor is not None:
-        lof = LocalOutlierFactor(n_neighbors=min(20, X.shape[0] - 1), contamination="auto")
-        labels = lof.fit_predict(X)
-        scores = -lof.negative_outlier_factor_
+    max_rows_for_lof = int(config.get("max_rows_for_lof", 50000))
+    use_lof = (
+        HAS_SKLEARN
+        and LocalOutlierFactor is not None
+        and int(X.shape[0]) <= max_rows_for_lof
+    )
+    debug: dict[str, Any] = {"rows": int(X.shape[0]), "cols": int(X.shape[1])}
+    if use_lof:
+        try:
+            lof = LocalOutlierFactor(n_neighbors=min(20, X.shape[0] - 1), contamination="auto")
+            labels = lof.fit_predict(X)
+            scores = -lof.negative_outlier_factor_
+            debug["model_path"] = "lof"
+        except Exception:
+            zscores = np.abs(robust_zscores(X[:, 0]))
+            labels = np.where(zscores > 3.5, -1, 1)
+            scores = zscores
+            debug["model_path"] = "robust_z_fallback_exception"
     else:
         zscores = np.abs(robust_zscores(X[:, 0]))
         labels = np.where(zscores > 3.5, -1, 1)
         scores = zscores
+        debug["model_path"] = "robust_z_fallback_large_n"
     outlier_idx = np.where(labels == -1)[0]
     top_idx = outlier_idx[np.argsort(scores[outlier_idx])[::-1][:max_findings]] if outlier_idx.size else np.array([], dtype=int)
     artifact_rows = [
@@ -492,7 +509,7 @@ def _local_outlier_factor(
     if artifact_rows:
         artifacts.append(_artifact(ctx, plugin_id, "lof_outliers.json", artifact_rows, "json"))
     summary = _summary_or_skip("LOF analysis complete", findings)
-    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
+    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None, debug=debug)
 
 
 def _one_class_svm_plugin(
@@ -1311,12 +1328,16 @@ def _select_event_column(inferred: dict[str, Any]) -> str | None:
 
 def _build_sequences(df: pd.DataFrame, event_col: str, time_col: str | None, case_col: str | None) -> list[list[str]]:
     if case_col and case_col in df.columns:
-        seqs = []
-        grouped = df.groupby(case_col)
-        for _, group in grouped:
-            if time_col and time_col in group.columns:
-                group = _sort_by_time(group, time_col)
-            seqs.append(group[event_col].astype(str).tolist())
+        work = df[[case_col, event_col] + ([time_col] if time_col and time_col in df.columns else [])].copy()
+        if time_col and time_col in work.columns:
+            # Sort once globally by case+time, then group; avoids expensive per-group re-sorting.
+            parsed = pd.to_datetime(work[time_col], errors="coerce", utc=True)
+            work = work.assign(__ts=parsed).sort_values([case_col, "__ts"]).drop(columns=["__ts"])
+        seqs = (
+            work.groupby(case_col, sort=False)[event_col]
+            .apply(lambda s: s.astype(str).tolist())
+            .tolist()
+        )
         return [seq for seq in seqs if seq]
     if time_col and time_col in df.columns:
         df = _sort_by_time(df, time_col)
@@ -1779,6 +1800,27 @@ def _edit_distance(a: list[str], b: list[str]) -> int:
     return int(dp[len(a), len(b)])
 
 
+def _bounded_edit_distance(a: list[str], b: list[str], max_cells: int) -> int:
+    if max_cells > 0 and (len(a) * len(b)) > max_cells:
+        m = min(len(a), len(b))
+        mismatches = sum(1 for i in range(m) if a[i] != b[i])
+        return int(mismatches + abs(len(a) - len(b)))
+    return _edit_distance(a, b)
+
+
+def _truncate_seq(seq: list[str], max_len: int) -> list[str]:
+    if max_len <= 0 or len(seq) <= max_len:
+        return seq
+    return seq[:max_len]
+
+
+def _deterministic_seq_sample(seqs: list[list[str]], max_sequences: int) -> list[list[str]]:
+    if max_sequences <= 0 or len(seqs) <= max_sequences:
+        return seqs
+    idx = np.linspace(0, len(seqs) - 1, num=max_sequences, dtype=int)
+    return [seqs[int(i)] for i in idx]
+
+
 def _conformance_alignments(
     plugin_id: str,
     ctx,
@@ -1797,15 +1839,34 @@ def _conformance_alignments(
     seqs = _build_sequences(df, event_col, time_col, case_col)
     if not seqs:
         return PluginResult("skipped", "No sequences detected", _basic_metrics(df, sample_meta), [], [], None)
-    variant_counts: dict[str, int] = {}
+    max_sequences = int(config.get("max_sequences", 3000))
+    max_variant_length = int(config.get("max_variant_length", 80))
+    max_edit_cells = int(config.get("max_edit_cells", 25000))
+
+    variant_counts: dict[tuple[str, ...], int] = {}
     for seq in seqs:
-        key = "->".join(seq)
+        key = tuple(_truncate_seq(seq, max_variant_length))
         variant_counts[key] = variant_counts.get(key, 0) + 1
     top_variant = max(variant_counts.items(), key=lambda item: item[1])[0]
-    top_seq = top_variant.split("->") if top_variant else []
-    distances = [_edit_distance(seq, top_seq) for seq in seqs]
+    top_seq = list(top_variant)
+    seqs_for_distance = _deterministic_seq_sample(seqs, max_sequences=max_sequences)
+    distances = [
+        _bounded_edit_distance(
+            _truncate_seq(seq, max_variant_length),
+            top_seq,
+            max_cells=max_edit_cells,
+        )
+        for seq in seqs_for_distance
+    ]
     avg_dist = float(np.mean(distances)) if distances else 0.0
-    evidence = {"metrics": {"top_variant": top_variant, "avg_edit_distance": avg_dist, "variant_count": len(variant_counts)}}
+    evidence = {
+        "metrics": {
+            "top_variant": "->".join(top_seq),
+            "avg_edit_distance": avg_dist,
+            "variant_count": len(variant_counts),
+            "distance_sequences_used": len(seqs_for_distance),
+        }
+    }
     finding = _make_finding(
         plugin_id,
         "conformance",
@@ -1836,11 +1897,13 @@ def _process_drift_conformance_over_time(
     if not event_col or not case_col:
         return PluginResult("skipped", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
-    def _variant_counts(frame: pd.DataFrame) -> dict[str, int]:
+    max_variant_length = int(config.get("max_variant_length", 80))
+
+    def _variant_counts(frame: pd.DataFrame) -> dict[tuple[str, ...], int]:
         seqs = _build_sequences(frame, event_col, time_col, case_col)
-        counts: dict[str, int] = {}
+        counts: dict[tuple[str, ...], int] = {}
         for seq in seqs:
-            key = "->".join(seq)
+            key = tuple(_truncate_seq(seq, max_variant_length))
             counts[key] = counts.get(key, 0) + 1
         return counts
     left_counts = _variant_counts(left_df)
@@ -1878,11 +1941,13 @@ def _variant_differential(
     if not event_col or not case_col:
         return PluginResult("skipped", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
-    def _variant_counts(frame: pd.DataFrame) -> dict[str, int]:
+    max_variant_length = int(config.get("max_variant_length", 80))
+
+    def _variant_counts(frame: pd.DataFrame) -> dict[tuple[str, ...], int]:
         seqs = _build_sequences(frame, event_col, time_col, case_col)
-        counts: dict[str, int] = {}
+        counts: dict[tuple[str, ...], int] = {}
         for seq in seqs:
-            key = "->".join(seq)
+            key = tuple(_truncate_seq(seq, max_variant_length))
             counts[key] = counts.get(key, 0) + 1
         return counts
     left_counts = _variant_counts(left_df)
@@ -1894,7 +1959,11 @@ def _variant_differential(
         deltas.append((abs(delta), key, delta))
     deltas.sort(reverse=True)
     top = deltas[:10]
-    evidence = {"metrics": {"top_variants": [{"variant": k, "delta": int(delta)} for _, k, delta in top]}}
+    evidence = {
+        "metrics": {
+            "top_variants": [{"variant": "->".join(k), "delta": int(delta)} for _, k, delta in top]
+        }
+    }
     finding = _make_finding(
         plugin_id,
         "variant_diff",
@@ -2401,8 +2470,8 @@ def _control_chart_individuals(
     for col in value_cols:
         if timer.exceeded():
             break
-        for label, slice_df, where in _group_slices(df, group_cols, max_groups):
-            values = slice_df[col].dropna().to_numpy(dtype=float)
+        for label, row_idx, where in _group_slices(df, group_cols, max_groups):
+            values = pd.to_numeric(df.loc[row_idx, col], errors="coerce").dropna().to_numpy(dtype=float)
             if values.size < 30:
                 continue
             zscores = robust_zscores(values)
@@ -2463,8 +2532,8 @@ def _control_chart_ewma(
     for col in value_cols:
         if timer.exceeded():
             break
-        for label, slice_df, where in _group_slices(df, group_cols, max_groups):
-            values = slice_df[col].dropna().to_numpy(dtype=float)
+        for label, row_idx, where in _group_slices(df, group_cols, max_groups):
+            values = pd.to_numeric(df.loc[row_idx, col], errors="coerce").dropna().to_numpy(dtype=float)
             if values.size < 30:
                 continue
             center, scale = robust_center_scale(values)
@@ -2531,8 +2600,8 @@ def _control_chart_cusum(
     for col in value_cols:
         if timer.exceeded():
             break
-        for label, slice_df, where in _group_slices(df, group_cols, max_groups):
-            values = slice_df[col].dropna().to_numpy(dtype=float)
+        for label, row_idx, where in _group_slices(df, group_cols, max_groups):
+            values = pd.to_numeric(df.loc[row_idx, col], errors="coerce").dropna().to_numpy(dtype=float)
             if values.size < 30:
                 continue
             center, scale = robust_center_scale(values)

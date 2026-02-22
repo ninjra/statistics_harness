@@ -29,3 +29,13 @@ def test_analysis_local_outlier_factor_smoke(run_dir):
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
     assert result.status in ("ok", "skipped")
+
+
+def test_analysis_local_outlier_factor_large_n_fallback(run_dir):
+    df = _sample_df()
+    df["ts"] = df["ts"].astype(str)
+    ctx = make_context(run_dir, df, {"max_rows_for_lof": 100})
+    result = Plugin().run(ctx)
+    assert result.status in ("ok", "skipped")
+    assert isinstance(result.debug, dict)
+    assert result.debug.get("model_path") == "robust_z_fallback_large_n"

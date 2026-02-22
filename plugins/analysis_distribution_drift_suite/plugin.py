@@ -58,14 +58,17 @@ def _chi2_p_value(chi2: float, df: int) -> float:
         return float(math.exp(-0.5 * chi2))
 
 
-def _group_slices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.DataFrame]]:
-    slices: list[tuple[str, pd.DataFrame]] = [("ALL", df)]
+def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.Index]]:
+    slices: list[tuple[str, pd.Index]] = [("ALL", df.index)]
     for col in group_cols:
         if col not in df.columns:
             continue
         counts = df[col].value_counts(dropna=False)
         for value in counts.index[:max_groups]:
-            slices.append((f"{col}={value}", df.loc[df[col] == value]))
+            row_idx = df.index[df[col].eq(value)]
+            if row_idx.empty:
+                continue
+            slices.append((f"{col}={value}", row_idx))
     return slices
 
 
@@ -98,12 +101,12 @@ class Plugin:
         max_findings = int(config.get("max_findings", 30))
         max_groups = int(config.get("max_groups", 30))
 
-        comparisons: list[tuple[str, pd.DataFrame, pd.DataFrame]] = []
+        comparisons: list[tuple[str, pd.Index, pd.Index]] = []
         if time_col and time_col in df.columns:
             n = df.shape[0]
             cut = int(n * 0.3)
             if cut > 0:
-                comparisons.append(("early_vs_late", df.iloc[:cut], df.iloc[-cut:]))
+                comparisons.append(("early_vs_late", df.index[:cut], df.index[-cut:]))
         focus_windows = config.get("focus", {}).get("windows") if isinstance(config.get("focus"), dict) else []
         if focus_windows and time_col and time_col in df.columns:
             ts = pd.to_datetime(df[time_col], errors="coerce")
@@ -116,29 +119,28 @@ class Plugin:
                 if pd.isna(start) or pd.isna(end):
                     continue
                 mask = (ts >= start) & (ts <= end)
-                comparisons.append((name, df.loc[mask], df.loc[~mask]))
+                comparisons.append((name, df.index[mask.fillna(False)], df.index[(~mask).fillna(False)]))
 
         if not comparisons:
             return PluginResult("skipped", "No comparison windows available", {}, [], [], None)
 
         tests: list[dict[str, Any]] = []
-        for label, slice_a, slice_b in comparisons:
+        group_indices = _group_row_indices(df, group_cols, max_groups)
+        for label, idx_a_base, idx_b_base in comparisons:
             if timer.exceeded():
                 break
-            for group_label, group_df in _group_slices(df, group_cols, max_groups):
+            for group_label, group_idx in group_indices:
                 if timer.exceeded():
                     break
-                if group_label != "ALL":
-                    group_df = group_df.copy()
-                    slice_a = slice_a.loc[group_df.index.intersection(slice_a.index)]
-                    slice_b = slice_b.loc[group_df.index.intersection(slice_b.index)]
-                if slice_a.shape[0] < min_group or slice_b.shape[0] < min_group:
+                idx_a = idx_a_base if group_label == "ALL" else idx_a_base.intersection(group_idx)
+                idx_b = idx_b_base if group_label == "ALL" else idx_b_base.intersection(group_idx)
+                if idx_a.size < min_group or idx_b.size < min_group:
                     continue
                 for col in value_cols:
                     if timer.exceeded():
                         break
-                    x = slice_a[col].dropna().to_numpy(dtype=float)
-                    y = slice_b[col].dropna().to_numpy(dtype=float)
+                    x = pd.to_numeric(df.loc[idx_a, col], errors="coerce").dropna().to_numpy(dtype=float)
+                    y = pd.to_numeric(df.loc[idx_b, col], errors="coerce").dropna().to_numpy(dtype=float)
                     if x.size < min_group or y.size < min_group:
                         continue
                     d, p = _ks_stat(x, y)
@@ -158,8 +160,8 @@ class Plugin:
                 for col in cat_cols:
                     if timer.exceeded():
                         break
-                    a_counts = slice_a[col].fillna("NA").astype(str).value_counts()
-                    b_counts = slice_b[col].fillna("NA").astype(str).value_counts()
+                    a_counts = df.loc[idx_a, col].fillna("NA").astype(str).value_counts()
+                    b_counts = df.loc[idx_b, col].fillna("NA").astype(str).value_counts()
                     categories = list(set(a_counts.index).union(set(b_counts.index)))
                     if len(categories) < 2:
                         continue

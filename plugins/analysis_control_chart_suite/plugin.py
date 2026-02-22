@@ -61,15 +61,18 @@ def _cusum(series: np.ndarray, center: float, k: float, h: float) -> tuple[np.nd
     return c_plus, c_minus
 
 
-def _group_slices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.DataFrame]]:
-    slices: list[tuple[str, pd.DataFrame]] = [("ALL", df)]
+def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.Index]]:
+    slices: list[tuple[str, pd.Index]] = [("ALL", df.index)]
     for col in group_cols:
         if col not in df.columns:
             continue
         counts = df[col].value_counts(dropna=False)
         for value in counts.index[:max_groups]:
             label = f"{col}={value}"
-            slices.append((label, df.loc[df[col] == value]))
+            row_idx = df.index[df[col].eq(value)]
+            if row_idx.empty:
+                continue
+            slices.append((label, row_idx))
     return slices
 
 
@@ -106,11 +109,11 @@ class Plugin:
         for value_col in value_cols:
             if timer.exceeded():
                 break
-            slices = _group_slices(df, group_cols, max_groups)
-            for label, slice_df in slices:
+            slices = _group_row_indices(df, group_cols, max_groups)
+            for label, row_idx in slices:
                 if timer.exceeded():
                     break
-                series = slice_df[value_col].dropna()
+                series = pd.to_numeric(df.loc[row_idx, value_col], errors="coerce").dropna()
                 if series.shape[0] < min_points:
                     continue
                 values = series.to_numpy(dtype=float)
