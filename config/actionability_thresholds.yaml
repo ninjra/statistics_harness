@@ -1,0 +1,10 @@
+version: 1
+minimums:
+  delta_hours_accounting_month: 0.25
+  eff_pct_accounting_month: 2.0
+  eff_idx_accounting_month: 0.2
+  confidence: 0.15
+scoring:
+  require_all: true
+  fallback_status: na
+  fallback_reason_code: BELOW_ACTIONABILITY_THRESHOLD

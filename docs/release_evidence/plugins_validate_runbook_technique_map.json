@@ -1,0 +1,512 @@
+[
+  {
+    "alternate_plugin_ids": [
+      "analysis_online_conformal_changepoint"
+    ],
+    "capabilities": [
+      "needs_numeric"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_conformal_feature_prediction/plugin.yaml",
+    "ordinal": 1,
+    "plugin_id": "analysis_conformal_feature_prediction",
+    "preferred_plugin_id": "analysis_conformal_feature_prediction",
+    "references": [
+      "https://arxiv.org/abs/0706.3188"
+    ],
+    "technique": "Conformal prediction"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_multiple_testing_fdr/plugin.yaml",
+    "ordinal": 2,
+    "plugin_id": "analysis_multiple_testing_fdr",
+    "preferred_plugin_id": "analysis_multiple_testing_fdr",
+    "references": [
+      "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x"
+    ],
+    "technique": "False Discovery Rate (Benjamini-Hochberg)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_bootstrap_ci_effect_sizes_v1/plugin.yaml",
+    "ordinal": 3,
+    "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+    "preferred_plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+    "references": [
+      "https://doi.org/10.1080/01621459.1987.10478410"
+    ],
+    "technique": "BCa bootstrap confidence intervals"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_knockoff_wrapper_rf"
+    ],
+    "capabilities": [
+      "needs_multi_numeric"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_gaussian_knockoffs/plugin.yaml",
+    "ordinal": 4,
+    "plugin_id": "analysis_gaussian_knockoffs",
+    "preferred_plugin_id": "analysis_gaussian_knockoffs",
+    "references": [
+      "https://arxiv.org/abs/1404.5609"
+    ],
+    "technique": "Knockoff filter"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_quantile_regression_forest_v1"
+    ],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_quantile_regression_duration/plugin.yaml",
+    "ordinal": 5,
+    "plugin_id": "analysis_quantile_regression_duration",
+    "preferred_plugin_id": "analysis_quantile_regression_duration",
+    "references": [
+      "https://www.econ.uiuc.edu/~roger/research/rq/jasa.pdf"
+    ],
+    "technique": "Quantile regression"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_fused_lasso_trend_filtering_v1/plugin.yaml",
+    "ordinal": 6,
+    "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+    "preferred_plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+    "references": [
+      "https://doi.org/10.1111/j.2517-6161.1996.tb02080.x"
+    ],
+    "technique": "LASSO"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_elastic_net_regularized_glm_v1/plugin.yaml",
+    "ordinal": 7,
+    "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+    "preferred_plugin_id": "analysis_elastic_net_regularized_glm_v1",
+    "references": [
+      "https://doi.org/10.1111/j.1467-9868.2005.00503.x"
+    ],
+    "technique": "Elastic Net"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_knockoff_wrapper_rf"
+    ],
+    "capabilities": [
+      "needs_multi_numeric"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_knockoff_wrapper_rf/plugin.yaml",
+    "ordinal": 8,
+    "plugin_id": "analysis_knockoff_wrapper_rf",
+    "preferred_plugin_id": "analysis_random_forest_action_ranker_v1",
+    "references": [
+      "https://doi.org/10.1023/A:1010933404324"
+    ],
+    "technique": "Random Forests"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_quantile_loss_boosting_v1/plugin.yaml",
+    "ordinal": 9,
+    "plugin_id": "analysis_quantile_loss_boosting_v1",
+    "preferred_plugin_id": "analysis_quantile_loss_boosting_v1",
+    "references": [
+      "https://projecteuclid.org/journals/annals-of-statistics/volume-29/issue-5/Greedy-function-approximation--A-gradient-boosting-machine/10.1214/aos/1013203451.full"
+    ],
+    "technique": "Gradient Boosting Machine"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_isolation_forest"
+    ],
+    "capabilities": [
+      "needs_timestamp"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_isolation_forest_anomaly/plugin.yaml",
+    "ordinal": 10,
+    "plugin_id": "analysis_isolation_forest_anomaly",
+    "preferred_plugin_id": "analysis_isolation_forest_anomaly",
+    "references": [
+      "https://doi.org/10.1109/ICDM.2008.17"
+    ],
+    "technique": "Isolation Forest"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_local_outlier_factor/plugin.yaml",
+    "ordinal": 11,
+    "plugin_id": "analysis_local_outlier_factor",
+    "preferred_plugin_id": "analysis_local_outlier_factor",
+    "references": [
+      "https://doi.org/10.1145/335191.335388"
+    ],
+    "technique": "Local Outlier Factor (LOF)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_minimum_covariance_determinant_v1/plugin.yaml",
+    "ordinal": 12,
+    "plugin_id": "analysis_minimum_covariance_determinant_v1",
+    "preferred_plugin_id": "analysis_minimum_covariance_determinant_v1",
+    "references": [
+      "https://wis.kuleuven.be/stat/robust/papers/2010/wire-mcd-review.pdf"
+    ],
+    "technique": "Minimum Covariance Determinant (MCD)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_robust_regression_huber_ransac_v1/plugin.yaml",
+    "ordinal": 13,
+    "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+    "preferred_plugin_id": "analysis_robust_regression_huber_ransac_v1",
+    "references": [
+      "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-35/issue-1/Robust-Estimation-of-a-Location-Parameter/10.1214/aoms/1177703732.full"
+    ],
+    "technique": "Huber M-estimator"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_gaussian_process_regression_v1/plugin.yaml",
+    "ordinal": 14,
+    "plugin_id": "analysis_gaussian_process_regression_v1",
+    "preferred_plugin_id": "analysis_gaussian_process_regression_v1",
+    "references": [
+      "https://mitpress.mit.edu/9780262182539/gaussian-processes-for-machine-learning/"
+    ],
+    "technique": "Gaussian Process Regression"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_gam_spline_regression_v1/plugin.yaml",
+    "ordinal": 15,
+    "plugin_id": "analysis_gam_spline_regression_v1",
+    "preferred_plugin_id": "analysis_gam_spline_regression_v1",
+    "references": [
+      "https://datamining.cs.ucdavis.edu/~filkov/courses/300/winter06/readings/gam.pdf"
+    ],
+    "technique": "Generalized Additive Models (GAM)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_mixed_effects_hierarchical_v1/plugin.yaml",
+    "ordinal": 16,
+    "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+    "preferred_plugin_id": "analysis_mixed_effects_hierarchical_v1",
+    "references": [
+      "https://doi.org/10.2307/2529876"
+    ],
+    "technique": "Mixed-effects (random-effects) models"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_aft_survival_lognormal_v1"
+    ],
+    "capabilities": [
+      "needs_numeric"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_survival_time_to_event/plugin.yaml",
+    "ordinal": 17,
+    "plugin_id": "analysis_survival_time_to_event",
+    "preferred_plugin_id": "analysis_survival_time_to_event",
+    "references": [
+      "https://doi.org/10.1111/j.2517-6161.1972.tb00899.x"
+    ],
+    "technique": "Cox proportional hazards"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_bart_uplift_surrogate_v1/plugin.yaml",
+    "ordinal": 18,
+    "plugin_id": "analysis_bart_uplift_surrogate_v1",
+    "preferred_plugin_id": "analysis_bart_uplift_surrogate_v1",
+    "references": [
+      "https://projecteuclid.org/journals/annals-of-applied-statistics/volume-4/issue-1/BART-Bayesian-additive-regression-trees/10.1214/09-AOAS285.full"
+    ],
+    "technique": "Bayesian Additive Regression Trees (BART)"
+  },
+  {
+    "alternate_plugin_ids": [
+      "analysis_dirichlet_multinomial_categorical_overdispersion_v1"
+    ],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_dirichlet_multinomial_categorical_overdispersion_v1/plugin.yaml",
+    "ordinal": 19,
+    "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "preferred_plugin_id": "analysis_dirichlet_process_mixture_v1",
+    "references": [
+      "https://projecteuclid.org/journals/annals-of-statistics/volume-1/issue-2/A-Bayesian-analysis-of-some-nonparametric-problems/10.1214/aos/1176342360.full"
+    ],
+    "technique": "Dirichlet Process (nonparametric Bayes)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_hmm_latent_state_sequences/plugin.yaml",
+    "ordinal": 20,
+    "plugin_id": "analysis_hmm_latent_state_sequences",
+    "preferred_plugin_id": "analysis_hmm_latent_state_sequences",
+    "references": [
+      "https://www.cs.ubc.ca/~murphyk/Bayes/rabiner.pdf"
+    ],
+    "technique": "Hidden Markov Models (HMM)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_state_space_kalman_residuals/plugin.yaml",
+    "ordinal": 21,
+    "plugin_id": "analysis_state_space_kalman_residuals",
+    "preferred_plugin_id": "analysis_state_space_kalman_residuals",
+    "references": [
+      "https://doi.org/10.1115/1.3662552"
+    ],
+    "technique": "Kalman filter"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_granger_causality_v1/plugin.yaml",
+    "ordinal": 22,
+    "plugin_id": "analysis_granger_causality_v1",
+    "preferred_plugin_id": "analysis_granger_causality_v1",
+    "references": [
+      "https://doi.org/10.2307/1912791"
+    ],
+    "technique": "Granger causality"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_transfer_entropy_directional/plugin.yaml",
+    "ordinal": 23,
+    "plugin_id": "analysis_transfer_entropy_directional",
+    "preferred_plugin_id": "analysis_transfer_entropy_directional",
+    "references": [
+      "https://doi.org/10.1103/PhysRevLett.85.461"
+    ],
+    "technique": "Transfer entropy"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_mutual_information_screen/plugin.yaml",
+    "ordinal": 24,
+    "plugin_id": "analysis_mutual_information_screen",
+    "preferred_plugin_id": "analysis_mutual_information_screen",
+    "references": [
+      "https://doi.org/10.1103/PhysRevE.69.066138"
+    ],
+    "technique": "kNN mutual information estimator"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_ica_source_separation_v1/plugin.yaml",
+    "ordinal": 25,
+    "plugin_id": "analysis_ica_source_separation_v1",
+    "preferred_plugin_id": "analysis_ica_source_separation_v1",
+    "references": [
+      "https://www.cs.helsinki.fi/u/ahyvarin/papers/NN00new.pdf"
+    ],
+    "technique": "Independent Component Analysis (ICA)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_nonnegative_matrix_factorization_v1/plugin.yaml",
+    "ordinal": 26,
+    "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+    "preferred_plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+    "references": [
+      "https://doi.org/10.1038/44565"
+    ],
+    "technique": "Non-negative Matrix Factorization (NMF)"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_tsne_embedding_v1/plugin.yaml",
+    "ordinal": 27,
+    "plugin_id": "analysis_tsne_embedding_v1",
+    "preferred_plugin_id": "analysis_tsne_embedding_v1",
+    "references": [
+      "https://www.jmlr.org/papers/v9/vandermaaten08a.html"
+    ],
+    "technique": "t-SNE"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_umap_embedding_v1/plugin.yaml",
+    "ordinal": 28,
+    "plugin_id": "analysis_umap_embedding_v1",
+    "preferred_plugin_id": "analysis_umap_embedding_v1",
+    "references": [
+      "https://arxiv.org/abs/1802.03426"
+    ],
+    "technique": "UMAP"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "needs_multi_numeric"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_notears_linear/plugin.yaml",
+    "ordinal": 29,
+    "plugin_id": "analysis_notears_linear",
+    "preferred_plugin_id": "analysis_notears_linear",
+    "references": [
+      "https://arxiv.org/abs/1803.01422"
+    ],
+    "technique": "NOTEARS"
+  },
+  {
+    "alternate_plugin_ids": [],
+    "capabilities": [
+      "analysis"
+    ],
+    "decision_capable": null,
+    "implemented": true,
+    "lane": "",
+    "manifest_path": "/mnt/d/projects/statistics_harness/statistics_harness/plugins/analysis_mice_imputation_chained_equations_v1/plugin.yaml",
+    "ordinal": 30,
+    "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+    "preferred_plugin_id": "analysis_mice_imputation_chained_equations_v1",
+    "references": [
+      "https://www.jstatsoft.org/article/view/v045i03"
+    ],
+    "technique": "MICE (chained equations) imputation"
+  }
+]

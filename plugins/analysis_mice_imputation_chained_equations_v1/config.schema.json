@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "plugins_validate_runbook_config",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "max_rows": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 3000
+    },
+    "max_cols": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": 12
+    },
+    "seed": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

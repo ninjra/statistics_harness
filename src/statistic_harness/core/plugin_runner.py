@@ -688,6 +688,18 @@ def _payload_result(payload: dict[str, Any]) -> PluginResult:
     )
 
 
+def _health_result_from_raw(raw: Any) -> dict[str, Any]:
+    if raw is None:
+        return {"status": "ok"}
+    if isinstance(raw, bool):
+        return {"status": "ok" if raw else "unhealthy"}
+    if isinstance(raw, dict):
+        payload = dict(raw)
+        payload["status"] = str(payload.get("status") or "ok")
+        return payload
+    return {"status": "ok", "detail": str(raw)}
+
+
 @dataclass
 class RunnerResponse:
     result: PluginResult
@@ -842,7 +854,75 @@ def run_plugin_subprocess(
     )
 
 
+def _run_health_request(request: dict[str, Any]) -> dict[str, Any]:
+    started_at = now_iso()
+    request["started_at"] = started_at
+    execution: dict[str, Any] = {"started_at": started_at}
+    try:
+        run_seed = int(request.get("run_seed", 0))
+        plugin_seed = int(request.get("plugin_seed", run_seed))
+        cwd = Path(request.get("root_dir", ".")).resolve()
+        os.environ.update(_deterministic_env(plugin_seed, cwd=cwd))
+        try:
+            time.tzset()
+        except AttributeError:
+            pass
+        _seed_runtime(plugin_seed)
+        if request.get("sandbox", {}).get("no_network"):
+            network_mode = _network_mode()
+            if network_mode != "on":
+                _install_network_guard(mode=network_mode)
+        _install_eval_guard(cwd)
+        _install_pickle_guard()
+        _install_shell_guard(cwd)
+        plugin = _load_plugin(request["plugin_id"], request["entrypoint"])
+        health_fn = getattr(plugin, "health", None)
+        if callable(health_fn):
+            health = _health_result_from_raw(health_fn())
+        else:
+            health = {"status": "ok", "note": "No health() implemented"}
+        status_text = str(health.get("status") or "ok").strip().lower()
+        if status_text in {"ok", "healthy"}:
+            result = PluginResult(
+                status="ok",
+                summary=f"{request['plugin_id']} health ok",
+                metrics={"health": health},
+                findings=[],
+                artifacts=[],
+            )
+        else:
+            result = PluginResult(
+                status="error",
+                summary=f"{request['plugin_id']} health failed",
+                metrics={"health": health},
+                findings=[],
+                artifacts=[],
+                error=PluginError(
+                    type="HealthCheckFailed",
+                    message=f"Unhealthy plugin: {health}",
+                    traceback="",
+                ),
+            )
+    except Exception as exc:
+        tb = traceback.format_exc()
+        result = PluginResult(
+            status="error",
+            summary=f"{request.get('plugin_id', 'plugin')} health check failed",
+            metrics={},
+            findings=[],
+            artifacts=[],
+            error=PluginError(type=type(exc).__name__, message=str(exc), traceback=tb),
+        )
+    execution.update({"completed_at": now_iso(), "duration_ms": 0})
+    return {"result": _result_payload(result), "execution": execution}
+
+
 def _run_request(request: dict[str, Any]) -> dict[str, Any]:
+    action = str(request.get("action") or "run").strip().lower()
+    if action == "health":
+        return _run_health_request(request)
+    if action != "run":
+        raise ValueError(f"Unknown plugin runner action: {action}")
     started_at = now_iso()
     request["started_at"] = started_at
     execution: dict[str, Any] = {"started_at": started_at}

@@ -6,6 +6,7 @@ import hashlib
 import json
 import zipfile
 import platform
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -22,10 +23,12 @@ from statistic_harness.core.auth import (
 from statistic_harness.core.evaluation import evaluate_report
 from statistic_harness.core.pipeline import Pipeline
 from statistic_harness.core.plugin_manager import PluginManager
+from statistic_harness.core.plugin_runner import run_plugin_subprocess
 from statistic_harness.core.report import build_report, write_report
 from statistic_harness.core.payout_report import build_payout_report
 from statistic_harness.core.storage import Storage
 from statistic_harness.core.tenancy import get_tenant_context
+from statistic_harness.core.types import PluginContext
 from statistic_harness.core.utils import (
     auth_enabled,
     json_dumps,
@@ -57,14 +60,174 @@ def cmd_list_plugins() -> None:
         print(f"{spec.plugin_id}: {spec.name} ({spec.type})")
 
 
-def cmd_plugins_validate(plugin_id: str | None = None) -> None:
+def _is_health_ok(health: dict[str, Any]) -> bool:
+    return str(health.get("status") or "ok").strip().lower() in {"ok", "healthy"}
+
+
+def _normalize_health_payload(raw: Any) -> dict[str, Any]:
+    if raw is None:
+        return {"status": "ok"}
+    if isinstance(raw, bool):
+        return {"status": "ok" if raw else "unhealthy"}
+    if isinstance(raw, dict):
+        payload = dict(raw)
+        payload["status"] = str(payload.get("status") or "ok")
+        return payload
+    return {"status": "ok", "detail": str(raw)}
+
+
+def _run_isolated_health(spec: Any) -> dict[str, Any]:
+    with tempfile.TemporaryDirectory(prefix="stat_harness_validate_") as tmp:
+        run_dir = Path(tmp) / "run"
+        (run_dir / "logs").mkdir(parents=True, exist_ok=True)
+        request = {
+            "action": "health",
+            "plugin_id": spec.plugin_id,
+            "plugin_type": spec.type,
+            "entrypoint": spec.entrypoint,
+            "run_id": "validate",
+            "run_dir": str(run_dir),
+            "run_seed": 0,
+            "plugin_seed": 0,
+            "root_dir": str(Path(".").resolve()),
+            "sandbox": spec.sandbox,
+        }
+        response = run_plugin_subprocess(spec, request, run_dir, Path(".").resolve())
+        if response.result.status != "ok":
+            message = (
+                response.result.error.message
+                if response.result.error
+                else response.result.summary
+            )
+            raise RuntimeError(message or "Isolated health check failed")
+        health = response.result.metrics.get("health")
+        if not isinstance(health, dict):
+            return {"status": "ok"}
+        return health
+
+
+def _build_smoke_context(tmp_dir: Path, settings: dict[str, Any]) -> PluginContext:
+    import pandas as pd
+    from statistic_harness.core.dataset_io import DatasetAccessor
+
+    run_dir = tmp_dir / "run"
+    (run_dir / "dataset").mkdir(parents=True, exist_ok=True)
+    (run_dir / "logs").mkdir(parents=True, exist_ok=True)
+    storage = Storage(run_dir / "state.sqlite")
+
+    project_id = "validate-project"
+    dataset_id = "validate_dataset"
+    dataset_version_id = "validate_dataset"
+    table_name = f"dataset_{dataset_version_id}"
+    storage.ensure_project(project_id, project_id, now_iso())
+    storage.ensure_dataset(dataset_id, project_id, dataset_id, now_iso())
+    with storage.connection() as conn:
+        storage.ensure_dataset_version(
+            dataset_version_id, dataset_id, now_iso(), table_name, dataset_id, conn
+        )
+        frame = pd.DataFrame(
+            [
+                {
+                    "PROCESS": "RPT_POR002",
+                    "START_TIME": "2026-01-20T00:00:00",
+                    "END_TIME": "2026-01-20T00:01:00",
+                    "PARAMS": "batch=1;id=1001",
+                    "USER_NAME": "smoke_user",
+                    "MODULE": "validate",
+                    "MASTER_PROCESS_ID": None,
+                    "ACCOUNTING_MONTH": "2026-01",
+                }
+            ]
+        )
+        columns_meta = []
+        for idx, (col, dtype) in enumerate(frame.dtypes.items(), start=1):
+            columns_meta.append(
+                {
+                    "column_id": idx,
+                    "safe_name": f"c{idx}",
+                    "original_name": str(col),
+                    "dtype": str(dtype),
+                    "sqlite_type": "REAL"
+                    if pd.api.types.is_numeric_dtype(dtype)
+                    else "TEXT",
+                }
+            )
+        storage.create_dataset_table(table_name, columns_meta, conn)
+        storage.replace_dataset_columns(dataset_version_id, columns_meta, conn)
+        safe_columns = [col["safe_name"] for col in columns_meta]
+        rows = []
+        for row_index, row in enumerate(frame.itertuples(index=False, name=None)):
+            rows.append((row_index, None, *row))
+        storage.insert_dataset_rows(table_name, safe_columns, rows, conn)
+        storage.update_dataset_version_stats(
+            dataset_version_id, len(frame), len(columns_meta), conn
+        )
+    accessor = DatasetAccessor(storage, dataset_version_id)
+    return PluginContext(
+        run_id="validate-smoke",
+        run_dir=run_dir,
+        settings=dict(settings or {}),
+        run_seed=0,
+        logger=lambda msg: None,
+        storage=storage,
+        dataset_loader=accessor.load,
+        dataset_iter_batches=accessor.iter_batches,
+        budget={
+            "row_limit": None,
+            "sampled": False,
+            "time_limit_ms": None,
+            "cpu_limit_ms": None,
+            "batch_size": None,
+        },
+        project_id=project_id,
+        dataset_id=dataset_id,
+        dataset_version_id=dataset_version_id,
+        input_hash=dataset_id,
+    )
+
+
+def _run_smoke_check(manager: PluginManager, spec: Any, settings: dict[str, Any]) -> None:
+    with tempfile.TemporaryDirectory(prefix="stat_harness_validate_smoke_") as tmp:
+        plugin = manager.load_plugin(spec)
+        if not hasattr(plugin, "run"):
+            raise TypeError("Missing run() method")
+        ctx = _build_smoke_context(Path(tmp), settings)
+        result = plugin.run(ctx)
+        payload = manager.result_payload(result)
+        manager.validate_output(spec, payload)
+        if str(payload.get("status") or "").strip().lower() == "error":
+            err = payload.get("error") or {}
+            message = str(err.get("message") or payload.get("summary") or "Smoke run failed")
+            raise RuntimeError(message)
+
+
+def cmd_plugins_validate(
+    plugin_id: str | None = None,
+    *,
+    isolated: bool = False,
+    smoke: bool = False,
+    caps: bool = False,
+    json_path: str | None = None,
+) -> None:
     manager = PluginManager(Path("plugins"))
     specs = manager.discover()
     failures: list[str] = []
+    report_rows: list[dict[str, Any]] = []
 
     if manager.discovery_errors:
         for err in manager.discovery_errors:
-            failures.append(f"{err.plugin_id}: discovery error: {err.message}")
+            line = f"{err.plugin_id}: discovery error: {err.message}"
+            failures.append(line)
+            report_rows.append(
+                {
+                    "plugin_id": err.plugin_id,
+                    "status": "fail",
+                    "checks": ["manifest"],
+                    "error": line,
+                    "capabilities": [],
+                    "sandbox": {},
+                }
+            )
 
     selected = specs
     if plugin_id:
@@ -73,21 +236,65 @@ def cmd_plugins_validate(plugin_id: str | None = None) -> None:
             raise SystemExit(f"Unknown plugin id: {plugin_id}")
 
     for spec in selected:
+        checks: list[str] = []
+        row: dict[str, Any] = {
+            "plugin_id": spec.plugin_id,
+            "status": "pass",
+            "checks": checks,
+        }
+        if caps:
+            row["capabilities"] = sorted(str(x) for x in (spec.capabilities or []))
+            row["sandbox"] = dict(spec.sandbox or {})
         try:
-            # Load and validate schemas (discovery already checks presence).
-            manager.validate_config(spec, dict(spec.settings.get("defaults", {})))
-            # Import entrypoint and instantiate plugin.
-            plugin = manager.load_plugin(spec)
-            if not hasattr(plugin, "run"):
-                raise TypeError("Missing run() method")
-            health = manager.health(spec, plugin=plugin)
-            if str(health.get("status") or "ok").lower() not in {"ok", "healthy"}:
+            raw_defaults = dict(spec.settings.get("defaults", {}))
+            resolved = manager.resolve_config(spec, raw_defaults)
+            checks.append("config_schema")
+            if isolated:
+                health = _normalize_health_payload(_run_isolated_health(spec))
+                checks.append("import_isolated")
+            else:
+                plugin = manager.load_plugin(spec)
+                checks.append("import")
+                if not hasattr(plugin, "run"):
+                    raise TypeError("Missing run() method")
+                health = _normalize_health_payload(manager.health(spec, plugin=plugin))
+            checks.append("health")
+            if not _is_health_ok(health):
                 raise RuntimeError(f"Unhealthy plugin: {health}")
+            if smoke:
+                _run_smoke_check(manager, spec, resolved)
+                checks.append("smoke")
         except Exception as exc:
-            failures.append(f"{spec.plugin_id}: {type(exc).__name__}: {exc}")
+            line = f"{spec.plugin_id}: {type(exc).__name__}: {exc}"
+            failures.append(line)
+            row["status"] = "fail"
+            row["error"] = line
+        report_rows.append(row)
 
     for line in sorted(failures):
         print(line)
+    if json_path:
+        sorted_rows = sorted(
+            report_rows,
+            key=lambda item: str(item.get("plugin_id") or ""),
+        )
+        payload = {
+            "validated_at": now_iso(),
+            "summary": {
+                "total": len(sorted_rows),
+                "passed": sum(
+                    1 for item in sorted_rows if str(item.get("status")) == "pass"
+                ),
+                "failed": sum(
+                    1 for item in sorted_rows if str(item.get("status")) != "pass"
+                ),
+            },
+            "plugins": sorted_rows,
+        }
+        out = Path(json_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+        print(str(out))
     if failures:
         raise SystemExit(1)
     print("OK")
@@ -589,6 +796,10 @@ def main() -> None:
     plugins_sub = plugins_parser.add_subparsers(dest="plugins_command", required=True)
     plugins_validate_parser = plugins_sub.add_parser("validate")
     plugins_validate_parser.add_argument("--plugin-id")
+    plugins_validate_parser.add_argument("--isolated", action="store_true")
+    plugins_validate_parser.add_argument("--smoke", action="store_true")
+    plugins_validate_parser.add_argument("--caps", action="store_true")
+    plugins_validate_parser.add_argument("--json")
 
     integrity_parser = sub.add_parser("integrity-check")
     integrity_parser.add_argument("--full", action="store_true")
@@ -681,7 +892,13 @@ def main() -> None:
         cmd_list_plugins()
     elif args.command == "plugins":
         if args.plugins_command == "validate":
-            cmd_plugins_validate(args.plugin_id)
+            cmd_plugins_validate(
+                args.plugin_id,
+                isolated=bool(args.isolated),
+                smoke=bool(args.smoke),
+                caps=bool(args.caps),
+                json_path=args.json,
+            )
         else:
             raise SystemExit(2)
     elif args.command == "integrity-check":

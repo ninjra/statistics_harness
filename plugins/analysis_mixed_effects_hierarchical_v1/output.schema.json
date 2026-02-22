@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "plugins_validate_runbook_output",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "na",
+        "error",
+        "skipped"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array"
+    },
+    "artifacts": {
+      "type": "array"
+    },
+    "budget": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "metrics",
+    "findings",
+    "artifacts",
+    "references",
+    "debug"
+  ]
+}
