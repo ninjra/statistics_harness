@@ -64,6 +64,7 @@ EXCLUDED_BINDING_DOC_PATHS = {
     "docs/_codex_repo_manifest.txt",
     "docs/_codex_plugin_catalog.md",
     "docs/codex_statistics_harness_blueprint.md",
+    "docs/plugins-validate-runbook-actionable-insights-plan.md",
 }
 
 EXCLUDED_ROOT_PLAN_DOC_NAMES = {

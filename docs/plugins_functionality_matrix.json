@@ -3,6 +3,7 @@
     "analysis": [
       "analysis_aft_survival_lognormal_v1",
       "analysis_attribution",
+      "analysis_bart_uplift_surrogate_v1",
       "analysis_bayesian_online_changepoint_studentt_v1",
       "analysis_benfords_law_anomaly_v1",
       "analysis_beta_binomial_overdispersion_v1",
@@ -54,6 +55,7 @@
       "analysis_drift_adwin",
       "analysis_dynamic_close_detection",
       "analysis_effect_size_report",
+      "analysis_elastic_net_regularized_glm_v1",
       "analysis_energy_distance_two_sample_v1",
       "analysis_event_count_bocpd_poisson",
       "analysis_evt_gumbel_tail",
@@ -64,7 +66,9 @@
       "analysis_fused_lasso_trend_filtering_v1",
       "analysis_gam_spline_regression_v1",
       "analysis_garch_volatility_shift_v1",
+      "analysis_gaussian_process_regression_v1",
       "analysis_geometric_median_multivariate_location_v1",
+      "analysis_granger_causality_v1",
       "analysis_graph_assortativity_shift_v1",
       "analysis_graph_motif_triads_shift_v1",
       "analysis_graph_pagerank_hotspots_v1",
@@ -92,6 +96,9 @@
       "analysis_markov_transition_shift",
       "analysis_matrix_profile_motifs_discords",
       "analysis_message_entropy_drift",
+      "analysis_mice_imputation_chained_equations_v1",
+      "analysis_minimum_covariance_determinant_v1",
+      "analysis_mixed_effects_hierarchical_v1",
       "analysis_monte_carlo_surface_uncertainty",
       "analysis_multicollinearity_vif_screen_v1",
       "analysis_multiple_testing_fdr",
@@ -102,6 +109,7 @@
       "analysis_multivariate_t2_control",
       "analysis_mutual_information_screen",
       "analysis_negative_binomial_overdispersion_v1",
+      "analysis_nonnegative_matrix_factorization_v1",
       "analysis_one_class_svm",
       "analysis_outlier_influence_cooks_distance_v1",
       "analysis_partial_correlation_network_shift_v1",
@@ -166,11 +174,13 @@
       "analysis_topographic_similarity_angle_projection",
       "analysis_topographic_tanova_permutation",
       "analysis_transfer_entropy_directional",
+      "analysis_tsne_embedding_v1",
       "analysis_ttests_auto",
       "analysis_two_sample_categorical_chi2",
       "analysis_two_sample_numeric_ad",
       "analysis_two_sample_numeric_ks",
       "analysis_two_sample_numeric_mann_whitney",
+      "analysis_umap_embedding_v1",
       "analysis_upload_linkage",
       "analysis_user_host_savings",
       "analysis_variant_differential",
@@ -273,6 +283,7 @@
   "global_toposort": [
     "analysis_aft_survival_lognormal_v1",
     "analysis_attribution",
+    "analysis_bart_uplift_surrogate_v1",
     "analysis_bayesian_online_changepoint_studentt_v1",
     "analysis_benfords_law_anomaly_v1",
     "analysis_beta_binomial_overdispersion_v1",
@@ -324,6 +335,7 @@
     "analysis_drift_adwin",
     "analysis_dynamic_close_detection",
     "analysis_effect_size_report",
+    "analysis_elastic_net_regularized_glm_v1",
     "analysis_energy_distance_two_sample_v1",
     "analysis_event_count_bocpd_poisson",
     "analysis_evt_gumbel_tail",
@@ -334,7 +346,9 @@
     "analysis_fused_lasso_trend_filtering_v1",
     "analysis_gam_spline_regression_v1",
     "analysis_garch_volatility_shift_v1",
+    "analysis_gaussian_process_regression_v1",
     "analysis_geometric_median_multivariate_location_v1",
+    "analysis_granger_causality_v1",
     "analysis_graph_assortativity_shift_v1",
     "analysis_graph_motif_triads_shift_v1",
     "analysis_graph_pagerank_hotspots_v1",
@@ -362,6 +376,9 @@
     "analysis_markov_transition_shift",
     "analysis_matrix_profile_motifs_discords",
     "analysis_message_entropy_drift",
+    "analysis_mice_imputation_chained_equations_v1",
+    "analysis_minimum_covariance_determinant_v1",
+    "analysis_mixed_effects_hierarchical_v1",
     "analysis_monte_carlo_surface_uncertainty",
     "analysis_multicollinearity_vif_screen_v1",
     "analysis_multiple_testing_fdr",
@@ -372,6 +389,7 @@
     "analysis_multivariate_t2_control",
     "analysis_mutual_information_screen",
     "analysis_negative_binomial_overdispersion_v1",
+    "analysis_nonnegative_matrix_factorization_v1",
     "analysis_one_class_svm",
     "analysis_outlier_influence_cooks_distance_v1",
     "analysis_partial_correlation_network_shift_v1",
@@ -436,11 +454,13 @@
     "analysis_topographic_similarity_angle_projection",
     "analysis_topographic_tanova_permutation",
     "analysis_transfer_entropy_directional",
+    "analysis_tsne_embedding_v1",
     "analysis_ttests_auto",
     "analysis_two_sample_categorical_chi2",
     "analysis_two_sample_numeric_ad",
     "analysis_two_sample_numeric_ks",
     "analysis_two_sample_numeric_mann_whitney",
+    "analysis_umap_embedding_v1",
     "analysis_upload_linkage",
     "analysis_user_host_savings",
     "analysis_variant_differential",
@@ -546,6 +566,9 @@
     ],
     "analysis_attribution": [
       "analysis_attribution"
+    ],
+    "analysis_bart_uplift_*": [
+      "analysis_bart_uplift_surrogate_v1"
     ],
     "analysis_bayesian_online_*": [
       "analysis_bayesian_online_changepoint_studentt_v1"
@@ -724,6 +747,9 @@
     "analysis_effect_size_*": [
       "analysis_effect_size_report"
     ],
+    "analysis_elastic_net_*": [
+      "analysis_elastic_net_regularized_glm_v1"
+    ],
     "analysis_empirical_bayes_*": [
       "analysis_empirical_bayes_shrinkage_v1"
     ],
@@ -769,11 +795,17 @@
     "analysis_gaussian_knockoffs_*": [
       "analysis_gaussian_knockoffs"
     ],
+    "analysis_gaussian_process_*": [
+      "analysis_gaussian_process_regression_v1"
+    ],
     "analysis_geometric_median_*": [
       "analysis_geometric_median_multivariate_location_v1"
     ],
     "analysis_ges_score_*": [
       "analysis_ges_score_based_causal_v1"
+    ],
+    "analysis_granger_causality_*": [
+      "analysis_granger_causality_v1"
     ],
     "analysis_graph_assortativity_*": [
       "analysis_graph_assortativity_shift_v1"
@@ -891,6 +923,15 @@
     "analysis_message_entropy_*": [
       "analysis_message_entropy_drift"
     ],
+    "analysis_mice_imputation_*": [
+      "analysis_mice_imputation_chained_equations_v1"
+    ],
+    "analysis_minimum_covariance_*": [
+      "analysis_minimum_covariance_determinant_v1"
+    ],
+    "analysis_mixed_effects_*": [
+      "analysis_mixed_effects_hierarchical_v1"
+    ],
     "analysis_monte_carlo_*": [
       "analysis_monte_carlo_surface_uncertainty"
     ],
@@ -926,6 +967,9 @@
     ],
     "analysis_node2vec_graph_*": [
       "analysis_node2vec_graph_embedding_drift_v1"
+    ],
+    "analysis_nonnegative_matrix_*": [
+      "analysis_nonnegative_matrix_factorization_v1"
     ],
     "analysis_normalizing_flow_*": [
       "analysis_normalizing_flow_density_v1"
@@ -1161,6 +1205,9 @@
     "analysis_transfer_entropy_*": [
       "analysis_transfer_entropy_directional"
     ],
+    "analysis_tsne_embedding_*": [
+      "analysis_tsne_embedding_v1"
+    ],
     "analysis_ttests_auto_*": [
       "analysis_ttests_auto"
     ],
@@ -1169,6 +1216,9 @@
       "analysis_two_sample_numeric_ad",
       "analysis_two_sample_numeric_ks",
       "analysis_two_sample_numeric_mann_whitney"
+    ],
+    "analysis_umap_embedding_*": [
+      "analysis_umap_embedding_v1"
     ],
     "analysis_upload_linkage_*": [
       "analysis_upload_linkage"
@@ -1240,6 +1290,7 @@
     "planner_basic",
     "analysis_aft_survival_lognormal_v1",
     "analysis_attribution",
+    "analysis_bart_uplift_surrogate_v1",
     "analysis_bayesian_online_changepoint_studentt_v1",
     "analysis_benfords_law_anomaly_v1",
     "analysis_beta_binomial_overdispersion_v1",
@@ -1291,6 +1342,7 @@
     "analysis_drift_adwin",
     "analysis_dynamic_close_detection",
     "analysis_effect_size_report",
+    "analysis_elastic_net_regularized_glm_v1",
     "analysis_energy_distance_two_sample_v1",
     "analysis_event_count_bocpd_poisson",
     "analysis_evt_gumbel_tail",
@@ -1301,7 +1353,9 @@
     "analysis_fused_lasso_trend_filtering_v1",
     "analysis_gam_spline_regression_v1",
     "analysis_garch_volatility_shift_v1",
+    "analysis_gaussian_process_regression_v1",
     "analysis_geometric_median_multivariate_location_v1",
+    "analysis_granger_causality_v1",
     "analysis_graph_assortativity_shift_v1",
     "analysis_graph_motif_triads_shift_v1",
     "analysis_graph_pagerank_hotspots_v1",
@@ -1329,6 +1383,9 @@
     "analysis_markov_transition_shift",
     "analysis_matrix_profile_motifs_discords",
     "analysis_message_entropy_drift",
+    "analysis_mice_imputation_chained_equations_v1",
+    "analysis_minimum_covariance_determinant_v1",
+    "analysis_mixed_effects_hierarchical_v1",
     "analysis_monte_carlo_surface_uncertainty",
     "analysis_multicollinearity_vif_screen_v1",
     "analysis_multiple_testing_fdr",
@@ -1339,6 +1396,7 @@
     "analysis_multivariate_t2_control",
     "analysis_mutual_information_screen",
     "analysis_negative_binomial_overdispersion_v1",
+    "analysis_nonnegative_matrix_factorization_v1",
     "analysis_one_class_svm",
     "analysis_outlier_influence_cooks_distance_v1",
     "analysis_partial_correlation_network_shift_v1",
@@ -1403,11 +1461,13 @@
     "analysis_topographic_similarity_angle_projection",
     "analysis_topographic_tanova_permutation",
     "analysis_transfer_entropy_directional",
+    "analysis_tsne_embedding_v1",
     "analysis_ttests_auto",
     "analysis_two_sample_categorical_chi2",
     "analysis_two_sample_numeric_ad",
     "analysis_two_sample_numeric_ks",
     "analysis_two_sample_numeric_mann_whitney",
+    "analysis_umap_embedding_v1",
     "analysis_upload_linkage",
     "analysis_user_host_savings",
     "analysis_variant_differential",
@@ -1486,7 +1546,7 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 255,
+  "plugin_count": 265,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -1588,6 +1648,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Attribution Analysis",
       "plugin_id": "analysis_attribution",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_bart_uplift_surrogate_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_bart_uplift_surrogate_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_bart_uplift_surrogate_v1",
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2497,6 +2569,18 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_elastic_net_regularized_glm_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_elastic_net_regularized_glm_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_elastic_net_regularized_glm_v1",
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_empirical_bayes_shrinkage_v1": {
       "capabilities": [
         "needs_eventlog",
@@ -2696,6 +2780,18 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_gaussian_process_regression_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_gaussian_process_regression_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_gaussian_process_regression_v1",
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_geometric_median_multivariate_location_v1": {
       "capabilities": [
         "analysis"
@@ -2720,6 +2816,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "GES-style Score-based Causal Graph",
       "plugin_id": "analysis_ges_score_based_causal_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_granger_causality_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_granger_causality_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_granger_causality_v1",
+      "plugin_id": "analysis_granger_causality_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -3247,6 +3355,42 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_mice_imputation_chained_equations_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_mice_imputation_chained_equations_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_mice_imputation_chained_equations_v1",
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_minimum_covariance_determinant_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_minimum_covariance_determinant_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_minimum_covariance_determinant_v1",
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_mixed_effects_hierarchical_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_mixed_effects_hierarchical_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_mixed_effects_hierarchical_v1",
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_monte_carlo_surface_uncertainty": {
       "capabilities": [
         "topo_tda_addon",
@@ -3398,6 +3542,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Node2Vec-style Graph Embedding Drift",
       "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_nonnegative_matrix_factorization_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_nonnegative_matrix_factorization_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_nonnegative_matrix_factorization_v1",
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -4515,6 +4671,18 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_tsne_embedding_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_tsne_embedding_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_tsne_embedding_v1",
+      "plugin_id": "analysis_tsne_embedding_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_ttests_auto": {
       "capabilities": [
         "needs_numeric"
@@ -4574,6 +4742,18 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Two Sample Numeric Mann Whitney",
       "plugin_id": "analysis_two_sample_numeric_mann_whitney",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_umap_embedding_v1": {
+      "capabilities": [
+        "analysis"
+      ],
+      "depends_on": [],
+      "description": "analysis_umap_embedding_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "analysis_umap_embedding_v1",
+      "plugin_id": "analysis_umap_embedding_v1",
       "type": "analysis",
       "version": "0.1.0"
     },

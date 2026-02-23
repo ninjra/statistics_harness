@@ -1084,7 +1084,7 @@ Add `--json <path>` to write a deterministic report like:
   "summary": {"total": 255, "passed": 255, "failed": 0},
   "plugins": [
     {"plugin_id": "profile_basic", "status": "pass", "checks": ["manifest", "config_schema", "import", "health"], "capabilities": [], "sandbox": {"no_network": true}},
-    {"plugin_id": "analysis_xyz", "status": "fail", "error": "ImportError: ..."}
+    {"plugin_id": "analysis_actionable_ops_levers_v1", "status": "fail", "error": "ImportError: ..."}
   ]
 }
 ```

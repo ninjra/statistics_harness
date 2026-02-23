@@ -2,7 +2,7 @@
 
 Consolidated plugin purpose and contract index generated from existing matrices/manifests.
 
-- Total plugins: 255
+- Total plugins: 265
 
 | plugin_id | type | name | depends_on | access_contracts | sql_intent | uses_sql_effective |
 |---|---|---|---:|---|---|---:|
@@ -13,6 +13,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_anova_auto` | analysis | Anova Auto | 1 | dataset_loader | recommended | 1 |
 | `analysis_association_rules_apriori_v1` | analysis | Association Rules (Apriori) | 3 | orchestration_only | not_applicable | 0 |
 | `analysis_attribution` | analysis | Attribution Analysis | 0 | dataset_loader | recommended | 1 |
+| `analysis_bart_uplift_surrogate_v1` | analysis | analysis_bart_uplift_surrogate_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_bayesian_online_changepoint_studentt_v1` | analysis | analysis_bayesian_online_changepoint_studentt_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_bayesian_point_displacement` | analysis | Bayesian Point Displacement | 1 | dataset_loader | recommended | 1 |
 | `analysis_benfords_law_anomaly_v1` | analysis | analysis_benfords_law_anomaly_v1 | 0 | dataset_loader | recommended | 1 |
@@ -80,6 +81,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_dynamic_close_detection` | analysis | Dynamic Close Window Detection | 0 | dataset_loader | recommended | 1 |
 | `analysis_ebm_action_verifier_v1` | analysis | EBM Action Verifier (Kona Layer) | 3 | dataset_loader | recommended | 1 |
 | `analysis_effect_size_report` | analysis | Effect Size Report | 1 | dataset_loader | recommended | 1 |
+| `analysis_elastic_net_regularized_glm_v1` | analysis | analysis_elastic_net_regularized_glm_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_empirical_bayes_shrinkage_v1` | analysis | Empirical Bayes Shrinkage Rankings | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_energy_distance_two_sample_v1` | analysis | analysis_energy_distance_two_sample_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_event_count_bocpd_poisson` | analysis | Event Count Bocpd Poisson | 1 | dataset_loader | recommended | 1 |
@@ -95,8 +97,10 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_garch_volatility_shift_v1` | analysis | analysis_garch_volatility_shift_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_gaussian_copula_shift` | analysis | Gaussian Copula Shift | 1 | dataset_loader | recommended | 1 |
 | `analysis_gaussian_knockoffs` | analysis | Gaussian Knockoffs | 1 | dataset_loader | recommended | 1 |
+| `analysis_gaussian_process_regression_v1` | analysis | analysis_gaussian_process_regression_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_geometric_median_multivariate_location_v1` | analysis | analysis_geometric_median_multivariate_location_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_ges_score_based_causal_v1` | analysis | GES-style Score-based Causal Graph | 2 | orchestration_only | not_applicable | 0 |
+| `analysis_granger_causality_v1` | analysis | analysis_granger_causality_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_graph_assortativity_shift_v1` | analysis | analysis_graph_assortativity_shift_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_graph_min_cut_partition_v1` | analysis | Graph Minimum Cut Partition | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_graph_motif_triads_shift_v1` | analysis | analysis_graph_motif_triads_shift_v1 | 0 | dataset_loader | recommended | 1 |
@@ -137,6 +141,9 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_markov_transition_shift` | analysis | Markov Transition Shift | 1 | dataset_loader | recommended | 1 |
 | `analysis_matrix_profile_motifs_discords` | analysis | Matrix Profile Motifs Discords | 1 | dataset_loader | recommended | 1 |
 | `analysis_message_entropy_drift` | analysis | Message Entropy Drift | 1 | dataset_loader | recommended | 1 |
+| `analysis_mice_imputation_chained_equations_v1` | analysis | analysis_mice_imputation_chained_equations_v1 | 0 | artifact_only | not_applicable | 0 |
+| `analysis_minimum_covariance_determinant_v1` | analysis | analysis_minimum_covariance_determinant_v1 | 0 | artifact_only | not_applicable | 0 |
+| `analysis_mixed_effects_hierarchical_v1` | analysis | analysis_mixed_effects_hierarchical_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_monte_carlo_surface_uncertainty` | analysis | Monte Carlo Surface Uncertainty | 1 | dataset_loader | recommended | 1 |
 | `analysis_multicollinearity_vif_screen_v1` | analysis | analysis_multicollinearity_vif_screen_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_multiple_testing_fdr` | analysis | Multiple Testing Fdr | 1 | dataset_loader | recommended | 1 |
@@ -149,6 +156,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_negative_binomial_overdispersion_v1` | analysis | analysis_negative_binomial_overdispersion_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_neural_additive_model_nam_v1` | analysis | Neural Additive Model Approximation | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_node2vec_graph_embedding_drift_v1` | analysis | Node2Vec-style Graph Embedding Drift | 2 | orchestration_only | not_applicable | 0 |
+| `analysis_nonnegative_matrix_factorization_v1` | analysis | analysis_nonnegative_matrix_factorization_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_normalizing_flow_density_v1` | analysis | Normalizing Flow Density Approximation | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_notears_linear` | analysis | NOTEARS Linear | 1 | dataset_loader | recommended | 1 |
 | `analysis_one_class_svm` | analysis | One Class Svm | 1 | dataset_loader | recommended | 1 |
@@ -231,11 +239,13 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_topographic_tanova_permutation` | analysis | Topographic Tanova Permutation | 1 | dataset_loader | recommended | 1 |
 | `analysis_traceability_manifest_v2` | analysis | Traceability Manifest v2 | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_transfer_entropy_directional` | analysis | Transfer Entropy Directional | 1 | dataset_loader | recommended | 1 |
+| `analysis_tsne_embedding_v1` | analysis | analysis_tsne_embedding_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_ttests_auto` | analysis | Ttests Auto | 1 | dataset_loader | recommended | 1 |
 | `analysis_two_sample_categorical_chi2` | analysis | Two Sample Categorical Chi2 | 1 | dataset_loader | recommended | 1 |
 | `analysis_two_sample_numeric_ad` | analysis | Two Sample Numeric Ad | 1 | dataset_loader | recommended | 1 |
 | `analysis_two_sample_numeric_ks` | analysis | Two Sample Numeric Ks | 1 | dataset_loader | recommended | 1 |
 | `analysis_two_sample_numeric_mann_whitney` | analysis | Two Sample Numeric Mann Whitney | 1 | dataset_loader | recommended | 1 |
+| `analysis_umap_embedding_v1` | analysis | analysis_umap_embedding_v1 | 0 | artifact_only | not_applicable | 0 |
 | `analysis_upload_linkage` | analysis | Upload to Revenue Linkage Analysis | 0 | dataset_loader | recommended | 1 |
 | `analysis_user_host_savings` | analysis | User/Host Savings | 0 | artifact_only | not_applicable | 0 |
 | `analysis_variant_differential` | analysis | Variant Differential | 1 | dataset_loader | recommended | 1 |

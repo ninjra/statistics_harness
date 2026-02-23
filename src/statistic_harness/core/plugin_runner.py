@@ -734,12 +734,16 @@ def run_plugin_subprocess(
         str(request_path),
         str(response_path),
     ]
+    # Some tests invoke _run_request in-process, which installs shell guards
+    # on subprocess APIs. Always unwrap here so parent-pipeline subprocess
+    # orchestration cannot be contaminated by a prior plugin guard install.
+    popen_cls = getattr(subprocess.Popen, "__stat_harness_orig__", subprocess.Popen)
     popen: subprocess.Popen[str] | None = None
     stdout_text = ""
     stderr_text = ""
     exit_code = -1
     try:
-        popen = subprocess.Popen(
+        popen = popen_cls(
             command,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
