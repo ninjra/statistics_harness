@@ -2,6 +2,10 @@
 
 Local-only, plugin-first statistical analysis harness.
 
+## Start Here
+
+Use `REPO_TOC.md` as the fast index before broad repo scans.
+
 ## Quickstart
 
 WSL/Windows friendly setup (includes dev deps):
