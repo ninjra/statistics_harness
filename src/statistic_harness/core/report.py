@@ -1687,6 +1687,10 @@ def _build_known_issue_recommendations(
             "summary": "Known issues attached but no expected findings provided.",
             "items": [],
         }
+    excluded_processes = _explicit_excluded_processes(report)
+    excluded_match = (
+        compile_patterns(sorted(excluded_processes)) if excluded_processes else None
+    )
 
     items: list[dict[str, Any]] = []
     synthetic_match_count = 0
@@ -1778,7 +1782,9 @@ def _build_known_issue_recommendations(
         )
     deduped = _dedupe_recommendations(items)
     baselines = _duration_baselines(report, storage, run_dir=run_dir)
-    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
+    qemail_model: dict[str, float] | None = None
+    if not (excluded_match and excluded_match("qemail")):
+        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -4858,7 +4864,9 @@ def _build_discovery_recommendations(
 
     deduped = _dedupe_recommendations_text(kept)
     baselines = _duration_baselines(report, storage, run_dir=run_dir)
-    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
+    qemail_model: dict[str, float] | None = None
+    if not (excluded_match and excluded_match("qemail")):
+        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped

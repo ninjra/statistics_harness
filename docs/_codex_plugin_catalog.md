@@ -1,6 +1,6 @@
 # Codex Plugin Catalog
 
-- Total plugins: 265
+- Total plugins: 274
 
 ## analysis
 
@@ -22,6 +22,7 @@
 | `analysis_bocpd_gaussian` | BOCPD Gaussian | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_bootstrap_ci_effect_sizes_v1` | analysis_bootstrap_ci_effect_sizes_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_bsts_intervention_counterfactual_v1` | analysis_bsts_intervention_counterfactual_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_bundled_donations_v1` | Bundled Donations v1 | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_burst_detection_kleinberg` | Burst Detection Kleinberg | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_burst_modeling_hawkes_v1` | Burst Modeling (Hawkes-Style) | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_busy_period_segmentation_v2` | Busy Period Segmentation v2 | `plugin.py:Plugin` | 0 | 2 |
@@ -53,6 +54,7 @@
 | `analysis_conformance_checking` | Conformance Checking | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_constrained_clustering_cop_kmeans_v1` | Constrained Clustering (COP-KMeans) | `plugin.py:Plugin` | 3 | 2 |
 | `analysis_constraints_violation_detector_v1` | analysis_constraints_violation_detector_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_contribution_limit_flags_v1` | Contribution Limit Flags v1 | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_control_chart_cusum` | Control Chart Cusum | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_control_chart_ewma` | Control Chart Ewma | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_control_chart_individuals` | Control Chart Individuals | `plugin.py:Plugin` | 1 | 0 |
@@ -191,6 +193,7 @@
 | `analysis_randomization_test_median_shift_v1` | analysis_randomization_test_median_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_recommendation_dedupe_v2` | Recommendation Dedupe v2 | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_recurrence_quantification_rqa_v1` | analysis_recurrence_quantification_rqa_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_red_flags_refined_v1` | Red Flags Refined v1 | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_regression_auto` | Regression Auto | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_retry_rate_hotspots_v1` | Retry Rate Hotspots | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_robust_covariance_outliers` | Robust Covariance Outliers | `plugin.py:Plugin` | 1 | 0 |
@@ -249,6 +252,8 @@
 | `analysis_upload_linkage` | Upload to Revenue Linkage Analysis | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_user_host_savings` | User/Host Savings | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_variant_differential` | Variant Differential | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_vendor_influence_breadth_v1` | Vendor Influence Breadth v1 | `plugin.py:Plugin` | 1 | 1 |
+| `analysis_vendor_politician_timing_permutation_v1` | Vendor Politician Timing Permutation v1 | `plugin.py:Plugin` | 1 | 3 |
 | `analysis_waterfall_summary_v2` | Waterfall Summary v2 | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_wild_binary_segmentation_v1` | analysis_wild_binary_segmentation_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_zero_inflated_count_model_v1` | analysis_zero_inflated_count_model_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -261,6 +266,7 @@
 
 | plugin_id | name | entrypoint | depends_on | capabilities |
 |---|---|---|---:|---:|
+| `ingest_sql_dump_v1` | SQL Dump Ingest v1 | `plugin.py:Plugin` | 0 | 2 |
 | `ingest_tabular` | Ingest Tabular | `plugin.py:Plugin` | 0 | 0 |
 
 ## llm
@@ -289,6 +295,7 @@
 |---|---|---|---:|---:|
 | `report_bundle` | Report Bundle | `plugin.py:Plugin` | 0 | 0 |
 | `report_decision_bundle_v2` | Decision Report Bundle v2 | `plugin.py:Plugin` | 6 | 1 |
+| `report_evidence_index_v1` | Evidence Index v1 | `plugin.py:Plugin` | 1 | 1 |
 | `report_payout_report_v1` | Payout Report (Batch/Multi-Input) | `plugin.py:Plugin` | 1 | 2 |
 | `report_plain_english_v1` | Plain-English Report (v1) | `plugin.py:Plugin` | 1 | 0 |
 | `report_slide_kit_emitter_v2` | Slide Kit Emitter v2 | `plugin.py:Plugin` | 3 | 1 |
@@ -297,6 +304,8 @@
 
 | plugin_id | name | entrypoint | depends_on | capabilities |
 |---|---|---|---:|---:|
+| `transform_cross_dataset_link_graph_v1` | Cross Dataset Link Graph v1 | `plugin.py:Plugin` | 1 | 2 |
+| `transform_entity_resolution_map_v1` | Entity Resolution Map v1 | `plugin.py:Plugin` | 0 | 2 |
 | `transform_normalize_mixed` | Normalize Mixed Types | `plugin.py:Plugin` | 0 | 0 |
 | `transform_sql_intents_pack_v1` | SQL Intents Pack (v1) | `plugin.py:Plugin` | 0 | 2 |
 | `transform_sqlpack_materialize_v1` | SQL Pack Materializer (v1) | `plugin.py:Plugin` | 1 | 2 |

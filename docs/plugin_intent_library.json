@@ -1,23 +1,23 @@
 {
   "counts": {
     "by_sql_intent": {
-      "not_applicable": 74,
+      "not_applicable": 83,
       "optional": 1,
       "recommended": 187,
       "required": 3
     },
     "by_type": {
-      "analysis": 250,
-      "ingest": 1,
+      "analysis": 255,
+      "ingest": 2,
       "llm": 2,
       "planner": 1,
       "profile": 2,
-      "report": 5,
-      "transform": 4
+      "report": 6,
+      "transform": 6
     }
   },
   "generated_by": "scripts/generate_plugin_intent_library.py",
-  "plugin_count": 265,
+  "plugin_count": 274,
   "plugins": [
     {
       "access_contracts": [
@@ -367,6 +367,29 @@
       "sql_intent": "recommended",
       "sql_intent_source": "default",
       "uses_sql_effective": true
+    },
+    {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset",
+        "needs_eventlog"
+      ],
+      "config_schema_path": "plugins/analysis_bundled_donations_v1/config.schema.json",
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Bundled Donations v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_bundled_donations_v1/plugin.yaml",
+      "name": "Bundled Donations v1",
+      "output_schema_path": "plugins/analysis_bundled_donations_v1/output.schema.json",
+      "plugin_id": "analysis_bundled_donations_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
     },
     {
       "access_contracts": [
@@ -1033,6 +1056,29 @@
       "sql_intent": "recommended",
       "sql_intent_source": "default",
       "uses_sql_effective": true
+    },
+    {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset",
+        "needs_eventlog"
+      ],
+      "config_schema_path": "plugins/analysis_contribution_limit_flags_v1/config.schema.json",
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Contribution Limit Flags v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_contribution_limit_flags_v1/plugin.yaml",
+      "name": "Contribution Limit Flags v1",
+      "output_schema_path": "plugins/analysis_contribution_limit_flags_v1/output.schema.json",
+      "plugin_id": "analysis_contribution_limit_flags_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
     },
     {
       "access_contracts": [
@@ -3958,6 +4004,30 @@
     },
     {
       "access_contracts": [
+        "orchestration_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset"
+      ],
+      "config_schema_path": "plugins/analysis_red_flags_refined_v1/config.schema.json",
+      "depends_on": [
+        "analysis_bundled_donations_v1",
+        "analysis_contribution_limit_flags_v1",
+        "analysis_vendor_politician_timing_permutation_v1"
+      ],
+      "description": "Red Flags Refined v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_red_flags_refined_v1/plugin.yaml",
+      "name": "Red Flags Refined v1",
+      "output_schema_path": "plugins/analysis_red_flags_refined_v1/output.schema.json",
+      "plugin_id": "analysis_red_flags_refined_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "capabilities": [
@@ -5214,6 +5284,52 @@
         "orchestration_only"
       ],
       "capabilities": [
+        "needs_cross_dataset"
+      ],
+      "config_schema_path": "plugins/analysis_vendor_influence_breadth_v1/config.schema.json",
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Vendor Influence Breadth v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_vendor_influence_breadth_v1/plugin.yaml",
+      "name": "Vendor Influence Breadth v1",
+      "output_schema_path": "plugins/analysis_vendor_influence_breadth_v1/output.schema.json",
+      "plugin_id": "analysis_vendor_influence_breadth_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset",
+        "needs_eventlog",
+        "needs_timestamp"
+      ],
+      "config_schema_path": "plugins/analysis_vendor_politician_timing_permutation_v1/config.schema.json",
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Vendor Politician Timing Permutation v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_vendor_politician_timing_permutation_v1/plugin.yaml",
+      "name": "Vendor Politician Timing Permutation v1",
+      "output_schema_path": "plugins/analysis_vendor_politician_timing_permutation_v1/output.schema.json",
+      "plugin_id": "analysis_vendor_politician_timing_permutation_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "orchestration_only"
+      ],
+      "capabilities": [
         "needs_artifacts"
       ],
       "config_schema_path": "plugins/analysis_waterfall_summary_v2/config.schema.json",
@@ -5309,6 +5425,27 @@
       "output_schema_path": "plugins/changepoint_detection_v1/output.schema.json",
       "plugin_id": "changepoint_detection_v1",
       "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "needs_file",
+        "needs_sql_dump"
+      ],
+      "config_schema_path": "plugins/ingest_sql_dump_v1/config.schema.json",
+      "depends_on": [],
+      "description": "SQL Dump Ingest v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/ingest_sql_dump_v1/plugin.yaml",
+      "name": "SQL Dump Ingest v1",
+      "output_schema_path": "plugins/ingest_sql_dump_v1/output.schema.json",
+      "plugin_id": "ingest_sql_dump_v1",
+      "plugin_type": "ingest",
       "sql_intent": "not_applicable",
       "sql_intent_source": "default",
       "uses_sql_effective": false
@@ -5522,6 +5659,28 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "needs_reporting"
+      ],
+      "config_schema_path": "plugins/report_evidence_index_v1/config.schema.json",
+      "depends_on": [
+        "analysis_red_flags_refined_v1"
+      ],
+      "description": "Evidence Index v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/report_evidence_index_v1/plugin.yaml",
+      "name": "Evidence Index v1",
+      "output_schema_path": "plugins/report_evidence_index_v1/output.schema.json",
+      "plugin_id": "report_evidence_index_v1",
+      "plugin_type": "report",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "capabilities": [
@@ -5585,6 +5744,50 @@
       "plugin_type": "report",
       "sql_intent": "not_applicable",
       "sql_intent_source": "override",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset",
+        "needs_eventlog"
+      ],
+      "config_schema_path": "plugins/transform_cross_dataset_link_graph_v1/config.schema.json",
+      "depends_on": [
+        "transform_entity_resolution_map_v1"
+      ],
+      "description": "Cross Dataset Link Graph v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/transform_cross_dataset_link_graph_v1/plugin.yaml",
+      "name": "Cross Dataset Link Graph v1",
+      "output_schema_path": "plugins/transform_cross_dataset_link_graph_v1/output.schema.json",
+      "plugin_id": "transform_cross_dataset_link_graph_v1",
+      "plugin_type": "transform",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "needs_cross_dataset",
+        "needs_eventlog"
+      ],
+      "config_schema_path": "plugins/transform_entity_resolution_map_v1/config.schema.json",
+      "depends_on": [],
+      "description": "Entity Resolution Map v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/transform_entity_resolution_map_v1/plugin.yaml",
+      "name": "Entity Resolution Map v1",
+      "output_schema_path": "plugins/transform_entity_resolution_map_v1/output.schema.json",
+      "plugin_id": "transform_entity_resolution_map_v1",
+      "plugin_type": "transform",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
       "uses_sql_effective": false
     },
     {

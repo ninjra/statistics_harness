@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "batch_size": {
+      "default": 100000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "datasets": {
+      "default": {},
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "edges": {
+      "default": [],
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "fuzzy_threshold": {
+      "default": 82,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "include_row_payload_excerpt": {
+      "default": false,
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "min_overlap_tokens": {
+      "default": 2,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "min_token_len": {
+      "default": 4,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "token_overlap_min_ratio": {
+      "default": 0.6,
+      "type": [
+        "number",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

@@ -69,6 +69,71 @@ def test_discovery_filter_exclusions_and_instrumentation_limit(monkeypatch) -> N
         del os.environ["STAT_HARNESS_EXCLUDED_PROCESSES"]
 
 
+def test_discovery_skips_qemail_model_when_qemail_is_excluded(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_EXCLUDED_PROCESSES", "qemail")
+    report = {
+        "plugins": {
+            "analysis_actionable_ops_levers_v1": {
+                "findings": [
+                    {
+                        "kind": "actionable_ops_lever",
+                        "process_norm": "rpt_por002",
+                        "title": "Batch payout input",
+                        "recommendation": "Convert process_id `rpt_por002` to batch input.",
+                        "action_type": "batch_input",
+                        "expected_delta_seconds": 7200.0,
+                        "confidence": 0.9,
+                        "measurement_type": "modeled",
+                    }
+                ]
+            }
+        },
+    }
+    calls = {"count": 0}
+
+    def _raise_if_called(*_args, **_kwargs):
+        calls["count"] += 1
+        raise AssertionError("qemail model should be skipped when qemail is excluded")
+
+    monkeypatch.setattr(report_module, "_process_removal_model", _raise_if_called)
+    payload = _build_recommendations(report)
+    assert payload["status"] == "ok"
+    assert payload["items"]
+    assert calls["count"] == 0
+
+
+def test_known_lane_skips_qemail_model_when_qemail_is_excluded(monkeypatch) -> None:
+    monkeypatch.setenv("STAT_HARNESS_EXCLUDED_PROCESSES", "qemail")
+    report = {
+        "known_issues": {
+            "expected_findings": [
+                {
+                    "title": "Known qemail issue landmark",
+                    "plugin_id": "analysis_close_cycle_contention",
+                    "kind": "close_cycle_contention",
+                    "where": {"process": "qemail"},
+                    "min_count": 1,
+                    "max_count": 1,
+                }
+            ]
+        },
+        "plugins": {
+            "analysis_close_cycle_contention": {"findings": []},
+        },
+    }
+    calls = {"count": 0}
+
+    def _raise_if_called(*_args, **_kwargs):
+        calls["count"] += 1
+        raise AssertionError("qemail model should be skipped when qemail is excluded")
+
+    monkeypatch.setattr(report_module, "_process_removal_model", _raise_if_called)
+    payload = _build_recommendations(report)
+    assert payload["status"] == "ok"
+    assert isinstance(payload.get("known"), dict)
+    assert calls["count"] == 0
+
+
 def test_discovery_recommendations_require_positive_modeled_hours() -> None:
     report = {
         "plugins": {

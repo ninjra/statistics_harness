@@ -149,7 +149,14 @@ def _install_network_guard(mode: str | None = None) -> None:
 
     class GuardedSocket(base_socket):
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
-            if resolved_mode == "off":
+            family = kwargs.get("family")
+            if family is None and args:
+                family = args[0]
+            if family is None:
+                family = socket.AF_INET
+            # Keep local IPC working (asyncio uses AF_UNIX socketpair internally),
+            # but block real network families when mode is "off".
+            if resolved_mode == "off" and family in {socket.AF_INET, socket.AF_INET6}:
                 blocked(*args, **kwargs)
             super().__init__(*args, **kwargs)
 

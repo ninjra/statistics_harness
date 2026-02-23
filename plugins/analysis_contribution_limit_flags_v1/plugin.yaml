@@ -1,0 +1,31 @@
+id: analysis_contribution_limit_flags_v1
+name: Contribution Limit Flags v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- transform_cross_dataset_link_graph_v1
+settings:
+  description: Contribution Limit Flags v1
+  defaults:
+    contributions_dataset_version_id: null
+    donor_id_fields:
+    - donor_last
+    - donor_first
+    - donor_address
+    amount_field: null
+    date_field: null
+    annual_limit: 1000.0
+    min_excess: 0.0
+    batch_size: 100000
+capabilities:
+- needs_eventlog
+- needs_cross_dataset
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

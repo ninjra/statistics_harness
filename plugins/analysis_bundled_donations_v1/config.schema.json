@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "amount": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "batch_size": {
+      "default": 100000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "candidate_id": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contributions_dataset_version_id": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "donation_date": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "donor_name": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "employer": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "min_donors": {
+      "default": 3,
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

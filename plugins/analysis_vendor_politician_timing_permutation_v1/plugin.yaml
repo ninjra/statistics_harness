@@ -1,0 +1,36 @@
+id: analysis_vendor_politician_timing_permutation_v1
+name: Vendor Politician Timing Permutation v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- transform_cross_dataset_link_graph_v1
+settings:
+  description: Vendor Politician Timing Permutation v1
+  defaults:
+    contracts_dataset_version_id: null
+    contributions_dataset_version_id: null
+    vendor_field: null
+    award_date_field: null
+    candidate_id_field: null
+    donation_date_field: null
+    amount_field: null
+    cross_links_path: null
+    min_donations: 3
+    n_permutations: 2000
+    max_permutations: 5000
+    rng_seed: 0
+    top_k: 200
+    batch_size: 100000
+capabilities:
+- needs_eventlog
+- needs_cross_dataset
+- needs_timestamp
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

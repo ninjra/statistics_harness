@@ -7152,6 +7152,7 @@ CHANGELOG.md
 LICENSE
 Makefile
 README.md
+REPO_TOC.md
 codex/PROJECT_SPEC.md
 codex_kona_route_updates.md
 config/actionability_thresholds.yaml
@@ -7238,6 +7239,7 @@ docs/kona-current-to-ideal-pathfinding-actionability-plan.md
 docs/kona-route-updates-plan.md
 docs/kona_energy_ideaspace_architecture.md
 docs/non-actionable-reasons-resolution-plan.md
+docs/openplanter-cross-dataset-plugins-plan.md
 docs/operator_playbook_autonomous_insights.md
 docs/optimal_4pillars_execution_path.md
 docs/perf_hotspots.md
@@ -7270,6 +7272,8 @@ docs/references.md
 docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.csv
 docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.json
 docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.stdout.json
+docs/release_evidence/actionability_audit_baseline_20260223d.csv
+docs/release_evidence/actionability_audit_baseline_20260223d.json
 docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv
 docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json
 docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json
@@ -7282,6 +7286,7 @@ docs/release_evidence/actionability_thresholds.md
 docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json
 docs/release_evidence/baseline_before_after_leftfield_diff.json
 docs/release_evidence/baseline_before_vs_fullset_after.json
+docs/release_evidence/compare_actionability_baseline_20260223b_to_probe.json
 docs/release_evidence/compare_actionability_baseline_before_vs_now.json
 docs/release_evidence/compare_actionability_baseline_vs_synth6m_route_plan.json
 docs/release_evidence/compare_actionability_baseline_vs_synth6mo.json
@@ -7291,6 +7296,8 @@ docs/release_evidence/compare_kona_route_baseline_vs_synth6m_route_plan.json
 docs/release_evidence/compare_kona_route_baseline_vs_synth6m_route_plan.md
 docs/release_evidence/compare_kona_route_baseline_vs_synth8m_route_plan.json
 docs/release_evidence/compare_kona_route_baseline_vs_synth8m_route_plan.md
+docs/release_evidence/compare_outputs_baseline_20260223b_to_20260223d.json
+docs/release_evidence/compare_outputs_baseline_20260223b_to_probe.json
 docs/release_evidence/compare_outputs_baseline_before_vs_now.json
 docs/release_evidence/compare_outputs_baseline_debug1923_vs_7188.json
 docs/release_evidence/compare_outputs_baseline_debug1923_vs_d539.json
@@ -7302,12 +7309,14 @@ docs/release_evidence/compare_outputs_baseline_vs_synth8mo.json
 docs/release_evidence/diff_18b6_to_d539.json
 docs/release_evidence/diff_eb325f_to_a8fdd_baseline.json
 docs/release_evidence/diff_routeplan_20260222b_to_20260223b.json
+docs/release_evidence/diff_routeplan_20260223b_to_20260223d.json
 docs/release_evidence/golden_release_summary.json
 docs/release_evidence/golden_release_summary.md
 docs/release_evidence/kona_route_requirement_map.json
 docs/release_evidence/kona_route_skill_rationale.md
 docs/release_evidence/non_actionable_reason_before_after.json
 docs/release_evidence/non_actionable_reason_before_after.md
+docs/release_evidence/openplanter_pack_release_gate.json
 docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json
 docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md
 docs/release_evidence/optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json
@@ -7385,6 +7394,7 @@ docs/sql_pack.schema.json
 docs/stat_plugin_config.schema.json
 docs/stat_plugin_references.schema.json
 docs/stat_redteam2-6-26.md
+docs/statistics_harness_openplanter_cross_dataset_plugins.md
 docs/statistics_repo_update_recommendations.md
 docs/streaming_offenders_ranked.json
 docs/streaming_offenders_ranked.md
@@ -7462,6 +7472,10 @@ plugins/analysis_bsts_intervention_counterfactual_v1/config.schema.json
 plugins/analysis_bsts_intervention_counterfactual_v1/output.schema.json
 plugins/analysis_bsts_intervention_counterfactual_v1/plugin.py
 plugins/analysis_bsts_intervention_counterfactual_v1/plugin.yaml
+plugins/analysis_bundled_donations_v1/config.schema.json
+plugins/analysis_bundled_donations_v1/output.schema.json
+plugins/analysis_bundled_donations_v1/plugin.py
+plugins/analysis_bundled_donations_v1/plugin.yaml
 plugins/analysis_burst_detection_kleinberg/__init__.py
 plugins/analysis_burst_detection_kleinberg/config.schema.json
 plugins/analysis_burst_detection_kleinberg/output.schema.json
@@ -7610,6 +7624,10 @@ plugins/analysis_constraints_violation_detector_v1/config.schema.json
 plugins/analysis_constraints_violation_detector_v1/output.schema.json
 plugins/analysis_constraints_violation_detector_v1/plugin.py
 plugins/analysis_constraints_violation_detector_v1/plugin.yaml
+plugins/analysis_contribution_limit_flags_v1/config.schema.json
+plugins/analysis_contribution_limit_flags_v1/output.schema.json
+plugins/analysis_contribution_limit_flags_v1/plugin.py
+plugins/analysis_contribution_limit_flags_v1/plugin.yaml
 plugins/analysis_control_chart_cusum/__init__.py
 plugins/analysis_control_chart_cusum/config.schema.json
 plugins/analysis_control_chart_cusum/output.schema.json
@@ -8226,6 +8244,10 @@ plugins/analysis_recurrence_quantification_rqa_v1/config.schema.json
 plugins/analysis_recurrence_quantification_rqa_v1/output.schema.json
 plugins/analysis_recurrence_quantification_rqa_v1/plugin.py
 plugins/analysis_recurrence_quantification_rqa_v1/plugin.yaml
+plugins/analysis_red_flags_refined_v1/config.schema.json
+plugins/analysis_red_flags_refined_v1/output.schema.json
+plugins/analysis_red_flags_refined_v1/plugin.py
+plugins/analysis_red_flags_refined_v1/plugin.yaml
 plugins/analysis_regression_auto/__init__.py
 plugins/analysis_regression_auto/config.schema.json
 plugins/analysis_regression_auto/output.schema.json
@@ -8497,6 +8519,14 @@ plugins/analysis_variant_differential/config.schema.json
 plugins/analysis_variant_differential/output.schema.json
 plugins/analysis_variant_differential/plugin.py
 plugins/analysis_variant_differential/plugin.yaml
+plugins/analysis_vendor_influence_breadth_v1/config.schema.json
+plugins/analysis_vendor_influence_breadth_v1/output.schema.json
+plugins/analysis_vendor_influence_breadth_v1/plugin.py
+plugins/analysis_vendor_influence_breadth_v1/plugin.yaml
+plugins/analysis_vendor_politician_timing_permutation_v1/config.schema.json
+plugins/analysis_vendor_politician_timing_permutation_v1/output.schema.json
+plugins/analysis_vendor_politician_timing_permutation_v1/plugin.py
+plugins/analysis_vendor_politician_timing_permutation_v1/plugin.yaml
 plugins/analysis_waterfall_summary_v2/__init__.py
 plugins/analysis_waterfall_summary_v2/config.schema.json
 plugins/analysis_waterfall_summary_v2/output.schema.json
@@ -8518,6 +8548,10 @@ plugins/changepoint_detection_v1/config.schema.json
 plugins/changepoint_detection_v1/output.schema.json
 plugins/changepoint_detection_v1/plugin.py
 plugins/changepoint_detection_v1/plugin.yaml
+plugins/ingest_sql_dump_v1/config.schema.json
+plugins/ingest_sql_dump_v1/output.schema.json
+plugins/ingest_sql_dump_v1/plugin.py
+plugins/ingest_sql_dump_v1/plugin.yaml
 plugins/ingest_tabular/README.md
 plugins/ingest_tabular/__init__.py
 plugins/ingest_tabular/config.schema.json
@@ -8568,6 +8602,10 @@ plugins/report_decision_bundle_v2/config.schema.json
 plugins/report_decision_bundle_v2/output.schema.json
 plugins/report_decision_bundle_v2/plugin.py
 plugins/report_decision_bundle_v2/plugin.yaml
+plugins/report_evidence_index_v1/config.schema.json
+plugins/report_evidence_index_v1/output.schema.json
+plugins/report_evidence_index_v1/plugin.py
+plugins/report_evidence_index_v1/plugin.yaml
 plugins/report_payout_report_v1/config.schema.json
 plugins/report_payout_report_v1/output.schema.json
 plugins/report_payout_report_v1/plugin.py
@@ -8582,6 +8620,14 @@ plugins/report_slide_kit_emitter_v2/config.schema.json
 plugins/report_slide_kit_emitter_v2/output.schema.json
 plugins/report_slide_kit_emitter_v2/plugin.py
 plugins/report_slide_kit_emitter_v2/plugin.yaml
+plugins/transform_cross_dataset_link_graph_v1/config.schema.json
+plugins/transform_cross_dataset_link_graph_v1/output.schema.json
+plugins/transform_cross_dataset_link_graph_v1/plugin.py
+plugins/transform_cross_dataset_link_graph_v1/plugin.yaml
+plugins/transform_entity_resolution_map_v1/config.schema.json
+plugins/transform_entity_resolution_map_v1/output.schema.json
+plugins/transform_entity_resolution_map_v1/plugin.py
+plugins/transform_entity_resolution_map_v1/plugin.yaml
 plugins/transform_normalize_mixed/__init__.py
 plugins/transform_normalize_mixed/config.schema.json
 plugins/transform_normalize_mixed/output.schema.json
@@ -8705,6 +8751,7 @@ scripts/run_ui.ps1
 scripts/run_ui.sh
 scripts/runtime_stats.py
 scripts/scaffold_leftfield_top20_plugins.py
+scripts/scaffold_openplanter_cross_dataset_pack.py
 scripts/scaffold_plugins_from_doc.py
 scripts/scaffold_repo_improvement_plugins.py
 scripts/scaffold_top20_plugins.py
@@ -8728,6 +8775,7 @@ scripts/verify_agent_execution_contract.py
 scripts/verify_docs_and_plugin_matrices.py
 scripts/verify_frozen_plugin_surfaces.py
 scripts/verify_network_dns.sh
+scripts/verify_openplanter_pack_release_gate.py
 scripts/verify_topo_tda_addon_pack_plan.py
 scripts/watch_gauntlet.ps1
 scripts/watch_gauntlet.sh
@@ -8753,11 +8801,14 @@ src/statistic_harness/core/baselines.py
 src/statistic_harness/core/cli.py
 src/statistic_harness/core/close_cycle.py
 src/statistic_harness/core/column_inference.py
+src/statistic_harness/core/cross_dataset_pack.py
 src/statistic_harness/core/dataset_cache.py
 src/statistic_harness/core/dataset_io.py
+src/statistic_harness/core/entity_resolution.py
 src/statistic_harness/core/erp_inference.py
 src/statistic_harness/core/evaluation.py
 src/statistic_harness/core/evaluator.py
+src/statistic_harness/core/evidence_links.py
 src/statistic_harness/core/four_pillars.py
 src/statistic_harness/core/frozen_surfaces.py
 src/statistic_harness/core/graph_builders.py
@@ -8792,6 +8843,7 @@ src/statistic_harness/core/leftfield_top20_plugins.py
 src/statistic_harness/core/lever_library.py
 src/statistic_harness/core/lineage.py
 src/statistic_harness/core/migrations.py
+src/statistic_harness/core/openplanter_pack.py
 src/statistic_harness/core/optimization_models.py
 src/statistic_harness/core/orchestrator.py
 src/statistic_harness/core/pattern_mining.py
@@ -8809,6 +8861,7 @@ src/statistic_harness/core/report_v2_utils.py
 src/statistic_harness/core/retention.py
 src/statistic_harness/core/similarity.py
 src/statistic_harness/core/sql_assist.py
+src/statistic_harness/core/sql_dump_import.py
 src/statistic_harness/core/sql_intents.py
 src/statistic_harness/core/sql_pack.py
 src/statistic_harness/core/sql_schema_snapshot.py
@@ -9205,6 +9258,7 @@ tests/plugins/test_group_slicing_memory_regressions.py
 tests/plugins/test_hawkes_burst_v1.py
 tests/plugins/test_hdbscan_v1.py
 tests/plugins/test_ideaspace_plugins.py
+tests/plugins/test_ingest_sql_dump_v1.py
 tests/plugins/test_isolation_forest_anomaly.py
 tests/plugins/test_knockoff_wrapper_rf.py
 tests/plugins/test_log_template_mining_drain.py
@@ -9213,6 +9267,9 @@ tests/plugins/test_multivariate_changepoint_pelt.py
 tests/plugins/test_multivariate_control_charts.py
 tests/plugins/test_notears_linear.py
 tests/plugins/test_online_conformal_changepoint.py
+tests/plugins/test_openplanter_cross_dataset_pack_smoke.py
+tests/plugins/test_openplanter_pack_default_settings.py
+tests/plugins/test_openplanter_pack_strict_prereq.py
 tests/plugins/test_param_near_duplicate_minhash_v1.py
 tests/plugins/test_param_near_duplicate_simhash_v1.py
 tests/plugins/test_percentile_analysis.py
@@ -9267,6 +9324,7 @@ tests/test_dedupe_runs.py
 tests/test_determinism.py
 tests/test_docs_implementation_matrix.py
 tests/test_enertia_evaluation.py
+tests/test_entity_resolution_core.py
 tests/test_env_placeholders.py
 tests/test_erp_inference.py
 tests/test_erp_next_wave_no_skip.py
@@ -9360,6 +9418,7 @@ tests/test_source_classification.py
 tests/test_sql_adoption_partition_matrix.py
 tests/test_sql_assist_adoption_matrix.py
 tests/test_sql_assist_and_storage_guards.py
+tests/test_sql_dump_import.py
 tests/test_sqlpack_materialize_defaults.py
 tests/test_stat_plugin_active_row_filter.py
 tests/test_storage_plugin_executions_bytes.py

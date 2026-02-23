@@ -1,0 +1,23 @@
+id: analysis_vendor_influence_breadth_v1
+name: Vendor Influence Breadth v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- transform_cross_dataset_link_graph_v1
+settings:
+  description: Vendor Influence Breadth v1
+  defaults:
+    cross_links_path: null
+    vendor_entity_type: org
+    top_k: 50
+capabilities:
+- needs_cross_dataset
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
