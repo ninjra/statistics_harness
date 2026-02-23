@@ -1,5 +1,10 @@
 # Statistic Harness â€” Codex / Agent Instructions
 
+## Deterministic Repo Navigation
+- Read `REPO_TOC.md` before any broad repo scan.
+- Route from `REPO_TOC.md` to the specific matrix/runbook first.
+- Do not start with whole-repo grep when a mapped artifact exists.
+
 ## Non-negotiables (do not ship if violated)
 - Do not ship unless: `python -m pytest -q` passes.
 - Phase 1 is local-only: NO network calls at runtime (UI is local web only).
@@ -69,4 +74,3 @@ Always provide a single short one-line command with no line breaks and keep it u
   - `=` in key/value pairs (`x=y`)
 - `x=y` must render with key and value in different colors; `=` must be bright white.
 - If `NO_COLOR` is set or output is non-TTY, fall back to plain text while preserving the same structure.
-

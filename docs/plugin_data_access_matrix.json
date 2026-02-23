@@ -1,13 +1,13 @@
 {
   "contract_counts": {
-    "artifact_only": 13,
+    "artifact_only": 23,
     "dataset_loader": 189,
     "iter_batches": 0,
     "orchestration_only": 47,
     "sql_assist": 3,
     "sql_direct": 3
   },
-  "plugin_count": 255,
+  "plugin_count": 265,
   "plugins": [
     {
       "access_contracts": [
@@ -132,6 +132,24 @@
       "uses_dataset_loader": true,
       "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
     },
@@ -1345,6 +1363,24 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
         "orchestration_only"
       ],
       "contract_sources": [
@@ -1615,6 +1651,24 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "contract_sources": [
@@ -1640,6 +1694,24 @@
       ],
       "dataset_loader_mode": "none",
       "plugin_id": "analysis_ges_score_based_causal_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_granger_causality_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
@@ -2371,6 +2443,60 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "contract_sources": [
@@ -2576,6 +2702,24 @@
       ],
       "dataset_loader_mode": "none",
       "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
       "plugin_type": "analysis",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
@@ -4065,6 +4209,24 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_tsne_embedding_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "contract_sources": [
@@ -4150,6 +4312,24 @@
       "uses_dataset_loader": true,
       "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": true,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "contract_sources": [
+        "inferred:default"
+      ],
+      "dataset_loader_mode": "none",
+      "plugin_id": "analysis_umap_embedding_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": false,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
     },

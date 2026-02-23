@@ -1,6 +1,6 @@
 # Codex Plugin Catalog
 
-- Total plugins: 255
+- Total plugins: 265
 
 ## analysis
 
@@ -13,6 +13,7 @@
 | `analysis_anova_auto` | Anova Auto | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_association_rules_apriori_v1` | Association Rules (Apriori) | `plugin.py:Plugin` | 3 | 2 |
 | `analysis_attribution` | Attribution Analysis | `plugin.py:Plugin` | 0 | 2 |
+| `analysis_bart_uplift_surrogate_v1` | analysis_bart_uplift_surrogate_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_bayesian_online_changepoint_studentt_v1` | analysis_bayesian_online_changepoint_studentt_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_bayesian_point_displacement` | Bayesian Point Displacement | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_benfords_law_anomaly_v1` | analysis_benfords_law_anomaly_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -80,6 +81,7 @@
 | `analysis_dynamic_close_detection` | Dynamic Close Window Detection | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_ebm_action_verifier_v1` | EBM Action Verifier (Kona Layer) | `plugin.py:Plugin` | 3 | 1 |
 | `analysis_effect_size_report` | Effect Size Report | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_elastic_net_regularized_glm_v1` | analysis_elastic_net_regularized_glm_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_empirical_bayes_shrinkage_v1` | Empirical Bayes Shrinkage Rankings | `plugin.py:Plugin` | 2 | 2 |
 | `analysis_energy_distance_two_sample_v1` | analysis_energy_distance_two_sample_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_event_count_bocpd_poisson` | Event Count Bocpd Poisson | `plugin.py:Plugin` | 1 | 0 |
@@ -95,8 +97,10 @@
 | `analysis_garch_volatility_shift_v1` | analysis_garch_volatility_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_gaussian_copula_shift` | Gaussian Copula Shift | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_gaussian_knockoffs` | Gaussian Knockoffs | `plugin.py:Plugin` | 1 | 1 |
+| `analysis_gaussian_process_regression_v1` | analysis_gaussian_process_regression_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_geometric_median_multivariate_location_v1` | analysis_geometric_median_multivariate_location_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_ges_score_based_causal_v1` | GES-style Score-based Causal Graph | `plugin.py:Plugin` | 2 | 1 |
+| `analysis_granger_causality_v1` | analysis_granger_causality_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_graph_assortativity_shift_v1` | analysis_graph_assortativity_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_graph_min_cut_partition_v1` | Graph Minimum Cut Partition | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_graph_motif_triads_shift_v1` | analysis_graph_motif_triads_shift_v1 | `plugin.py:Plugin` | 0 | 1 |
@@ -137,6 +141,9 @@
 | `analysis_markov_transition_shift` | Markov Transition Shift | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_matrix_profile_motifs_discords` | Matrix Profile Motifs Discords | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_message_entropy_drift` | Message Entropy Drift | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_mice_imputation_chained_equations_v1` | analysis_mice_imputation_chained_equations_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_minimum_covariance_determinant_v1` | analysis_minimum_covariance_determinant_v1 | `plugin.py:Plugin` | 0 | 1 |
+| `analysis_mixed_effects_hierarchical_v1` | analysis_mixed_effects_hierarchical_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_monte_carlo_surface_uncertainty` | Monte Carlo Surface Uncertainty | `plugin.py:Plugin` | 1 | 2 |
 | `analysis_multicollinearity_vif_screen_v1` | analysis_multicollinearity_vif_screen_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_multiple_testing_fdr` | Multiple Testing Fdr | `plugin.py:Plugin` | 1 | 0 |
@@ -149,6 +156,7 @@
 | `analysis_negative_binomial_overdispersion_v1` | analysis_negative_binomial_overdispersion_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_neural_additive_model_nam_v1` | Neural Additive Model Approximation | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_node2vec_graph_embedding_drift_v1` | Node2Vec-style Graph Embedding Drift | `plugin.py:Plugin` | 2 | 2 |
+| `analysis_nonnegative_matrix_factorization_v1` | analysis_nonnegative_matrix_factorization_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_normalizing_flow_density_v1` | Normalizing Flow Density Approximation | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_notears_linear` | NOTEARS Linear | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_one_class_svm` | One Class Svm | `plugin.py:Plugin` | 1 | 0 |
@@ -231,11 +239,13 @@
 | `analysis_topographic_tanova_permutation` | Topographic Tanova Permutation | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_traceability_manifest_v2` | Traceability Manifest v2 | `plugin.py:Plugin` | 2 | 1 |
 | `analysis_transfer_entropy_directional` | Transfer Entropy Directional | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_tsne_embedding_v1` | analysis_tsne_embedding_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_ttests_auto` | Ttests Auto | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_two_sample_categorical_chi2` | Two Sample Categorical Chi2 | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_two_sample_numeric_ad` | Two Sample Numeric Ad | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_two_sample_numeric_ks` | Two Sample Numeric Ks | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_two_sample_numeric_mann_whitney` | Two Sample Numeric Mann Whitney | `plugin.py:Plugin` | 1 | 0 |
+| `analysis_umap_embedding_v1` | analysis_umap_embedding_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_upload_linkage` | Upload to Revenue Linkage Analysis | `plugin.py:Plugin` | 0 | 2 |
 | `analysis_user_host_savings` | User/Host Savings | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_variant_differential` | Variant Differential | `plugin.py:Plugin` | 1 | 0 |

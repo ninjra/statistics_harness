@@ -1366,11 +1366,7 @@ class Pipeline:
                     report_timeout_ms = self._parse_int_env(
                         "STAT_HARNESS_REPORT_BUNDLE_TIMEOUT_MS"
                     )
-                    if report_timeout_ms is None:
-                        # Keep report generation bounded so a stuck filesystem write cannot
-                        # block the entire gauntlet indefinitely.
-                        report_timeout_ms = 15 * 60 * 1000
-                    if report_timeout_ms > 0:
+                    if report_timeout_ms is not None and report_timeout_ms > 0:
                         budget["time_limit_ms"] = int(report_timeout_ms)
                 # Optional: hard memory limit for plugin subprocess via RLIMIT_AS.
                 hard_mem_mb = self._parse_int_env("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB")

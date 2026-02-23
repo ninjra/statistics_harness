@@ -1,13 +1,13 @@
 {
   "counts": {
     "by_sql_intent": {
-      "not_applicable": 64,
+      "not_applicable": 74,
       "optional": 1,
       "recommended": 187,
       "required": 3
     },
     "by_type": {
-      "analysis": 240,
+      "analysis": 250,
       "ingest": 1,
       "llm": 2,
       "planner": 1,
@@ -17,7 +17,7 @@
     }
   },
   "generated_by": "scripts/generate_plugin_intent_library.py",
-  "plugin_count": 255,
+  "plugin_count": 265,
   "plugins": [
     {
       "access_contracts": [
@@ -177,6 +177,26 @@
       "sql_intent": "recommended",
       "sql_intent_source": "default",
       "uses_sql_effective": true
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_bart_uplift_surrogate_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_bart_uplift_surrogate_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_bart_uplift_surrogate_v1/plugin.yaml",
+      "name": "analysis_bart_uplift_surrogate_v1",
+      "output_schema_path": "plugins/analysis_bart_uplift_surrogate_v1/output.schema.json",
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
     },
     {
       "access_contracts": [
@@ -1622,6 +1642,26 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_elastic_net_regularized_glm_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_elastic_net_regularized_glm_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_elastic_net_regularized_glm_v1/plugin.yaml",
+      "name": "analysis_elastic_net_regularized_glm_v1",
+      "output_schema_path": "plugins/analysis_elastic_net_regularized_glm_v1/output.schema.json",
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "orchestration_only"
       ],
       "capabilities": [
@@ -1941,6 +1981,26 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_gaussian_process_regression_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_gaussian_process_regression_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_gaussian_process_regression_v1/plugin.yaml",
+      "name": "analysis_gaussian_process_regression_v1",
+      "output_schema_path": "plugins/analysis_gaussian_process_regression_v1/output.schema.json",
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "capabilities": [
@@ -1977,6 +2037,26 @@
       "name": "GES-style Score-based Causal Graph",
       "output_schema_path": "plugins/analysis_ges_score_based_causal_v1/output.schema.json",
       "plugin_id": "analysis_ges_score_based_causal_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_granger_causality_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_granger_causality_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_granger_causality_v1/plugin.yaml",
+      "name": "analysis_granger_causality_v1",
+      "output_schema_path": "plugins/analysis_granger_causality_v1/output.schema.json",
+      "plugin_id": "analysis_granger_causality_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
       "sql_intent_source": "default",
@@ -2828,6 +2908,66 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_mice_imputation_chained_equations_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_mice_imputation_chained_equations_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_mice_imputation_chained_equations_v1/plugin.yaml",
+      "name": "analysis_mice_imputation_chained_equations_v1",
+      "output_schema_path": "plugins/analysis_mice_imputation_chained_equations_v1/output.schema.json",
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_minimum_covariance_determinant_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_minimum_covariance_determinant_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_minimum_covariance_determinant_v1/plugin.yaml",
+      "name": "analysis_minimum_covariance_determinant_v1",
+      "output_schema_path": "plugins/analysis_minimum_covariance_determinant_v1/output.schema.json",
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_mixed_effects_hierarchical_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_mixed_effects_hierarchical_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_mixed_effects_hierarchical_v1/plugin.yaml",
+      "name": "analysis_mixed_effects_hierarchical_v1",
+      "output_schema_path": "plugins/analysis_mixed_effects_hierarchical_v1/output.schema.json",
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "capabilities": [
@@ -3071,6 +3211,26 @@
       "name": "Node2Vec-style Graph Embedding Drift",
       "output_schema_path": "plugins/analysis_node2vec_graph_embedding_drift_v1/output.schema.json",
       "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_nonnegative_matrix_factorization_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_nonnegative_matrix_factorization_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_nonnegative_matrix_factorization_v1/plugin.yaml",
+      "name": "analysis_nonnegative_matrix_factorization_v1",
+      "output_schema_path": "plugins/analysis_nonnegative_matrix_factorization_v1/output.schema.json",
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
       "sql_intent_source": "default",
@@ -4848,6 +5008,26 @@
     },
     {
       "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_tsne_embedding_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_tsne_embedding_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_tsne_embedding_v1/plugin.yaml",
+      "name": "analysis_tsne_embedding_v1",
+      "output_schema_path": "plugins/analysis_tsne_embedding_v1/output.schema.json",
+      "plugin_id": "analysis_tsne_embedding_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
         "dataset_loader"
       ],
       "capabilities": [
@@ -4947,6 +5127,26 @@
       "sql_intent": "recommended",
       "sql_intent_source": "default",
       "uses_sql_effective": true
+    },
+    {
+      "access_contracts": [
+        "artifact_only"
+      ],
+      "capabilities": [
+        "analysis"
+      ],
+      "config_schema_path": "plugins/analysis_umap_embedding_v1/config.schema.json",
+      "depends_on": [],
+      "description": "analysis_umap_embedding_v1",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_umap_embedding_v1/plugin.yaml",
+      "name": "analysis_umap_embedding_v1",
+      "output_schema_path": "plugins/analysis_umap_embedding_v1/output.schema.json",
+      "plugin_id": "analysis_umap_embedding_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql_effective": false
     },
     {
       "access_contracts": [
