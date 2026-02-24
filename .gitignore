@@ -10,3 +10,26 @@ appdata/
 .pip-tmp/
 temp/
 *.egg-info/
+
+# Repo hygiene policy (managed)
+tools/legacy/
+docs/test/
+repomix-output.md
+
+# Binary/blob hygiene
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.webp
+*.ico
+*.pdf
+*.zip
+*.tar
+*.gz
+*.7z
+*.bin
+# End repo hygiene policy

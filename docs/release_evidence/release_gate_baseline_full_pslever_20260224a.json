@@ -1,0 +1,56 @@
+{
+  "before_run_id": null,
+  "files": {
+    "post_run_bundle_json": "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence/bundle_baseline_full_pslever_20260224a.json",
+    "pytest_gate_json": "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence/openplanter_pack_release_gate.json"
+  },
+  "generated_at_utc": "2026-02-24T17:22:24.439826+00:00",
+  "known_issues_mode": "any",
+  "ok": false,
+  "run_id": "baseline_full_pslever_20260224a",
+  "schema_version": "release_gate.v1",
+  "steps": {
+    "build_post_run_bundle": {
+      "cmd": [
+        "/mnt/d/projects/statistics_harness/statistics_harness/.venv/bin/python",
+        "scripts/build_post_run_bundle.py",
+        "--run-id",
+        "baseline_full_pslever_20260224a",
+        "--before-run-id",
+        "",
+        "--known-issues-mode",
+        "any",
+        "--state-db",
+        "/mnt/d/projects/statistics_harness/statistics_harness/appdata/state.sqlite",
+        "--top-n",
+        "20",
+        "--strict"
+      ],
+      "rc": 1,
+      "stderr": "",
+      "stdout": "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence/bundle_baseline_full_pslever_20260224a.json\n"
+    },
+    "verify_docs_and_plugin_matrices": {
+      "cmd": [
+        "/mnt/d/projects/statistics_harness/statistics_harness/.venv/bin/python",
+        "scripts/verify_docs_and_plugin_matrices.py"
+      ],
+      "rc": 2,
+      "stderr": "",
+      "stdout": ""
+    },
+    "verify_openplanter_pack_release_gate": {
+      "cmd": [
+        "/mnt/d/projects/statistics_harness/statistics_harness/.venv/bin/python",
+        "scripts/verify_openplanter_pack_release_gate.py",
+        "--pytest-args",
+        "-q",
+        "--out",
+        "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence/openplanter_pack_release_gate.json"
+      ],
+      "rc": 2,
+      "stderr": "usage: verify_openplanter_pack_release_gate.py [-h] [--out OUT]\n                                               [--allow-skips] [--allow-xfail]\n                                               [--pytest-args PYTEST_ARGS]\nverify_openplanter_pack_release_gate.py: error: argument --pytest-args: expected one argument\n",
+      "stdout": ""
+    }
+  }
+}

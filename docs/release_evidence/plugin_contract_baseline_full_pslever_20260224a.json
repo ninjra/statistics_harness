@@ -1,0 +1,2754 @@
+{
+  "classification_counts": {
+    "fail": 1,
+    "pass": 272
+  },
+  "ok": true,
+  "plugin_count": 273,
+  "plugins": [
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Optimized action combo (MIP) with 8 actions",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Optimized action combo (annealing) with 8 actions",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Generated 20 actionable lever recommendation(s)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed AFT lognormal proxy model.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_anova_auto",
+      "reason_code": "NO_ELIGIBLE_SLICE",
+      "result_status": "ok",
+      "summary": "ANOVA: no eligible (process,group) slices under k-min/budget",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed fallback pair-based association rules (200 rules) because matrix too large for exact apriori (entities=120000, items=120); using deterministic pair-rule fallback",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_attribution",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Attributed eligible wait by dimension",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "BART uplift surrogate identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed robust online changepoint score.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Bayesian displacement columns=6 strong=3",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Benford diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed beta-binomial overdispersion diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed 3 bicluster(s)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bocpd_gaussian",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed BOCPD changepoints",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "No actionable result: time_budget_exceeded_partial",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed intervention counterfactual effect.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_bundled_donations_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "Bundling analysis unavailable: required columns missing",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Burst detection complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed burst proxy scores for 20 processes",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "analysis_busy_period_segmentation_v2 observation [MISSING_PREREQUISITE]: Missing eligible/queue or start timestamp columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed capacity frontier envelope.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_capacity_scaling",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Modeled capacity scaling impact",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed cross-block CCA diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_chain_makespan",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed chain makespan statistics",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_change_impact_pre_post",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Pre/post impact computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "No actionable result: time_budget_exceeded",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Energy changepoint detection complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Changepoint ensemble complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_changepoint_pelt",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Changepoint detection complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_chi_square_association",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Chi-square: computed=44 significant=39 skipped_large_pairs=22 skipped_crosstab_alloc=0",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed circular time-of-day drift metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed close-cycle capacity impact",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed close-cycle capacity model",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed close-cycle change detection",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_contention",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected close-cycle contention candidates",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected duration-shift candidates",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed revenue close-cycle compression model",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Backtracked close starts for 365 accounting months (343 inferred, 22 fallback).",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_uplift",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected close-cycle share-shift candidates",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Resolved 47 close-cycle windows using Accounting Month roll signals and default calendar bounds.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Cluster analysis computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed competing-risks cumulative incidence profile.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Reconstructed concurrency timeline",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed conformal anomalies",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_conformance_alignments",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Conformance alignment check complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_conformance_checking",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_conformance_checking observation [NO_DECISION_SIGNAL]: No transitions detected",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Clustered 3 module groups with constraints",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed invariant constraint violations.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_contribution_limit_flags_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "Contribution limit analysis unavailable: required columns missing",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_control_chart_cusum",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "CUSUM alarms detected",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_control_chart_ewma",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "EWMA alarms detected",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_control_chart_individuals",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Individuals chart alarms detected",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_control_chart_suite",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 control-chart alarms.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_copula_dependence",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Copula dependence screen complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed CUR decomposition (rank=6)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed CUSUM on detrended residuals.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed DTW distances for 20 processes",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "HDBSCAN clustered 5000 entities into 110 clusters",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_dependency_community_leiden_v1 observation [NO_DECISION_SIGNAL]: No transition edges found (graph empty)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_dependency_community_louvain_v1 observation [NO_DECISION_SIGNAL]: No transition edges found (graph empty)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed dependency critical path proxy",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Dependency graph change detection complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dependency_resolution_join",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed dependency lag distribution",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_determinism_discipline",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Checked measurement_type discipline",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed diffusion maps manifold embedding",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed categorical overdispersion proxy.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Simulation complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "reason_code": "QUADRATIC_CAP_EXCEEDED",
+      "result_status": "ok",
+      "summary": "No actionable result: quadratic_cap_exceeded",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed distance covariance dependence test.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_distribution_drift_suite",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 drift findings.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_distribution_shift_wasserstein_v1 observation [NO_DECISION_SIGNAL]: No numeric values for shift analysis",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed DMD over 12000 observations",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dp_gmm",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed DP GMM clusters",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_drift_adwin",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "ADWIN drift check complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_dynamic_close_detection",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 7 accounting-month roll events using Accounting Month params.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Verified 5 actions; route planning enabled",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_effect_size_report",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Effect size report generated",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Elastic Net regularized regression identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_empirical_bayes_shrinkage_v1 observation [NO_DECISION_SIGNAL]: No per-process numeric stats available for shrinkage",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed energy-distance two-sample test.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "BOCPD Poisson scan complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "EVT Gumbel tail analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "EVT POT analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_factor_analysis_auto",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Factor/PCA summary computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed varimax rotation diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Fisher enrichment scan.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built covariance sketch with Frequent Directions",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed fallback frequent pair itemsets (10 rows) because matrix too large for exact fpgrowth (entities=120000, items=120); using deterministic pair-support fallback",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed trend filtering breakpoints.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed spline regression diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed volatility shift ratio.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed copula shift",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed knockoff selection",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Gaussian process regression identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "reason_code": "QUADRATIC_CAP_EXCEEDED",
+      "result_status": "ok",
+      "summary": "No actionable result: quadratic_cap_exceeded",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built GES-style graph with 1 edges",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_granger_causality_v1",
+      "reason_code": "BELOW_ACTIONABILITY_THRESHOLD",
+      "result_status": "ok",
+      "summary": "analysis_granger_causality_v1 observation [PREREQUISITE_UNMET]: Granger-style temporal dependency not applicable: modeled gain is below configured actionability thresholds",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed graph assortativity shift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_graph_min_cut_partition_v1 observation [NO_DECISION_SIGNAL]: No transition edges found (graph empty)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed graph triad motif drift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed graph PageRank hotspots.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graph_topology_curves",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed topology curves (sampled 2000 of 435616)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Graphical lasso network complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Haar wavelet transient metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Hawkes-style clustering check complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "reason_code": "INSUFFICIENT_POSITIVE_SAMPLES",
+      "result_status": "ok",
+      "summary": "No actionable result: insufficient_positive_samples",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Higuchi fractal dimension.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Latent state sequence complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "reason_code": "NO_HOLD_DOMINANT_PROCESSES",
+      "result_status": "ok",
+      "summary": "Computed hold vs eligible-wait attribution (no dominant hold candidates)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Scored HSIC for 21 feature pairs",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed Hurst exponent long-memory diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed ICA/PCA source separation.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "reason_code": "NO_FEATURES_ELIGIBLE",
+      "result_status": "ok",
+      "summary": "Evaluated invariance for 0 features",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Generated 5 deterministic action recommendations.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed ideaspace energy and breakdown.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed ideaspace vectors, ideal reference, and gap vectors.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_isolation_forest",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 anomalies.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 anomalies.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_issue_cards_v2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built 1 issue cards",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Kernel MMD computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_kingman_vut_approx",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Kingman VUT approximation complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Completed kNN graph two-sample test",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed RF knockoff selection",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed KSD anomaly ratio",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_lagged_predictability_test",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Lagged predictability check complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Estimated LiNGAM-style edge hypotheses (8 edges)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_littles_law_consistency",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Little's Law check complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_local_outlier_factor",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "LOF analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_log_template_drain",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Extracted 4392 templates.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_log_template_mining_drain",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Extracted 4392 templates.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed periodicity scan.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed Mann-Kendall trend statistics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Karniski-style permutation test computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed marked point-process intensity metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_markov_transition_shift",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Markov transition shift complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Matrix profile scan complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_message_entropy_drift",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Message entropy drift complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "MICE chained imputation identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Minimum covariance determinant identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "reason_code": "BELOW_ACTIONABILITY_THRESHOLD",
+      "result_status": "ok",
+      "summary": "analysis_mixed_effects_hierarchical_v1 observation [PREREQUISITE_UNMET]: Mixed-effects hierarchical model not applicable: modeled gain is below configured actionability thresholds",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Monte Carlo uncertainty iterations=200",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed VIF multicollinearity diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "FDR screening completed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed multiscale entropy profile.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 2 changepoints.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multivariate_control_charts",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 multivariate shifts.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Multivariate MEWMA control complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_multivariate_t2_control",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Multivariate T\u00b2 control complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_mutual_information_screen",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Mutual information screen complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed negative-binomial overdispersion metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed NAM-style additive effect proxy",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_node2vec_graph_embedding_drift_v1 observation [NO_DECISION_SIGNAL]: Need process sequence data for node embeddings",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Non-negative matrix factorization identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed normalizing-flow-like density proxy",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_notears_linear",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Estimated graph",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_one_class_svm",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "One-class SVM analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected changepoints",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Cook's distance influence diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "No strict MinHash clusters; emitted fallback duplicate-pressure recommendation",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "No strict SimHash clusters; emitted fallback duplicate-pressure recommendation",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed param variant explosion",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed partial-correlation network shift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built PC-style skeleton with 2 edges",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_pca_auto",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "PCA computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_pca_control_chart",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "PCA control chart complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_percentile_analysis",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed percentile statistics",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Spectral periodicity scan complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed permutation entropy drift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed PHATE-like trajectory embedding proxy",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed piecewise linear trend changepoints.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Poisson-style rate driver model.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_process_counterfactuals",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "analysis_process_counterfactuals observation [MISSING_PREREQUISITE]: Missing process/start/eligible columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Process drift analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_process_sequence",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed process sequence variants",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "analysis_process_sequence_bottlenecks observation [MISSING_PREREQUISITE]: Missing case/process/start columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_process_server_levers_v1",
+      "reason_code": "NO_ACTIONABLE_PROCESS_SERVER_LEVER",
+      "result_status": "ok",
+      "summary": "Modeled process-server +1 and assignment levers",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Proportional hazards proxy complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed quantile boosting diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed Q-Q quantile mapping drift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_quantile_regression_duration",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Quantile duration analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed quantile regression forest diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed P2 streaming quantile sketches.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed queue delay decomposition",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_queue_model_fit",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Queue model fit complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed MP denoising diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed randomization test for median shift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Deduplicated 83 recommendations",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "reason_code": "QUADRATIC_CAP_EXCEEDED",
+      "result_status": "ok",
+      "summary": "No actionable result: quadratic_cap_exceeded",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_red_flags_refined_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "Red-flag refinement unavailable: missing prerequisites (bundling_events.csv, contribution_limit_flags.csv, vendor_politician_timing.csv)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_regression_auto",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Regression drivers for 'CHILD_PROCESS_COUNT': top=12",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "reason_code": "MISSING_REQUIRED_COLUMNS",
+      "result_status": "ok",
+      "summary": "Retry-rate hotspot analysis unavailable: required columns missing",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Robust covariance analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_robust_pca_pcp",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 sparse outliers.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Detected 30 sparse outliers.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed robust regression diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed sample entropy irregularity metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_scan_statistics",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed scan statistics",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed additive Holt-Winters residual diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sequence_classification",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Classified standalone vs sequence-linked runs",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_sequence_grammar_sequitur_v1 observation [NO_DECISION_SIGNAL]: No case sequences found",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sequential_patterns_prefixspan",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Sequential pattern mining complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_sequential_patterns_prefixspan_v1 observation [NO_DECISION_SIGNAL]: No case sequences found",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Spectral clustering produced 8 clusters",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed Sinkhorn OT drift for 6 features",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed sparse PCA components.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_spectral_radius_stability_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed spectral radius stability metrics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed SSA changepoints over 15000 rows",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_state_space_kalman_residuals",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Kalman residual scan complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed state-space smoother level shift.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_stl_seasonal_decompose_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed STL-style seasonal decomposition.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_subspace_tracking_oja_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed Oja subspace tracking diagnostics.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_fabric_sso_eigen",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Surface fabric eigen-analysis computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_fractal_dimension_variogram",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Variogram fractal metrics columns=5",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_hydrology_flow_watershed",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Hydrology/watershed proxy computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Surface curvature computed for 6 columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_roughness_metrics",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Surface roughness computed for 6 columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_rugosity_index",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Rugosity computed for 6 columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_surface_terrain_position_index",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Terrain position computed for 6 columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_survival_kaplan_meier",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Survival analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_survival_time_to_event",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Survival summary computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_symbolic_regression_gp_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Selected symbolic-regression proxy expression",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tabpfn_foundation_tabular_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Single-class target after binarization; emitted deterministic N/A fallback",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tail_isolation",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Isolated tail-eligible wait segments",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tda_betti_curve_changepoint",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Betti windows=5680 changepoints=175",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tda_mapper_graph",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Mapper-style graph computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tda_persistence_landscapes",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Persistence landscape proxy computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tda_persistent_homology",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Persistent homology proxy metrics computed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_template_drift_two_sample",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Template drift analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tensor_cp_parafac_decomp_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "analysis_tensor_cp_parafac_decomp_v1 observation [NO_DECISION_SIGNAL]: No process column available for tensor decomposition",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_term_burst_kleinberg",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Term burst detection complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_time_series_analysis_auto",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Time-series scan: metrics=6",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_topic_model_lda",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Topic modeling complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_topographic_angle_dynamics",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Angle dynamics windows=5680",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_topographic_similarity_angle_projection",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Topographic similarity computed for 6 grouping(s)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_topographic_tanova_permutation",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "TANOVA permutation columns=8 significant=6",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_traceability_manifest_v2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built 1 traceability claims",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_transfer_entropy_directional",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Directional influence screen complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_tsne_embedding_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "t-SNE embedding separation identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_ttests_auto",
+      "reason_code": "NO_SIGNIFICANT_EFFECT",
+      "result_status": "ok",
+      "summary": "T-tests auto: computed=1 significant=0",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_two_sample_categorical_chi2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Categorical two-sample test completed",
+      "violations": []
+    },
+    {
+      "classification": "fail",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_two_sample_numeric_ad",
+      "reason_code": null,
+      "result_status": "error",
+      "summary": "analysis_two_sample_numeric_ad failed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_two_sample_numeric_ks",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Two-sample test completed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_two_sample_numeric_mann_whitney",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Two-sample test completed",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_umap_embedding_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "UMAP embedding separation identified an optimization candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_upload_linkage",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Matched 42 of 3396 BKRVNU rows to an XLSX upload by user +48h window (1.2% coverage).",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_user_host_savings",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "analysis_user_host_savings observation [MISSING_PREREQUISITE]: Missing user/host or eligible/start columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_variant_differential",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Variant differential analysis complete",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_vendor_influence_breadth_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "Computed influence breadth for 0 vendors",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_vendor_politician_timing_permutation_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "Timing permutation unavailable: required columns missing",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_waterfall_summary_v2",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "analysis_waterfall_summary_v2 observation [MISSING_PREREQUISITE]: Missing busy period segmentation output",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_wild_binary_segmentation_v1",
+      "reason_code": "NO_DECISION_SIGNAL",
+      "result_status": "ok",
+      "summary": "No actionable result: time_budget_exceeded",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "analysis_zero_inflated_count_model_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed ZIP EM parameters.",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "causal_recommendations_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed assumption-explicit causal recommendation",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "changepoint_detection_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Computed deterministic changepoint candidate",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "llm_prompt_builder",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built LLM prompt",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "llm_text2sql_local_generate_v1",
+      "reason_code": "FEATURE_DISABLED",
+      "result_status": "ok",
+      "summary": "llm_text2sql_local_generate_v1 observation [FEATURE_DISABLED]: Local text2sql generation disabled (set enabled=true for this plugin)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "planner_basic",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Planned plugin selection",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "process_mining_conformance_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "process_mining_conformance_v1 observation [MISSING_PREREQUISITE]: Missing case/activity columns for process conformance",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "process_mining_discovery_v1",
+      "reason_code": "MISSING_PREREQUISITE",
+      "result_status": "ok",
+      "summary": "process_mining_discovery_v1 observation [MISSING_PREREQUISITE]: Missing case/activity columns for process discovery",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "profile_basic",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Profiled dataset",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "profile_eventlog",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Inferred roles for 15 columns",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_bundle",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Report generated; indexed 2545 vectors",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_decision_bundle_v2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Decision report bundle generated (modeled gaps noted)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_evidence_index_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Indexed 14 cross-dataset artifacts",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_payout_report_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Generated payout report artifacts",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_plain_english_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Wrote plain_report.md",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "report_slide_kit_emitter_v2",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Slide kit tables emitted",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_cross_dataset_link_graph_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Generated 0 cross-dataset links",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_entity_resolution_map_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Built entity map with 0 entities",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_normalize_mixed",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "REUSED from baseline_full_qemail_hybrid_20260224a",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_sql_intents_pack_v1",
+      "reason_code": "SQL_ASSIST_READY",
+      "result_status": "ok",
+      "summary": "Wrote 4 SQL intent(s) and bootstrap SQL pack (6 queries)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_sqlpack_materialize_v1",
+      "reason_code": null,
+      "result_status": "ok",
+      "summary": "Materialized 6 table(s)",
+      "violations": []
+    },
+    {
+      "classification": "pass",
+      "has_error_payload": false,
+      "has_report_snapshot": true,
+      "plugin_id": "transform_template",
+      "reason_code": "TEMPLATE_ID_MISSING",
+      "result_status": "ok",
+      "summary": "Template mapping bypassed (template_id not set)",
+      "violations": []
+    }
+  ],
+  "result_status_counts": {
+    "error": 1,
+    "ok": 272
+  },
+  "run": {
+    "completed_at": "2026-02-24T05:17:12.240267+00:00",
+    "created_at": "2026-02-24T03:08:11.503589+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "run_id": "baseline_full_pslever_20260224a",
+    "status": "partial"
+  },
+  "schema_version": "plugin_result_contract.v1",
+  "violation_count": 0,
+  "violations": []
+}
