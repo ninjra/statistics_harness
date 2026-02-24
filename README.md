@@ -40,6 +40,12 @@ Run tests:
 python -m pytest -q
 ```
 
+Run full release gate (docs + pytest + optional run bundle):
+
+```bash
+python scripts/run_release_gate.py --run-id <run_id>
+```
+
 ## Feature Flags / Env
 
 Default behavior is local-only. Optional features are guarded by env flags:

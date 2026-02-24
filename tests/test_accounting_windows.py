@@ -38,6 +38,27 @@ def test_parse_accounting_month_ignores_invalid_year_zero_tokens() -> None:
     assert out == datetime(2026, 1, 1)
 
 
+def test_parse_accounting_month_ignores_far_reference_months() -> None:
+    params = {
+        "period": "1900",
+    }
+    out = parse_accounting_month_from_params(
+        params, reference_ts=datetime(2025, 8, 30, 12, 0, 0)
+    )
+    assert out is None
+
+
+def test_parse_accounting_month_prefers_near_reference_month() -> None:
+    params = {
+        "period_a": "1900",
+        "period_b": "2025-08",
+    }
+    out = parse_accounting_month_from_params(
+        params, reference_ts=datetime(2025, 8, 30, 12, 0, 0)
+    )
+    assert out == datetime(2025, 8, 1)
+
+
 def test_infer_roll_day_and_assign_accounting_month() -> None:
     timestamps = [
         "2026-01-31 23:00:00",

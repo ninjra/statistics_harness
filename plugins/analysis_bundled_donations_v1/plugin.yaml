@@ -1,0 +1,29 @@
+id: analysis_bundled_donations_v1
+name: Bundled Donations v1
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+- transform_cross_dataset_link_graph_v1
+settings:
+  description: Bundled Donations v1
+  defaults:
+    contributions_dataset_version_id: null
+    employer: null
+    candidate_id: null
+    donation_date: null
+    amount: null
+    donor_name: null
+    min_donors: 3
+    batch_size: 100000
+capabilities:
+- needs_eventlog
+- needs_cross_dataset
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

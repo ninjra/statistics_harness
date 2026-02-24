@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 2207,
+  "item_count": 2523,
   "items": [
     {
       "has_todo_marker": false,
@@ -16,6 +16,316 @@
       "requirement_ids": [],
       "source": "codex_kona_route_updates.md",
       "text": "- `.../stat_plugins/ideaspace.py` (already)",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 76,
+      "missing_paths": [
+        "docs/schemas/cross_dataset_role_map.schema.json"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "docs/plugin_data_access_overrides.json",
+        "docs/schemas/cross_dataset_role_map.schema.json"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `docs/schemas/cross_dataset_role_map.schema.json`, `docs/plugin_data_access_overrides.json`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 87,
+      "missing_paths": [
+        "tests/fixtures/openplanter_pack/ground_truth.yaml"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/fixtures/openplanter_pack/ground_truth.yaml"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `tests/fixtures/openplanter_pack/ground_truth.yaml`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 112,
+      "missing_paths": [
+        "tests/core/test_entity_resolution.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/core/test_entity_resolution.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/core/test_entity_resolution.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 124,
+      "missing_paths": [
+        "tests/core/test_evidence_links.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/core/test_evidence_links.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/core/test_evidence_links.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 135,
+      "missing_paths": [
+        "tests/core/test_sql_dump_import.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/core/test_sql_dump_import.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/core/test_sql_dump_import.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 139,
+      "missing_paths": [
+        "tests/core/test_seed_propagation.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "src/statistic_harness/core/stat_controls.py",
+        "src/statistic_harness/core/utils.py",
+        "tests/core/test_seed_propagation.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `src/statistic_harness/core/stat_controls.py`, `src/statistic_harness/core/utils.py`, `tests/core/test_seed_propagation.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 197,
+      "missing_paths": [
+        "tests/plugins/test_transform_entity_resolution_map_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_transform_entity_resolution_map_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_transform_entity_resolution_map_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 209,
+      "missing_paths": [
+        "tests/plugins/test_transform_cross_dataset_link_graph_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_transform_cross_dataset_link_graph_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_transform_cross_dataset_link_graph_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 229,
+      "missing_paths": [
+        "tests/plugins/test_analysis_bundled_donations_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_analysis_bundled_donations_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_analysis_bundled_donations_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 240,
+      "missing_paths": [
+        "tests/plugins/test_analysis_contribution_limit_flags_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_analysis_contribution_limit_flags_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_analysis_contribution_limit_flags_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 251,
+      "missing_paths": [
+        "tests/plugins/test_analysis_vendor_influence_breadth_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_analysis_vendor_influence_breadth_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_analysis_vendor_influence_breadth_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 263,
+      "missing_paths": [
+        "tests/plugins/test_analysis_vendor_politician_timing_permutation_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_analysis_vendor_politician_timing_permutation_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_analysis_vendor_politician_timing_permutation_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 276,
+      "missing_paths": [
+        "tests/plugins/test_analysis_red_flags_refined_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_analysis_red_flags_refined_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_analysis_red_flags_refined_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 296,
+      "missing_paths": [
+        "tests/plugins/test_report_evidence_index_v1.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_report_evidence_index_v1.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- `tests/plugins/test_report_evidence_index_v1.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 327,
+      "missing_paths": [
+        "scripts/run_cross_dataset_openplanter_pack.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "docs/operator_playbook_autonomous_insights.md",
+        "scripts/run_cross_dataset_openplanter_pack.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `scripts/run_cross_dataset_openplanter_pack.py`, `docs/operator_playbook_autonomous_insights.md`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 337,
+      "missing_paths": [
+        "tests/perf/test_cross_dataset_pack_resource_budget.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/perf/test_cross_dataset_pack_resource_budget.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `tests/perf/test_cross_dataset_pack_resource_budget.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 365,
+      "missing_paths": [
+        "tests/integration/test_openplanter_cross_dataset_pack.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/integration/test_openplanter_cross_dataset_pack.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `tests/integration/test_openplanter_cross_dataset_pack.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 376,
+      "missing_paths": [
+        "tests/plugins/test_cross_dataset_fail_closed.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/plugins/test_cross_dataset_fail_closed.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `tests/plugins/test_cross_dataset_fail_closed.py`",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 386,
+      "missing_paths": [
+        "tests/integration/test_cross_dataset_pipeline_fail_closed.py",
+        "tests/security/test_cross_dataset_no_network.py"
+      ],
+      "plugin_tokens": [],
+      "referenced_paths": [
+        "tests/integration/test_cross_dataset_pipeline_fail_closed.py",
+        "tests/security/test_cross_dataset_no_network.py"
+      ],
+      "requirement_ids": [],
+      "source": "docs/openplanter-cross-dataset-plugins-plan.md",
+      "text": "- **Location**: `tests/integration/test_cross_dataset_pipeline_fail_closed.py`, `tests/security/test_cross_dataset_no_network.py`",
       "unresolved_plugin_tokens": []
     },
     {
@@ -165,8 +475,9 @@
   },
   "missing_by_source": {
     "codex_kona_route_updates.md": 1,
+    "docs/openplanter-cross-dataset-plugins-plan.md": 19,
     "docs/plugins-validate-runbook-actionable-insights-plan.md": 8
   },
-  "missing_item_count": 9,
-  "source_count": 70
+  "missing_item_count": 28,
+  "source_count": 73
 }

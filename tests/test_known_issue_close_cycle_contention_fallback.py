@@ -5,7 +5,11 @@ import datetime as dt
 import pandas as pd
 
 from conftest import make_context
-from statistic_harness.core.report import _build_known_issue_recommendations
+from statistic_harness.core.report import (
+    _build_known_issue_recommendations,
+    _matches_expected,
+    _sanitize_known_recommendation_exclusions,
+)
 
 
 def _build_report(ctx):
@@ -102,3 +106,32 @@ def test_known_issue_close_cycle_contention_synthetic_fallback_is_opt_in(
     assert item.get("status") == "confirmed"
     assert item.get("evidence_source") == "synthetic_fallback"
     assert float(item.get("modeled_general_percent") or 0.0) > 0.0
+
+
+def test_known_issue_matching_accepts_process_alias_keys() -> None:
+    finding = {
+        "kind": "close_cycle_contention",
+        "process_norm": "qemail",
+    }
+    assert _matches_expected(finding, {"process": "qemail"}, None)
+
+
+def test_known_issue_required_process_not_self_excluded() -> None:
+    known = {
+        "expected_findings": [
+            {
+                "plugin_id": "analysis_close_cycle_contention",
+                "kind": "close_cycle_contention",
+                "where": {"process": "qemail"},
+            }
+        ],
+        "recommendation_exclusions": {"processes": ["qemail", "los*"]},
+    }
+    _sanitize_known_recommendation_exclusions(known)
+    exclusions = (
+        known.get("recommendation_exclusions", {}).get("processes", [])
+        if isinstance(known.get("recommendation_exclusions"), dict)
+        else []
+    )
+    assert "qemail" not in exclusions
+    assert "los*" in exclusions

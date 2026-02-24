@@ -1,12 +1,12 @@
 {
   "intent_counts": {
-    "not_applicable": 74,
+    "not_applicable": 83,
     "optional": 1,
-    "recommended": 187,
+    "recommended": 188,
     "required": 3
   },
   "intent_sql_coverage": {
-    "not_applicable": 0.05405405405405406,
+    "not_applicable": 0.04819277108433735,
     "optional": 1.0,
     "recommended": 1.0,
     "required": 1.0
@@ -14,10 +14,10 @@
   "intent_using_sql_counts": {
     "not_applicable": 4,
     "optional": 1,
-    "recommended": 187,
+    "recommended": 188,
     "required": 3
   },
-  "plugin_count": 265,
+  "plugin_count": 275,
   "plugins": [
     {
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
@@ -194,6 +194,17 @@
       "uses_sql_effective": true,
       "uses_sql_exec": false,
       "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_bundled_donations_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
     },
     {
       "plugin_id": "analysis_burst_detection_kleinberg",
@@ -535,6 +546,17 @@
       "uses_sql_effective": true,
       "uses_sql_exec": false,
       "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_contribution_limit_flags_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
     },
     {
       "plugin_id": "analysis_control_chart_cusum",
@@ -1923,6 +1945,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_process_server_levers_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_proportional_hazards_duration",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -2053,6 +2086,17 @@
       "uses_sql_effective": true,
       "uses_sql_exec": false,
       "uses_sql_via_loader": true
+    },
+    {
+      "plugin_id": "analysis_red_flags_refined_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
     },
     {
       "plugin_id": "analysis_regression_auto",
@@ -2693,6 +2737,28 @@
       "uses_sql_via_loader": true
     },
     {
+      "plugin_id": "analysis_vendor_influence_breadth_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "analysis_vendor_politician_timing_permutation_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
       "plugin_id": "analysis_waterfall_summary_v2",
       "plugin_type": "analysis",
       "sql_intent": "not_applicable",
@@ -2739,6 +2805,17 @@
     {
       "plugin_id": "changepoint_detection_v1",
       "plugin_type": "analysis",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "ingest_sql_dump_v1",
+      "plugin_type": "ingest",
       "sql_intent": "not_applicable",
       "sql_intent_source": "default",
       "uses_sql": false,
@@ -2858,6 +2935,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "report_evidence_index_v1",
+      "plugin_type": "report",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
       "plugin_id": "report_payout_report_v1",
       "plugin_type": "report",
       "sql_intent": "not_applicable",
@@ -2884,6 +2972,28 @@
       "plugin_type": "report",
       "sql_intent": "not_applicable",
       "sql_intent_source": "override",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "transform_cross_dataset_link_graph_v1",
+      "plugin_type": "transform",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": false,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": false
+    },
+    {
+      "plugin_id": "transform_entity_resolution_map_v1",
+      "plugin_type": "transform",
+      "sql_intent": "not_applicable",
+      "sql_intent_source": "default",
       "uses_sql": false,
       "uses_sql_direct": false,
       "uses_sql_effective": false,
@@ -2937,7 +3047,7 @@
   ],
   "uses_sql": 3,
   "uses_sql_direct": 3,
-  "uses_sql_effective": 195,
+  "uses_sql_effective": 196,
   "uses_sql_exec": 1,
-  "uses_sql_via_loader": 189
+  "uses_sql_via_loader": 190
 }

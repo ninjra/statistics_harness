@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "max_p_value_for_timing_flag": {
+      "default": 0.1,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "min_effect_size_for_timing_flag": {
+      "default": 0.5,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "sole_source_methods": {
+      "default": [
+        "Sole Source",
+        "Limited Competition",
+        "Emergency",
+        "Exempt"
+      ],
+      "type": [
+        "array",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

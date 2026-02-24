@@ -660,32 +660,92 @@ def _ideaspace_families_summary(plugins: dict[str, Any]) -> list[dict[str, Any]]
     return out
 
 
-def _matches_expected(
+_PROCESS_MATCH_KEYS: tuple[str, ...] = (
+    "process",
+    "process_norm",
+    "process_name",
+    "process_id",
+    "activity",
+    "process_matches",
+)
+
+
+def _match_key_aliases(key: str) -> tuple[str, ...]:
+    token = str(key or "").strip().lower()
+    if token in _PROCESS_MATCH_KEYS:
+        return _PROCESS_MATCH_KEYS
+    return (key,)
+
+
+def _normalize_match_value(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.strip().lower()
+    return value
+
+
+def _collect_alias_values(item: dict[str, Any], key: str) -> list[Any]:
+    out: list[Any] = []
+    for alias in _match_key_aliases(key):
+        if alias in item:
+            out.append(item.get(alias))
+    return out
+
+
+def _matches_where_value(actual: Any, expected: Any) -> bool:
+    if isinstance(actual, (list, tuple, set)):
+        actual_norm = {_normalize_match_value(v) for v in actual}
+        if isinstance(expected, (list, tuple, set)):
+            expected_norm = {_normalize_match_value(v) for v in expected}
+            return expected_norm.issubset(actual_norm)
+        return _normalize_match_value(expected) in actual_norm
+    if isinstance(expected, (list, tuple, set)):
+        expected_norm = {_normalize_match_value(v) for v in expected}
+        return _normalize_match_value(actual) in expected_norm
+    return _normalize_match_value(actual) == _normalize_match_value(expected)
+
+
+def _matches_contains_value(actual: Any, expected: Any) -> bool:
+    if isinstance(actual, str):
+        actual_text = actual.strip().lower()
+        if isinstance(expected, (list, tuple, set)):
+            return all(str(token).strip().lower() in actual_text for token in expected)
+        return str(expected).strip().lower() in actual_text
+    if isinstance(actual, (list, tuple, set)):
+        actual_norm = {_normalize_match_value(v) for v in actual}
+        if isinstance(expected, (list, tuple, set)):
+            expected_norm = {_normalize_match_value(v) for v in expected}
+            return expected_norm.issubset(actual_norm)
+        return _normalize_match_value(expected) in actual_norm
+    if isinstance(expected, (list, tuple, set)):
+        expected_norm = {_normalize_match_value(v) for v in expected}
+        return _normalize_match_value(actual) in expected_norm
+    return _normalize_match_value(actual) == _normalize_match_value(expected)
+
+
+def _matches_expected_impl(
     item: dict[str, Any],
     where: dict[str, Any] | None,
     contains: dict[str, Any] | None,
 ) -> bool:
     if where:
         for key, expected in where.items():
-            actual = item.get(key)
-            if actual != expected:
+            values = _collect_alias_values(item, key)
+            if not values or not any(_matches_where_value(actual, expected) for actual in values):
                 return False
     if contains:
         for key, expected in contains.items():
-            actual = item.get(key)
-            if isinstance(actual, str):
-                if str(expected) not in actual:
-                    return False
-            elif isinstance(actual, (list, tuple, set)):
-                if isinstance(expected, (list, tuple, set)):
-                    if not set(expected).issubset(set(actual)):
-                        return False
-                else:
-                    if expected not in actual:
-                        return False
-            else:
+            values = _collect_alias_values(item, key)
+            if not values or not any(_matches_contains_value(actual, expected) for actual in values):
                 return False
     return True
+
+
+def _matches_expected(
+    item: dict[str, Any],
+    where: dict[str, Any] | None,
+    contains: dict[str, Any] | None,
+) -> bool:
+    return _matches_expected_impl(item, where, contains)
 
 
 def _collect_findings_for_plugin(
@@ -1256,6 +1316,30 @@ def _known_issue_processes(known: dict[str, Any] | None) -> set[str]:
     return processes
 
 
+def _sanitize_known_recommendation_exclusions(known: dict[str, Any] | None) -> None:
+    if not isinstance(known, dict):
+        return
+    required = _known_issue_processes(known)
+    if not required:
+        return
+    exclusions = known.get("recommendation_exclusions")
+    if not isinstance(exclusions, dict):
+        return
+    processes = exclusions.get("processes")
+    if not isinstance(processes, list):
+        return
+    filtered: list[str] = []
+    for entry in processes:
+        token = str(entry or "").strip()
+        if not token:
+            continue
+        if token.lower() in required:
+            continue
+        filtered.append(token)
+    exclusions["processes"] = sorted(set(filtered))
+    known["recommendation_exclusions"] = exclusions
+
+
 def _explicit_excluded_processes(report: dict[str, Any]) -> set[str]:
     excluded: set[str] = set()
     for entry in parse_exclude_patterns_env():
@@ -1687,6 +1771,10 @@ def _build_known_issue_recommendations(
             "summary": "Known issues attached but no expected findings provided.",
             "items": [],
         }
+    excluded_processes = _explicit_excluded_processes(report)
+    excluded_match = (
+        compile_patterns(sorted(excluded_processes)) if excluded_processes else None
+    )
 
     items: list[dict[str, Any]] = []
     synthetic_match_count = 0
@@ -1778,7 +1866,9 @@ def _build_known_issue_recommendations(
         )
     deduped = _dedupe_recommendations(items)
     baselines = _duration_baselines(report, storage, run_dir=run_dir)
-    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
+    qemail_model: dict[str, float] | None = None
+    if not (excluded_match and excluded_match("qemail")):
+        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -3751,6 +3841,16 @@ def _build_discovery_recommendations(
             continue
         by_process: dict[str, dict[str, float]] = {}
         for item in findings:
+            accounting_month_raw = str(item.get("accounting_month") or "").strip()
+            if accounting_month_raw:
+                try:
+                    accounting_year = int(accounting_month_raw.split("-", 1)[0])
+                except Exception:
+                    accounting_year = None
+                # Guard against Excel-style serial month artifacts (e.g., 1900-01)
+                # that can explode modeled deltas in the recommendation adapter.
+                if isinstance(accounting_year, int) and accounting_year < 2000:
+                    continue
             raw_indicators = item.get("indicator_processes")
             indicator_rows: list[dict[str, Any]] = []
             if isinstance(raw_indicators, list):
@@ -3778,15 +3878,18 @@ def _build_discovery_recommendations(
             close_window_days_default = item.get("close_window_days_default")
             dynamic_shift_days = 0.0
             if isinstance(close_end_delta_days, (int, float)):
-                dynamic_shift_days = max(dynamic_shift_days, abs(float(close_end_delta_days)))
+                close_end_shift = abs(float(close_end_delta_days))
+                if close_end_shift <= 45.0:
+                    dynamic_shift_days = max(dynamic_shift_days, close_end_shift)
             if (
                 isinstance(close_window_days_dynamic, (int, float))
                 and isinstance(close_window_days_default, (int, float))
             ):
-                dynamic_shift_days = max(
-                    dynamic_shift_days,
-                    abs(float(close_window_days_dynamic) - float(close_window_days_default)),
+                window_shift = abs(
+                    float(close_window_days_dynamic) - float(close_window_days_default)
                 )
+                if window_shift <= 45.0:
+                    dynamic_shift_days = max(dynamic_shift_days, window_shift)
             for row in indicator_rows:
                 process = _normalize_process_hint(
                     row.get("process")
@@ -4858,7 +4961,9 @@ def _build_discovery_recommendations(
 
     deduped = _dedupe_recommendations_text(kept)
     baselines = _duration_baselines(report, storage, run_dir=run_dir)
-    qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
+    qemail_model: dict[str, float] | None = None
+    if not (excluded_match and excluded_match("qemail")):
+        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -7755,6 +7860,8 @@ def build_report(
             exclusions["processes"] = merged
             known_payload["recommendation_exclusions"] = exclusions
 
+        _sanitize_known_recommendation_exclusions(known_payload)
+
     orchestrator_mode = "two_lane_strict"
     sys_payload = settings_payload.get("_system")
     if isinstance(sys_payload, dict):
@@ -8332,26 +8439,7 @@ def _format_findings(findings: list[Any]) -> list[str]:
 def _matches_expected(
     item: dict[str, Any], where: dict[str, Any] | None, contains: dict[str, Any] | None
 ) -> bool:
-    if where:
-        for key, expected in where.items():
-            if item.get(key) != expected:
-                return False
-    if contains:
-        for key, expected in contains.items():
-            actual = item.get(key)
-            if isinstance(actual, str):
-                if str(expected) not in actual:
-                    return False
-            elif isinstance(actual, (list, tuple, set)):
-                if isinstance(expected, (list, tuple, set)):
-                    if not set(expected).issubset(set(actual)):
-                        return False
-                else:
-                    if expected not in actual:
-                        return False
-            else:
-                return False
-    return True
+    return _matches_expected_impl(item, where, contains)
 
 
 def _format_known_issue_checks(

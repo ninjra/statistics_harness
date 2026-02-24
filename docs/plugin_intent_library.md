@@ -2,7 +2,7 @@
 
 Consolidated plugin purpose and contract index generated from existing matrices/manifests.
 
-- Total plugins: 265
+- Total plugins: 275
 
 | plugin_id | type | name | depends_on | access_contracts | sql_intent | uses_sql_effective |
 |---|---|---|---:|---|---|---:|
@@ -22,6 +22,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_bocpd_gaussian` | analysis | BOCPD Gaussian | 1 | dataset_loader | recommended | 1 |
 | `analysis_bootstrap_ci_effect_sizes_v1` | analysis | analysis_bootstrap_ci_effect_sizes_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_bsts_intervention_counterfactual_v1` | analysis | analysis_bsts_intervention_counterfactual_v1 | 0 | dataset_loader | recommended | 1 |
+| `analysis_bundled_donations_v1` | analysis | Bundled Donations v1 | 1 | orchestration_only | not_applicable | 0 |
 | `analysis_burst_detection_kleinberg` | analysis | Burst Detection Kleinberg | 1 | dataset_loader | recommended | 1 |
 | `analysis_burst_modeling_hawkes_v1` | analysis | Burst Modeling (Hawkes-Style) | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_busy_period_segmentation_v2` | analysis | Busy Period Segmentation v2 | 0 | artifact_only | not_applicable | 0 |
@@ -53,6 +54,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_conformance_checking` | analysis | Conformance Checking | 0 | dataset_loader | recommended | 1 |
 | `analysis_constrained_clustering_cop_kmeans_v1` | analysis | Constrained Clustering (COP-KMeans) | 3 | orchestration_only | not_applicable | 0 |
 | `analysis_constraints_violation_detector_v1` | analysis | analysis_constraints_violation_detector_v1 | 0 | dataset_loader | recommended | 1 |
+| `analysis_contribution_limit_flags_v1` | analysis | Contribution Limit Flags v1 | 1 | orchestration_only | not_applicable | 0 |
 | `analysis_control_chart_cusum` | analysis | Control Chart Cusum | 1 | dataset_loader | recommended | 1 |
 | `analysis_control_chart_ewma` | analysis | Control Chart Ewma | 1 | dataset_loader | recommended | 1 |
 | `analysis_control_chart_individuals` | analysis | Control Chart Individuals | 1 | dataset_loader | recommended | 1 |
@@ -179,6 +181,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_process_drift_conformance_over_time` | analysis | Process Drift Conformance Over Time | 1 | dataset_loader | recommended | 1 |
 | `analysis_process_sequence` | analysis | Process Sequence Mining | 1 | dataset_loader | recommended | 1 |
 | `analysis_process_sequence_bottlenecks` | analysis | Process Sequence Bottlenecks | 0 | artifact_only | not_applicable | 0 |
+| `analysis_process_server_levers_v1` | analysis | Dynamic Process/Server Lever Modeling | 2 | dataset_loader | recommended | 1 |
 | `analysis_proportional_hazards_duration` | analysis | Proportional Hazards Duration | 1 | dataset_loader | recommended | 1 |
 | `analysis_quantile_loss_boosting_v1` | analysis | analysis_quantile_loss_boosting_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_quantile_mapping_drift_qq_v1` | analysis | analysis_quantile_mapping_drift_qq_v1 | 0 | dataset_loader | recommended | 1 |
@@ -191,6 +194,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_randomization_test_median_shift_v1` | analysis | analysis_randomization_test_median_shift_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_recommendation_dedupe_v2` | analysis | Recommendation Dedupe v2 | 1 | orchestration_only | not_applicable | 0 |
 | `analysis_recurrence_quantification_rqa_v1` | analysis | analysis_recurrence_quantification_rqa_v1 | 0 | dataset_loader | recommended | 1 |
+| `analysis_red_flags_refined_v1` | analysis | Red Flags Refined v1 | 3 | orchestration_only | not_applicable | 0 |
 | `analysis_regression_auto` | analysis | Regression Auto | 1 | dataset_loader | recommended | 1 |
 | `analysis_retry_rate_hotspots_v1` | analysis | Retry Rate Hotspots | 2 | dataset_loader | recommended | 1 |
 | `analysis_robust_covariance_outliers` | analysis | Robust Covariance Outliers | 1 | dataset_loader | recommended | 1 |
@@ -249,11 +253,14 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_upload_linkage` | analysis | Upload to Revenue Linkage Analysis | 0 | dataset_loader | recommended | 1 |
 | `analysis_user_host_savings` | analysis | User/Host Savings | 0 | artifact_only | not_applicable | 0 |
 | `analysis_variant_differential` | analysis | Variant Differential | 1 | dataset_loader | recommended | 1 |
+| `analysis_vendor_influence_breadth_v1` | analysis | Vendor Influence Breadth v1 | 1 | orchestration_only | not_applicable | 0 |
+| `analysis_vendor_politician_timing_permutation_v1` | analysis | Vendor Politician Timing Permutation v1 | 1 | orchestration_only | not_applicable | 0 |
 | `analysis_waterfall_summary_v2` | analysis | Waterfall Summary v2 | 2 | orchestration_only | not_applicable | 0 |
 | `analysis_wild_binary_segmentation_v1` | analysis | analysis_wild_binary_segmentation_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_zero_inflated_count_model_v1` | analysis | analysis_zero_inflated_count_model_v1 | 0 | dataset_loader | recommended | 1 |
 | `causal_recommendations_v1` | analysis | Causal Recommendations v1 | 0 | artifact_only | not_applicable | 0 |
 | `changepoint_detection_v1` | analysis | Changepoint Detection v1 | 0 | artifact_only | not_applicable | 0 |
+| `ingest_sql_dump_v1` | ingest | SQL Dump Ingest v1 | 0 | artifact_only | not_applicable | 0 |
 | `ingest_tabular` | ingest | Ingest Tabular | 0 | sql_direct | not_applicable | 1 |
 | `llm_prompt_builder` | llm | LLM Prompt Builder | 1 | orchestration_only | not_applicable | 0 |
 | `llm_text2sql_local_generate_v1` | llm | Local Text2SQL Pack Generator (v1) | 1 | sql_assist | required | 1 |
@@ -264,9 +271,12 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `profile_eventlog` | profile | Profile Eventlog | 1 | sql_direct | not_applicable | 1 |
 | `report_bundle` | report | Report Bundle | 0 | artifact_only | not_applicable | 0 |
 | `report_decision_bundle_v2` | report | Decision Report Bundle v2 | 6 | artifact_only | not_applicable | 0 |
+| `report_evidence_index_v1` | report | Evidence Index v1 | 1 | artifact_only | not_applicable | 0 |
 | `report_payout_report_v1` | report | Payout Report (Batch/Multi-Input) | 1 | dataset_loader | not_applicable | 1 |
 | `report_plain_english_v1` | report | Plain-English Report (v1) | 1 | artifact_only | not_applicable | 0 |
 | `report_slide_kit_emitter_v2` | report | Slide Kit Emitter v2 | 3 | artifact_only | not_applicable | 0 |
+| `transform_cross_dataset_link_graph_v1` | transform | Cross Dataset Link Graph v1 | 1 | artifact_only | not_applicable | 0 |
+| `transform_entity_resolution_map_v1` | transform | Entity Resolution Map v1 | 0 | artifact_only | not_applicable | 0 |
 | `transform_normalize_mixed` | transform | Normalize Mixed Types | 0 | sql_direct | optional | 1 |
 | `transform_sql_intents_pack_v1` | transform | SQL Intents Pack (v1) | 0 | sql_assist | required | 1 |
 | `transform_sqlpack_materialize_v1` | transform | SQL Pack Materializer (v1) | 1 | sql_assist | required | 1 |

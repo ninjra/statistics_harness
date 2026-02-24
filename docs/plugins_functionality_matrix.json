@@ -126,6 +126,7 @@
       "analysis_action_search_mip_batched_scheduler_v1",
       "analysis_action_search_simulated_annealing_v1",
       "analysis_discrete_event_queue_simulator_v1",
+      "analysis_process_server_levers_v1",
       "analysis_proportional_hazards_duration",
       "analysis_quantile_loss_boosting_v1",
       "analysis_quantile_mapping_drift_qq_v1",
@@ -207,6 +208,11 @@
       "analysis_scan_statistics",
       "process_mining_discovery_v1",
       "process_mining_conformance_v1",
+      "analysis_bundled_donations_v1",
+      "analysis_contribution_limit_flags_v1",
+      "analysis_vendor_influence_breadth_v1",
+      "analysis_vendor_politician_timing_permutation_v1",
+      "analysis_red_flags_refined_v1",
       "analysis_association_rules_apriori_v1",
       "analysis_biclustering_cheng_church_v1",
       "analysis_burst_modeling_hawkes_v1",
@@ -253,6 +259,7 @@
       "analysis_tensor_cp_parafac_decomp_v1"
     ],
     "ingest": [
+      "ingest_sql_dump_v1",
       "ingest_tabular"
     ],
     "llm": [
@@ -271,9 +278,12 @@
       "report_plain_english_v1",
       "report_slide_kit_emitter_v2",
       "report_decision_bundle_v2",
+      "report_evidence_index_v1",
       "report_payout_report_v1"
     ],
     "transform": [
+      "transform_entity_resolution_map_v1",
+      "transform_cross_dataset_link_graph_v1",
       "transform_normalize_mixed",
       "transform_sql_intents_pack_v1",
       "transform_sqlpack_materialize_v1",
@@ -406,6 +416,7 @@
     "analysis_action_search_mip_batched_scheduler_v1",
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
+    "analysis_process_server_levers_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_loss_boosting_v1",
     "analysis_quantile_mapping_drift_qq_v1",
@@ -472,6 +483,7 @@
     "analysis_zero_inflated_count_model_v1",
     "causal_recommendations_v1",
     "changepoint_detection_v1",
+    "ingest_sql_dump_v1",
     "ingest_tabular",
     "analysis_bocpd_gaussian",
     "analysis_conformal_feature_prediction",
@@ -496,6 +508,14 @@
     "report_plain_english_v1",
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
+    "transform_entity_resolution_map_v1",
+    "transform_cross_dataset_link_graph_v1",
+    "analysis_bundled_donations_v1",
+    "analysis_contribution_limit_flags_v1",
+    "analysis_vendor_influence_breadth_v1",
+    "analysis_vendor_politician_timing_permutation_v1",
+    "analysis_red_flags_refined_v1",
+    "report_evidence_index_v1",
     "transform_normalize_mixed",
     "analysis_association_rules_apriori_v1",
     "analysis_biclustering_cheng_church_v1",
@@ -594,6 +614,9 @@
     "analysis_bsts_intervention_*": [
       "analysis_bsts_intervention_counterfactual_v1"
     ],
+    "analysis_bundled_donations_*": [
+      "analysis_bundled_donations_v1"
+    ],
     "analysis_burst_detection_*": [
       "analysis_burst_detection_kleinberg"
     ],
@@ -670,6 +693,9 @@
     ],
     "analysis_constraints_violation_*": [
       "analysis_constraints_violation_detector_v1"
+    ],
+    "analysis_contribution_limit_*": [
+      "analysis_contribution_limit_flags_v1"
     ],
     "analysis_control_chart_*": [
       "analysis_control_chart_cusum",
@@ -1033,6 +1059,9 @@
       "analysis_process_sequence_bottlenecks",
       "analysis_process_sequence"
     ],
+    "analysis_process_server_*": [
+      "analysis_process_server_levers_v1"
+    ],
     "analysis_proportional_hazards_*": [
       "analysis_proportional_hazards_duration"
     ],
@@ -1066,6 +1095,9 @@
     ],
     "analysis_recurrence_quantification_*": [
       "analysis_recurrence_quantification_rqa_v1"
+    ],
+    "analysis_red_flags_*": [
+      "analysis_red_flags_refined_v1"
     ],
     "analysis_regression_auto_*": [
       "analysis_regression_auto"
@@ -1229,6 +1261,12 @@
     "analysis_variant_differential_*": [
       "analysis_variant_differential"
     ],
+    "analysis_vendor_influence_*": [
+      "analysis_vendor_influence_breadth_v1"
+    ],
+    "analysis_vendor_politician_*": [
+      "analysis_vendor_politician_timing_permutation_v1"
+    ],
     "analysis_waterfall_summary_*": [
       "analysis_waterfall_summary_v2"
     ],
@@ -1245,6 +1283,7 @@
       "changepoint_detection_v1"
     ],
     "ingest": [
+      "ingest_sql_dump_v1",
       "ingest_tabular"
     ],
     "llm": [
@@ -1269,9 +1308,12 @@
       "report_plain_english_v1",
       "report_slide_kit_emitter_v2",
       "report_decision_bundle_v2",
+      "report_evidence_index_v1",
       "report_payout_report_v1"
     ],
     "transform": [
+      "transform_entity_resolution_map_v1",
+      "transform_cross_dataset_link_graph_v1",
       "transform_normalize_mixed",
       "transform_sql_intents_pack_v1",
       "transform_sqlpack_materialize_v1",
@@ -1280,7 +1322,10 @@
   },
   "missing_dep_edges": {},
   "pipeline_auto_plan_order": [
+    "ingest_sql_dump_v1",
     "ingest_tabular",
+    "transform_entity_resolution_map_v1",
+    "transform_cross_dataset_link_graph_v1",
     "transform_normalize_mixed",
     "transform_sql_intents_pack_v1",
     "transform_sqlpack_materialize_v1",
@@ -1413,6 +1458,7 @@
     "analysis_action_search_mip_batched_scheduler_v1",
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
+    "analysis_process_server_levers_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_loss_boosting_v1",
     "analysis_quantile_mapping_drift_qq_v1",
@@ -1494,6 +1540,11 @@
     "analysis_scan_statistics",
     "process_mining_discovery_v1",
     "process_mining_conformance_v1",
+    "analysis_bundled_donations_v1",
+    "analysis_contribution_limit_flags_v1",
+    "analysis_vendor_influence_breadth_v1",
+    "analysis_vendor_politician_timing_permutation_v1",
+    "analysis_red_flags_refined_v1",
     "analysis_association_rules_apriori_v1",
     "analysis_biclustering_cheng_church_v1",
     "analysis_burst_modeling_hawkes_v1",
@@ -1541,12 +1592,13 @@
     "report_plain_english_v1",
     "report_slide_kit_emitter_v2",
     "report_decision_bundle_v2",
+    "report_evidence_index_v1",
     "report_payout_report_v1",
     "report_bundle",
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 265,
+  "plugin_count": 275,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -1766,6 +1818,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_bsts_intervention_counterfactual_v1",
       "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_bundled_donations_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_cross_dataset"
+      ],
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Bundled Donations v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Bundled Donations v1",
+      "plugin_id": "analysis_bundled_donations_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -2184,6 +2251,21 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_constraints_violation_detector_v1",
       "plugin_id": "analysis_constraints_violation_detector_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_contribution_limit_flags_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_cross_dataset"
+      ],
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Contribution Limit Flags v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Contribution Limit Flags v1",
+      "plugin_id": "analysis_contribution_limit_flags_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -3856,6 +3938,23 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_process_server_levers_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp",
+        "needs_host"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
+      ],
+      "description": "Model dynamic +1 server and assignment tradeoffs for process-specific close contention.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dynamic Process/Server Lever Modeling",
+      "plugin_id": "analysis_process_server_levers_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_proportional_hazards_duration": {
       "capabilities": [],
       "depends_on": [
@@ -4002,6 +4101,22 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "analysis_recurrence_quantification_rqa_v1",
       "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_red_flags_refined_v1": {
+      "capabilities": [
+        "needs_cross_dataset"
+      ],
+      "depends_on": [
+        "analysis_bundled_donations_v1",
+        "analysis_contribution_limit_flags_v1",
+        "analysis_vendor_politician_timing_permutation_v1"
+      ],
+      "description": "Red Flags Refined v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Red Flags Refined v1",
+      "plugin_id": "analysis_red_flags_refined_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
@@ -4794,6 +4909,36 @@
       "type": "analysis",
       "version": "0.1.0"
     },
+    "analysis_vendor_influence_breadth_v1": {
+      "capabilities": [
+        "needs_cross_dataset"
+      ],
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Vendor Influence Breadth v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Vendor Influence Breadth v1",
+      "plugin_id": "analysis_vendor_influence_breadth_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_vendor_politician_timing_permutation_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_cross_dataset",
+        "needs_timestamp"
+      ],
+      "depends_on": [
+        "transform_cross_dataset_link_graph_v1"
+      ],
+      "description": "Vendor Politician Timing Permutation v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Vendor Politician Timing Permutation v1",
+      "plugin_id": "analysis_vendor_politician_timing_permutation_v1",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
     "analysis_waterfall_summary_v2": {
       "capabilities": [
         "needs_artifacts"
@@ -4856,6 +5001,19 @@
       "name": "Changepoint Detection v1",
       "plugin_id": "changepoint_detection_v1",
       "type": "analysis",
+      "version": "0.1.0"
+    },
+    "ingest_sql_dump_v1": {
+      "capabilities": [
+        "needs_file",
+        "needs_sql_dump"
+      ],
+      "depends_on": [],
+      "description": "SQL Dump Ingest v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "SQL Dump Ingest v1",
+      "plugin_id": "ingest_sql_dump_v1",
+      "type": "ingest",
       "version": "0.1.0"
     },
     "ingest_tabular": {
@@ -4985,6 +5143,20 @@
       "type": "report",
       "version": "0.1.0"
     },
+    "report_evidence_index_v1": {
+      "capabilities": [
+        "needs_reporting"
+      ],
+      "depends_on": [
+        "analysis_red_flags_refined_v1"
+      ],
+      "description": "Evidence Index v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Evidence Index v1",
+      "plugin_id": "report_evidence_index_v1",
+      "type": "report",
+      "version": "0.1.0"
+    },
     "report_payout_report_v1": {
       "capabilities": [
         "needs_time",
@@ -5026,6 +5198,34 @@
       "name": "Slide Kit Emitter v2",
       "plugin_id": "report_slide_kit_emitter_v2",
       "type": "report",
+      "version": "0.1.0"
+    },
+    "transform_cross_dataset_link_graph_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_cross_dataset"
+      ],
+      "depends_on": [
+        "transform_entity_resolution_map_v1"
+      ],
+      "description": "Cross Dataset Link Graph v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Cross Dataset Link Graph v1",
+      "plugin_id": "transform_cross_dataset_link_graph_v1",
+      "type": "transform",
+      "version": "0.1.0"
+    },
+    "transform_entity_resolution_map_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_cross_dataset"
+      ],
+      "depends_on": [],
+      "description": "Entity Resolution Map v1",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Entity Resolution Map v1",
+      "plugin_id": "transform_entity_resolution_map_v1",
+      "type": "transform",
       "version": "0.1.0"
     },
     "transform_normalize_mixed": {

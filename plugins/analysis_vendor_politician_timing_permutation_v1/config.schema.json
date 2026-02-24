@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "amount_field": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "award_date_field": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "batch_size": {
+      "default": 100000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "candidate_id_field": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contracts_dataset_version_id": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contributions_dataset_version_id": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cross_links_path": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "donation_date_field": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_permutations": {
+      "default": 5000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "min_donations": {
+      "default": 3,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "n_permutations": {
+      "default": 2000,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "rng_seed": {
+      "default": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "top_k": {
+      "default": 200,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "vendor_field": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

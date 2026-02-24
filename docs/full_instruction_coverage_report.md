@@ -1,8 +1,8 @@
 # Full Instruction Coverage Report
 
-- Source files scanned: 70
-- Requirement/reference items scanned: 2207
-- Missing/incomplete items detected: 9
+- Source files scanned: 73
+- Requirement/reference items scanned: 2523
+- Missing/incomplete items detected: 28
 
 ## Matrix Status
 - binding_missing_any: False
@@ -16,6 +16,25 @@
 | source | line | type | missing_paths | unresolved_plugins | todo_marker |
 |---|---:|---|---:|---:|---:|
 | `codex_kona_route_updates.md` | 623 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 76 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 87 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 112 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 124 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 135 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 139 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 197 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 209 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 229 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 240 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 251 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 263 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 276 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 296 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 327 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 337 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 365 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 376 | reference_text | 1 | 0 | 0 |
+| `docs/openplanter-cross-dataset-plugins-plan.md` | 386 | reference_text | 2 | 0 | 0 |
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 75 | reference_text | 2 | 0 | 0 |
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 147 | reference_text | 1 | 0 | 0 |
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 177 | reference_text | 1 | 0 | 0 |

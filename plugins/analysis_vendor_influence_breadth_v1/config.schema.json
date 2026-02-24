@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "cross_links_path": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "top_k": {
+      "default": 50,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "vendor_entity_type": {
+      "default": "org",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

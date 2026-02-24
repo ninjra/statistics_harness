@@ -34,6 +34,11 @@ Use it before broad searches.
 
 - Tests: `python -m pytest -q`
 - Plugin list: `stat-harness list-plugins`
+- Release gate (docs + pytest + optional run bundle): `python scripts/run_release_gate.py --run-id <run_id>`
+- Post-run evidence bundle: `python scripts/build_post_run_bundle.py --run-id <run_id> --strict`
+- Reason-code burndown (single run): `python scripts/actionability_burndown.py --run-id <run_id>`
+- Reason-code burndown delta (before/after): `python scripts/actionability_burndown.py --run-id <after_run_id> --before-run-id <before_run_id>`
+- Respectful full-run launcher: `bash scripts/start_full_loaded_dataset_bg.sh`
 - Regenerate core repo docs:
   - `python scripts/generate_codex_repo_manifest.py`
   - `python scripts/generate_codex_plugin_catalog.py`

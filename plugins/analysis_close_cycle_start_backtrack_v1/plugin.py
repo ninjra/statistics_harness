@@ -92,8 +92,10 @@ def _parse_params(text: str) -> dict[str, str]:
     return out
 
 
-def _parse_accounting_month(params: dict[str, str]) -> datetime | None:
-    return parse_accounting_month_from_params(params)
+def _parse_accounting_month(
+    params: dict[str, str], *, reference_ts: datetime | None = None
+) -> datetime | None:
+    return parse_accounting_month_from_params(params, reference_ts=reference_ts)
 
 
 def _previous_month_start(dt: datetime) -> datetime:
@@ -353,7 +355,9 @@ class Plugin:
             if pd.isna(stamp):
                 continue
             params = _parse_params(params_text)
-            acct_month = _parse_accounting_month(params)
+            acct_month = _parse_accounting_month(
+                params, reference_ts=stamp.to_pydatetime()
+            )
             if not acct_month:
                 continue
             records.append(

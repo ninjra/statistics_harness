@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array"
+    },
+    "artifacts": {
+      "type": "array"
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "row_limit",
+        "sampled",
+        "time_limit_ms",
+        "cpu_limit_ms"
+      ],
+      "properties": {
+        "row_limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sampled": {
+          "type": "boolean"
+        },
+        "time_limit_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cpu_limit_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "references": {
+      "type": "array"
+    },
+    "debug": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "metrics",
+    "findings",
+    "artifacts",
+    "budget",
+    "error",
+    "references",
+    "debug"
+  ]
+}

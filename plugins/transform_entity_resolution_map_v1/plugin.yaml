@@ -1,0 +1,28 @@
+id: transform_entity_resolution_map_v1
+name: Entity Resolution Map v1
+version: 0.1.0
+type: transform
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Entity Resolution Map v1
+  defaults:
+    datasets: {}
+    fields: []
+    batch_size: 100000
+    fuzzy_threshold: 82
+    min_token_len: 4
+    token_overlap_min_ratio: 0.6
+    min_overlap_tokens: 2
+    max_alias_rows: 200000
+capabilities:
+- needs_eventlog
+- needs_cross_dataset
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir

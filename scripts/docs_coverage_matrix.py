@@ -59,6 +59,7 @@ GENERATED_DOC_PATHS = {
     "docs/_codex_plugin_catalog.md",
     "docs/codex_statistics_harness_blueprint.md",
     "docs/plugins-validate-runbook-actionable-insights-plan.md",
+    "docs/openplanter-cross-dataset-plugins-plan.md",
 }
 
 

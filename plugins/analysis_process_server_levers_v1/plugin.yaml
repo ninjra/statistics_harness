@@ -1,0 +1,40 @@
+id: analysis_process_server_levers_v1
+name: Dynamic Process/Server Lever Modeling
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_close_cycle_window_resolver
+  - analysis_close_cycle_start_backtrack_v1
+settings:
+  description: Model dynamic +1 server and assignment tradeoffs for process-specific close contention.
+  defaults:
+    process_column: null
+    server_column: null
+    queue_column: null
+    eligible_column: null
+    start_column: null
+    end_column: null
+    duration_column: null
+    close_cycle_start_day: 20
+    close_cycle_end_day: 5
+    roll_day_fallback: 5
+    min_process_runs: 25
+    min_assignment_servers: 2
+    min_modeled_delta_hours: 0.05
+    assignment_benefit_factor: 1.0
+    assignment_penalty_scale: 0.35
+    max_processes: 10
+    max_examples: 25
+capabilities:
+  - needs_eventlog
+  - needs_timestamp
+  - needs_host
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir

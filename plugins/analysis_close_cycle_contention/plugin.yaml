@@ -37,6 +37,9 @@ settings:
     priority_processes:
       - qemail
       - qpec
+    priority_min_close_runs: 10
+    priority_min_modeled_pct: 0.05
+    priority_window_gain_ratio: 1.25
 capabilities:
   - needs_eventlog
   - needs_timestamp

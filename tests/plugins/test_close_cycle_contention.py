@@ -208,3 +208,66 @@ def test_close_cycle_contention_normalizes_qemail_aliases(run_dir):
     ]
     assert qemail_findings
     assert all(str(item.get("process") or "") == "qemail" for item in qemail_findings)
+
+
+def test_close_cycle_contention_priority_fallback_uses_configured_window(run_dir):
+    rows = []
+    for day in range(1, 18):
+        date = dt.datetime(2026, 1, day, 8, 0, 0)
+        for idx in range(30):
+            rows.append(
+                {
+                    "process": "other_job",
+                    "timestamp": date + dt.timedelta(minutes=idx),
+                    "duration": 60,
+                    "server": "qpec1",
+                    "params": "job=main",
+                }
+            )
+    for day in range(20, 27):
+        date = dt.datetime(2026, 1, day, 8, 0, 0)
+        for idx in range(10):
+            rows.append(
+                {
+                    "process": "other_job",
+                    "timestamp": date + dt.timedelta(minutes=idx),
+                    "duration": 60,
+                    "server": "qpec1",
+                    "params": "job=main",
+                }
+            )
+        for idx in range(25):
+            rows.append(
+                {
+                    "process": "qemail",
+                    "timestamp": date + dt.timedelta(minutes=100 + idx),
+                    "duration": 1,
+                    "server": "qpec1",
+                    "params": "noop=true",
+                }
+            )
+
+    df = pd.DataFrame(rows)
+    df["timestamp"] = df["timestamp"].astype(str)
+    settings = {
+        "priority_min_close_runs": 5,
+        "priority_min_modeled_pct": 0.05,
+        "priority_window_gain_ratio": 1.05,
+        "modeled_backstop_min_close_runs": 1000,
+    }
+    ctx = make_context(run_dir, df, settings)
+    result = Plugin().run(ctx)
+    assert result.status == "ok"
+    qemail_findings = [
+        item
+        for item in result.findings
+        if item.get("kind") == "close_cycle_contention"
+        and str(item.get("process_norm") or "").lower() == "qemail"
+    ]
+    assert qemail_findings
+    qemail = qemail_findings[0]
+    assert qemail.get("modeled_assumption") == "priority_process_hybrid_share_backstop"
+    assert qemail.get("window_source") == "configured_default_window"
+    assert float(qemail.get("run_share_pct") or 0.0) > float(
+        qemail.get("service_share_pct") or 0.0
+    )
