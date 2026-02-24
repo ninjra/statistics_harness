@@ -1219,7 +1219,7 @@ That plan is already aligned to:
   6: 
   7: ## Assumptions
   8: 
-  9: * Analysis is based **only** on `repomix-output.md`; no runtime execution or external context.
+  9: * Analysis is based **only** on `generated repository snapshot artifact`; no runtime execution or external context.
  10: * Default posture is **local-only**; any networked/hosted behavior stays behind explicit flags.
  11: * Primary environment is **Windows 11 + heavy WSL2 + Python**; path/rename semantics must be Windows-safe.
  12: * Plugins are **semi-trusted**: treated as potentially buggy/malicious, so sandbox + provenance must be strong.

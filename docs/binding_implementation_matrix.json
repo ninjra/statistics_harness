@@ -131,7 +131,7 @@
         "transform_normalize_mixed"
       ],
       "referenced_paths": [
-        "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+        "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
         "docs/report.schema.json",
         "scripts/audit_plugin_actionability.py",
         "scripts/finalize_optimal_4pillars.py",

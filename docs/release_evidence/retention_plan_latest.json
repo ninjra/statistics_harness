@@ -1,0 +1,889 @@
+{
+  "apply": {
+    "deleted_count": 15,
+    "deleted_files": [
+      "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.csv",
+      "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.json",
+      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.csv",
+      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.json",
+      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.stdout.json",
+      "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
+      "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
+      "docs/release_evidence/optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "docs/release_evidence/optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "docs/release_evidence/optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
+      "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
+      "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+      "docs/release_evidence/verify_contract_debug_fg_baseline_20260221T1923Z.json",
+      "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json"
+    ],
+    "failed_count": 0,
+    "failed_files": [],
+    "missing_count": 0,
+    "missing_files": []
+  },
+  "db_path": "/mnt/d/projects/statistics_harness/statistics_harness/appdata/state.sqlite",
+  "evidence_dir": "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence",
+  "generated_at_utc": "2026-02-24T18:11:47.509652+00:00",
+  "keep_files": [
+    {
+      "file": "docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.csv",
+      "name": "actionability_71883748cf2243839eb0bfddb6b2d61e.csv",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "71883748cf2243839eb0bfddb6b2d61e"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.json",
+      "name": "actionability_71883748cf2243839eb0bfddb6b2d61e.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "71883748cf2243839eb0bfddb6b2d61e"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.stdout.json",
+      "name": "actionability_71883748cf2243839eb0bfddb6b2d61e.stdout.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "71883748cf2243839eb0bfddb6b2d61e"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_audit_baseline_20260223d.csv",
+      "name": "actionability_audit_baseline_20260223d.csv",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/actionability_audit_baseline_20260223d.json",
+      "name": "actionability_audit_baseline_20260223d.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.json",
+      "name": "actionability_burndown_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.md",
+      "name": "actionability_burndown_baseline_full_pslever_20260224a.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
+      "name": "actionability_burndown_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
+      "name": "actionability_burndown_baseline_full_with_runbook30_probe.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.csv",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "d53963415b994c59b41e9ef5e23710e6"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "d53963415b994c59b41e9ef5e23710e6"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "d53963415b994c59b41e9ef5e23710e6"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_thresholds.md",
+      "name": "actionability_thresholds.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json",
+      "name": "autonomous_insight_baseline_snapshot_20260217.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/baseline_before_after_leftfield_diff.json",
+      "name": "baseline_before_after_leftfield_diff.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/baseline_before_vs_fullset_after.json",
+      "name": "baseline_before_vs_fullset_after.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/bundle_baseline_full_pslever_20260224a.json",
+      "name": "bundle_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
+      "name": "bundle_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_20260223b_to_probe.json",
+      "name": "compare_actionability_baseline_20260223b_to_probe.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_before_vs_now.json",
+      "name": "compare_actionability_baseline_before_vs_now.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_vs_synth6m_route_plan.json",
+      "name": "compare_actionability_baseline_vs_synth6m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_vs_synth6mo.json",
+      "name": "compare_actionability_baseline_vs_synth6mo.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_vs_synth8m_route_plan.json",
+      "name": "compare_actionability_baseline_vs_synth8m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_actionability_baseline_vs_synth8mo.json",
+      "name": "compare_actionability_baseline_vs_synth8mo.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_kona_route_baseline_vs_synth6m_route_plan.json",
+      "name": "compare_kona_route_baseline_vs_synth6m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_kona_route_baseline_vs_synth6m_route_plan.md",
+      "name": "compare_kona_route_baseline_vs_synth6m_route_plan.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_kona_route_baseline_vs_synth8m_route_plan.json",
+      "name": "compare_kona_route_baseline_vs_synth8m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_kona_route_baseline_vs_synth8m_route_plan.md",
+      "name": "compare_kona_route_baseline_vs_synth8m_route_plan.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_20260223b_to_20260223d.json",
+      "name": "compare_outputs_baseline_20260223b_to_20260223d.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_20260223b_to_probe.json",
+      "name": "compare_outputs_baseline_20260223b_to_probe.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_before_vs_now.json",
+      "name": "compare_outputs_baseline_before_vs_now.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_debug1923_vs_7188.json",
+      "name": "compare_outputs_baseline_debug1923_vs_7188.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_debug1923_vs_d539.json",
+      "name": "compare_outputs_baseline_debug1923_vs_d539.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_dryrun1630_vs_debug1923.json",
+      "name": "compare_outputs_baseline_dryrun1630_vs_debug1923.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_vs_synth6m_route_plan.json",
+      "name": "compare_outputs_baseline_vs_synth6m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_vs_synth6mo.json",
+      "name": "compare_outputs_baseline_vs_synth6mo.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_vs_synth8m_route_plan.json",
+      "name": "compare_outputs_baseline_vs_synth8m_route_plan.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/compare_outputs_baseline_vs_synth8mo.json",
+      "name": "compare_outputs_baseline_vs_synth8mo.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_full_pslever_20260224a.json",
+      "name": "contract_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
+      "name": "contract_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_18b6_to_d539.json",
+      "name": "diff_18b6_to_d539.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_eb325f_to_a8fdd_baseline.json",
+      "name": "diff_eb325f_to_a8fdd_baseline.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/diff_routeplan_20260222b_to_20260223b.json",
+      "name": "diff_routeplan_20260222b_to_20260223b.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/diff_routeplan_20260223b_to_20260223d.json",
+      "name": "diff_routeplan_20260223b_to_20260223d.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/golden_release_summary.json",
+      "name": "golden_release_summary.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/golden_release_summary.md",
+      "name": "golden_release_summary.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md",
+      "name": "hotspots_baseline_full_pslever_20260224a.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
+      "name": "hotspots_baseline_full_with_runbook30_probe.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
+      "name": "hotspots_before_baseline_full_with_runbook30_probe.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/kona_route_requirement_map.json",
+      "name": "kona_route_requirement_map.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/kona_route_skill_rationale.md",
+      "name": "kona_route_skill_rationale.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_before_after.json",
+      "name": "non_actionable_reason_before_after.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_before_after.md",
+      "name": "non_actionable_reason_before_after.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/openplanter_pack_release_gate.json",
+      "name": "openplanter_pack_release_gate.json",
+      "reason": "pinned_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugin_contract_baseline_full_pslever_20260224a.json",
+      "name": "plugin_contract_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
+      "name": "plugin_contract_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_dependency_matrix.csv",
+      "name": "plugins_validate_runbook_dependency_matrix.csv",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_map.json",
+      "name": "plugins_validate_runbook_technique_map.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_map.md",
+      "name": "plugins_validate_runbook_technique_map.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/01_conformal_prediction.md",
+      "name": "01_conformal_prediction.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/02_false_discovery_rate_benjamini_hochberg.md",
+      "name": "02_false_discovery_rate_benjamini_hochberg.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/03_bca_bootstrap_confidence_intervals.md",
+      "name": "03_bca_bootstrap_confidence_intervals.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/04_knockoff_filter.md",
+      "name": "04_knockoff_filter.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/05_quantile_regression.md",
+      "name": "05_quantile_regression.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/06_lasso.md",
+      "name": "06_lasso.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/07_elastic_net.md",
+      "name": "07_elastic_net.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/08_random_forests.md",
+      "name": "08_random_forests.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/09_gradient_boosting_machine.md",
+      "name": "09_gradient_boosting_machine.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/10_isolation_forest.md",
+      "name": "10_isolation_forest.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/11_local_outlier_factor_lof.md",
+      "name": "11_local_outlier_factor_lof.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/12_minimum_covariance_determinant_mcd.md",
+      "name": "12_minimum_covariance_determinant_mcd.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/13_huber_m_estimator.md",
+      "name": "13_huber_m_estimator.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/14_gaussian_process_regression.md",
+      "name": "14_gaussian_process_regression.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/15_generalized_additive_models_gam.md",
+      "name": "15_generalized_additive_models_gam.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/16_mixed_effects_random_effects_models.md",
+      "name": "16_mixed_effects_random_effects_models.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/17_cox_proportional_hazards.md",
+      "name": "17_cox_proportional_hazards.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/18_bayesian_additive_regression_trees_bart.md",
+      "name": "18_bayesian_additive_regression_trees_bart.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/19_dirichlet_process_nonparametric_bayes.md",
+      "name": "19_dirichlet_process_nonparametric_bayes.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/20_hidden_markov_models_hmm.md",
+      "name": "20_hidden_markov_models_hmm.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/21_kalman_filter.md",
+      "name": "21_kalman_filter.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/22_granger_causality.md",
+      "name": "22_granger_causality.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/23_transfer_entropy.md",
+      "name": "23_transfer_entropy.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/24_knn_mutual_information_estimator.md",
+      "name": "24_knn_mutual_information_estimator.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/25_independent_component_analysis_ica.md",
+      "name": "25_independent_component_analysis_ica.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/26_non_negative_matrix_factorization_nmf.md",
+      "name": "26_non_negative_matrix_factorization_nmf.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/27_t_sne.md",
+      "name": "27_t_sne.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/28_umap.md",
+      "name": "28_umap.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/29_notears.md",
+      "name": "29_notears.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/30_mice_chained_equations_imputation.md",
+      "name": "30_mice_chained_equations_imputation.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/plugins_validate_runbook_technique_specs/README.md",
+      "name": "README.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json",
+      "name": "release_gate_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json",
+      "name": "release_gate_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/retention_plan_latest.json",
+      "name": "retention_plan_latest.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
+      "file": "docs/release_evidence/top_recommendations_baseline_full_pslever_20260224a.json",
+      "name": "top_recommendations_baseline_full_pslever_20260224a.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
+      "name": "top_recommendations_baseline_full_with_runbook30_probe.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_71883748cf2243839eb0bfddb6b2d61e.json",
+      "name": "verify_contract_71883748cf2243839eb0bfddb6b2d61e.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "71883748cf2243839eb0bfddb6b2d61e"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
+      "name": "verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
+      "reason": "references_kept_run_ids",
+      "referenced_run_ids": [
+        "d53963415b994c59b41e9ef5e23710e6"
+      ]
+    }
+  ],
+  "keep_per_dataset": 3,
+  "kept_runs_by_dataset": {
+    "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a": [
+      "baseline_full_pslever_20260224a",
+      "baseline_full_with_runbook30_20260223b",
+      "baseline_full_with_runbook30_probe"
+    ],
+    "d1cf34daa3ad6289468136707d204d486245dfc46b8f4a3212111f4308cdbf39": [
+      "71883748cf2243839eb0bfddb6b2d61e",
+      "route_plan_synth8m_20260222a"
+    ],
+    "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66": [
+      "d53963415b994c59b41e9ef5e23710e6",
+      "route_plan_synth6m_20260222a",
+      "route_plan_synth6m_20260222b"
+    ]
+  },
+  "pin_files": [
+    "openplanter_pack_release_gate.json"
+  ],
+  "pin_run_ids": [],
+  "prune_files": [
+    {
+      "file": "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.csv",
+      "name": "actionability_debug_fg_baseline_20260221T1923Z.csv",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "debug_fg_baseline_20260221T1923Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.json",
+      "name": "actionability_debug_fg_baseline_20260221T1923Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "debug_fg_baseline_20260221T1923Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.csv",
+      "name": "actionability_dryrun_debug_20260221T1630Z.csv",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "dryrun_debug_20260221T1630Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.json",
+      "name": "actionability_dryrun_debug_20260221T1630Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "dryrun_debug_20260221T1630Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.stdout.json",
+      "name": "actionability_dryrun_debug_20260221T1630Z.stdout.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "dryrun_debug_20260221T1630Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
+      "name": "optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_actionable_sync_20260220T2310Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
+      "name": "optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_actionable_sync_20260220T2310Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "name": "optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_actionable_sync_20260220T180352Z",
+        "baseline_optimal_20260221T0210Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "name": "optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_actionable_sync_20260220T180352Z",
+        "baseline_optimal_20260221T0210Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "name": "optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_optimal_20260221T0210Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
+      "name": "optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_optimal_20260221T0210Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
+      "name": "plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "full_loaded_debug_20260219T1700Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+      "name": "plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "full_loaded_debug_20260219T1700Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_debug_fg_baseline_20260221T1923Z.json",
+      "name": "verify_contract_debug_fg_baseline_20260221T1923Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "debug_fg_baseline_20260221T1923Z"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json",
+      "name": "verify_contract_full_loaded_debug_20260219T1700Z.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "full_loaded_debug_20260219T1700Z"
+      ]
+    }
+  ],
+  "schema_version": "release_evidence_retention_plan.v1",
+  "stats": {
+    "file_count": 120,
+    "keep_file_count": 105,
+    "kept_run_id_count": 8,
+    "known_run_id_count": 229,
+    "prune_file_count": 15,
+    "run_count": 229
+  }
+}

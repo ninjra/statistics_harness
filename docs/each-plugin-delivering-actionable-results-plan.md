@@ -37,7 +37,7 @@ Why: ensure stability under full load and prevent hidden hangs.
   - `appdata/runs/baseline_optimal_20260221T0210Z/report.json`
   - `appdata/state.sqlite`
 - Frozen baseline artifact lock (must be created before any remediation):
-  - `docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json`
+  - `docs/release_evidence/contract_baseline_full_with_runbook30_probe.json`
   - includes file hashes for report, answers summary, and source DB snapshot metadata.
 - Actionability engine files:
   - `src/statistic_harness/core/report.py`

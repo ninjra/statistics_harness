@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 PLUGINS = ROOT / "plugins"
 EXCLUDED_GENERATED_NAMES = {
-    "repomix-output.md",
+    "generated repository snapshot artifact",
     "implementation_matrix.md",
     "binding_implementation_matrix.md",
     "full_instruction_coverage_report.json",

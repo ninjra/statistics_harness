@@ -10,6 +10,7 @@
 .aider.tags.cache.v4/ee/93/3942ce49f7e4a63d19e171675cdf.val
 .aider.tags.cache.v4/f1/3a/1525d37b29cfdb652271db5b6694.val
 .codex/STATE.md
+.github/workflows/repo-hygiene.yml
 .gitignore
 .gitkeep
 .pip-tmp/http-v2/0/4/1/8/c/0418c83b80f7f7bfaec2738bfbbee53d2c1562196c0781702f6eddc8
@@ -7169,6 +7170,7 @@ codex/PROJECT_SPEC.md
 codex_kona_route_updates.md
 config/actionability_thresholds.yaml
 config/app.yaml
+config/repo_cleanup/tracked_binary_allowlist.txt
 conftest.py
 docs/4_pillars_scoring_spec.md
 docs/_codex_plugin_catalog.md
@@ -7341,6 +7343,8 @@ docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md
 docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md
 docs/release_evidence/kona_route_requirement_map.json
 docs/release_evidence/kona_route_skill_rationale.md
+docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json
+docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md
 docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json
 docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md
 docs/release_evidence/non_actionable_reason_before_after.json
@@ -7391,6 +7395,8 @@ docs/release_evidence/plugins_validate_runbook_technique_specs/29_notears.md
 docs/release_evidence/plugins_validate_runbook_technique_specs/30_mice_chained_equations_imputation.md
 docs/release_evidence/plugins_validate_runbook_technique_specs/README.md
 docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json
+docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json
+docs/release_evidence/retention_plan_latest.json
 docs/release_evidence/top_recommendations_baseline_full_pslever_20260224a.json
 docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json
 docs/release_evidence/verify_contract_71883748cf2243839eb0bfddb6b2d61e.json
@@ -7437,6 +7443,8 @@ docs/top20_additional_methods_plugins_matrix.json
 docs/top20_additional_methods_plugins_matrix.md
 g
 get
+package-lock.json
+package.json
 plugins/__init__.py
 plugins/analysis_action_search_mip_batched_scheduler_v1/config.schema.json
 plugins/analysis_action_search_mip_batched_scheduler_v1/output.schema.json
@@ -8690,7 +8698,7 @@ plugins/transform_template/plugin.yaml
 pyproject.toml
 pytest.ini
 r
-repomix-output.md
+generated repository snapshot artifact
 s
 scripts/actionability_burndown.py
 scripts/api_smoke.py
@@ -8756,6 +8764,7 @@ scripts/plugin_functional_audit.py
 scripts/plugins_functionality_matrix.py
 scripts/print_table_schema.py
 scripts/promote_sql_pack.py
+scripts/prune_release_evidence.py
 scripts/purge_datasets_except.py
 scripts/push_repo.ps1
 scripts/rank_streaming_offenders.py
@@ -9433,6 +9442,7 @@ tests/test_plugins_validate_runbook_technique_specs.py
 tests/test_process_filters.py
 tests/test_process_matcher.py
 tests/test_profile_basic.py
+tests/test_prune_release_evidence.py
 tests/test_quorum_evaluation.py
 tests/test_raw_format_mappings.py
 tests/test_recommendation_controls_env.py
@@ -9500,6 +9510,7 @@ tools/cr.cmd
 tools/cx.cmd
 tools/cx.sh
 tools/cyberpunk_style_probe.py
+tools/repo_hygiene/verify_repo_cleanup_policy.py
 tools/sitecustomize.py
 tools/wslmem.ps1
 unimplemented/codex_decision_report_v2.md
