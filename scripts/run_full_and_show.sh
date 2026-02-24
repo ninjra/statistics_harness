@@ -17,3 +17,5 @@ INTERVAL_SECONDS="${3:-30}"
 bash scripts/watch_run_until_done.sh "$RUN_ID" "$INTERVAL_SECONDS"
 .venv/bin/python scripts/show_actionable_results.py --run-id "$RUN_ID"
 
+EVIDENCE_KEEP_PER_DATASET="${STAT_HARNESS_EVIDENCE_KEEP_PER_DATASET:-3}"
+.venv/bin/python scripts/prune_release_evidence.py --keep-per-dataset "$EVIDENCE_KEEP_PER_DATASET" --pin-run-id "$RUN_ID" --apply --out-json docs/release_evidence/retention_plan_latest.json
