@@ -1,13 +1,13 @@
 {
   "contract_counts": {
     "artifact_only": 27,
-    "dataset_loader": 189,
+    "dataset_loader": 190,
     "iter_batches": 0,
     "orchestration_only": 52,
     "sql_assist": 3,
     "sql_direct": 3
   },
-  "plugin_count": 274,
+  "plugin_count": 275,
   "plugins": [
     {
       "access_contracts": [
@@ -3160,6 +3160,24 @@
       "uses_dataset_loader": false,
       "uses_dataset_loader_bounded": false,
       "uses_dataset_loader_unbounded": false,
+      "uses_sql_assist": false,
+      "uses_sql_direct": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "contract_sources": [
+        "detected:dataset_loader"
+      ],
+      "dataset_loader_mode": "unbounded",
+      "plugin_id": "analysis_process_server_levers_v1",
+      "plugin_type": "analysis",
+      "unclassified": false,
+      "uses_dataset_iter_batches": false,
+      "uses_dataset_loader": true,
+      "uses_dataset_loader_bounded": false,
+      "uses_dataset_loader_unbounded": true,
       "uses_sql_assist": false,
       "uses_sql_direct": false
     },

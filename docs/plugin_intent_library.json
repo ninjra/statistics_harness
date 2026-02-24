@@ -3,11 +3,11 @@
     "by_sql_intent": {
       "not_applicable": 83,
       "optional": 1,
-      "recommended": 187,
+      "recommended": 188,
       "required": 3
     },
     "by_type": {
-      "analysis": 255,
+      "analysis": 256,
       "ingest": 2,
       "llm": 2,
       "planner": 1,
@@ -17,7 +17,7 @@
     }
   },
   "generated_by": "scripts/generate_plugin_intent_library.py",
-  "plugin_count": 274,
+  "plugin_count": 275,
   "plugins": [
     {
       "access_contracts": [
@@ -3756,6 +3756,31 @@
       "sql_intent": "not_applicable",
       "sql_intent_source": "default",
       "uses_sql_effective": false
+    },
+    {
+      "access_contracts": [
+        "dataset_loader"
+      ],
+      "capabilities": [
+        "needs_eventlog",
+        "needs_host",
+        "needs_timestamp"
+      ],
+      "config_schema_path": "plugins/analysis_process_server_levers_v1/config.schema.json",
+      "depends_on": [
+        "analysis_close_cycle_start_backtrack_v1",
+        "analysis_close_cycle_window_resolver"
+      ],
+      "description": "Model dynamic +1 server and assignment tradeoffs for process-specific close contention.",
+      "entrypoint": "plugin.py:Plugin",
+      "manifest_path": "plugins/analysis_process_server_levers_v1/plugin.yaml",
+      "name": "Dynamic Process/Server Lever Modeling",
+      "output_schema_path": "plugins/analysis_process_server_levers_v1/output.schema.json",
+      "plugin_id": "analysis_process_server_levers_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql_effective": true
     },
     {
       "access_contracts": [

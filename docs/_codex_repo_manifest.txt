@@ -8191,6 +8191,10 @@ plugins/analysis_process_sequence_bottlenecks/config.schema.json
 plugins/analysis_process_sequence_bottlenecks/output.schema.json
 plugins/analysis_process_sequence_bottlenecks/plugin.py
 plugins/analysis_process_sequence_bottlenecks/plugin.yaml
+plugins/analysis_process_server_levers_v1/config.schema.json
+plugins/analysis_process_server_levers_v1/output.schema.json
+plugins/analysis_process_server_levers_v1/plugin.py
+plugins/analysis_process_server_levers_v1/plugin.yaml
 plugins/analysis_proportional_hazards_duration/__init__.py
 plugins/analysis_proportional_hazards_duration/config.schema.json
 plugins/analysis_proportional_hazards_duration/output.schema.json
@@ -9279,6 +9283,7 @@ tests/plugins/test_prefixspan_v1.py
 tests/plugins/test_process_counterfactuals.py
 tests/plugins/test_process_sequence.py
 tests/plugins/test_process_sequence_bottlenecks.py
+tests/plugins/test_process_server_levers.py
 tests/plugins/test_profile_eventlog.py
 tests/plugins/test_queue_delay_decomposition.py
 tests/plugins/test_queue_simulator_v1.py

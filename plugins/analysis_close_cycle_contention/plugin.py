@@ -136,6 +136,12 @@ def _process_label_for_finding(process_norm: str, fallback_label: str) -> str:
     return fallback_label
 
 
+def _day_window_mask(day_series: pd.Series, start_day: int, end_day: int) -> pd.Series:
+    if start_day <= end_day:
+        return (day_series >= start_day) & (day_series <= end_day)
+    return (day_series >= start_day) | (day_series <= end_day)
+
+
 class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
@@ -461,12 +467,14 @@ class Plugin:
 
         close_mode = str(ctx.settings.get("close_cycle_mode", "infer")).lower()
         window_days = int(ctx.settings.get("close_cycle_window_days", 17))
+        configured_close_start = int(ctx.settings.get("close_cycle_start_day", 20))
+        configured_close_end = int(ctx.settings.get("close_cycle_end_day", 5))
         inferred_start, inferred_end = infer_close_cycle_window(
             work["__timestamp"], window_days
         )
         if close_mode == "fixed":
-            close_start = int(ctx.settings.get("close_cycle_start_day", inferred_start))
-            close_end = int(ctx.settings.get("close_cycle_end_day", inferred_end))
+            close_start = configured_close_start
+            close_end = configured_close_end
             close_source = "fixed"
         else:
             close_start = inferred_start
@@ -521,6 +529,18 @@ class Plugin:
             for value in priority_processes_raw
             if _canonical_process(value)
         }
+        priority_min_close_runs = int(
+            ctx.settings.get("priority_min_close_runs", max(5, min_close_count // 2))
+        )
+        priority_min_modeled_pct = float(
+            ctx.settings.get(
+                "priority_min_modeled_pct",
+                max(0.01, modeled_backstop_min_pct * 0.5),
+            )
+        )
+        priority_window_gain_ratio = float(
+            ctx.settings.get("priority_window_gain_ratio", 1.25)
+        )
 
         work["__day"] = work["__timestamp"].dt.day
         work["__date"] = work["__timestamp"].dt.date
@@ -557,17 +577,10 @@ class Plugin:
         close_rows = int(work["__close"].sum())
         open_rows = int(len(work) - close_rows)
         if close_mode != "fixed" and (close_rows < min_close_count or open_rows < min_open_count):
-            close_start = int(ctx.settings.get("close_cycle_start_day", close_start))
-            close_end = int(ctx.settings.get("close_cycle_end_day", close_end))
+            close_start = configured_close_start
+            close_end = configured_close_end
             close_source = "inferred_fallback"
-            if close_start <= close_end:
-                work["__close_default"] = (work["__day"] >= close_start) & (
-                    work["__day"] <= close_end
-                )
-            else:
-                work["__close_default"] = (work["__day"] >= close_start) | (
-                    work["__day"] <= close_end
-                )
+            work["__close_default"] = _day_window_mask(work["__day"], close_start, close_end)
             work["__close"] = work["__close_default"]
             dynamic_available = False
             close_rows_default = int(work["__close_default"].sum())
@@ -575,6 +588,9 @@ class Plugin:
             close_rows = int(work["__close"].sum())
         if dynamic_available:
             close_source = "dynamic_resolver"
+        work["__close_configured"] = _day_window_mask(
+            work["__day"], configured_close_start, configured_close_end
+        )
 
         counts = (
             work.groupby(["__process_norm", "__close"]).size().unstack(fill_value=0)
@@ -1102,6 +1118,184 @@ class Plugin:
             existing_findings.add(proc_norm)
             arrival_added += 1
 
+        priority_diagnostics: list[dict[str, Any]] = []
+        for proc_norm in sorted(priority_processes):
+            if not proc_norm:
+                continue
+            process_mask = work["__process_norm"] == proc_norm
+            total_count = int(process_mask.sum())
+            if total_count <= 0:
+                priority_diagnostics.append(
+                    {
+                        "process_norm": proc_norm,
+                        "status": "not_present",
+                        "reason": "process_not_present_in_dataset",
+                    }
+                )
+                continue
+
+            dynamic_close_count = int((process_mask & work["__close"]).sum())
+            configured_close_count = int((process_mask & work["__close_configured"]).sum())
+            selected_close_col = "__close"
+            selected_window_source = close_source
+            if (
+                configured_close_count >= priority_min_close_runs
+                and configured_close_count
+                > max(dynamic_close_count, 0) * priority_window_gain_ratio
+            ):
+                selected_close_col = "__close_configured"
+                selected_window_source = "configured_default_window"
+
+            selected_close_count = int((process_mask & work[selected_close_col]).sum())
+            selected_open_count = int(total_count - selected_close_count)
+            diag_entry: dict[str, Any] = {
+                "process_norm": proc_norm,
+                "status": "pending",
+                "selected_window_source": selected_window_source,
+                "dynamic_close_count": dynamic_close_count,
+                "configured_close_count": configured_close_count,
+                "selected_close_count": selected_close_count,
+                "selected_open_count": selected_open_count,
+            }
+
+            if proc_norm in existing_findings:
+                diag_entry["status"] = "already_emitted"
+                diag_entry["reason"] = "existing_finding_present"
+                priority_diagnostics.append(diag_entry)
+                continue
+            if selected_close_count < priority_min_close_runs:
+                diag_entry["status"] = "below_min_close_runs"
+                diag_entry["reason"] = "insufficient_close_rows"
+                priority_diagnostics.append(diag_entry)
+                continue
+
+            selected_close_total_sec = float(
+                work.loc[work[selected_close_col], "__duration"].sum()
+            )
+            process_close_seconds = float(
+                work.loc[process_mask & work[selected_close_col], "__duration"].sum()
+            )
+            service_share_pct = (
+                float(process_close_seconds / selected_close_total_sec)
+                if selected_close_total_sec > 0.0
+                else 0.0
+            )
+            selected_close_rows_total = int(work[selected_close_col].sum())
+            run_share_pct = (
+                float(selected_close_count / max(selected_close_rows_total, 1))
+                if selected_close_rows_total > 0
+                else 0.0
+            )
+            modeled_reduction_pct = float(max(service_share_pct, run_share_pct))
+            if modeled_reduction_pct < priority_min_modeled_pct:
+                diag_entry["status"] = "below_min_modeled_pct"
+                diag_entry["reason"] = "insufficient_priority_impact"
+                diag_entry["modeled_reduction_pct"] = float(modeled_reduction_pct)
+                diag_entry["service_share_pct"] = float(service_share_pct)
+                diag_entry["run_share_pct"] = float(run_share_pct)
+                priority_diagnostics.append(diag_entry)
+                continue
+
+            close_other = work.loc[
+                work[selected_close_col] & (work["__process_norm"] != proc_norm),
+                "__duration",
+            ]
+            open_other = work.loc[
+                (~work[selected_close_col]) & (work["__process_norm"] != proc_norm),
+                "__duration",
+            ]
+            median_close = float(close_other.median()) if not close_other.empty else 0.0
+            median_open = float(open_other.median()) if not open_other.empty else 0.0
+            slowdown_ratio = (
+                float(median_close / median_open)
+                if median_open > 0.0 and median_close > 0.0
+                else 1.0
+            )
+
+            row_ids = []
+            for idx in work.loc[process_mask & work[selected_close_col]].index.tolist():
+                try:
+                    row_ids.append(int(idx))
+                except (TypeError, ValueError):
+                    continue
+            row_ids = row_ids[:max_examples]
+
+            process_label = _process_label_for_finding(
+                proc_norm,
+                process_labels.get(proc_norm, proc_norm),
+            )
+            columns = [process_col, base_timestamp_col]
+            if duration_col and duration_col in work.columns:
+                columns.append(duration_col)
+            elif start_col and end_col:
+                columns.extend([start_col, end_col])
+            if queue_col:
+                columns.append(queue_col)
+            if server_col:
+                columns.append(server_col)
+            if user_col:
+                columns.append(user_col)
+            if param_col:
+                columns.append(param_col)
+
+            modeled_reduction_hours = float(process_close_seconds / 3600.0)
+            findings.append(
+                {
+                    "kind": "close_cycle_contention",
+                    "process": process_label,
+                    "process_norm": proc_norm,
+                    "close_count": selected_close_count,
+                    "open_count": selected_open_count,
+                    "close_cycle_days": int(
+                        work.loc[process_mask & work[selected_close_col], "__date"].nunique()
+                    ),
+                    "slowdown_ratio": float(slowdown_ratio),
+                    "correlation": 0.0,
+                    "median_duration_close": float(median_close),
+                    "median_duration_open": float(median_open),
+                    "estimated_improvement_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_hours": modeled_reduction_hours,
+                    "modeled_close_total_hours": float(selected_close_total_sec / 3600.0),
+                    "modeled_without_process_hours": float(
+                        max(selected_close_total_sec - process_close_seconds, 0.0) / 3600.0
+                    ),
+                    "service_share_pct": float(service_share_pct),
+                    "run_share_pct": float(run_share_pct),
+                    "modeled_assumption": "priority_process_hybrid_share_backstop",
+                    "window_source": selected_window_source,
+                    "columns": columns,
+                    "row_ids": row_ids,
+                    "query": f"process={process_label}",
+                }
+            )
+            candidate_stats.append(
+                {
+                    "process": process_label,
+                    "process_norm": proc_norm,
+                    "close_count": selected_close_count,
+                    "open_count": selected_open_count,
+                    "close_cycle_days": int(
+                        work.loc[process_mask & work[selected_close_col], "__date"].nunique()
+                    ),
+                    "slowdown_ratio": float(slowdown_ratio),
+                    "correlation": 0.0,
+                    "estimated_improvement_pct": float(modeled_reduction_pct),
+                    "modeled_reduction_hours": modeled_reduction_hours,
+                    "service_share_pct": float(service_share_pct),
+                    "run_share_pct": float(run_share_pct),
+                    "modeled_assumption": "priority_process_hybrid_share_backstop",
+                    "window_source": selected_window_source,
+                }
+            )
+            existing_findings.add(proc_norm)
+            diag_entry["status"] = "emitted"
+            diag_entry["modeled_reduction_pct"] = float(modeled_reduction_pct)
+            diag_entry["modeled_reduction_hours"] = modeled_reduction_hours
+            diag_entry["service_share_pct"] = float(service_share_pct)
+            diag_entry["run_share_pct"] = float(run_share_pct)
+            priority_diagnostics.append(diag_entry)
+
         artifacts = []
         artifacts_dir = ctx.artifacts_dir("analysis_close_cycle_contention")
         out_path = artifacts_dir / "results.json"
@@ -1124,10 +1318,17 @@ class Plugin:
                     "close_cycle_dynamic_months": len(dynamic_windows),
                     "close_cycle_rows_default": close_rows_default,
                     "close_cycle_rows_dynamic": close_rows_dynamic,
+                    "close_cycle_rows_configured": int(work["__close_configured"].sum()),
+                    "configured_close_cycle_start_day": configured_close_start,
+                    "configured_close_cycle_end_day": configured_close_end,
                     "inferred_close_cycle_start_day": inferred_start,
                     "inferred_close_cycle_end_day": inferred_end,
                     "month_boundary_window_days": month_boundary_window_days,
                     "priority_processes": sorted(priority_processes),
+                    "priority_min_close_runs": priority_min_close_runs,
+                    "priority_min_modeled_pct": priority_min_modeled_pct,
+                    "priority_window_gain_ratio": priority_window_gain_ratio,
+                    "priority_diagnostics": priority_diagnostics,
                 },
                 "candidates": candidate_stats,
             },
@@ -1159,9 +1360,15 @@ class Plugin:
                     "close_cycle_dynamic_months": len(dynamic_windows),
                     "close_cycle_rows_default": close_rows_default,
                     "close_cycle_rows_dynamic": close_rows_dynamic,
+                    "close_cycle_rows_configured": int(work["__close_configured"].sum()),
+                    "configured_close_cycle_start_day": configured_close_start,
+                    "configured_close_cycle_end_day": configured_close_end,
                     "inferred_close_cycle_start_day": inferred_start,
                     "inferred_close_cycle_end_day": inferred_end,
                     "month_boundary_window_days": month_boundary_window_days,
+                    "priority_min_close_runs": priority_min_close_runs,
+                    "priority_min_modeled_pct": priority_min_modeled_pct,
+                    "priority_window_gain_ratio": priority_window_gain_ratio,
                 },
                 [],
                 artifacts,
@@ -1188,9 +1395,15 @@ class Plugin:
                 "close_cycle_dynamic_months": len(dynamic_windows),
                 "close_cycle_rows_default": close_rows_default,
                 "close_cycle_rows_dynamic": close_rows_dynamic,
+                "close_cycle_rows_configured": int(work["__close_configured"].sum()),
+                "configured_close_cycle_start_day": configured_close_start,
+                "configured_close_cycle_end_day": configured_close_end,
                 "inferred_close_cycle_start_day": inferred_start,
                 "inferred_close_cycle_end_day": inferred_end,
                 "month_boundary_window_days": month_boundary_window_days,
+                "priority_min_close_runs": priority_min_close_runs,
+                "priority_min_modeled_pct": priority_min_modeled_pct,
+                "priority_window_gain_ratio": priority_window_gain_ratio,
             },
             findings,
             artifacts,

@@ -660,32 +660,92 @@ def _ideaspace_families_summary(plugins: dict[str, Any]) -> list[dict[str, Any]]
     return out
 
 
-def _matches_expected(
+_PROCESS_MATCH_KEYS: tuple[str, ...] = (
+    "process",
+    "process_norm",
+    "process_name",
+    "process_id",
+    "activity",
+    "process_matches",
+)
+
+
+def _match_key_aliases(key: str) -> tuple[str, ...]:
+    token = str(key or "").strip().lower()
+    if token in _PROCESS_MATCH_KEYS:
+        return _PROCESS_MATCH_KEYS
+    return (key,)
+
+
+def _normalize_match_value(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.strip().lower()
+    return value
+
+
+def _collect_alias_values(item: dict[str, Any], key: str) -> list[Any]:
+    out: list[Any] = []
+    for alias in _match_key_aliases(key):
+        if alias in item:
+            out.append(item.get(alias))
+    return out
+
+
+def _matches_where_value(actual: Any, expected: Any) -> bool:
+    if isinstance(actual, (list, tuple, set)):
+        actual_norm = {_normalize_match_value(v) for v in actual}
+        if isinstance(expected, (list, tuple, set)):
+            expected_norm = {_normalize_match_value(v) for v in expected}
+            return expected_norm.issubset(actual_norm)
+        return _normalize_match_value(expected) in actual_norm
+    if isinstance(expected, (list, tuple, set)):
+        expected_norm = {_normalize_match_value(v) for v in expected}
+        return _normalize_match_value(actual) in expected_norm
+    return _normalize_match_value(actual) == _normalize_match_value(expected)
+
+
+def _matches_contains_value(actual: Any, expected: Any) -> bool:
+    if isinstance(actual, str):
+        actual_text = actual.strip().lower()
+        if isinstance(expected, (list, tuple, set)):
+            return all(str(token).strip().lower() in actual_text for token in expected)
+        return str(expected).strip().lower() in actual_text
+    if isinstance(actual, (list, tuple, set)):
+        actual_norm = {_normalize_match_value(v) for v in actual}
+        if isinstance(expected, (list, tuple, set)):
+            expected_norm = {_normalize_match_value(v) for v in expected}
+            return expected_norm.issubset(actual_norm)
+        return _normalize_match_value(expected) in actual_norm
+    if isinstance(expected, (list, tuple, set)):
+        expected_norm = {_normalize_match_value(v) for v in expected}
+        return _normalize_match_value(actual) in expected_norm
+    return _normalize_match_value(actual) == _normalize_match_value(expected)
+
+
+def _matches_expected_impl(
     item: dict[str, Any],
     where: dict[str, Any] | None,
     contains: dict[str, Any] | None,
 ) -> bool:
     if where:
         for key, expected in where.items():
-            actual = item.get(key)
-            if actual != expected:
+            values = _collect_alias_values(item, key)
+            if not values or not any(_matches_where_value(actual, expected) for actual in values):
                 return False
     if contains:
         for key, expected in contains.items():
-            actual = item.get(key)
-            if isinstance(actual, str):
-                if str(expected) not in actual:
-                    return False
-            elif isinstance(actual, (list, tuple, set)):
-                if isinstance(expected, (list, tuple, set)):
-                    if not set(expected).issubset(set(actual)):
-                        return False
-                else:
-                    if expected not in actual:
-                        return False
-            else:
+            values = _collect_alias_values(item, key)
+            if not values or not any(_matches_contains_value(actual, expected) for actual in values):
                 return False
     return True
+
+
+def _matches_expected(
+    item: dict[str, Any],
+    where: dict[str, Any] | None,
+    contains: dict[str, Any] | None,
+) -> bool:
+    return _matches_expected_impl(item, where, contains)
 
 
 def _collect_findings_for_plugin(
@@ -1254,6 +1314,30 @@ def _known_issue_processes(known: dict[str, Any] | None) -> set[str]:
                         if isinstance(entry, str) and entry.strip():
                             processes.add(entry.strip().lower())
     return processes
+
+
+def _sanitize_known_recommendation_exclusions(known: dict[str, Any] | None) -> None:
+    if not isinstance(known, dict):
+        return
+    required = _known_issue_processes(known)
+    if not required:
+        return
+    exclusions = known.get("recommendation_exclusions")
+    if not isinstance(exclusions, dict):
+        return
+    processes = exclusions.get("processes")
+    if not isinstance(processes, list):
+        return
+    filtered: list[str] = []
+    for entry in processes:
+        token = str(entry or "").strip()
+        if not token:
+            continue
+        if token.lower() in required:
+            continue
+        filtered.append(token)
+    exclusions["processes"] = sorted(set(filtered))
+    known["recommendation_exclusions"] = exclusions
 
 
 def _explicit_excluded_processes(report: dict[str, Any]) -> set[str]:
@@ -7763,6 +7847,8 @@ def build_report(
             exclusions["processes"] = merged
             known_payload["recommendation_exclusions"] = exclusions
 
+        _sanitize_known_recommendation_exclusions(known_payload)
+
     orchestrator_mode = "two_lane_strict"
     sys_payload = settings_payload.get("_system")
     if isinstance(sys_payload, dict):
@@ -8340,26 +8426,7 @@ def _format_findings(findings: list[Any]) -> list[str]:
 def _matches_expected(
     item: dict[str, Any], where: dict[str, Any] | None, contains: dict[str, Any] | None
 ) -> bool:
-    if where:
-        for key, expected in where.items():
-            if item.get(key) != expected:
-                return False
-    if contains:
-        for key, expected in contains.items():
-            actual = item.get(key)
-            if isinstance(actual, str):
-                if str(expected) not in actual:
-                    return False
-            elif isinstance(actual, (list, tuple, set)):
-                if isinstance(expected, (list, tuple, set)):
-                    if not set(expected).issubset(set(actual)):
-                        return False
-                else:
-                    if expected not in actual:
-                        return False
-            else:
-                return False
-    return True
+    return _matches_expected_impl(item, where, contains)
 
 
 def _format_known_issue_checks(

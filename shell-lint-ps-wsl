@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+  cat <<'EOF'
+shell-lint-ps-wsl: requires a command to lint and run.
+Usage: shell-lint-ps-wsl <cmd> [args...]
+EOF
+  exit 1
+fi
+
+printf 'shell-lint-ps-wsl: linting command: %q\n' "$@"
+"$@"

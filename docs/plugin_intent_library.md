@@ -2,7 +2,7 @@
 
 Consolidated plugin purpose and contract index generated from existing matrices/manifests.
 
-- Total plugins: 274
+- Total plugins: 275
 
 | plugin_id | type | name | depends_on | access_contracts | sql_intent | uses_sql_effective |
 |---|---|---|---:|---|---|---:|
@@ -181,6 +181,7 @@ Consolidated plugin purpose and contract index generated from existing matrices/
 | `analysis_process_drift_conformance_over_time` | analysis | Process Drift Conformance Over Time | 1 | dataset_loader | recommended | 1 |
 | `analysis_process_sequence` | analysis | Process Sequence Mining | 1 | dataset_loader | recommended | 1 |
 | `analysis_process_sequence_bottlenecks` | analysis | Process Sequence Bottlenecks | 0 | artifact_only | not_applicable | 0 |
+| `analysis_process_server_levers_v1` | analysis | Dynamic Process/Server Lever Modeling | 2 | dataset_loader | recommended | 1 |
 | `analysis_proportional_hazards_duration` | analysis | Proportional Hazards Duration | 1 | dataset_loader | recommended | 1 |
 | `analysis_quantile_loss_boosting_v1` | analysis | analysis_quantile_loss_boosting_v1 | 0 | dataset_loader | recommended | 1 |
 | `analysis_quantile_mapping_drift_qq_v1` | analysis | analysis_quantile_mapping_drift_qq_v1 | 0 | dataset_loader | recommended | 1 |

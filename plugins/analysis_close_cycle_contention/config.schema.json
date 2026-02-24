@@ -29,6 +29,9 @@
     "modeled_backstop_min_queue_wait_ratio": { "type": "number", "minimum": 1 },
     "modeled_backstop_min_boundary_overlap_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
     "month_boundary_window_days": { "type": "integer", "minimum": 0, "maximum": 10 },
-    "priority_processes": { "type": "array", "items": { "type": "string" } }
+    "priority_processes": { "type": "array", "items": { "type": "string" } },
+    "priority_min_close_runs": { "type": "integer", "minimum": 1 },
+    "priority_min_modeled_pct": { "type": "number", "minimum": 0, "maximum": 1 },
+    "priority_window_gain_ratio": { "type": "number", "minimum": 1 }
   }
 }

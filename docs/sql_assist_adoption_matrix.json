@@ -2,7 +2,7 @@
   "intent_counts": {
     "not_applicable": 83,
     "optional": 1,
-    "recommended": 187,
+    "recommended": 188,
     "required": 3
   },
   "intent_sql_coverage": {
@@ -14,10 +14,10 @@
   "intent_using_sql_counts": {
     "not_applicable": 4,
     "optional": 1,
-    "recommended": 187,
+    "recommended": 188,
     "required": 3
   },
-  "plugin_count": 274,
+  "plugin_count": 275,
   "plugins": [
     {
       "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
@@ -1945,6 +1945,17 @@
       "uses_sql_via_loader": false
     },
     {
+      "plugin_id": "analysis_process_server_levers_v1",
+      "plugin_type": "analysis",
+      "sql_intent": "recommended",
+      "sql_intent_source": "default",
+      "uses_sql": false,
+      "uses_sql_direct": false,
+      "uses_sql_effective": true,
+      "uses_sql_exec": false,
+      "uses_sql_via_loader": true
+    },
+    {
       "plugin_id": "analysis_proportional_hazards_duration",
       "plugin_type": "analysis",
       "sql_intent": "recommended",
@@ -3036,7 +3047,7 @@
   ],
   "uses_sql": 3,
   "uses_sql_direct": 3,
-  "uses_sql_effective": 195,
+  "uses_sql_effective": 196,
   "uses_sql_exec": 1,
-  "uses_sql_via_loader": 189
+  "uses_sql_via_loader": 190
 }

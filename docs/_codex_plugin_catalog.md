@@ -1,6 +1,6 @@
 # Codex Plugin Catalog
 
-- Total plugins: 274
+- Total plugins: 275
 
 ## analysis
 
@@ -181,6 +181,7 @@
 | `analysis_process_drift_conformance_over_time` | Process Drift Conformance Over Time | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_process_sequence` | Process Sequence Mining | `plugin.py:Plugin` | 1 | 1 |
 | `analysis_process_sequence_bottlenecks` | Process Sequence Bottlenecks | `plugin.py:Plugin` | 0 | 2 |
+| `analysis_process_server_levers_v1` | Dynamic Process/Server Lever Modeling | `plugin.py:Plugin` | 2 | 3 |
 | `analysis_proportional_hazards_duration` | Proportional Hazards Duration | `plugin.py:Plugin` | 1 | 0 |
 | `analysis_quantile_loss_boosting_v1` | analysis_quantile_loss_boosting_v1 | `plugin.py:Plugin` | 0 | 1 |
 | `analysis_quantile_mapping_drift_qq_v1` | analysis_quantile_mapping_drift_qq_v1 | `plugin.py:Plugin` | 0 | 1 |

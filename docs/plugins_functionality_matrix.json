@@ -126,6 +126,7 @@
       "analysis_action_search_mip_batched_scheduler_v1",
       "analysis_action_search_simulated_annealing_v1",
       "analysis_discrete_event_queue_simulator_v1",
+      "analysis_process_server_levers_v1",
       "analysis_proportional_hazards_duration",
       "analysis_quantile_loss_boosting_v1",
       "analysis_quantile_mapping_drift_qq_v1",
@@ -415,6 +416,7 @@
     "analysis_action_search_mip_batched_scheduler_v1",
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
+    "analysis_process_server_levers_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_loss_boosting_v1",
     "analysis_quantile_mapping_drift_qq_v1",
@@ -1057,6 +1059,9 @@
       "analysis_process_sequence_bottlenecks",
       "analysis_process_sequence"
     ],
+    "analysis_process_server_*": [
+      "analysis_process_server_levers_v1"
+    ],
     "analysis_proportional_hazards_*": [
       "analysis_proportional_hazards_duration"
     ],
@@ -1453,6 +1458,7 @@
     "analysis_action_search_mip_batched_scheduler_v1",
     "analysis_action_search_simulated_annealing_v1",
     "analysis_discrete_event_queue_simulator_v1",
+    "analysis_process_server_levers_v1",
     "analysis_proportional_hazards_duration",
     "analysis_quantile_loss_boosting_v1",
     "analysis_quantile_mapping_drift_qq_v1",
@@ -1592,7 +1598,7 @@
     "llm_prompt_builder",
     "llm_text2sql_local_generate_v1"
   ],
-  "plugin_count": 274,
+  "plugin_count": 275,
   "plugins": {
     "analysis_action_search_mip_batched_scheduler_v1": {
       "capabilities": [
@@ -3929,6 +3935,23 @@
       "entrypoint": "plugin.py:Plugin",
       "name": "Process Sequence Bottlenecks",
       "plugin_id": "analysis_process_sequence_bottlenecks",
+      "type": "analysis",
+      "version": "0.1.0"
+    },
+    "analysis_process_server_levers_v1": {
+      "capabilities": [
+        "needs_eventlog",
+        "needs_timestamp",
+        "needs_host"
+      ],
+      "depends_on": [
+        "analysis_close_cycle_window_resolver",
+        "analysis_close_cycle_start_backtrack_v1"
+      ],
+      "description": "Model dynamic +1 server and assignment tradeoffs for process-specific close contention.",
+      "entrypoint": "plugin.py:Plugin",
+      "name": "Dynamic Process/Server Lever Modeling",
+      "plugin_id": "analysis_process_server_levers_v1",
       "type": "analysis",
       "version": "0.1.0"
     },
