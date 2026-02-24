@@ -2035,13 +2035,22 @@ def main() -> int:
         row_count = None
 
     resource_profile = str(
-        os.environ.get("STAT_HARNESS_RESOURCE_PROFILE", "balanced")
+        os.environ.get("STAT_HARNESS_RESOURCE_PROFILE", "interactive")
     ).strip().lower()
-    if resource_profile not in {"respectful", "balanced", "performance"}:
-        resource_profile = "balanced"
+    if resource_profile not in {"interactive", "respectful", "balanced", "performance"}:
+        resource_profile = "interactive"
+    if resource_profile == "interactive":
+        # Interactive-safe defaults: keep the machine responsive during foreground use.
+        os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "1")
+        os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_TRANSFORM", "1")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_STAGES", "analysis")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT", "20")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_MIN_AVAILABLE_MB", "12288")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_POLL_SECONDS", "2")
+        os.environ.setdefault("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB", "2048")
     # Large datasets: cap parallelism unless explicitly overridden.
     if row_count is not None and row_count >= 200_000:
-        if resource_profile == "respectful":
+        if resource_profile in {"interactive", "respectful"}:
             os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "1")
         else:
             os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "2")

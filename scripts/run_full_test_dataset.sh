@@ -8,8 +8,13 @@ cd "$ROOT_DIR"
 . "$ROOT_DIR/.venv/bin/activate"
 export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 
-RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-respectful}"
-if [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
+RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-interactive}"
+if [[ "$RESOURCE_PROFILE" == "interactive" ]]; then
+  default_workers_analysis="1"
+  default_mem_governor_max_used_pct="20"
+  default_mem_governor_min_available_mb="12288"
+  default_nice_level="15"
+elif [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
   default_workers_analysis="1"
   default_mem_governor_max_used_pct="30"
   default_mem_governor_min_available_mb="4096"
@@ -27,6 +32,7 @@ else
 fi
 export STAT_HARNESS_RESOURCE_PROFILE="$RESOURCE_PROFILE"
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-$default_workers_analysis}"
+export STAT_HARNESS_MAX_WORKERS_TRANSFORM="${STAT_HARNESS_MAX_WORKERS_TRANSFORM:-1}"
 export STAT_HARNESS_CLI_PROGRESS="1"
 export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 # Integrity checks on a multi-GB SQLite file can dominate startup time; keep it off for the
