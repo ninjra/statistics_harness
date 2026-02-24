@@ -87,6 +87,9 @@ _STRUCTURAL_ROLE_REQUIREMENTS: dict[str, tuple[tuple[str, ...], ...]] = {
         ROLE_GROUP_HOST,
     ),
 }
+_ROUTE_PREFLIGHT_REQUIRED_PLUGINS: tuple[str, ...] = (
+    "analysis_ebm_action_verifier_v1",
+)
 
 
 def _debug_stage(label: str) -> None:
@@ -304,6 +307,117 @@ def _structural_preflight(
     }
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "structural_preflight.json").write_text(
+        json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    return report
+
+
+def _plugin_manifest(plugin_id: str) -> dict[str, Any]:
+    path = REPO_ROOT / "plugins" / str(plugin_id).strip() / "plugin.yaml"
+    if not path.exists():
+        return {}
+    try:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _plugins_with_capability(plugin_ids: list[str], capability: str) -> list[str]:
+    required: list[str] = []
+    cap = str(capability or "").strip()
+    if not cap:
+        return required
+    for plugin_id in sorted(set(str(v).strip() for v in plugin_ids if str(v).strip())):
+        manifest = _plugin_manifest(plugin_id)
+        caps = manifest.get("capabilities") if isinstance(manifest.get("capabilities"), list) else []
+        normalized = {str(v).strip() for v in caps if str(v).strip()}
+        if cap in normalized:
+            required.append(plugin_id)
+    return required
+
+
+def _sql_assist_preflight(
+    db_path: Path,
+    plugin_ids: list[str],
+    output_dir: Path,
+) -> dict[str, Any]:
+    required_plugins = _plugins_with_capability(plugin_ids, "sql_assist_required")
+    blockers: list[dict[str, Any]] = []
+    schema_ready = False
+    schema_hash = ""
+    schema_table_count = 0
+    error_message: str | None = None
+
+    if required_plugins:
+        try:
+            from statistic_harness.core.sql_schema_snapshot import snapshot_schema
+            from statistic_harness.core.storage import Storage
+
+            storage = Storage(db_path, tenant_id=None, mode="ro", initialize=False)
+            schema = snapshot_schema(storage)
+            schema_hash = str(getattr(schema, "schema_hash", "") or "")
+            snapshot = schema.snapshot if isinstance(getattr(schema, "snapshot", None), dict) else {}
+            tables = snapshot.get("tables") if isinstance(snapshot.get("tables"), list) else []
+            schema_table_count = int(len(tables))
+            schema_ready = bool(schema_hash) and schema_table_count > 0
+        except Exception as exc:
+            error_message = f"{type(exc).__name__}: {exc}"
+            schema_ready = False
+
+        if not schema_ready:
+            for plugin_id in required_plugins:
+                blockers.append(
+                    {
+                        "plugin_id": plugin_id,
+                        "reason_code": "SQL_ASSIST_SCHEMA_UNAVAILABLE",
+                        "detail": error_message or "schema snapshot unavailable",
+                    }
+                )
+
+    report = {
+        "checked_count": int(len(required_plugins)),
+        "required_plugins": required_plugins,
+        "schema_ready": bool(schema_ready),
+        "schema_hash": schema_hash or None,
+        "schema_table_count": int(schema_table_count),
+        "blocking_count": int(len(blockers)),
+        "blockers": blockers,
+        "error": error_message,
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "sql_assist_preflight.json").write_text(
+        json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    return report
+
+
+def _route_preflight(
+    plugin_ids: list[str],
+    *,
+    route_enable: bool,
+    output_dir: Path,
+) -> dict[str, Any]:
+    required_plugins = list(_ROUTE_PREFLIGHT_REQUIRED_PLUGINS) if bool(route_enable) else []
+    available = {str(v).strip() for v in plugin_ids if str(v).strip()}
+    missing = [pid for pid in required_plugins if pid not in available]
+    blockers = [
+        {
+            "plugin_id": pid,
+            "reason_code": "ROUTE_PLUGIN_MISSING",
+            "detail": "Route planning requires this plugin to be included in the run.",
+        }
+        for pid in missing
+    ]
+    report = {
+        "route_enable": bool(route_enable),
+        "required_plugins": required_plugins,
+        "missing_plugins": missing,
+        "blocking_count": int(len(blockers)),
+        "blockers": blockers,
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "route_preflight.json").write_text(
         json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
     )
     return report
@@ -1972,6 +2086,40 @@ def main() -> int:
             "(or use --allow-structural-not-applicable to override)."
         )
 
+    sql_assist_preflight = _sql_assist_preflight(
+        db_path=db_path,
+        plugin_ids=plugin_ids,
+        output_dir=preflight_dir,
+    )
+    print(
+        "SQL_ASSIST_PREFLIGHT="
+        f"required:{int(sql_assist_preflight.get('checked_count') or 0)},"
+        f"blocking:{int(sql_assist_preflight.get('blocking_count') or 0)}",
+        flush=True,
+    )
+    if int(sql_assist_preflight.get("blocking_count") or 0) > 0:
+        raise SystemExit(
+            "SQL-assist preflight failed; schema/sql assist is unavailable for required plugins. "
+            "Fix SQL-assist wiring before running the full gauntlet."
+        )
+
+    route_preflight = _route_preflight(
+        plugin_ids=plugin_ids,
+        route_enable=bool(args.route_enable),
+        output_dir=preflight_dir,
+    )
+    if bool(args.route_enable):
+        print(
+            "ROUTE_PREFLIGHT="
+            f"required:{len(route_preflight.get('required_plugins') or [])},"
+            f"blocking:{int(route_preflight.get('blocking_count') or 0)}",
+            flush=True,
+        )
+    if int(route_preflight.get("blocking_count") or 0) > 0:
+        raise SystemExit(
+            "Route preflight failed; required route-planning plugins are missing from this run set."
+        )
+
     planner_allow = _parse_exclude_processes(str(args.planner_allow or ""))
     planner_deny = _parse_exclude_processes(str(args.planner_deny or ""))
     run_settings: dict[str, Any] = {
@@ -2016,9 +2164,14 @@ def main() -> int:
     )
     _debug_stage("pipeline_run_done")
     run_dir = ctx.tenant_root / "runs" / run_id
-    preflight_report_path = preflight_dir / "structural_preflight.json"
-    if preflight_report_path.exists():
-        shutil.copy2(preflight_report_path, run_dir / "structural_preflight.json")
+    for preflight_name in (
+        "structural_preflight.json",
+        "sql_assist_preflight.json",
+        "route_preflight.json",
+    ):
+        preflight_report_path = preflight_dir / preflight_name
+        if preflight_report_path.exists():
+            shutil.copy2(preflight_report_path, run_dir / preflight_name)
     report_path = run_dir / "report.json"
     if not report_path.exists():
         raise SystemExit(f"report.json not found for run: {run_id}")
