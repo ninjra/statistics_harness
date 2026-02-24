@@ -10,7 +10,7 @@ from pathlib import Path
 FORBIDDEN_REFERENCE_PATTERN = re.compile(r"(tools/legacy/|docs/test/|repomix-output\.md)")
 TEXT_SUFFIXES = {".json", ".md", ".ps1", ".py", ".sh", ".txt", ".yaml", ".yml", ".toml", ".xml"}
 FORBIDDEN_TRACKED_PREFIXES = ("tools/legacy/", "docs/test/")
-FORBIDDEN_TRACKED_EXACT = {"repomix-output.md"}
+FORBIDDEN_TRACKED_EXACT = {"generated repository snapshot artifact"}
 BLOCKED_BINARY_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp",
     ".ico", ".pdf", ".zip", ".tar", ".gz", ".7z", ".bin",

@@ -10,7 +10,7 @@ unknown
 
 2026-02-06
 
-## Assumptions (scoped to `repomix-output.md`)
+## Assumptions (scoped to `generated repository snapshot artifact`)
 
 * Only local execution; no network calls are intended at runtime (UI is local web only). 
 * `./appdata/` is the sole state/artifact root (SQLite + per-run directories). 

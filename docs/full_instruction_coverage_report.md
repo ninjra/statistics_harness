@@ -1,8 +1,8 @@
 # Full Instruction Coverage Report
 
 - Source files scanned: 73
-- Requirement/reference items scanned: 2523
-- Missing/incomplete items detected: 28
+- Requirement/reference items scanned: 3244
+- Missing/incomplete items detected: 29
 
 ## Matrix Status
 - binding_missing_any: False
@@ -43,4 +43,5 @@
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 363 | reference_text | 1 | 0 | 0 |
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 379 | reference_text | 1 | 0 | 0 |
 | `docs/plugins-validate-runbook-actionable-insights-plan.md` | 409 | reference_text | 1 | 0 | 0 |
+| `repomix-output.md` | 278081 | todo_marker | 0 | 0 | 1 |
 

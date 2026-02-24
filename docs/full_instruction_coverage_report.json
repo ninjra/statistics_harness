@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 2523,
+  "item_count": 3244,
   "items": [
     {
       "has_todo_marker": false,
@@ -463,6 +463,18 @@
       "source": "docs/plugins-validate-runbook-actionable-insights-plan.md",
       "text": "- **Location**: `scripts/*.sh`, `scripts/*.ps1`, `docs/runbooks/cross_shell_execution.md`",
       "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": true,
+      "item_type": "todo_marker",
+      "line_no": 278081,
+      "missing_paths": [],
+      "plugin_tokens": [],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "repomix-output.md",
+      "text": "38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+      "unresolved_plugin_tokens": []
     }
   ],
   "matrix_status": {
@@ -476,8 +488,9 @@
   "missing_by_source": {
     "codex_kona_route_updates.md": 1,
     "docs/openplanter-cross-dataset-plugins-plan.md": 19,
-    "docs/plugins-validate-runbook-actionable-insights-plan.md": 8
+    "docs/plugins-validate-runbook-actionable-insights-plan.md": 8,
+    "repomix-output.md": 1
   },
-  "missing_item_count": 28,
+  "missing_item_count": 29,
   "source_count": 73
 }

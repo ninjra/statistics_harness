@@ -872,6 +872,7 @@
           "tests/test_plugin_manager_lane_inference.py",
           "tests/test_plugin_runner_health_action.py",
           "tests/test_plugin_runner_subprocess_termination.py",
+          "tests/test_prune_release_evidence.py",
           "tests/test_redteam_requirements_full.py",
           "tests/test_repair_stale_running_runs.py",
           "tests/test_run_preflight_extensions.py",

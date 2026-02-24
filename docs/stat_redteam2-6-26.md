@@ -6,7 +6,7 @@ DETERMINISM: VERIFIED
 
 ## Assumptions
 
-* Analysis is based **only** on `repomix-output.md`; no runtime execution or external context.
+* Analysis is based **only** on `generated repository snapshot artifact`; no runtime execution or external context.
 * Default posture is **local-only**; any networked/hosted behavior stays behind explicit flags.
 * Primary environment is **Windows 11 + heavy WSL2 + Python**; path/rename semantics must be Windows-safe.
 * Plugins are **semi-trusted**: treated as potentially buggy/malicious, so sandbox + provenance must be strong.
