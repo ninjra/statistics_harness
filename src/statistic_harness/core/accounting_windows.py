@@ -53,6 +53,11 @@ _MONTH_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"^\s*(20\d{2})(0[1-9]|1[0-2])([0-3]\d)\s*$"),
     re.compile(r"^\s*(0[1-9]|1[0-2])[-_/](20\d{2})\s*$"),
 )
+_MAX_REFERENCE_MONTH_DELTA = 36
+
+
+def _month_delta(a: datetime, b: datetime) -> int:
+    return abs((a.year - b.year) * 12 + (a.month - b.month))
 
 
 def parse_accounting_month_value(raw: Any) -> datetime | None:
@@ -125,6 +130,8 @@ def parse_accounting_month_from_params(
         month = parse_accounting_month_value(value)
         if month is None:
             continue
+        if ref_month is not None and _month_delta(month, ref_month) > _MAX_REFERENCE_MONTH_DELTA:
+            continue
         s = _score(str(key), month)
         if s > best_score:
             best_score = s
@@ -139,6 +146,8 @@ def parse_accounting_month_from_params(
         for token in token_matches:
             month = parse_accounting_month_value(token)
             if month is not None:
+                if ref_month is not None and _month_delta(month, ref_month) > _MAX_REFERENCE_MONTH_DELTA:
+                    continue
                 return month
     return None
 

@@ -583,6 +583,37 @@ def test_dynamic_close_detection_routes_indicator_processes_to_schedule_actions(
     assert float(routed[0].get("modeled_delta_hours") or 0.0) > 0.0
 
 
+def test_close_window_resolver_ignores_invalid_1900_accounting_month_artifacts() -> None:
+    report = {
+        "plugins": {
+            "analysis_close_cycle_window_resolver": {
+                "findings": [
+                    {
+                        "kind": "close_cycle_window_resolved",
+                        "accounting_month": "1900-01",
+                        "indicator_window_hours": 24.0,
+                        "close_end_delta_days": 45893.53,
+                        "close_window_days_default": 16.0,
+                        "close_window_days_dynamic": 21.53,
+                        "indicator_processes": [
+                            {"process": "docopy", "share": 0.6, "count": 100}
+                        ],
+                    }
+                ]
+            }
+        }
+    }
+    payload = _build_recommendations(report)
+    items = payload.get("items") or []
+    routed = [
+        item
+        for item in items
+        if item.get("plugin_id") == "analysis_close_cycle_window_resolver"
+        and item.get("kind") == "close_cycle_window_action"
+    ]
+    assert not routed
+
+
 def test_actionability_coverage_counts_candidates_before_top_n_truncation() -> None:
     report = {
         "known_issues": {

@@ -3841,6 +3841,16 @@ def _build_discovery_recommendations(
             continue
         by_process: dict[str, dict[str, float]] = {}
         for item in findings:
+            accounting_month_raw = str(item.get("accounting_month") or "").strip()
+            if accounting_month_raw:
+                try:
+                    accounting_year = int(accounting_month_raw.split("-", 1)[0])
+                except Exception:
+                    accounting_year = None
+                # Guard against Excel-style serial month artifacts (e.g., 1900-01)
+                # that can explode modeled deltas in the recommendation adapter.
+                if isinstance(accounting_year, int) and accounting_year < 2000:
+                    continue
             raw_indicators = item.get("indicator_processes")
             indicator_rows: list[dict[str, Any]] = []
             if isinstance(raw_indicators, list):
@@ -3868,15 +3878,18 @@ def _build_discovery_recommendations(
             close_window_days_default = item.get("close_window_days_default")
             dynamic_shift_days = 0.0
             if isinstance(close_end_delta_days, (int, float)):
-                dynamic_shift_days = max(dynamic_shift_days, abs(float(close_end_delta_days)))
+                close_end_shift = abs(float(close_end_delta_days))
+                if close_end_shift <= 45.0:
+                    dynamic_shift_days = max(dynamic_shift_days, close_end_shift)
             if (
                 isinstance(close_window_days_dynamic, (int, float))
                 and isinstance(close_window_days_default, (int, float))
             ):
-                dynamic_shift_days = max(
-                    dynamic_shift_days,
-                    abs(float(close_window_days_dynamic) - float(close_window_days_default)),
+                window_shift = abs(
+                    float(close_window_days_dynamic) - float(close_window_days_default)
                 )
+                if window_shift <= 45.0:
+                    dynamic_shift_days = max(dynamic_shift_days, window_shift)
             for row in indicator_rows:
                 process = _normalize_process_hint(
                     row.get("process")
