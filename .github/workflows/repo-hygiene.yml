@@ -1,0 +1,14 @@
+name: repo-hygiene
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  repo-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify repo hygiene policy
+        run: python3 tools/repo_hygiene/verify_repo_cleanup_policy.py

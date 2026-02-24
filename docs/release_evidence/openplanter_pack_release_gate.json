@@ -1,23 +1,20 @@
 {
   "DO_NOT_SHIP": false,
-  "allow_skips": true,
-  "allow_xfail": true,
+  "allow_skips": false,
+  "allow_xfail": false,
   "blocked": false,
   "command": [
     "/mnt/d/projects/statistics_harness/statistics_harness/.venv/bin/python",
     "-m",
     "pytest",
-    "-q",
-    "tests/plugins/test_openplanter_cross_dataset_pack_smoke.py",
-    "tests/plugins/test_openplanter_pack_default_settings.py",
-    "tests/plugins/test_openplanter_pack_strict_prereq.py"
+    "-q"
   ],
   "exit_code": 0,
-  "generated_at_utc": "2026-02-23T21:27:39.459403+00:00",
+  "generated_at_utc": "2026-02-24T17:50:47.326146+00:00",
   "summary": {
     "errors": 0,
     "failed": 0,
-    "passed": 3,
+    "passed": 836,
     "skipped": 0,
     "xfailed": 0,
     "xpassed": 0

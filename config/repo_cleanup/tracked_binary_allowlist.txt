@@ -1,0 +1,2 @@
+# Intentionally tracked binary assets.
+# Keep this list minimal and explicit.

@@ -74,7 +74,17 @@ class DocScan:
 
 
 def _iter_docs(docs_root: Path) -> list[Path]:
-    files = [p for p in docs_root.rglob("*") if p.is_file()]
+    files = []
+    for p in docs_root.rglob("*"):
+        if not p.is_file():
+            continue
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        # Release evidence is run-output churn; it is intentionally excluded from
+        # implementation matrix drift checks so a successful run does not break
+        # later matrix verification.
+        if rel.startswith("docs/release_evidence/"):
+            continue
+        files.append(p)
     return sorted(files, key=lambda p: str(p).lower())
 
 

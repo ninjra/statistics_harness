@@ -64,8 +64,7 @@ def _release_gate_payload(
         [
             sys.executable,
             "scripts/verify_openplanter_pack_release_gate.py",
-            "--pytest-args",
-            pytest_args,
+            f"--pytest-args={pytest_args}",
             "--out",
             str(pytest_gate_out),
         ]

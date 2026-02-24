@@ -1,0 +1,24 @@
+{
+  "before_run_id": "baseline_full_with_runbook30_probe",
+  "comparison": {
+    "after_run_id": "baseline_full_pslever_20260224a",
+    "before_run_id": "baseline_full_with_runbook30_probe",
+    "lane_counts": {},
+    "newly_unresolved_plugins": [],
+    "reason_counts": {},
+    "resolved_plugins": [],
+    "unchanged_unresolved_plugins": [],
+    "unresolved_count_after": 0,
+    "unresolved_count_before": 0,
+    "unresolved_count_delta": 0
+  },
+  "lane_counts": {},
+  "lane_samples": {},
+  "reason_counts": {},
+  "reason_samples": {},
+  "recomputed_recommendations": false,
+  "run_id": "baseline_full_pslever_20260224a",
+  "schema_version": "actionability_burndown.v1",
+  "unresolved_count": 0,
+  "unresolved_plugins": []
+}

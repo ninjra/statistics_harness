@@ -1,0 +1,321 @@
+{
+  "count": 10,
+  "items": [
+    {
+      "action_type": "add_upload_linkage",
+      "category": "discovery",
+      "confidence_tag": "MEASURED",
+      "delta_hours": 3354.0,
+      "delta_signature": 12074400,
+      "evidence": [
+        {
+          "bkrvnu_rows": 3396,
+          "matched_any_pct": 0.2847467609,
+          "matched_user_pct": 0.0123674912,
+          "upload_process": "jessupload",
+          "upload_rows": 217,
+          "window_hours": 48
+        }
+      ],
+      "observed_count": 3396,
+      "recommendations": [
+        "Add explicit linkage from XLSX uploads to downstream revenue booking: only 1.2% of BKRVNU rows match an upload by user +48h window. Even relaxed matching is only 28.5%. Capture the upload batch/filename and propagate it into revenue booking metadata."
+      ],
+      "relevance_score": 352.455,
+      "scenario_id": "add_upload_linkage",
+      "target": "jessupload",
+      "titles": [
+        "Add deterministic XLSX-to-revenue linkage"
+      ],
+      "validation_steps": [
+        "Apply change to jessupload.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "reschedule",
+      "category": "discovery",
+      "confidence_tag": "MEASURED",
+      "delta_hours": 406.525,
+      "delta_signature": 1463490,
+      "evidence": [
+        {
+          "close_count": 3535.0,
+          "effect_seconds": 414.0,
+          "median_close": 541.0,
+          "median_open": 127.0,
+          "open_count": 1971,
+          "p_value": 0.001996008,
+          "process": "jbprepay",
+          "slowdown_ratio": 4.2598425197
+        }
+      ],
+      "observed_count": 3535,
+      "recommendations": [
+        "Reduce close-cycle slowdown for jbprepay: median 541.0s vs 127.0s (\u0394 414.0s, 4.26x; p=0.001996). Reschedule or add dedicated capacity during close cycle."
+      ],
+      "relevance_score": 226.0711753992,
+      "scenario_id": "reschedule",
+      "target": "jbprepay",
+      "titles": [
+        "Reduce close-cycle slowdown for jbprepay"
+      ],
+      "validation_steps": [
+        "Apply change to jbprepay.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 405.0986111111,
+      "delta_signature": 1458355,
+      "evidence": [
+        {
+          "average_share": 0.2606458176,
+          "indicator_count_sum": 4613.0,
+          "max_share": 0.4471153846,
+          "signal_weighted_hours": 2700.6566987236,
+          "windows_hit": 33
+        }
+      ],
+      "observed_count": 4613,
+      "recommendations": [
+        "Align doaprv with the dynamically detected accounting close window (signal coverage 44.7% max share across 33 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 4,613."
+      ],
+      "relevance_score": 225.1617374764,
+      "scenario_id": "schedule_doaprv",
+      "target": "doaprv",
+      "titles": [
+        "Align doaprv to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to doaprv.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 332.5283333333,
+      "delta_signature": 1197102,
+      "evidence": [
+        {
+          "average_share": 0.1652841239,
+          "indicator_count_sum": 4088.0,
+          "max_share": 0.3737942122,
+          "signal_weighted_hours": 2216.855073235,
+          "windows_hit": 47
+        }
+      ],
+      "observed_count": 4088,
+      "recommendations": [
+        "Align jepresum with the dynamically detected accounting close window (signal coverage 37.4% max share across 47 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 4,088."
+      ],
+      "relevance_score": 184.8742539786,
+      "scenario_id": "schedule_jepresum",
+      "target": "jepresum",
+      "titles": [
+        "Align jepresum to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to jepresum.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 257.1411111111,
+      "delta_signature": 925708,
+      "evidence": [
+        {
+          "average_share": 0.1340157933,
+          "indicator_count_sum": 2666.0,
+          "max_share": 0.2874251497,
+          "signal_weighted_hours": 1714.273302807,
+          "windows_hit": 43
+        }
+      ],
+      "observed_count": 2666,
+      "recommendations": [
+        "Align jeprecore with the dynamically detected accounting close window (signal coverage 28.7% max share across 43 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 2,666."
+      ],
+      "relevance_score": 143.0213662311,
+      "scenario_id": "schedule_jeprecore",
+      "target": "jeprecore",
+      "titles": [
+        "Align jeprecore to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to jeprecore.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 143.3430555556,
+      "delta_signature": 516035,
+      "evidence": [
+        {
+          "average_share": 0.125,
+          "indicator_count_sum": 264.0,
+          "max_share": 0.125,
+          "signal_weighted_hours": 955.62,
+          "windows_hit": 264
+        }
+      ],
+      "observed_count": 264,
+      "recommendations": [
+        "Align docopy with the dynamically detected accounting close window (signal coverage 12.5% max share across 264 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 264."
+      ],
+      "relevance_score": 79.839115,
+      "scenario_id": "schedule_docopy",
+      "target": "docopy",
+      "titles": [
+        "Align docopy to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to docopy.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 143.3430555556,
+      "delta_signature": 516035,
+      "evidence": [
+        {
+          "average_share": 0.125,
+          "indicator_count_sum": 264.0,
+          "max_share": 0.125,
+          "signal_weighted_hours": 955.62,
+          "windows_hit": 264
+        }
+      ],
+      "observed_count": 264,
+      "recommendations": [
+        "Align dogwicalc with the dynamically detected accounting close window (signal coverage 12.5% max share across 264 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 264."
+      ],
+      "relevance_score": 79.839115,
+      "scenario_id": "schedule_dogwicalc",
+      "target": "dogwicalc",
+      "titles": [
+        "Align dogwicalc to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to dogwicalc.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 143.3430555556,
+      "delta_signature": 516035,
+      "evidence": [
+        {
+          "average_share": 0.125,
+          "indicator_count_sum": 264.0,
+          "max_share": 0.125,
+          "signal_weighted_hours": 955.62,
+          "windows_hit": 264
+        }
+      ],
+      "observed_count": 264,
+      "recommendations": [
+        "Align doi_copy with the dynamically detected accounting close window (signal coverage 12.5% max share across 264 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 264."
+      ],
+      "relevance_score": 79.839115,
+      "scenario_id": "schedule_doi_copy",
+      "target": "doi_copy",
+      "titles": [
+        "Align doi_copy to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to doi_copy.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 143.3430555556,
+      "delta_signature": 516035,
+      "evidence": [
+        {
+          "average_share": 0.125,
+          "indicator_count_sum": 264.0,
+          "max_share": 0.125,
+          "signal_weighted_hours": 955.62,
+          "windows_hit": 264
+        }
+      ],
+      "observed_count": 264,
+      "recommendations": [
+        "Align jbjeminhld with the dynamically detected accounting close window (signal coverage 12.5% max share across 264 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 264."
+      ],
+      "relevance_score": 79.839115,
+      "scenario_id": "schedule_jbjeminhld",
+      "target": "jbjeminhld",
+      "titles": [
+        "Align jbjeminhld to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to jbjeminhld.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    },
+    {
+      "action_type": "tune_schedule",
+      "category": "discovery",
+      "confidence_tag": "MODELED",
+      "delta_hours": 143.3430555556,
+      "delta_signature": 516035,
+      "evidence": [
+        {
+          "average_share": 0.125,
+          "indicator_count_sum": 264.0,
+          "max_share": 0.125,
+          "signal_weighted_hours": 955.62,
+          "windows_hit": 264
+        }
+      ],
+      "observed_count": 264,
+      "recommendations": [
+        "Align jepresum with the dynamically detected accounting close window (signal coverage 12.5% max share across 264 month windows). Action: pre-stage or shift this process outside the high-pressure close slice. Indicator hits observed: 264."
+      ],
+      "relevance_score": 79.839115,
+      "scenario_id": "schedule_jepresum",
+      "target": "jepresum",
+      "titles": [
+        "Align jepresum to dynamic close window"
+      ],
+      "validation_steps": [
+        "Apply change to jepresum.",
+        "Re-run the harness on the same dataset scope.",
+        "Confirm BP_OT_WTS_HOURS and busy periods improve vs baseline."
+      ]
+    }
+  ],
+  "run_id": "baseline_full_pslever_20260224a",
+  "schema_version": "post_run_bundle_top_recommendations.v1"
+}
