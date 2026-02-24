@@ -65,12 +65,77 @@ def _build_payload(run_id: str, *, recompute: bool) -> dict[str, Any]:
     return payload
 
 
+def _count_map_delta(
+    before: dict[str, Any] | None,
+    after: dict[str, Any] | None,
+) -> dict[str, dict[str, int]]:
+    before_map = before if isinstance(before, dict) else {}
+    after_map = after if isinstance(after, dict) else {}
+    keys = sorted(set(before_map.keys()) | set(after_map.keys()))
+    out: dict[str, dict[str, int]] = {}
+    for key in keys:
+        try:
+            before_n = int(before_map.get(key) or 0)
+        except (TypeError, ValueError):
+            before_n = 0
+        try:
+            after_n = int(after_map.get(key) or 0)
+        except (TypeError, ValueError):
+            after_n = 0
+        out[str(key)] = {
+            "before": before_n,
+            "after": after_n,
+            "delta": int(after_n - before_n),
+        }
+    return out
+
+
+def _plugin_ids(payload: dict[str, Any]) -> set[str]:
+    out: set[str] = set()
+    for row in payload.get("unresolved_plugins") or []:
+        if not isinstance(row, dict):
+            continue
+        plugin_id = str(row.get("plugin_id") or "").strip()
+        if plugin_id:
+            out.add(plugin_id)
+    return out
+
+
+def _comparison_payload(before_payload: dict[str, Any], after_payload: dict[str, Any]) -> dict[str, Any]:
+    before_ids = _plugin_ids(before_payload)
+    after_ids = _plugin_ids(after_payload)
+    return {
+        "before_run_id": str(before_payload.get("run_id") or ""),
+        "after_run_id": str(after_payload.get("run_id") or ""),
+        "unresolved_count_before": int(before_payload.get("unresolved_count") or 0),
+        "unresolved_count_after": int(after_payload.get("unresolved_count") or 0),
+        "unresolved_count_delta": int(
+            int(after_payload.get("unresolved_count") or 0)
+            - int(before_payload.get("unresolved_count") or 0)
+        ),
+        "reason_counts": _count_map_delta(
+            before_payload.get("reason_counts"),
+            after_payload.get("reason_counts"),
+        ),
+        "lane_counts": _count_map_delta(
+            before_payload.get("lane_counts"),
+            after_payload.get("lane_counts"),
+        ),
+        "newly_unresolved_plugins": sorted(after_ids - before_ids),
+        "resolved_plugins": sorted(before_ids - after_ids),
+        "unchanged_unresolved_plugins": sorted(before_ids & after_ids),
+    }
+
+
 def _render_md(payload: dict[str, Any]) -> str:
     lines: list[str] = []
     lines.append("# Actionability Burndown")
     lines.append("")
     lines.append(f"- run_id: {payload.get('run_id')}")
     lines.append(f"- unresolved_count: {int(payload.get('unresolved_count') or 0)}")
+    before_run_id = str(payload.get("before_run_id") or "").strip()
+    if before_run_id:
+        lines.append(f"- before_run_id: {before_run_id}")
     lines.append("")
     lines.append("## By Lane")
     for lane, count in (payload.get("lane_counts") or {}).items():
@@ -103,6 +168,40 @@ def _render_md(payload: dict[str, Any]) -> str:
             + " |"
         )
     lines.append("")
+    comparison = payload.get("comparison") if isinstance(payload.get("comparison"), dict) else {}
+    if comparison:
+        lines.append("## Delta Vs Before")
+        lines.append("")
+        lines.append(
+            f"- unresolved_count_before: {int(comparison.get('unresolved_count_before') or 0)}"
+        )
+        lines.append(
+            f"- unresolved_count_after: {int(comparison.get('unresolved_count_after') or 0)}"
+        )
+        lines.append(
+            f"- unresolved_count_delta: {int(comparison.get('unresolved_count_delta') or 0)}"
+        )
+        lines.append("")
+        lines.append("### Reason Delta")
+        for reason, row in (comparison.get("reason_counts") or {}).items():
+            if not isinstance(row, dict):
+                continue
+            lines.append(
+                f"- {reason}: before={int(row.get('before') or 0)}"
+                f" after={int(row.get('after') or 0)}"
+                f" delta={int(row.get('delta') or 0)}"
+            )
+        lines.append("")
+        lines.append("### Lane Delta")
+        for lane, row in (comparison.get("lane_counts") or {}).items():
+            if not isinstance(row, dict):
+                continue
+            lines.append(
+                f"- {lane}: before={int(row.get('before') or 0)}"
+                f" after={int(row.get('after') or 0)}"
+                f" delta={int(row.get('delta') or 0)}"
+            )
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -111,6 +210,7 @@ def main() -> int:
         description="Build a deterministic unresolved-actionability burndown for a run."
     )
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--before-run-id", default="")
     parser.add_argument("--recompute-recommendations", action="store_true")
     parser.add_argument("--out-json", default="")
     parser.add_argument("--out-md", default="")
@@ -121,6 +221,14 @@ def main() -> int:
         str(args.run_id).strip(),
         recompute=bool(args.recompute_recommendations),
     )
+    before_run_id = str(args.before_run_id).strip()
+    if before_run_id:
+        before_payload = _build_payload(
+            before_run_id,
+            recompute=bool(args.recompute_recommendations),
+        )
+        payload["before_run_id"] = before_run_id
+        payload["comparison"] = _comparison_payload(before_payload, payload)
     rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
     out_json = str(args.out_json).strip()

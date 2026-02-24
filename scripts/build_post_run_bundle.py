@@ -227,18 +227,39 @@ def main() -> int:
     burndown_md_path = out_dir / f"actionability_burndown_{run_id}.md"
     files["actionability_burndown_json"] = str(burndown_json_path)
     files["actionability_burndown_md"] = str(burndown_md_path)
-    steps["actionability_burndown"] = _run_subprocess(
-        [
-            sys.executable,
-            "scripts/actionability_burndown.py",
-            "--run-id",
-            run_id,
-            "--out-json",
-            str(burndown_json_path),
-            "--out-md",
-            str(burndown_md_path),
-        ]
-    )
+    burndown_cmd = [
+        sys.executable,
+        "scripts/actionability_burndown.py",
+        "--run-id",
+        run_id,
+        "--out-json",
+        str(burndown_json_path),
+        "--out-md",
+        str(burndown_md_path),
+    ]
+    if before_run_id:
+        burndown_cmd.extend(["--before-run-id", before_run_id])
+    steps["actionability_burndown"] = _run_subprocess(burndown_cmd)
+
+    if before_run_id:
+        reason_delta_json_path = out_dir / f"non_actionable_reason_{before_run_id}_to_{run_id}.json"
+        reason_delta_md_path = out_dir / f"non_actionable_reason_{before_run_id}_to_{run_id}.md"
+        files["reason_delta_json"] = str(reason_delta_json_path)
+        files["reason_delta_md"] = str(reason_delta_md_path)
+        steps["reason_code_burndown_delta"] = _run_subprocess(
+            [
+                sys.executable,
+                "scripts/actionability_burndown.py",
+                "--run-id",
+                run_id,
+                "--before-run-id",
+                before_run_id,
+                "--out-json",
+                str(reason_delta_json_path),
+                "--out-md",
+                str(reason_delta_md_path),
+            ]
+        )
 
     top_path = out_dir / f"top_recommendations_{run_id}.json"
     files["top_recommendations_json"] = str(top_path)

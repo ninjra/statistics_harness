@@ -4653,6 +4653,30 @@
     },
     {
       "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
       "doc_path": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
       "missing_paths": [],
       "plugin_ids": [],
@@ -4742,6 +4766,14 @@
     {
       "doc_kind": "generated",
       "doc_path": "docs/release_evidence/baseline_before_vs_fullset_after.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -4909,7 +4941,23 @@
     },
     {
       "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
       "doc_path": "docs/release_evidence/diff_18b6_to_d539.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -4950,6 +4998,22 @@
     {
       "doc_kind": "generated",
       "doc_path": "docs/release_evidence/golden_release_summary.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -5054,6 +5118,14 @@
     {
       "doc_kind": "generated",
       "doc_path": "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -5326,6 +5398,14 @@
     {
       "doc_kind": "generated",
       "doc_path": "docs/release_evidence/plugins_validate_runbook_technique_specs/README.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -6538,6 +6618,9 @@
     "docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.stdout.json",
     "docs/release_evidence/actionability_audit_baseline_20260223d.csv",
     "docs/release_evidence/actionability_audit_baseline_20260223d.json",
+    "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+    "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
+    "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
     "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
     "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json",
     "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
@@ -6550,6 +6633,7 @@
     "docs/release_evidence/autonomous_insight_baseline_snapshot_20260217.json",
     "docs/release_evidence/baseline_before_after_leftfield_diff.json",
     "docs/release_evidence/baseline_before_vs_fullset_after.json",
+    "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
     "docs/release_evidence/compare_actionability_baseline_20260223b_to_probe.json",
     "docs/release_evidence/compare_actionability_baseline_before_vs_now.json",
     "docs/release_evidence/compare_actionability_baseline_vs_synth6m_route_plan.json",
@@ -6570,12 +6654,16 @@
     "docs/release_evidence/compare_outputs_baseline_vs_synth6mo.json",
     "docs/release_evidence/compare_outputs_baseline_vs_synth8m_route_plan.json",
     "docs/release_evidence/compare_outputs_baseline_vs_synth8mo.json",
+    "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
     "docs/release_evidence/diff_18b6_to_d539.json",
+    "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
     "docs/release_evidence/diff_eb325f_to_a8fdd_baseline.json",
     "docs/release_evidence/diff_routeplan_20260222b_to_20260223b.json",
     "docs/release_evidence/diff_routeplan_20260223b_to_20260223d.json",
     "docs/release_evidence/golden_release_summary.json",
     "docs/release_evidence/golden_release_summary.md",
+    "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
+    "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
     "docs/release_evidence/kona_route_requirement_map.json",
     "docs/release_evidence/kona_route_skill_rationale.md",
     "docs/release_evidence/non_actionable_reason_before_after.json",
@@ -6589,6 +6677,7 @@
     "docs/release_evidence/optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
     "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
     "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+    "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
     "docs/release_evidence/plugins_validate_runbook_dependency_matrix.csv",
     "docs/release_evidence/plugins_validate_runbook_technique_map.json",
     "docs/release_evidence/plugins_validate_runbook_technique_map.md",
@@ -6623,6 +6712,7 @@
     "docs/release_evidence/plugins_validate_runbook_technique_specs/29_notears.md",
     "docs/release_evidence/plugins_validate_runbook_technique_specs/30_mice_chained_equations_imputation.md",
     "docs/release_evidence/plugins_validate_runbook_technique_specs/README.md",
+    "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
     "docs/release_evidence/verify_contract_71883748cf2243839eb0bfddb6b2d61e.json",
     "docs/release_evidence/verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
     "docs/release_evidence/verify_contract_debug_fg_baseline_20260221T1923Z.json",

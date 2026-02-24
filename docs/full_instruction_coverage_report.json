@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 2518,
+  "item_count": 2523,
   "items": [
     {
       "has_todo_marker": false,
