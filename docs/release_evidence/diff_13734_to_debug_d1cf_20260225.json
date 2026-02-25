@@ -1,0 +1,3331 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "signature_after": "6a3f8cc03aff5163cd96c1979c47813727edd2ea2217889a180d8e4c05d8ff4d",
+      "signature_before": "e77204afab4580e7fa24731690135bb1ea2ca79a64416cfdf7a4e981d013e6f4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "signature_after": "dc921b98c646212d57503544e950a794c554b123bba1a2da1d866a677cf11768",
+      "signature_before": "06db77b80b6c921b5156d071346ad56ba3b376740096b99534c62a4556d507d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "signature_after": "e01164d724467316ca44f5bf479cfcb07abed736b106e2211aac7158f537c1e9",
+      "signature_before": "e0e2638aefdb5c82b657f08699e5fcd3050d95feb6465c4698639fd9cbc46c5f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "6086cb24a309dbe629f25e9fc68da7dcb0dfcb7a11350b2a62f3ed1628fe4982",
+      "signature_before": "e898679fb2f2254d7c1d883dd97935523d51746f54cc76663493c224cc506449",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_anova_auto",
+      "signature_after": "e3477646ecef9701acfaef68b3ca9f91a84dcca65317941098a5fb4022f57b62",
+      "signature_before": "3ea5518b280db686a14292691e856e7701f5cc94059d16f3244b77f25f8fa480",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "signature_after": "0e9eaa9c5774fd00b5a2ebdaca6e1a64cf22c6905f33aac715792529834468ba",
+      "signature_before": "0c1b5f0bd6208e99dcc2bd72c5af5b8472c3c39349545c1e7a0fbfb94a3d3f76",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "386cfb468a7b0af89b10adf21b1b192657e1cb4542c13c92b851492c3f09e2ec",
+      "signature_before": "d3772bbd47faf34a547b12bec7565762f74ca524d87d76a4620e9b7123644ce2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
+      "signature_after": "d7cad8801d5befcb3ad5db6aa37eabad7c7f807122466fb5286db827b5892c4d",
+      "signature_before": "166f64d2093491cd48b283ebfa1e261e8f3bdca6874ac01d9ed65ddef101d917",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "be2436af9b0d825a7b5be18f63c7b7510c0e8a1c6f80051765e3bebddc9f89a9",
+      "signature_before": "f0b9b8b930a5035f1b7b2252fae7eade6e63352038105d6dec9b9b8b80826ae7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "signature_after": "012dba2df7196a66f7d0a016834e7cf58e9b97098dfbd345a264dbec98ed12db",
+      "signature_before": "5e34be42f7e03ee8e42bc6e900dfa5165f0598fb89c9b663bf3d77255ab4630d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "993483dd57f716ca76cefef07b409e69a474eaebe68460b4d748c107196bfe24",
+      "signature_before": "abe047f709c0d7fa4a7ed42775b70684a38031cc1a088dd3c9affc9974372df1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "signature_after": "3832b35952f01c9d7f52a20c82a3b1fc83637573364f0d162eee3414ef60da83",
+      "signature_before": "0ce6be9e34401d34e502921ee6dc63ee1d4e1c5b318bb517691e5c14b6722eb4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "signature_after": "8bd24ad2d9f07375bc26b0dc3ba1ed6abfe3b3a461a053d4507eb34080a893ce",
+      "signature_before": "77150a463a638b5f37970153c36df4b1f93bf63a0b7103afb2e98139158f6aa7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "c009744b8b0b81729c0f3c0bb0a3b853e627eff6ce289d0f2730b33737d74645",
+      "signature_before": "81001fc84e009fe9ecce06cb8eff9f77faac5db26545ac49b4dd21f17ed3bb8b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "signature_after": "0eaf8c87bdbecb151d5acc86fafc2ccb7c63ce425bf26a07a5792b05444264cd",
+      "signature_before": "1d0e943e425ceefe9e76435b1697bd90c559bb7e6f4ab95fa4c1c8fb06561660",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "signature_after": "66b6eacc8d85d9c878ab577b4e103e0f58df039d0fd22ad793ed54eecaaa8551",
+      "signature_before": "464a0ffa1da9328b3ab1ea0ba3435e4cfc9d7c88a6eb306a56b750a12319532c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bundled_donations_v1",
+      "signature_after": "70a4e48d95c6e0cd4c77d53101ed0abbe461bb6be581c49f8213fdf2561c31c0",
+      "signature_before": "26163f45899d9d4336d1827c8bd5997f0972f6d5e5fb19b1ef486d116c9bbf11",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "signature_after": "ce2b00ab82092a393bf46c15647d683710df40c4aa5d0e8b952407a8bb2e28f6",
+      "signature_before": "271e7b6bc80bcf02db865667b9d3b017aff39ebaf98ad3a35ab082e918dc9c4e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "signature_after": "bbbd00424ef5fedf99cff92ad4743cdc994b8657d14255924a8d4ee449689ea6",
+      "signature_before": "41dd3d164d4a1ed5a8ff60d413e197a6cf1e6552fc5f4d92d27cdea58ec08c6e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "signature_after": "0da659bd78d9d158a4ab528b6edf7068e83136b1f1248f35281d93138bbe6f9b",
+      "signature_before": "23e258bbea284a364f566b2f918d68a589d1de69bd7dae24be02c0fd6e031d19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "be82fc43ffe3f52ba0584d652c95388973ef63a00c8a3eafb2384b1846b727c2",
+      "signature_before": "4992681ee598256b1414e76af411179255830d18cbc4b2279eaf50b0ca44c471",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "fb5cc69c8178f688ed3bcd879d0844703f2915a6251f91fc59cd09a9bdcd7b7e",
+      "signature_before": "7b583e59cc81109cd085d42aa1eca5236a0a9a4a99100b6b303174ea3a010f49",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "26c0c8e8b11faed6e6a08f9fc0c79023313fadac48e5486f2dd451689977502d",
+      "signature_before": "2d80669ad99319922522fe3183b5ef3833024b62c6818fa0c1871aaca850473d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "8d605868df9d915b82abed63fc7afc77bad10a4ccc70036e2c5b431dd677b6bc",
+      "signature_before": "4c366142563ecabdce4e43fcc9e7483d959c25fab8314c62829fd823148717c0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_impact_pre_post",
+      "signature_after": "42c62657afbeba3af25578e4b3df63468811366405d3861b49d9c8bc778398a1",
+      "signature_before": "844e30cf837d896c72569c885eead03a97e51cbd82737477d04a9a738de450b1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "signature_after": "80636d9bb92bc7a97f5f67442f1abff753b18b12f9e761ee33bffae71cb84259",
+      "signature_before": "f21a849c69da80cc7062f774f10478de2f60e37f3a2930bc9c5885ed9224da2a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "signature_after": "364d797714bdcb6f24fe6109b48acecbe1f336f8ec9ef7d93284b5326355cb04",
+      "signature_before": "c260b4a4fbb2bebaa9d42ea60dabbc427d2e621ec2be851dc21a96fac6d3c1b7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "signature_after": "58f396ac986966d84af211a15c3fadfbc504542778a1ca150730e6a67cdb8dd0",
+      "signature_before": "6d1391d59e70b29b6c7963ba098ebb5a2378727018ffa7aeb292d8a997f5b64f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_pelt",
+      "signature_after": "6cac26cf026031ae38f5df04b8a9e980027140e62e2c4ca3aa84fbc6400198de",
+      "signature_before": "e1cf28f39f5635504f2eebc2dff20e6138d4f5ad95c8957a70c4151a437827a0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chi_square_association",
+      "signature_after": "f7376e35e0ad0223143581cc949d26f266a50ab5827e0a5a3fcbfd84aca677a9",
+      "signature_before": "1b664d296aa2737d1b922ae59ff27f39fdfd0a991e937549a3b59f23a7dc4071",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "d4b0771de568ae207bd15147694fd76f7b229642961458c93bfcd35ee00ff20c",
+      "signature_before": "db868470f19da7fa56d200f8dffb4d3924dcf31b132ff8dedff485928c0b5cc9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "signature_after": "50cc81e3b29576a30d9e34a27b9d250ee70aa0dcfbc02d94b7269e7092e94b8f",
+      "signature_before": "affcf3c09086fbbeb5da4cb4a92bc49dbc1933f6bdddd72402dabdb874379782",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "signature_after": "44db61fa4a3d84783faf9c30591578183295cd71a617d8153fd84002ac299d2d",
+      "signature_before": "b60f3339959f5edfe27cb7456fd8f6be980006c7867b4aac32231f8c514282cc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "signature_after": "77c47f4ad6388bb6f814558a41445df976d5807db9d19c1e2e61ea6648c72101",
+      "signature_before": "17a5f634a9ea4f4469054d8c5397317c19b9617ad507cfbeaeb1d7a7ea1b9ac6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_contention",
+      "signature_after": "1a843116c4e3409385578ac55b89ef60acb4a4f4405530f9ca8a0d877ff5b2ea",
+      "signature_before": "5fb4e0c2c3c401f535115a1dbb311030ec74cb8756296973b7dd6e7f2afb3294",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "signature_after": "6e91af39f169297b1f1bd28d84d54c58e3666cf64cd172776072e52dbea23e91",
+      "signature_before": "9bbb939247f20fe9565a7f737f7efeb187e58a0ac944c6a331ecf1a5f0986673",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "signature_after": "70875737825e9c2ecd6b954169771042bec934acaa036e8945a0eb125c7b302f",
+      "signature_before": "b194f960176f04708ea3d4c4c8a4773c9155a0a616c2996910c8d81806931137",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "signature_after": "ffbd209e26b45a48d7139e965cf209c0f531dc8bdff536892442e939c37af0c2",
+      "signature_before": "1f6f11d015ad882f9031bf82645e72c655736a8eed493c3ed26c5345a574e3cf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "Backtracked close starts for 47 accounting months (37 inferred, 10 fallback)."
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_uplift",
+      "signature_after": "34614adee1e6dea53cc1faddffdb40579d3a7fa5791685d8b5b03b641e149279",
+      "signature_before": "85e49047afd56d2a4bc94f73b969d7feaa025ae1dab1bc9037d0e96a217f29fd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "signature_after": "99b0c3e497e24d3933f6e09397752909ccd7b87ba1394a21da0a76d860ac84d7",
+      "signature_before": "2a0beb6a049178d32c4be272d405753932aa9b9a0eacf76706112f29ab90675e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "signature_after": "c7d84e7d9a546de77fd0560a699b88d024baaeb9530624339a82dcaff55f8a35",
+      "signature_before": "3944bbbd3fd3e18ad34fb67433530a0eb068d5d33213a2c50c4c91a0c15569ff",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "signature_after": "be07b8eec143a0116897239092ca491528c553db69f22b769c7a21fdd43c3fc5",
+      "signature_before": "03a3ad1c501fd61271e302da5539e34bb8852acf90a9049eb84f711a1e5b5e2a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "6f363ded0f85af6ea68d47df152085f32c0792dea854f5374a4d175f63a483f7",
+      "signature_before": "558b01c820d8907220c6b005092b93afd93d8ee0d8a7afeda18257980762a948",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "cdb12267e9d61337513944e3e2762cffe4e26db4edb3ef94b3e83dcde7fa3a6e",
+      "signature_before": "499fab5b3347fb7feb5d534107010b013a564caf07a1588f555d26694b92104a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_alignments",
+      "signature_after": "c597a863239f1a4c914c9497c345d88ef37b9f470578ff06d308280934dca975",
+      "signature_before": "073ed2530ccbb306964e93cd191d357a5b1e91d7f83b45c674b2785f61ca3a19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_checking",
+      "signature_after": "01f8c019aeb53532e2ddb94a261a4066bc5b854b7e400d0ac2a3b6e980114cf0",
+      "signature_before": "8a5573e98aae339e0f2e01a1a1735f0ea3ace4a045765483d799eccc4ac5493a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "signature_after": "1e21a604b2a29f86b4f8c772b99cec9a67da54ed34600b4844ef540388745060",
+      "signature_before": "f0a0bcc7cb006e672b11667f9e26481fabfcf6e2c9b0152a54b1afefe95a959b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "signature_after": "653e952d29f783a55fd7b7217f80cc5266090c579adc82bc2319a89a0545adb2",
+      "signature_before": "b7b4dcb4737cbf21393c2f8bcff0435f3d09baaaf2909d7be92bec298c8b07e7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_contribution_limit_flags_v1",
+      "signature_after": "ced4a0fb9896c00c5d61ef6cb5c23009b24a7310d1b1b1ce0ba05ff75fd2f7a0",
+      "signature_before": "4731231fe6d5d5b619175be3ae28b25025767d953f0e066adc2685706e365721",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_cusum",
+      "signature_after": "7b293f4a95850a8dcfa89208d928be268a0957e0c2dff220fc984bf36018a1b4",
+      "signature_before": "96ac143cc75b19556d04fbf176b79e9e848aeea03329bec855bbcd834b0571cc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_ewma",
+      "signature_after": "5f6542a30f95aaa5b3c27cf9ef880c6da555f303e8dc68a30132cbb9b219d118",
+      "signature_before": "6d83c0522822fccd470643438ec4a609d1e2b542a5cc79e1a2fa9f54aa4cdd2b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_individuals",
+      "signature_after": "d4bd001480b8ce6c5d9cb0a8f0f0479a795121b0605b7aefb9c424a924a32f87",
+      "signature_before": "ac292c3226fcf6a37602094e3b84f6be90da29ae707ece6ad2e722e7b4217973",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "62f4c10ce50fa830450b350ec4c61197f8054bb222e96cfb9e5486a654bd3a37",
+      "signature_before": "e4b36bc72ae917bc84d90bfc852087306ac58e2a166f2c5618c1567ba5ce258b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_copula_dependence",
+      "signature_after": "9f26e133b6b10739fbd1f8ae23240939a5490cfeff2be7eea33b5c0a70e9cc4a",
+      "signature_before": "df2aa8684e8a44144315e0c8a581815551cd4cceff59391438b712ab17322053",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "signature_after": "d0e809a396445325e7a18dc10e69eb887d5e6a9c00bd16917f11ebb7e993d56d",
+      "signature_before": "e4d95961245234c184f82ea3c1cda5c108aa719b6ef2c7577bad6bc734f56f9b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "7eb59555ccb42b3b1d5b812edd0ef0e1bd92987fe0e40371eef0502a324a02ac",
+      "signature_before": "1b4936d66d17ea237acec79ab286090660edace4f6a14d0ed121c7f53f865dc5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "29c348ad1cb6bdd50b7b7d154145ed4e8883998ae160479bee59cafb348add0a",
+      "signature_before": "a4cc391facad0b7321c5952b60a2932d3b9989c503236706abfb75352782c404",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "f2f2488bab1e490ca1bd499329aa2fa888d6640b09bc815e5a88774e4630c820",
+      "signature_before": "7cea6b770d730179e89c4cfe0ae96ebfeecba007d941fbe690e386fd582e0fa4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "04d3f9caf2578c8438547a108dd062428539e9ecc463e3db8dbc2d0c31c32cbe",
+      "signature_before": "f530b68d50710f8287edf33e2a8f74e0254aa77b52bae9badc5dbfb4368ba47d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "signature_after": "545478639d827f2e4b98abd4869d44dc264ab691e1520d3471172df7ead4e098",
+      "signature_before": "12702156b5b5f9b648b753e71b52e02207d80c0186e835192ec00ebdebfe57a9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "signature_after": "74a285697c9f7a01053e0904b4926ca4479e0dd4694120e7cf4edac3c48f8843",
+      "signature_before": "82fb973debf98f4f37bbaf1d9372252ee1b898f74abbbabcd3e8db6f0df1f681",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "signature_after": "67d7a708c94a6c66997f7b8bf9b27d835c82be526d7f4d5536f40b6bee7bf0e9",
+      "signature_before": "475d4b97e50a8f332208989d17738ed8c33b1cc7500644112ac7bee1aeed4e0b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "67ee7b34f957eaab797aa5bfe504b55117c12b494332065d0342c07f8d8f157b",
+      "signature_before": "222dd0a83bf355986b03194c01752084c9075e78e1f270e90861075c4ae88c74",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "7b36125302fa15fb6a8190e3995be980e1287f0b6af8df9b7aa86f1fbe48ba43",
+      "signature_before": "2b930315eac44259539014f8df4774d3353f9f6e3363484047541084287acd53",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "signature_after": "3173bd257e705b8e65362dd6ecdfc50a32293ee5b15707459e8fae798163e90a",
+      "signature_before": "586090af5f82850cb5c029a470dfd1000a64b47395be38f7853b5fb12235db7a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "d60da467017f0edbd65f302158ea397516400dd39c76c534402139bd086f45bb",
+      "signature_before": "674569e06ea2ca87f3fe5e638a01abecd3172b6349653cec4bf034a12eb2f829",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "signature_after": "dfc01fb2b7832eb84a86b6a98c4e975057ab4820134ded3f4d9a1d60b4d69058",
+      "signature_before": "2f32e4837b20bf07f04cfd1b5bbbb152458a08deab0181b4699a2cabdf3285e4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "signature_after": "dbaa2345788f2d5001fbe302d19eca96a3f345589c0532a8375131c2793be08e",
+      "signature_before": "3dcf4dbd35b7048cbbe0a59de2abdd6904d67a85193e854fb93116b891044796",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "signature_after": "14c0eab97d5b5528f4238d1f63cfa103b064ddf823890930cf456bdb81302cf8",
+      "signature_before": "ab252dc8ecf26fbe28ce8487fa4205c08cc21f603090cd3d70843115daa45ba5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "524961f1a1b84b11d39dddd00a18664e29d299124674b095f1b1d924f0748ed2",
+      "signature_before": "1df7dab09bc5bda40d7378ad406a3fec044aa021a50fdf0634f1eb013dc38249",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "signature_after": "2900dcfb14e6f16af4308157afe05f570dc0255c7f494db09e5f47ad84279ced",
+      "signature_before": "c1500b43103f94ea734c88c97f60ffe0174e39d5857ca6c8e279afc60781f440",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "signature_after": "a829c505321d1a9066a01eb79387c1f4fc1538d3b11901a1104a5e7a127ba19c",
+      "signature_before": "3cb5ad30fe9a2e9723185b10e4c699d01d4f2b3fcee972dc4d3d7f7c90a05a9b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "4d607f37aae474f6380c87cd45a8744245deaf5951c8d3fb2be31a82074671c7",
+      "signature_before": "4e463c0b11fd8ec1413c12b034575a9982307a69096f6c7c53b725311dce5055",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_drift_adwin",
+      "signature_after": "488b689df193561f26f9d26a13b44c4aadf259162fb65c1e2f4c302eb41c7db2",
+      "signature_before": "f331ffb3877da992e9351ddc356a15c63411efad046820cf756491da5d5b7b19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "9c57826e933092326487263baff75e06d9bce5bb16cce13b7495cb71da1caafe",
+      "signature_before": "9a9704fa1d28616484010754e7a68c4c503064e51e2e9f9d71531f2f23bf7eae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "Detected 7 accounting-month roll events using Accounting Month params."
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "signature_after": "253d081fa9e28c97e9b602897665f44e3423b4f81795fc7410a8e426c60a3f7b",
+      "signature_before": "0e02adf1e45f9f92a617e273c56f675ac8b159fccb3ab875cb81ee19a8af13d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "Verified 1 actions",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_effect_size_report",
+      "signature_after": "13691a82553db098748d6326e76375329c6bb4e25dd33329e19582f4333429f0",
+      "signature_before": "9159940a72f2fb0044d499344f34f917a41012d0dc6774d96fdfdef318e5dbfd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "signature_after": "d7cad8801d5befcb3ad5db6aa37eabad7c7f807122466fb5286db827b5892c4d",
+      "signature_before": "9feeab8a988982eef2923891fb89d8581b291101ddc797324d38b0baa3fcdaad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "signature_after": "5f2b00acbb36ef3724dcfb984ff563b699f66798ec35b3d97377466f17e93391",
+      "signature_before": "156b190d5ae8d9907c4b86d13fd65944cdf44dd8879cb84b3d6f2e569438eea1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "signature_after": "2d18797320dd200dcac46de8fa3e9b1615b48404818da5b1acae305424385f5f",
+      "signature_before": "41e9691457f2a2238b278a97a5f3ca0425771c6761b29074e83ebf0942f4291f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "signature_after": "fc6ff2e56213cb93d729b60b312a3b4b67514434a8ca89a24220a09d60e26c20",
+      "signature_before": "cab1aac79079a3669442908377b9fc202eeb233064ed7360eaf25c8f2c40b363",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "signature_after": "7afe7e11dc9d74fe7a92cfd7fb6a611b0816cb09a21265862aaa28dd491f7657",
+      "signature_before": "807a011da7efe340c8f05d1f5f70c5a2d0f0c0b54ca30d6e5df3d0eff334f80a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "signature_after": "986e35fb8a7534dadacb331b03aa3d0fe0ac6dfe17faad36d9598f12ce50d8e3",
+      "signature_before": "d4b5b4f46fe769dd9017c88d44bc72f9432c43d31d53bf61234ce23817db0c01",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_analysis_auto",
+      "signature_after": "c2cc78584b03aa9f73fcb136d835cd392398de43df3612de0c1def5d86f64628",
+      "signature_before": "7dd6592a6f5e02acf2776c9fa7e60835b9e090566ea964160eadc8a04e3585dc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "80c193a8d85abb166d65e0550acd73848b5031fa3cdefc0d7d5d4384db06d526",
+      "signature_before": "386616b656cdea368960d00fdfab4bdaaae1acc5840ab31ec7eb8ad767e78684",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "7e88f3faebecfba7caf770b032084e62854733d8a3a1aa17862da51639ceede8",
+      "signature_before": "69743ba1182e6238c8bdfb3a5ccc5f28895cd97b61875bf9bd171d0aea2e2720",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "signature_after": "d7b5d30495ea00602afe659d6f7ff41c7a40b698ec07ab4c5268bb087eedf2a6",
+      "signature_before": "2d8d8c14b2e010c17004c657ceb7f0fec78d6f7c269552aaa750fda90dd462c1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "signature_after": "9b08a7544addc1eaa4eeaafa852959b205703e676587b8620fac43d928255bfe",
+      "signature_before": "4b76c4b8717c3d8fff7ec32a657f29b401f7911a1895a60fc1dfcf9331b28eb6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "signature_after": "74f2653f0460a0698357c52115d232be677de94cf259a173ba49c1d486e7c842",
+      "signature_before": "3666e7dcae5842cf1c86219e378b45345a7cbee545086d5cbe946ebebe0d5309",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "294f256b8921b2793c3723edfa443dbae9bb68b5d2c1960c5cdc8bae3ee5127c",
+      "signature_before": "7d4cd8ad53be2bc9789df31fd0f8889dd787c98fd8c4b8d4962b27a57ed708d2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "43434a12edbb56c083978b5181cea0a247b170d0a49282c9b73d47de97acb739",
+      "signature_before": "b81ef16e326d309895688e172df829cd6745973abda13b63dc47270bfc0899c6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "89bd8b3420cef6a32dea1d03bfd422b8ff7dc3b37e8163c5fc8b1a328512af46",
+      "signature_before": "70c4230a349c0ff8778bcf8a4f10c8c4647e3d3d0ef681a93785d175a9eebce6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "8248c23806caca34d7c527aadae226cace01d242c7aca433bb5e3571e5b3b5a1",
+      "signature_before": "9f7bb227511496f669d65a97f5354a997211e3c7acc42b3dbb8de880ac7b10bf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "signature_after": "f967982b96e4161f812ca8d92fb122ce9b1821dbb227190ddecc6aa31b8ac24d",
+      "signature_before": "7e0c82ec3c607b6103bcce70e38686f40b43ca9997e41c49c46043f771dbb60f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "signature_after": "c1d5909ae570ab9a5b7c3536c3f981b657b0f2d2c59cb85679ab585803a63c98",
+      "signature_before": "f33736300cd232436cb7e6a4855f0d5196ad99c709b42772a13d6e72281a646f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "signature_after": "a8e00948cf633ef26437274995636c16d9edf0e6f91b976c0bc82654d0f96476",
+      "signature_before": "7dde674109f035922bf0a0d8bed8b6eda4d0abe9667d9a3561eb67bfd2ba863f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_granger_causality_v1",
+      "signature_after": "a1abc6946cc207c9a3d4c100e97310028c8b903b439dabb4342ee75288a5554a",
+      "signature_before": "89701a09452bd7f825a2717cbedcddb0d2b25bb83251a05cdbb4f11b593ac9f2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "b18dcd980042e83bfbb898515e97bf0220758215cb694f4db03b25e50d716dbc",
+      "signature_before": "5d4959f0f5ca2eb8c47b6002d1e554ed6187889ef7afea32e10f835799add6d8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "signature_after": "03d3b06dbe7ff0371f9c7b3670b6bc6967ffc492c40461912811c35beefb4418",
+      "signature_before": "7add0d0b7fa44d24b8a3f3ba889b59725b08a201c819c372172ad79ae74af5a2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "signature_after": "b7555e2c0a947b179956afe3d246fbcc2e0c01cb8a70e07e879eae7d777575b0",
+      "signature_before": "ead3e7bd45f5c59986d8242fa7e7e768a63f285130604790f2ac553e03412b70",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "signature_after": "ffbf7f0f0bad72596640841ec843013843a61bd18b8d094be8b16ecbdee85a7e",
+      "signature_before": "fde79a0f85819f1a9c6574b4fc174be68793b2ce5fbff2ffb7f8de13f632ec66",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "f759a5f7f415b8036ab3061cf0caed417d6c487159eac4c07191af0b5f94bbd1",
+      "signature_before": "a09c4ff1e8cb18126a260f681892211f03d3dea5d5e81987c586ea30b139cbf6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "signature_after": "229c65190ca724fe5b4609850b67ecfe35861cc7e898a25c4571781b3ed8b450",
+      "signature_before": "f201fbce1f8e739adb553374bf888761d8db9a39e696bb7c5e7d2ff822e05660",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "signature_after": "1380e30564e056e9315a342dc24dfc389dfc1a120299f57bce2412ba4c7af6ed",
+      "signature_before": "1b30f20f839f2bd8294eff9f8768838cfcafed691079338670ebdad5a1692c4f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "signature_after": "6f2959378811d96e8aadcfbf6bb8865f53892ddeafa4c3b62e1e6b52c8a71fe8",
+      "signature_before": "087d5b1875ca0dee853bb9c43239b17ec366df07f67146e1eea3201d0015bb5b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "ae0cbf688d730281d25d8c6d6aba48af200b84b2bd777ac4acb61b0dc2b4dd40",
+      "signature_before": "9819974501db34bd6f0afe22587deeae878dc949290a61129ea5c24d1aee9de3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "87289b909e98ada33c9e5b26ddfed3b428772de21222b14b34768ba32933ba4d",
+      "signature_before": "2e66fce1607011fef912d30b7334789dd140ae3f79aeb78908393876c17db467",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "signature_after": "f97764d3ebaa847033129b8dfba2ee487fdd7b3662a732981280ff2422f97fbd",
+      "signature_before": "90d772e3a6dffa1fb1adbf84ee557b502edb74963c31f9b98017706ad6ec9c4d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "signature_after": "313c581644824675a19b3c4f097b5c91176ce2d03a947b22019d962093040692",
+      "signature_before": "ef4844ac6ffe312cb41c83a0f87cd38586178ac299b34773f5b1f015e8261511",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "signature_after": "48320750e177c906633580f2d1ee7e3a0c0a6c07fb1c09a876b1bf946ce5e02e",
+      "signature_before": "2fd4f9fd3b81ac30081066d1b9dd336d0cc59de272b4a897c728f8e7edaeb9dc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "ad23a5029cfdbc6bbf8af03452cdbcb49ee78595d9924010e474c06d58b6ad6a",
+      "signature_before": "36e804fc9f1a833b74be875acd80584b70d13b5cc41b3124a8f3c9b3fef588ee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "c3459abebff02baf4c221667d2cf17975530e5259390801f6fb067642fb974f1",
+      "signature_before": "f38c6de509b0a823addd41dcd15023cd67578a61e119aec255784c9ef55a2f56",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "signature_after": "c1c542cc5a48ce31c045f736b5bd6496aa205284524b657d4ee1e87c7fa2855d",
+      "signature_before": "ffc88f2ff6a03f03303b74c433776e86f5367432db72fa3a82c1f6b2b3ae4948",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "signature_after": "b9923e999cf4f29a89c8ea7719ee5e7f9621c470595ee95843657dadff3b0a18",
+      "signature_before": "26f39a660af153aa91402452a3929a4897afd7c408276ed7bc11b1a00aea78a9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "signature_after": "42770cfcc3c16a7112addfee5ac07fa136fbf57a3fd44172d956e1c212d57a68",
+      "signature_before": "c662b6ee7a427a05b5aeb75ee0583f596b9c7e3795885fdb7479ec5734c84653",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "signature_after": "02e9762522c2770a4f3ac06a34048b647dd6b693fdfe3f24f2720bd70e8d2d98",
+      "signature_before": "7400e9c402e7717362e393efa482b07f4147ff646bcc3ebe61354fe2cbf75e90",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest",
+      "signature_after": "6771ba5f7455c79984eb57eed420eab979b6bc21636ffc30b565b83b45b7de78",
+      "signature_before": "be0c11ca903eb9ff23e04848b1d7244ada715cc700ca5d44b6d483301bad707e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "6771ba5f7455c79984eb57eed420eab979b6bc21636ffc30b565b83b45b7de78",
+      "signature_before": "be0c11ca903eb9ff23e04848b1d7244ada715cc700ca5d44b6d483301bad707e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_issue_cards_v2",
+      "signature_after": "777655c7b9668ddb6699edb5732fe1ea00382e12ce053e5acf4a196080c35c53",
+      "signature_before": "3275444d2b71f8b27f247e441372c28e826d5e154e295bd9085c32f9e1906b8f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "signature_after": "a7d3ea40e22d4cea0e3b7a06bc38fb1f24f0889ee638a871a50d19bafc4f892b",
+      "signature_before": "a4c8686676bef550204754d6045dfd370078e6ff821a408bab0fd02461cc8936",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kingman_vut_approx",
+      "signature_after": "d3dfb9332c4ef32cafc9b3d97734e17993934f2209dd067fcee1184aa5e8bcd4",
+      "signature_before": "63494ea33924a4b4955adeaf3f38e6e15716396d4006d161f357135e71fc93f5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "signature_after": "5968f5c028619ae9a5b6f8efb2d8ee93a1e9c997d9efc2f50e935709236d24f1",
+      "signature_before": "20c3ab06a045689e2aa0d1c222c5bb670840e0ab9a2655bacad721a87fa54e71",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "7d07661ce830f1c03f1818fca615504d6fd01318af3404c9344ed971b2eee6d0",
+      "signature_before": "6c89b55b9ceb425a7e1446965549eb574cb33502e569f379d34eb0e7c9f508ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "signature_after": "d5721e953b6d916f524491cb5d8f58230c355d152619cd1a8e87f2678ae78427",
+      "signature_before": "7c512b4f1cb6a70743e38d5f2444159d284122b9b9ed5602954040fb3280c4a6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lagged_predictability_test",
+      "signature_after": "57e62adc29d626a1b47853123c608bf7ec4ca00bd1c9a20bcc48936ef7ed1d16",
+      "signature_before": "b76dda313f1fb13e7773c85550c8a17000cf088e3ebb8929542d1df5b210638c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "signature_after": "9e95bc8c0a8e5176d6d86b375e2edb290387251f7d94d00969aaf0c8430f7161",
+      "signature_before": "95d3f6957f2ef3f93f627d563958969e4e28cbc80d2cce46a520f6e71a59c196",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_littles_law_consistency",
+      "signature_after": "087d25d894cbc9fbbfcc271db01a1eeaf011c480e6ea79f910f49cbaa9610556",
+      "signature_before": "2988ba9e8132e3a51cb2060d89585b5b8b4f0de9c19154ac67dffb1a6a4546e3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_local_outlier_factor",
+      "signature_after": "59a4e2da9d13a00d096359723bed553fd46939c6dc59187248502d82b3bef5e7",
+      "signature_before": "c4f2c49d68b1f93a3e46fbe6cc01373a65c96e3e4d030481911e610ccd2709dd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_drain",
+      "signature_after": "c20dfa4d390b4a9293075216ecb91cd524ff19c4279dcdd5197447f140b19275",
+      "signature_before": "bfcd5be073af39e878d4693ee3b5b373b9296a538b1892ba87bcda6f42b6ea2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "21e9757d77508913ffe83a44da06c2cce4344d057c4c0a739cd76048c66afbdf",
+      "signature_before": "bfcd5be073af39e878d4693ee3b5b373b9296a538b1892ba87bcda6f42b6ea2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "f24d8f09941bc714d398296347daa0dbe068c684f93e42fe73fd2d49022df5b5",
+      "signature_before": "48d0910e1de956397e9aaefe5b4290a3de8efbada6110e4af5db3ab3a48b608a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "signature_after": "ddf5b9ed81ab1036fee5bd15dce84f350a4e08c542024b89d953b2c79902bec0",
+      "signature_before": "7fd5d3d948a09c14c0d893c3ac4623deafb6ad7aa55cbeabb8c8d7d81b99b816",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "signature_after": "cf7eff70c05ad243d7c6ef70c609c9223e882c2a1ec6ea5612b07c5bbf5cb3c3",
+      "signature_before": "a4fed64bbfa4620514f49aa396889aabc5809e3e3741028440484ab7a9febf2d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "a2877ad0041092bf87679b5b7d78208c63b50da6427459ef8c3caa329e37a6ab",
+      "signature_before": "738febf9172fc5dfa495becd3353c633d520a064cb9947fdb2ad1c34e4022470",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_markov_transition_shift",
+      "signature_after": "2f33b4669c7f829cacf9f5d90f24c42a2b91a256f2fc39eb16d3d249e254424a",
+      "signature_before": "a522cd881a42c76cd1dd3a4962037ad459c17ec4b998ab896631b8931384599a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "signature_after": "85ad9a833a2235d523d136f96900b4fc9bf6081e8063eaa08699cc6dfae7b664",
+      "signature_before": "189083856c24b00c9d247992256cb6d2636dbaba81d555a8cc8a9aa10682f475",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_message_entropy_drift",
+      "signature_after": "ef0407bad59332a1e76083ad3360f322912dd7632721967c5ba35505ceb3a339",
+      "signature_before": "7c02e7a51b8c0babec76be64c11b8d99445daa1ab7c78cbd7a9d218a88bcb2b6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "signature_after": "fb36f1058280b02499638b8331dbd4156ad1879882b5f23bed7f43ae8ad2b7cb",
+      "signature_before": "616b11ccbf614c0148aeabe7c943fd2f3839a2fdb3e82b7c9bb8dd37d712cf11",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "signature_after": "397a0a29dcb23f40829e7dbbcb80225e8cb2f09d4d7f8a867fa1255894b5f2c3",
+      "signature_before": "ff91cb15d0a7572245b545a5d5b9a70f6292d8dc3f4c6ac104ef9df17358599a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "signature_after": "d7cad8801d5befcb3ad5db6aa37eabad7c7f807122466fb5286db827b5892c4d",
+      "signature_before": "d46f8cd8dd83f1b03738fa6253e50c8f1285c9bfb47e9b03144ef4e007349140",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "signature_after": "13258065ab992d4c7688c31dcc992c52293eac343ee22ccd86d514236d656da6",
+      "signature_before": "f532d5a5142dbe05c54be41d124fcf067f2ed87c9f1b164c9568cec2327e47e2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "c87bf44321408a28069fc35b0bd45bbd400f1a06ce593066503786fd8fafec88",
+      "signature_before": "3e4c1789ca0cff99739152e36ff75988022660be6ec2a1d1d06b9a3e4e1dd369",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "signature_after": "e8dceafef29d145688d96011c0b444138435bceefd3a200c5d2a73c61fc49c7e",
+      "signature_before": "5d8d00293d473d2873f447516e12ec3d1df783e1317cc82a9c0c5e8a3192392a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "signature_after": "8d70b1406b348bf7240c4729c28853560c6b68f1e10e231b8c07e3bdfa05003f",
+      "signature_before": "c8aa2d32237a60cdb4dff79f655ac54502ca48da1499dd1ad9a1f15ae513aa2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "8ea28225d1c6f4c657b0a63bc4a3d4f94a55103875d248d6e72e965256caa0a6",
+      "signature_before": "3b37f0de60506a1d0fae4b3ebcd98c4956ba4bde2052bb11541064fee64bcae1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "f744e105a8344485cadaf063113d0968f012af58e5f3ac5bd9ce49259eca2a06",
+      "signature_before": "6e4815260b7835aec80e03f31e76f4a18d870283075e96687240236c80bbda0b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "signature_after": "cee1dcf00f1502c6d085ce55a5a47317e4e4c4d0a99bab1e975819bf2d98f0c7",
+      "signature_before": "7e8c85855c159fe214757f6f21985a21e7e84c32a6e9cfebc4cd0e3b2ccc3351",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_t2_control",
+      "signature_after": "c31b5e19ac3d568e1f0528cb4b821eda145f97a5eebfa0fc91f9e9cd68fa26a3",
+      "signature_before": "90bea8eb7b6726b317d555c0a2bf2b5414d416b4f577c506f560ba766d84dbfd",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mutual_information_screen",
+      "signature_after": "28b1a0442862f6a872d2fb77440728d3f91736a152379487af4d55b37f938b71",
+      "signature_before": "cc412de1f22805a4f6765f78470762eb7ee40b88812dd87a44e6f5df8216ab2f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "62f2bd7fbddc0c3a6352a70ffcc2405b67a46235e8d2df47b3a904e323be75fa",
+      "signature_before": "f8da2996d4ac3c5d0075492d4f51768c0d71f3cce64435cefb9ca63da2a7e9af",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "signature_after": "666f5ec4c7f7d0a70ff8f6650744ddcff0497221bc2ce8b13adcedbc34145d85",
+      "signature_before": "938e4044a446902b44ee437252244aa336e0fa3ab3838da505308439c46a929a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "signature_after": "0ab69bb138531f4425bc6cb506460470a062a9f98618276cf21e18657d7aa4f5",
+      "signature_before": "87212921d89ddcae716486e56cf9625eaa1c2f6958baaeba7a697899c0b974af",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+      "signature_after": "81bae6c420ae48fcf602f058804d746ccc9f8631ba204e39191b8dbbb2b671a9",
+      "signature_before": "b3b39fa852508bb53188518fc849f68061b8f1f8467ee9c486c0f39d35f08891",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "signature_after": "888e2e36fd2a96344336cc967c6f71fab6946de42f20e2a271260c8504a783af",
+      "signature_before": "6ede7649bf2abe7f7a45bbdde4a329ceace269d19372832cccdffb97c22aceb2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "6000b56787bc9d1ab7ec0f960c493abd4e5dcd41a05788875a03d1b4b47a4223",
+      "signature_before": "46ec4eafbc08fed007e5931ef5d9204d88a86a36bbfb3c461e5be30b848e751b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "artifacts_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_one_class_svm",
+      "signature_after": "47a45e9300e914293ec67248be203e6139ab57fb05bac6706f656e0f1201576d",
+      "signature_before": "c7b7635ead4bd0d77d0c3b749919be39c5704a6005865575bbc5e8b6a3d58169",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "a8358db2450294c93ec4cbb7afffd0ebe1b3077f288d67fb1f5155f3dbc0017b",
+      "signature_before": "5155a4ab88708eaff7aeee0a14b0721382af2ebf86eb076e33bed4402e56a97a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "db202247515c8a43794fdb4069f248015ee0213270e8d3bd311d59614c5ac007",
+      "signature_before": "a51611fb43861d0af16884f3d9b2394e09f91e1ac8b31b4e237afecb1f50cdca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "signature_after": "0e8fc9e1ce5f94ec6d7bc0438075171b571fe3dbaf8ab8c81173de1178521fa9",
+      "signature_before": "89575ff317c549f105befafd77a6a72140af3c1f080266d9e0b48f62e1017b3c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "signature_after": "67fbba0b9926ac74a529ece669b5aa2531e7c74fd1d500460fc76143199497bd",
+      "signature_before": "4a380e97c6746217743642bf5ad5c204da5c6fb4bffcf0eefe59f56ffd9d4f3d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "signature_after": "624419d59682aabd00419dc2be398b16ff6bbce755f48a921cf542192fabb1c6",
+      "signature_before": "964c547773a2b105bc32a60bd584664f5f365ea991e5e153732d19582933971c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "f390fbb1981c6cde00c92bef133b6d2e9bc38cd342b0a9aba5628ce8f94f3d3d",
+      "signature_before": "a594f8dcd4dc297d9f0a232fbe79adedcc29565498d38e371b9dbf6a4dc6bf01",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "signature_after": "55ef69e2bcf4391b3caa31f24586de8b660a3f638216887ade63ef70ff9db1e9",
+      "signature_before": "758568d1163d24ec9222362415a184a071029e8a2c8623488d3d95f36830f01b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_auto",
+      "signature_after": "fc0d355d0907334ddb88b86b705bc86a627060fd6d81823305bd8f62e2945656",
+      "signature_before": "9407160db4e0f01bd4396ab9907e65994f37c02abd07e8b5925c06c76bf054b1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_control_chart",
+      "signature_after": "228e495cf7f3f50427e9b9b45ea776c04d869b7c3bca10588fa1e18d915629d4",
+      "signature_before": "9ca45f9dcb33120d4d8c1ccb1a435bc7c33bdf774c31df11b25f6ae763f6f979",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "81fc2f9d1e734246b8de1019a0cf7310d4ad2cf48f5f5e70e78885d6287ae72e",
+      "signature_before": "cd7b9ac7b5464b07d7ef9d76bf23006a5b33693199fd8e6102c8d9e59b0f2fda",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "signature_after": "547534c1e1a7da63e74fd055a98ccf9a2d6fef275f3bc43389a1da501a3dba08",
+      "signature_before": "065b527a19cc4f5b1f2d35bb90646b48c519ee09405709f2cddeed8a62bf248f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "81354e046a1f9b534f27870ebbc19bdb3578d0ceef1365397b975e3362a74d6d",
+      "signature_before": "c5430e94fdf6f4973ec3567cb64da78583d3ae35db27e0e1c0787f9ae1cfa0e4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "signature_after": "c0340f6dab09204087341c082c816c9c5daeb4181e13196ff36780a973012d9d",
+      "signature_before": "e99bfd72be7d766c458d23d79973ddf43a1c391b2e1739f0a1680010eae30f24",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "signature_after": "2c48ba29778c07a09eebf622fca5902aa8033af5ed7326702f3041be1a082c56",
+      "signature_before": "8d928be140b359e6a97859cbdd3389e3fa8ba4171723cd4c9015c1539a5159c7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "62b0d487bbcb26293cfe01edd36f642cfec7f63864e8d44fba6ab6f43c79c00a",
+      "signature_before": "455ba60cc1bb5eacf6c9e807212a2472d14e232e978f6488688ac0192a41adc2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "references_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "7e34c782cf54a738463e94298902a498387cdd1b2cea0c06d62f36168b49519e",
+      "signature_before": "4f3a6f9eb841787da1f187e8dc57e54eb622d59ad2252702b65b85ac9797ddca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "signature_after": "8da7645f35abee85d558b5f41758a9aceb948b84c8902605b807ed5f4252d862",
+      "signature_before": "8f038e362b1c789ba5a78fc52a55928091a90abf19392c96cbc9b372191a40a2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "e7f547ba3797a91ee51f9e749327c6c1635aae7100d6899207d6b6a1554c3696",
+      "signature_before": "36de1e5bbd42918790d9bdd8d9973b0fffc6039a5ecc085a738d62ba1ea2dd19",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "signature_after": "d514d58f78e58ef32cfb1e348f5d0ffe4ae213e53f034f7911c7bfa532d0262c",
+      "signature_before": "6387570ece46025c756afbe9d8cc421bde2eb4e7ab684447f377d9bcd5983fb4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_server_levers_v1",
+      "signature_after": "bc15754b19ac52d0aebc896786c08fc370e341165a3d03dd24a625ca7991afea",
+      "signature_before": "df566678b9ee94fac303140de20831790468b2daa338281650f75ea6fdd97108",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "signature_after": "8ba4366bbd453728f976344779a175f4c5b73809dedd9cc557e5f855ad41ea5c",
+      "signature_before": "840d4409b1a6c79b0935e657ea86bd544033d26df5afcc30349a90d2b29f07b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "3e9db3adc6f6865ff66cd1980b609582e54273643e6b69db7ab792e959842bb8",
+      "signature_before": "b0bab6122f6b8ca6cebd845862659089edd9139938377fba36886090c96fd404",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "signature_after": "83c0cb76084971156c2046c3482f2da5d4ad99e43a177d9c7342307a71f35a9e",
+      "signature_before": "ad8bcc6c628d440cca0d51da5cbc5e6c9a482f71216f13164158729aa9f9444c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_duration",
+      "signature_after": "1e512a4c96370e8b87069ea1a9c0c08c42105ed0c31487ca06e056b775fca16a",
+      "signature_before": "230deab57d5c585852701415a20637debac2d72afee251a2c37503d09f268873",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "97e913465d2e73c63203f8417c2e24c638eaff76de2f1a574824641c482f93d3",
+      "signature_before": "c7813a6d987dd5bf97686ca81d31c289cc574ce5188f6cddf44b99b38db031ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "signature_after": "55b2c3c0a456140846581942d7184806747e1f51a40ea8cce7983e2e3b94a85e",
+      "signature_before": "da501a9e133f9d7b30b9fdd26d93b36bf76ea5791d29a480d58c0288835127b4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "signature_after": "98dcb1a9b5f99253044de4d291de744882b7d8e2df294f3449d21e551b7076e3",
+      "signature_before": "987c649bf80e3d613cf440b0337f115b2417bd707443e239d5e0c7e9648670d7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_model_fit",
+      "signature_after": "052ab817884cc24f30d69e67366a23af7d69693c1ec4e027048178fdf321b111",
+      "signature_before": "18c67385c1a4d881529fee2ca3d33e24a40f39d11395fd617e944e48ecf39021",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "8cf343f63ad4e08cd21181c05156baaaf7c0f3866fd718ebd7fd01d2447d9206",
+      "signature_before": "9c45549adf006973789eb7abee42cf880105aee21f5f80ae1ab328be33c01a83",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "signature_after": "2b25bbdf18d15c1409482f4db09b059f3eec54a3b72e743ad28458961f1dddbb",
+      "signature_before": "ed876deb643c19f520a293d6e598c015ef5b5096692612046a42c27b51a1b5ff",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "8c433423b73c18959e87a962f63c70461b0caffb683875c45a2c92647a63ed91",
+      "signature_before": "f6ea2a940ba6427e35cbd23f87a8d5a73cd157ebe743dc6c14ecaf442bbfa9b4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "signature_after": "7fb81c637ed2595cf8b2a4a674c12aee88830510c13cf740e05233685f7527d3",
+      "signature_before": "133a76f22cfae8d9e4fc41f09910012e2088928b6631d72fc361a635e08cd4ed",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_red_flags_refined_v1",
+      "signature_after": "cb241a661776ce239bc660ff9514233b7858842f6d98587e4645d699b101056b",
+      "signature_before": "4441b38c3683ccfff0da54f1cf1978f7aecdde35f2d3ea3ba6d944b8f90b9faf",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_regression_auto",
+      "signature_after": "36f42eb6b129015ed10cafdfe37d152d599c29c59f41255d79c5c4098814c9f7",
+      "signature_before": "e34f4178797121be470e055330c1356ac8aa6db5b01281c9e2f0ebb9355d9503",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "signature_after": "b6f92504edf7701fd1b6d8f132f556b6dbc1dfce75138c5047968b2cd44e07af",
+      "signature_before": "8f0e9cfd5947f8cdeafc932ab0d231efe16fd2f79b8231a876da182dde7595ff",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "signature_after": "52e96612cfaf35d31a6801b7a6f7d93d36a7bb056a9d81e7e50d950a49699196",
+      "signature_before": "172ac59c56bac06a459a021db3f485a653c61262f0dc1e9f5d218655f632b40f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_pcp",
+      "signature_after": "5c1d21c6c5b3d21bfbf88715c30072dee3b83a8f2536a930547822d499a83818",
+      "signature_before": "97e977290ed38239c66d95c3bde9b81926405151b4782ce96c24180c2a32e3ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "5c1d21c6c5b3d21bfbf88715c30072dee3b83a8f2536a930547822d499a83818",
+      "signature_before": "97e977290ed38239c66d95c3bde9b81926405151b4782ce96c24180c2a32e3ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "07bb95275c24fbd1537dc76067d2ee5720a78204bab8451e6f79975fb89dca5e",
+      "signature_before": "ef7f94501d3ccc395feff88f815b9b99970d683b2bbf4a65266910b59f281498",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "163610cb3b1e22a2aa61df19d40e4464cd807c84675e9da83bb96021941d6af2",
+      "signature_before": "8773f67eb88cb60e1c227e9509692780229158e53afbce3fb16f0cd078e9d365",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "83fb3eefc089cc50b65dde405e877fb6cee31e1921752c02b4484f06011ad9ed",
+      "signature_before": "785bab252c85e5edd3a84d11855050e1825e7aa7c4c6fb55de66aadf65b439e1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "signature_after": "96ce9b9863868db69a1a3318a2e38faf631eb513b65e11a853703131838fd445",
+      "signature_before": "3eb5cd12d11b157b7645552d81c4a900fceda2a35c1828a568ca1f6a39553997",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "c835eb5f0e5c14823a2586bde8a9b24419c14c9be7e163a5f4d902d62ad31eac",
+      "signature_before": "def3eebe192065d89d52041675bd4fe0dd9f4c64514244735d12dec1d20bc703",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "findings_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "signature_after": "93020435f348494c07e6f612daafa41d5a33d4d2c937f324e1d9b554c99a8bbc",
+      "signature_before": "baf9e3b23f45d685edc1b367b1fc1b3db3f430c844dd94020a206f4a15879504",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from 1ae98f2ee76b4e839355f91f2d0e4e3f",
+      "summary_before": "REUSED from baseline_full_pslever_20260224a"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 26,
+    "budget_json": 1,
+    "debug_json": 266,
+    "error_json": 0,
+    "findings_json": 268,
+    "metrics_json": 246,
+    "references_json": 1,
+    "summary": 264
+  },
+  "material_changed_plugins": [
+    "analysis_action_search_mip_batched_scheduler_v1",
+    "analysis_action_search_simulated_annealing_v1",
+    "analysis_actionable_ops_levers_v1",
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_anova_auto",
+    "analysis_association_rules_apriori_v1",
+    "analysis_attribution",
+    "analysis_bart_uplift_surrogate_v1",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_bayesian_point_displacement",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "analysis_biclustering_cheng_church_v1",
+    "analysis_bocpd_gaussian",
+    "analysis_bootstrap_ci_effect_sizes_v1",
+    "analysis_bsts_intervention_counterfactual_v1",
+    "analysis_bundled_donations_v1",
+    "analysis_burst_detection_kleinberg",
+    "analysis_burst_modeling_hawkes_v1",
+    "analysis_busy_period_segmentation_v2",
+    "analysis_capacity_frontier_envelope_v1",
+    "analysis_capacity_scaling",
+    "analysis_cca_crossblock_association_v1",
+    "analysis_chain_makespan",
+    "analysis_change_impact_pre_post",
+    "analysis_change_score_consensus_v1",
+    "analysis_changepoint_energy_edivisive",
+    "analysis_changepoint_method_survey_guided",
+    "analysis_changepoint_pelt",
+    "analysis_chi_square_association",
+    "analysis_circular_time_of_day_drift_v1",
+    "analysis_close_cycle_capacity_impact",
+    "analysis_close_cycle_capacity_model",
+    "analysis_close_cycle_change_point_v1",
+    "analysis_close_cycle_contention",
+    "analysis_close_cycle_duration_shift",
+    "analysis_close_cycle_revenue_compression",
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_uplift",
+    "analysis_close_cycle_window_resolver",
+    "analysis_cluster_analysis_auto",
+    "analysis_competing_risks_cif_v1",
+    "analysis_concurrency_reconstruction",
+    "analysis_conformal_feature_prediction",
+    "analysis_conformance_alignments",
+    "analysis_conformance_checking",
+    "analysis_constrained_clustering_cop_kmeans_v1",
+    "analysis_constraints_violation_detector_v1",
+    "analysis_contribution_limit_flags_v1",
+    "analysis_control_chart_cusum",
+    "analysis_control_chart_ewma",
+    "analysis_control_chart_individuals",
+    "analysis_control_chart_suite",
+    "analysis_copula_dependence",
+    "analysis_cur_decomposition_explain_v1",
+    "analysis_cusum_on_model_residuals_v1",
+    "analysis_daily_pattern_alignment_dtw_v1",
+    "analysis_density_clustering_hdbscan_v1",
+    "analysis_dependency_community_leiden_v1",
+    "analysis_dependency_community_louvain_v1",
+    "analysis_dependency_critical_path_v1",
+    "analysis_dependency_graph_change_detection",
+    "analysis_dependency_resolution_join",
+    "analysis_determinism_discipline",
+    "analysis_diffusion_maps_manifold_v1",
+    "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+    "analysis_discrete_event_queue_simulator_v1",
+    "analysis_distance_correlation_screen_v1",
+    "analysis_distance_covariance_dependence_v1",
+    "analysis_distribution_drift_suite",
+    "analysis_distribution_shift_wasserstein_v1",
+    "analysis_dmd_koopman_modes_v1",
+    "analysis_dp_gmm",
+    "analysis_drift_adwin",
+    "analysis_dynamic_close_detection",
+    "analysis_ebm_action_verifier_v1",
+    "analysis_effect_size_report",
+    "analysis_elastic_net_regularized_glm_v1",
+    "analysis_empirical_bayes_shrinkage_v1",
+    "analysis_energy_distance_two_sample_v1",
+    "analysis_event_count_bocpd_poisson",
+    "analysis_evt_gumbel_tail",
+    "analysis_evt_peaks_over_threshold",
+    "analysis_factor_analysis_auto",
+    "analysis_factor_rotation_varimax_v1",
+    "analysis_fisher_exact_enrichment_v1",
+    "analysis_frequent_directions_cov_sketch_v1",
+    "analysis_frequent_itemsets_fpgrowth_v1",
+    "analysis_fused_lasso_trend_filtering_v1",
+    "analysis_gam_spline_regression_v1",
+    "analysis_garch_volatility_shift_v1",
+    "analysis_gaussian_copula_shift",
+    "analysis_gaussian_knockoffs",
+    "analysis_gaussian_process_regression_v1",
+    "analysis_geometric_median_multivariate_location_v1",
+    "analysis_ges_score_based_causal_v1",
+    "analysis_granger_causality_v1",
+    "analysis_graph_assortativity_shift_v1",
+    "analysis_graph_min_cut_partition_v1",
+    "analysis_graph_motif_triads_shift_v1",
+    "analysis_graph_pagerank_hotspots_v1",
+    "analysis_graph_topology_curves",
+    "analysis_graphical_lasso_dependency_network",
+    "analysis_haar_wavelet_transient_detector_v1",
+    "analysis_hawkes_self_exciting",
+    "analysis_heavy_tail_index_hill_v1",
+    "analysis_higuchi_fractal_dimension_v1",
+    "analysis_hmm_latent_state_sequences",
+    "analysis_hold_time_attribution_v1",
+    "analysis_hsic_independence_screen_v1",
+    "analysis_hurst_exponent_long_memory_v1",
+    "analysis_ica_source_separation_v1",
+    "analysis_icp_invariant_causal_prediction_v1",
+    "analysis_ideaspace_action_planner",
+    "analysis_ideaspace_energy_ebm_v1",
+    "analysis_ideaspace_normative_gap",
+    "analysis_isolation_forest",
+    "analysis_isolation_forest_anomaly",
+    "analysis_issue_cards_v2",
+    "analysis_kernel_two_sample_mmd",
+    "analysis_kingman_vut_approx",
+    "analysis_knn_graph_two_sample_test_v1",
+    "analysis_knockoff_wrapper_rf",
+    "analysis_ksd_stein_discrepancy_anomaly_v1",
+    "analysis_lagged_predictability_test",
+    "analysis_lingam_causal_discovery_v1",
+    "analysis_littles_law_consistency",
+    "analysis_local_outlier_factor",
+    "analysis_log_template_drain",
+    "analysis_log_template_mining_drain",
+    "analysis_lomb_scargle_periodogram_v1",
+    "analysis_mann_kendall_trend_test_v1",
+    "analysis_map_permutation_test_karniski",
+    "analysis_marked_point_process_intensity_v1",
+    "analysis_markov_transition_shift",
+    "analysis_matrix_profile_motifs_discords",
+    "analysis_message_entropy_drift",
+    "analysis_mice_imputation_chained_equations_v1",
+    "analysis_minimum_covariance_determinant_v1",
+    "analysis_mixed_effects_hierarchical_v1",
+    "analysis_monte_carlo_surface_uncertainty",
+    "analysis_multicollinearity_vif_screen_v1",
+    "analysis_multiple_testing_fdr",
+    "analysis_multiscale_entropy_mse_v1",
+    "analysis_multivariate_changepoint_pelt",
+    "analysis_multivariate_control_charts",
+    "analysis_multivariate_ewma_control",
+    "analysis_multivariate_t2_control",
+    "analysis_mutual_information_screen",
+    "analysis_negative_binomial_overdispersion_v1",
+    "analysis_neural_additive_model_nam_v1",
+    "analysis_node2vec_graph_embedding_drift_v1",
+    "analysis_nonnegative_matrix_factorization_v1",
+    "analysis_normalizing_flow_density_v1",
+    "analysis_notears_linear",
+    "analysis_one_class_svm",
+    "analysis_online_conformal_changepoint",
+    "analysis_outlier_influence_cooks_distance_v1",
+    "analysis_param_near_duplicate_minhash_v1",
+    "analysis_param_near_duplicate_simhash_v1",
+    "analysis_param_variant_explosion_v1",
+    "analysis_partial_correlation_network_shift_v1",
+    "analysis_pc_algorithm_causal_graph_v1",
+    "analysis_pca_auto",
+    "analysis_pca_control_chart",
+    "analysis_percentile_analysis",
+    "analysis_periodicity_spectral_scan",
+    "analysis_permutation_entropy_drift_v1",
+    "analysis_phate_trajectory_embedding_v1",
+    "analysis_piecewise_linear_trend_changepoints_v1",
+    "analysis_poisson_regression_rate_drivers_v1",
+    "analysis_process_counterfactuals",
+    "analysis_process_drift_conformance_over_time",
+    "analysis_process_sequence",
+    "analysis_process_sequence_bottlenecks",
+    "analysis_process_server_levers_v1",
+    "analysis_proportional_hazards_duration",
+    "analysis_quantile_loss_boosting_v1",
+    "analysis_quantile_mapping_drift_qq_v1",
+    "analysis_quantile_regression_duration",
+    "analysis_quantile_regression_forest_v1",
+    "analysis_quantile_sketch_p2_streaming_v1",
+    "analysis_queue_delay_decomposition",
+    "analysis_queue_model_fit",
+    "analysis_random_matrix_marchenko_pastur_denoise_v1",
+    "analysis_randomization_test_median_shift_v1",
+    "analysis_recommendation_dedupe_v2",
+    "analysis_recurrence_quantification_rqa_v1",
+    "analysis_red_flags_refined_v1",
+    "analysis_regression_auto",
+    "analysis_retry_rate_hotspots_v1",
+    "analysis_robust_covariance_outliers",
+    "analysis_robust_pca_pcp",
+    "analysis_robust_pca_sparse_outliers",
+    "analysis_robust_regression_huber_ransac_v1",
+    "analysis_sample_entropy_irregularity_v1",
+    "analysis_scan_statistics",
+    "analysis_seasonal_holt_winters_forecast_residuals_v1",
+    "analysis_sequence_classification",
+    "analysis_sequence_grammar_sequitur_v1",
+    "analysis_sequential_patterns_prefixspan",
+    "analysis_sequential_patterns_prefixspan_v1",
+    "analysis_similarity_graph_spectral_clustering_v1",
+    "analysis_sinkhorn_ot_drift_v1",
+    "analysis_sparse_pca_interpretable_components_v1",
+    "analysis_spectral_radius_stability_v1",
+    "analysis_ssa_decomposition_changepoint_v1",
+    "analysis_state_space_kalman_residuals",
+    "analysis_state_space_smoother_level_shift_v1",
+    "analysis_stl_seasonal_decompose_v1",
+    "analysis_subspace_tracking_oja_v1",
+    "analysis_surface_fabric_sso_eigen",
+    "analysis_surface_fractal_dimension_variogram",
+    "analysis_surface_hydrology_flow_watershed",
+    "analysis_surface_multiscale_wavelet_curvature",
+    "analysis_surface_roughness_metrics",
+    "analysis_surface_rugosity_index",
+    "analysis_surface_terrain_position_index",
+    "analysis_survival_kaplan_meier",
+    "analysis_survival_time_to_event",
+    "analysis_symbolic_regression_gp_v1",
+    "analysis_tabpfn_foundation_tabular_v1",
+    "analysis_tail_isolation",
+    "analysis_tda_betti_curve_changepoint",
+    "analysis_tda_mapper_graph",
+    "analysis_tda_persistence_landscapes",
+    "analysis_tda_persistent_homology",
+    "analysis_template_drift_two_sample",
+    "analysis_tensor_cp_parafac_decomp_v1",
+    "analysis_term_burst_kleinberg",
+    "analysis_time_series_analysis_auto",
+    "analysis_topic_model_lda",
+    "analysis_topographic_angle_dynamics",
+    "analysis_topographic_similarity_angle_projection",
+    "analysis_topographic_tanova_permutation",
+    "analysis_traceability_manifest_v2",
+    "analysis_transfer_entropy_directional",
+    "analysis_tsne_embedding_v1",
+    "analysis_ttests_auto",
+    "analysis_two_sample_categorical_chi2",
+    "analysis_two_sample_numeric_ad",
+    "analysis_two_sample_numeric_ks",
+    "analysis_two_sample_numeric_mann_whitney",
+    "analysis_umap_embedding_v1",
+    "analysis_upload_linkage",
+    "analysis_user_host_savings",
+    "analysis_variant_differential",
+    "analysis_vendor_influence_breadth_v1",
+    "analysis_vendor_politician_timing_permutation_v1",
+    "analysis_waterfall_summary_v2",
+    "analysis_wild_binary_segmentation_v1",
+    "analysis_zero_inflated_count_model_v1",
+    "causal_recommendations_v1",
+    "changepoint_detection_v1",
+    "llm_text2sql_local_generate_v1",
+    "planner_basic",
+    "process_mining_conformance_v1",
+    "process_mining_discovery_v1",
+    "profile_eventlog",
+    "report_decision_bundle_v2",
+    "report_evidence_index_v1",
+    "report_payout_report_v1",
+    "report_slide_kit_emitter_v2",
+    "transform_cross_dataset_link_graph_v1",
+    "transform_entity_resolution_map_v1",
+    "transform_normalize_mixed",
+    "transform_sql_intents_pack_v1",
+    "transform_sqlpack_materialize_v1",
+    "transform_template"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 273,
+    "before": 273,
+    "material_payload_changed": 269,
+    "payload_changed": 272,
+    "removed": 0,
+    "status_changed": 0
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-25T00:26:53.283778+00:00",
+    "created_at": "2026-02-25T00:14:30.053900+00:00",
+    "dataset_version_id": "d1cf34daa3ad6289468136707d204d486245dfc46b8f4a3212111f4308cdbf39",
+    "requested_run_seed": 123,
+    "run_id": "debug_d1cf_fg_20260225a",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "run_before": {
+    "completed_at": "2026-02-24T21:18:20.591700+00:00",
+    "created_at": "2026-02-24T20:53:04.014134+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "13734a5465384655a2771b068d0adc8a",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "ok": 273
+    },
+    "before": {
+      "ok": 273
+    }
+  }
+}
