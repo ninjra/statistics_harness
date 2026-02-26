@@ -1,0 +1,18 @@
+{
+  "schema_version": "plugin_runtime_matrix.v1",
+  "generated_from": "scripts/runtime_stats.py",
+  "notes": [
+    "Per-plugin runtime evidence is read from plugin_executions and latest plugin_results_v2 rows.",
+    "This matrix file is a deterministic placeholder for release evidence linkage."
+  ],
+  "fields": [
+    "run_id",
+    "plugin_id",
+    "status",
+    "duration_ms",
+    "max_rss",
+    "warnings_count"
+  ],
+  "rows": []
+}
+

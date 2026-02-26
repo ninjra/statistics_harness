@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cross Dataset Role Map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["roles"],
+  "properties": {
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contracts", "contributions"],
+      "properties": {
+        "contracts": { "$ref": "#/definitions/roleBinding" },
+        "contributions": { "$ref": "#/definitions/roleBinding" },
+        "candidates": { "$ref": "#/definitions/roleBinding" }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/linkRule" }
+    },
+    "filters": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/filterRule" }
+    }
+  },
+  "definitions": {
+    "roleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset_version_id", "fields"],
+      "properties": {
+        "dataset_version_id": { "type": "string" },
+        "fields": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "linkRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left_role", "left_field", "right_role", "right_field", "relation"],
+      "properties": {
+        "left_role": { "type": "string" },
+        "left_field": { "type": "string" },
+        "right_role": { "type": "string" },
+        "right_field": { "type": "string" },
+        "relation": { "type": "string" }
+      }
+    },
+    "filterRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "field", "op", "value"],
+      "properties": {
+        "role": { "type": "string" },
+        "field": { "type": "string" },
+        "op": {
+          "type": "string",
+          "enum": ["eq", "neq", "in", "contains", "gte", "lte"]
+        },
+        "value": {}
+      }
+    }
+  }
+}
+

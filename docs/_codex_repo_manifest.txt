@@ -7352,6 +7352,7 @@ docs/release_evidence/final_validation_baseline_verify_20260225c.json
 docs/release_evidence/final_validation_baseline_verify_20260225c_post_metric_gate.json
 docs/release_evidence/final_validation_baseline_verify_20260225i.json
 docs/release_evidence/finding_quality_baseline_verify_20260225c.json
+docs/release_evidence/freshman_top20_baseline_vs_synth.md
 docs/release_evidence/golden_release_summary.json
 docs/release_evidence/golden_release_summary.md
 docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md
@@ -7372,6 +7373,8 @@ docs/release_evidence/openplanter_pack_release_gate.json
 docs/release_evidence/plugin_contract_baseline_full_pslever_20260224a.json
 docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json
 docs/release_evidence/plugin_contract_baseline_verify_20260225c.json
+docs/release_evidence/plugin_runtime_matrix.json
+docs/release_evidence/plugins_validate_runbook_contract.md
 docs/release_evidence/plugins_validate_runbook_dependency_matrix.csv
 docs/release_evidence/plugins_validate_runbook_technique_map.json
 docs/release_evidence/plugins_validate_runbook_technique_map.md
@@ -7406,6 +7409,7 @@ docs/release_evidence/plugins_validate_runbook_technique_specs/28_umap.md
 docs/release_evidence/plugins_validate_runbook_technique_specs/29_notears.md
 docs/release_evidence/plugins_validate_runbook_technique_specs/30_mice_chained_equations_imputation.md
 docs/release_evidence/plugins_validate_runbook_technique_specs/README.md
+docs/release_evidence/plugins_validate_schema.json
 docs/release_evidence/recommendation_metric_gate_baseline_verify_20260225j.json
 docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json
 docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json
@@ -7434,8 +7438,11 @@ docs/repo_improvements_touchpoint_map.json
 docs/report.schema.json
 docs/result_quality_contract.md
 docs/run_manifest.schema.json
+docs/runbooks/cross_shell_execution.md
+docs/schemas/actionable_recommendation_contract_v2.json
 docs/schemas/causal.schema.json
 docs/schemas/changepoints.schema.json
+docs/schemas/cross_dataset_role_map.schema.json
 docs/schemas/kona_route_plan.schema.json
 docs/schemas/process_mining.schema.json
 docs/sql_adoption_execution_order.md
@@ -8608,6 +8615,7 @@ plugins/changepoint_detection_v1/config.schema.json
 plugins/changepoint_detection_v1/output.schema.json
 plugins/changepoint_detection_v1/plugin.py
 plugins/changepoint_detection_v1/plugin.yaml
+plugins/ideaspace.py
 plugins/ingest_sql_dump_v1/config.schema.json
 plugins/ingest_sql_dump_v1/output.schema.json
 plugins/ingest_sql_dump_v1/plugin.py
@@ -8793,6 +8801,7 @@ scripts/reset_baseline.sh
 scripts/run_analysis.ps1
 scripts/run_cli_example.ps1
 scripts/run_cli_example.sh
+scripts/run_cross_dataset_openplanter_pack.py
 scripts/run_final_validation_checklist.sh
 scripts/run_fixture_recommendations.py
 scripts/run_full_and_show.sh
@@ -8935,6 +8944,9 @@ src/statistic_harness/core/sql_pack.py
 src/statistic_harness/core/sql_schema_snapshot.py
 src/statistic_harness/core/stat_controls.py
 src/statistic_harness/core/stat_plugins/__init__.py
+src/statistic_harness/core/stat_plugins/actionability_contract.py
+src/statistic_harness/core/stat_plugins/actionability_envelope.py
+src/statistic_harness/core/stat_plugins/actionability_metrics.py
 src/statistic_harness/core/stat_plugins/budget.py
 src/statistic_harness/core/stat_plugins/code_hash.py
 src/statistic_harness/core/stat_plugins/columns.py
@@ -9154,6 +9166,10 @@ temp/rev_test/state.sqlite
 temp/run_debug/artifacts/analysis_close_cycle_contention/results.json
 temp/run_debug/state.sqlite
 tests/conftest.py
+tests/core/test_entity_resolution.py
+tests/core/test_evidence_links.py
+tests/core/test_seed_propagation.py
+tests/core/test_sql_dump_import.py
 tests/fixtures/db/generate_golden_dbs.py
 tests/fixtures/db/v1.sqlite
 tests/fixtures/db/v10.sqlite
@@ -9188,6 +9204,7 @@ tests/fixtures/ground_truth_repo_improvements_wave1.yaml
 tests/fixtures/ground_truth_synth.yaml
 tests/fixtures/ground_truth_tolerance.yaml
 tests/fixtures/make_synth_data.py
+tests/fixtures/openplanter_pack/ground_truth.yaml
 tests/fixtures/payout_multi_input_a.csv
 tests/fixtures/payout_multi_input_b.csv
 tests/fixtures/qemail_frequency_5min.csv
@@ -9196,11 +9213,16 @@ tests/fixtures/synth_clusters.csv
 tests/fixtures/synth_linear.csv
 tests/fixtures/synth_shift_corr.csv
 tests/fixtures/synth_timeseries.csv
+tests/integration/test_cross_dataset_pipeline_fail_closed.py
+tests/integration/test_openplanter_cross_dataset_pack.py
+tests/perf/test_cross_dataset_pack_resource_budget.py
+tests/plugins/openplanter_pack_test_utils.py
 tests/plugins/test_action_search_annealing_v1.py
 tests/plugins/test_action_search_mip_v1.py
 tests/plugins/test_actionable_ops_lever_synthesis_from_top20.py
 tests/plugins/test_analysis_anova_auto.py
 tests/plugins/test_analysis_bayesian_point_displacement.py
+tests/plugins/test_analysis_bundled_donations_v1.py
 tests/plugins/test_analysis_burst_detection_kleinberg.py
 tests/plugins/test_analysis_change_impact_pre_post.py
 tests/plugins/test_analysis_changepoint_energy_edivisive.py
@@ -9212,6 +9234,7 @@ tests/plugins/test_analysis_close_cycle_window_resolver.py
 tests/plugins/test_analysis_cluster_analysis_auto.py
 tests/plugins/test_analysis_conformance_alignments.py
 tests/plugins/test_analysis_conformance_checking.py
+tests/plugins/test_analysis_contribution_limit_flags_v1.py
 tests/plugins/test_analysis_control_chart_cusum.py
 tests/plugins/test_analysis_control_chart_ewma.py
 tests/plugins/test_analysis_control_chart_individuals.py
@@ -9256,6 +9279,7 @@ tests/plugins/test_analysis_process_drift_conformance_over_time.py
 tests/plugins/test_analysis_proportional_hazards_duration.py
 tests/plugins/test_analysis_quantile_regression_duration.py
 tests/plugins/test_analysis_queue_model_fit.py
+tests/plugins/test_analysis_red_flags_refined_v1.py
 tests/plugins/test_analysis_regression_auto.py
 tests/plugins/test_analysis_robust_covariance_outliers.py
 tests/plugins/test_analysis_robust_pca_pcp.py
@@ -9289,6 +9313,8 @@ tests/plugins/test_analysis_two_sample_numeric_ad.py
 tests/plugins/test_analysis_two_sample_numeric_ks.py
 tests/plugins/test_analysis_two_sample_numeric_mann_whitney.py
 tests/plugins/test_analysis_variant_differential.py
+tests/plugins/test_analysis_vendor_influence_breadth_v1.py
+tests/plugins/test_analysis_vendor_politician_timing_permutation_v1.py
 tests/plugins/test_apriori_rules_v1.py
 tests/plugins/test_attribution.py
 tests/plugins/test_biclustering_cheng_church_v1.py
@@ -9309,6 +9335,7 @@ tests/plugins/test_conformance_checking.py
 tests/plugins/test_control_chart_registry_memory_regressions.py
 tests/plugins/test_control_chart_suite.py
 tests/plugins/test_cop_kmeans_v1.py
+tests/plugins/test_cross_dataset_fail_closed.py
 tests/plugins/test_crosscutting_new_plugins.py
 tests/plugins/test_dependency_communities_v1.py
 tests/plugins/test_dependency_resolution_join.py
@@ -9353,6 +9380,7 @@ tests/plugins/test_queue_delay_decomposition.py
 tests/plugins/test_queue_simulator_v1.py
 tests/plugins/test_recommendation_dedupe_v2.py
 tests/plugins/test_report_decision_bundle_v2.py
+tests/plugins/test_report_evidence_index_v1.py
 tests/plugins/test_report_payout_report_v1_plugin.py
 tests/plugins/test_robust_pca_sparse_outliers.py
 tests/plugins/test_scan_statistics.py
@@ -9361,17 +9389,21 @@ tests/plugins/test_sequitur_v1.py
 tests/plugins/test_spectral_clustering_v1.py
 tests/plugins/test_tail_isolation.py
 tests/plugins/test_traceability_manifest_v2.py
+tests/plugins/test_transform_cross_dataset_link_graph_v1.py
+tests/plugins/test_transform_entity_resolution_map_v1.py
 tests/plugins/test_transform_normalize_mixed.py
 tests/plugins/test_transform_sql_intents_pack_v1.py
 tests/plugins/test_transform_template_plugin.py
 tests/plugins/test_user_host_savings.py
 tests/plugins/test_wasserstein_shift_v1.py
 tests/plugins/test_waterfall_summary_v2.py
+tests/security/test_cross_dataset_no_network.py
 tests/stat_plugins/test_contract.py
 tests/stat_plugins/test_registry_build_sequences.py
 tests/stat_plugins/test_utils.py
 tests/test_accounting_windows.py
 tests/test_actionability_burndown.py
+tests/test_actionability_contract_v2.py
 tests/test_actionability_non_adjustable_contract.py
 tests/test_actionability_reason_codes.py
 tests/test_actionability_thresholds.py

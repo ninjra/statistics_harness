@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Actionable Recommendation Contract V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "plugin_id",
+    "status",
+    "recommendation",
+    "windows",
+    "downstream_dependencies"
+  ],
+  "properties": {
+    "plugin_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["actionable", "non_actionable"] },
+    "recommendation": { "type": "string", "minLength": 1 },
+    "reason_code": { "type": ["string", "null"] },
+    "windows": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accounting_month", "close_static", "close_dynamic"],
+      "properties": {
+        "accounting_month": { "$ref": "#/definitions/windowMetric" },
+        "close_static": { "$ref": "#/definitions/windowMetric" },
+        "close_dynamic": { "$ref": "#/definitions/windowMetric" }
+      }
+    },
+    "downstream_dependencies": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "definitions": {
+    "windowMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delta_h", "eff_pct", "eff_idx"],
+      "properties": {
+        "delta_h": { "type": ["number", "null"] },
+        "eff_pct": { "type": ["number", "null"] },
+        "eff_idx": { "type": ["number", "null"] }
+      }
+    }
+  }
+}
+
