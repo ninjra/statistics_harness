@@ -46,6 +46,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 APPDATA = REPO_ROOT / "appdata"
 _SUPPRESS_ACTION_TYPES_ENV = "STAT_HARNESS_SUPPRESS_ACTION_TYPES"
 _MAX_PER_ACTION_TYPE_ENV = "STAT_HARNESS_MAX_PER_ACTION_TYPE"
+_REQUIRE_LANDMARK_RECALL_ENV = "STAT_HARNESS_REQUIRE_LANDMARK_RECALL"
 _KONA_QEMAIL_TITLE = "known_issue_qemail_schedule"
 _KONA_QPEC_TITLE = "known_issue_qpec_plus_one"
 _KONA_PAYOUT_TITLE = "known_issue_payout_batch_chain"
@@ -227,6 +228,345 @@ def _as_float(value: Any) -> float | None:
     return None
 
 
+def _extract_action_type(item: dict[str, Any]) -> str:
+    return str(item.get("action_type") or item.get("action") or "").strip().lower()
+
+
+def _process_id(item: dict[str, Any]) -> str:
+    return str(
+        item.get("primary_process_id")
+        or item.get("process_id")
+        or (item.get("where") or {}).get("process_norm")
+        or ""
+    ).strip().lower()
+
+
+def _is_client_controllable(item: dict[str, Any]) -> bool:
+    bucket = _landmark_bucket(item)
+    if bucket in {"qemail", "qpec", "payout"}:
+        return True
+    action_type = _extract_action_type(item)
+    if action_type in {
+        "batch_input",
+        "batch_input_refactor",
+        "batch_group_candidate",
+        "batch_or_cache",
+        "dedupe_or_cache",
+        "throttle_or_dedupe",
+        "schedule_shift_target",
+        "reschedule",
+        "tune_schedule",
+        "add_server",
+        "capacity_addition",
+    }:
+        return True
+    blob = _flatten_text(item).lower()
+    return _contains_any(blob, ["qemail", "qpec", "rpt_por002", "poextrprvn", "pognrtrpt", "poextrpexp"])
+
+
+def _is_generic_all_target(item: dict[str, Any]) -> bool:
+    proc = _process_id(item)
+    if proc and proc not in {"all", "n/a"}:
+        return False
+    target = str(item.get("target") or "").strip().lower()
+    if target and target not in {"all", "n/a"}:
+        return False
+    return _landmark_bucket(item) == ""
+
+
+def _selection_signature(item: dict[str, Any]) -> str:
+    bucket = _landmark_bucket(item)
+    if bucket:
+        return f"landmark:{bucket}"
+    action_type = _extract_action_type(item)
+    proc = _process_id(item) or str(_target_processes(item)).strip().lower()
+    title = re.sub(r"\s+", " ", str(item.get("title") or "").strip().lower())
+    rec = re.sub(r"\s+", " ", str(item.get("recommendation") or "").strip().lower())
+    return "|".join([action_type, proc, title[:160], rec[:220]])
+
+
+def _bool_env(name: str, default: bool) -> bool:
+    raw = str(os.getenv(name, "1" if default else "0")).strip().lower()
+    return raw not in {"0", "false", "no", "off", ""}
+
+
+def _dataset_version_id_from_report(report: dict[str, Any]) -> str:
+    input_block = report.get("input")
+    if not isinstance(input_block, dict):
+        return ""
+    filename = str(input_block.get("filename") or "").strip()
+    if filename.startswith("db://"):
+        return filename[len("db://") :].strip()
+    return ""
+
+
+def _build_numeric_process_resolver(report: dict[str, Any]):
+    dataset_version_id = _dataset_version_id_from_report(report)
+    if not dataset_version_id:
+        return None
+    state_db = APPDATA / "state.sqlite"
+    if not state_db.exists():
+        return None
+    try:
+        conn = sqlite3.connect(state_db)
+        conn.row_factory = sqlite3.Row
+    except Exception:
+        return None
+    try:
+        row = conn.execute(
+            "SELECT table_name FROM dataset_versions WHERE dataset_version_id=?",
+            (dataset_version_id,),
+        ).fetchone()
+        if not row:
+            conn.close()
+            return None
+        table_name = str(row["table_name"] or "").strip()
+        if not table_name:
+            conn.close()
+            return None
+        tmpl = conn.execute(
+            "SELECT template_id FROM dataset_templates WHERE dataset_version_id=? ORDER BY updated_at DESC LIMIT 1",
+            (dataset_version_id,),
+        ).fetchone()
+        if not tmpl:
+            conn.close()
+            return None
+        template_id = int(tmpl["template_id"])
+        fields = conn.execute(
+            "SELECT field_id,name FROM template_fields WHERE template_id=?",
+            (template_id,),
+        ).fetchall()
+        field_to_col = {
+            str(r["name"] or "").strip().upper(): f"c{int(r['field_id'])}"
+            for r in fields
+            if str(r["name"] or "").strip()
+        }
+        queue_col = field_to_col.get("PROCESS_QUEUE_ID")
+        process_col = field_to_col.get("PROCESS_ID")
+        if not queue_col or not process_col:
+            conn.close()
+            return None
+    except Exception:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        return None
+
+    cache: dict[str, str | None] = {}
+
+    def _resolve(token: str, item: dict[str, Any] | None = None) -> str | None:
+        key = str(token or "").strip()
+        if not key or not key.isdigit():
+            return None
+        if key in cache:
+            return cache[key]
+        value_int = int(key)
+        resolved: str | None = None
+
+        # First try evidence row_ids because they are deterministic anchors.
+        row_ids: list[int] = []
+        if isinstance(item, dict):
+            evidence = item.get("evidence")
+            if isinstance(evidence, list):
+                for e in evidence:
+                    if not isinstance(e, dict):
+                        continue
+                    for rid in (e.get("row_ids") or []):
+                        if isinstance(rid, int):
+                            row_ids.append(rid)
+        try:
+            for rid in row_ids:
+                for clause, arg in (("row_id=?", rid), ("row_index=?", rid)):
+                    query = (
+                        f"SELECT {queue_col} AS q, {process_col} AS p "
+                        f"FROM {table_name} WHERE {clause} LIMIT 1"
+                    )
+                    row = conn.execute(query, (arg,)).fetchone()
+                    if not row:
+                        continue
+                    q = row["q"]
+                    p = str(row["p"] or "").strip()
+                    if isinstance(q, int) and q == value_int and p and not p.isdigit():
+                        resolved = p
+                        break
+                if resolved:
+                    break
+        except Exception:
+            resolved = None
+
+        # Fallback: direct lookup by queue id to most common process name.
+        if not resolved:
+            try:
+                row = conn.execute(
+                    f"SELECT {process_col} AS p, COUNT(*) AS c FROM {table_name} "
+                    f"WHERE {queue_col}=? AND {process_col} IS NOT NULL "
+                    f"GROUP BY {process_col} ORDER BY c DESC LIMIT 1",
+                    (value_int,),
+                ).fetchone()
+                if row:
+                    p = str(row["p"] or "").strip()
+                    if p and not p.isdigit():
+                        resolved = p
+            except Exception:
+                resolved = None
+
+        cache[key] = resolved
+        return resolved
+
+    return _resolve
+
+
+def _display_process_label(
+    raw_process: str,
+    item: dict[str, Any] | None,
+    resolver: Any | None,
+) -> str:
+    base = str(raw_process or "").strip() or "n/a"
+    if not base.isdigit():
+        return base
+    resolved = None
+    if callable(resolver):
+        try:
+            resolved = resolver(base, item if isinstance(item, dict) else None)
+        except Exception:
+            resolved = None
+    if isinstance(resolved, str) and resolved.strip():
+        return f"{resolved.strip()} [{base}]"
+    return f"unknown_process(id={base})"
+
+
+def _humanize_recommendation_process(
+    text: str,
+    raw_process: str,
+    display_process: str,
+) -> str:
+    body = str(text or "")
+    raw = str(raw_process or "").strip()
+    shown = str(display_process or "").strip()
+    if not raw or not raw.isdigit():
+        return body
+    if not shown or shown.startswith("unknown_process("):
+        return body
+    out = re.sub(rf"\bProcess\s+{re.escape(raw)}\b", f"Process {shown}", body)
+    out = out.replace(f"`{raw}`", f"`{shown}`")
+    return out
+
+
+def _extract_modeled_triplet(item: dict[str, Any]) -> tuple[float | None, float | None, float | None, float | None]:
+    close_pct = _as_float(item.get("modeled_close_percent"))
+    general_pct = _as_float(item.get("modeled_general_percent"))
+    generic_pct = _as_float(item.get("modeled_percent"))
+    scope = str(item.get("scope_class") or "").strip().lower()
+    if close_pct is None and isinstance(generic_pct, float) and scope == "close_specific":
+        close_pct = generic_pct
+    if general_pct is None and isinstance(generic_pct, float) and scope != "close_specific":
+        general_pct = generic_pct
+    close_hours = _as_float(item.get("modeled_close_hours"))
+    general_hours = _as_float(item.get("modeled_general_hours"))
+    delta_h = _as_float(item.get("modeled_delta_hours"))
+    if close_hours is None and isinstance(delta_h, float) and scope == "close_specific":
+        close_hours = delta_h
+    if general_hours is None and isinstance(delta_h, float) and scope != "close_specific":
+        general_hours = delta_h
+    return close_pct, general_pct, close_hours, general_hours
+
+
+def _detect_process_token(
+    report: dict[str, Any], discovery_items: list[dict[str, Any]], token: str
+) -> bool:
+    needle = str(token or "").strip().lower()
+    if not needle:
+        return False
+    for item in discovery_items:
+        if needle in _flatten_text(item).lower():
+            return True
+    for finding in _iter_all_findings(report):
+        if needle in _flatten_text(finding).lower():
+            return True
+    return False
+
+
+def _extract_process_hint(item: dict[str, Any]) -> str:
+    where = item.get("where") if isinstance(item.get("where"), dict) else {}
+    for key in ("process_norm", "process", "process_id", "target"):
+        value = where.get(key) if isinstance(where, dict) else None
+        if isinstance(value, str) and value.strip():
+            return value.strip().lower()
+    for key in ("process_norm", "process", "process_id", "target"):
+        value = item.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip().lower()
+    targets = item.get("target_process_ids")
+    if isinstance(targets, list):
+        for value in targets:
+            if isinstance(value, str) and value.strip():
+                return value.strip().lower()
+    return ""
+
+
+def _best_equivalent_qemail_model(
+    report: dict[str, Any], discovery_items: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Fallback when no literal qemail token exists in dataset outputs."""
+    findings = _iter_all_findings(report)
+    best: dict[str, Any] = {}
+    allowed_actions = {
+        "tune_schedule",
+        "reschedule",
+        "batch_or_cache",
+        "throttle_or_dedupe",
+        "reduce_process_wait",
+        "route_process",
+        "priority_isolation",
+    }
+    for item in [*discovery_items, *findings]:
+        if not isinstance(item, dict):
+            continue
+        action_type = _extract_action_type(item)
+        blob = _flatten_text(item).lower()
+        if action_type not in allowed_actions and not _contains_any(
+            blob,
+            ["queue", "contention", "priority class", "reserved capacity", "close-critical", "reschedule"],
+        ):
+            continue
+        close_pct, general_pct, close_hours, general_hours = _extract_modeled_triplet(item)
+        score = max(close_pct or 0.0, general_pct or 0.0)
+        if score >= float(best.get("_score") or -1.0):
+            best = {
+                "_score": score,
+                "plugin_id": str(item.get("plugin_id") or ""),
+                "close_pct": close_pct,
+                "general_pct": general_pct,
+                "close_hours": close_hours,
+                "general_hours": general_hours,
+                "process": _extract_process_hint(item),
+            }
+    return best
+
+
+def _generic_add_server_hits(
+    report: dict[str, Any], discovery_items: list[dict[str, Any]]
+) -> tuple[int, str]:
+    findings = _iter_all_findings(report)
+    hits = 0
+    plugin_id = ""
+    for item in [*discovery_items, *findings]:
+        if not isinstance(item, dict):
+            continue
+        action_type = _extract_action_type(item)
+        blob = _flatten_text(item).lower()
+        is_capacity_signal = action_type == "add_server" or (
+            _contains_any(blob, ["+1", "add one", "add server", "host_count+1", "workers by 1"])
+            and _contains_any(blob, ["capacity", "queue", "server", "worker", "host"])
+        )
+        if not is_capacity_signal:
+            continue
+        hits += 1
+        plugin_id = str(item.get("plugin_id") or plugin_id)
+    return hits, plugin_id
+
+
 def _qemail_modeled(discovery_items: list[dict[str, Any]]) -> dict[str, Any]:
     best: dict[str, Any] = {}
     for item in discovery_items:
@@ -241,16 +581,7 @@ def _qemail_modeled(discovery_items: list[dict[str, Any]]) -> dict[str, Any]:
         ).strip().lower()
         if proc != "qemail" and "qemail" not in _flatten_text(item).lower():
             continue
-        close_pct = _as_float(item.get("modeled_close_percent"))
-        general_pct = _as_float(item.get("modeled_general_percent"))
-        generic_pct = _as_float(item.get("modeled_percent"))
-        scope = str(item.get("scope_class") or "").strip().lower()
-        if close_pct is None and isinstance(generic_pct, float) and scope == "close_specific":
-            close_pct = generic_pct
-        if general_pct is None and isinstance(generic_pct, float) and scope != "close_specific":
-            general_pct = generic_pct
-        close_h = _as_float(item.get("modeled_delta_hours")) if scope == "close_specific" else None
-        general_h = _as_float(item.get("modeled_delta_hours")) if scope != "close_specific" else None
+        close_pct, general_pct, close_h, general_h = _extract_modeled_triplet(item)
         score = max(close_pct or 0.0, general_pct or 0.0)
         if score >= float(best.get("_score") or -1.0):
             best = {
@@ -563,6 +894,8 @@ def _augment_known_issue_landmarks(
 ) -> list[dict[str, Any]]:
     known = [dict(i) for i in known_items if isinstance(i, dict)]
     findings = _iter_all_findings(report)
+    has_qemail_token = _detect_process_token(report, discovery_items, "qemail")
+    has_qpec_token = _detect_process_token(report, discovery_items, "qpec")
 
     # Landmark A: QEMAIL scheduling/contention issue.
     qemail_model = _best_qemail_model(
@@ -570,12 +903,15 @@ def _augment_known_issue_landmarks(
         _qemail_modeled_from_known(known_items),
         _qemail_modeled_from_report(report),
     )
+    if not has_qemail_token:
+        qemail_model = _best_qemail_model(qemail_model, _best_equivalent_qemail_model(report, discovery_items))
     qemail_close_pct = _as_float(qemail_model.get("close_pct"))
     qemail_general_pct = _as_float(qemail_model.get("general_pct"))
     # Known-issue pass criterion is modeled-impact based, not text-hit based.
     # Require >=10% either in close-specific or general scope.
     qemail_hits = 1 if ((qemail_close_pct or 0.0) >= 10.0 or (qemail_general_pct or 0.0) >= 10.0) else 0
     qemail_plugin = str(qemail_model.get("plugin_id") or "")
+    qemail_process = str(qemail_model.get("process") or "qemail").strip().lower() or "qemail"
     qemail_status = _status_from_hits(qemail_hits, min_count=1, max_count=1)
     known.append(
         {
@@ -583,7 +919,7 @@ def _augment_known_issue_landmarks(
             "status": qemail_status,
             "plugin_id": qemail_plugin or "analysis_close_cycle_contention",
             "kind": "known_issue_landmark",
-            "where": {"process": "qemail"},
+            "where": {"process": qemail_process},
             "observed_count": int(qemail_hits),
             "modeled_close_percent": qemail_close_pct,
             "modeled_general_percent": qemail_general_pct,
@@ -600,22 +936,25 @@ def _augment_known_issue_landmarks(
     # Landmark B: QPEC +1 capacity addition.
     qpec_hits = 0
     qpec_plugin = ""
-    for item in discovery_items:
-        blob = _flatten_text(item).lower()
-        if _contains_all(blob, ["qpec"]) and _contains_any(
-            blob,
-            ["+1", "capacity", "add one", "add server", "workers by 1", "host_count+1"],
-        ):
-            qpec_hits += 1
-            qpec_plugin = str(item.get("plugin_id") or qpec_plugin)
-    for finding in findings:
-        blob = _flatten_text(finding).lower()
-        if _contains_all(blob, ["qpec"]) and _contains_any(
-            blob,
-            ["+1", "capacity", "add one", "add server", "workers by 1", "host_count+1"],
-        ):
-            qpec_hits += 1
-            qpec_plugin = str(finding.get("plugin_id") or qpec_plugin)
+    if has_qpec_token:
+        for item in discovery_items:
+            blob = _flatten_text(item).lower()
+            if _contains_all(blob, ["qpec"]) and _contains_any(
+                blob,
+                ["+1", "capacity", "add one", "add server", "workers by 1", "host_count+1"],
+            ):
+                qpec_hits += 1
+                qpec_plugin = str(item.get("plugin_id") or qpec_plugin)
+        for finding in findings:
+            blob = _flatten_text(finding).lower()
+            if _contains_all(blob, ["qpec"]) and _contains_any(
+                blob,
+                ["+1", "capacity", "add one", "add server", "workers by 1", "host_count+1"],
+            ):
+                qpec_hits += 1
+                qpec_plugin = str(finding.get("plugin_id") or qpec_plugin)
+    else:
+        qpec_hits, qpec_plugin = _generic_add_server_hits(report, discovery_items)
     qpec_status = _status_from_hits(qpec_hits, min_count=1, max_count=20)
     known.append(
         {
@@ -756,23 +1095,39 @@ def _ranked_actionables(disc_items: list[dict[str, Any]]) -> list[dict[str, Any]
                 continue
         return out
 
-    def _priority(item: dict[str, Any]) -> int:
-        plugin_id = str(item.get("plugin_id") or "")
-        kind = str(item.get("kind") or "")
-        action_type = str(item.get("action_type") or item.get("action") or "")
-        if plugin_id == "analysis_actionable_ops_levers_v1" or kind == "actionable_ops_lever":
-            return 6
-        if plugin_id.startswith("analysis_ideaspace_"):
-            return 5
-        if "sequence" in plugin_id or "bottleneck" in plugin_id or "conformance" in plugin_id:
-            return 4
-        if plugin_id == "analysis_upload_linkage":
-            return 3
-        if action_type and action_type not in ("review", "tune_threshold"):
-            return 2
-        if plugin_id in ("analysis_queue_delay_decomposition", "analysis_busy_period_segmentation_v2"):
-            return 1
-        return 0
+    def _num(item: dict[str, Any], *keys: str) -> float:
+        for key in keys:
+            value = item.get(key)
+            if isinstance(value, (int, float)):
+                return float(value)
+        return 0.0
+
+    def _effort_score(item: dict[str, Any]) -> float:
+        # Ranking axis 1: human effort reduction.
+        # Prefer explicit run/touch reductions; fall back to close-cycle user hours.
+        runs = _num(
+            item,
+            "modeled_user_runs_reduced",
+            "human_modeled_run_reduction_count_close_cycle",
+        )
+        touches = _num(
+            item,
+            "modeled_user_touches_reduced",
+            "human_modeled_touch_reduction_count_close_cycle",
+        )
+        user_hours = _num(item, "modeled_user_hours_saved_close_cycle")
+        return max(runs, touches, user_hours)
+
+    def _time_score(item: dict[str, Any]) -> float:
+        # Ranking axis 2: elapsed processing time reduction.
+        return _num(
+            item,
+            "delta_hours_close_dynamic",
+            "modeled_delta_hours_close_cycle",
+            "delta_hours_accounting_month",
+            "impact_hours",
+            "modeled_delta",
+        )
 
     def _score(item: dict[str, Any]) -> float:
         for key in ("relevance_score", "impact_hours", "modeled_delta"):
@@ -784,7 +1139,26 @@ def _ranked_actionables(disc_items: list[dict[str, Any]]) -> list[dict[str, Any]
                 continue
         return 0.0
 
-    ranked = sorted(disc_items, key=lambda i: (_priority(i), _score(i)), reverse=True)
+    def _controllable_priority(item: dict[str, Any]) -> int:
+        bucket = _landmark_bucket(item)
+        if bucket in {"qemail", "qpec", "payout"}:
+            return 3
+        if _is_client_controllable(item) and not _is_generic_all_target(item):
+            return 2
+        if _is_client_controllable(item):
+            return 1
+        return 0
+
+    ranked = sorted(
+        disc_items,
+        key=lambda i: (
+            _controllable_priority(i),
+            _effort_score(i),
+            _time_score(i),
+            _score(i),
+        ),
+        reverse=True,
+    )
     suppressed = _suppressed()
     caps = _caps()
     used: dict[str, int] = {}
@@ -803,11 +1177,139 @@ def _ranked_actionables(disc_items: list[dict[str, Any]]) -> list[dict[str, Any]
     return kept
 
 
+def _item_signature(item: dict[str, Any]) -> str:
+    parts = [
+        str(item.get("plugin_id") or "").strip(),
+        str(item.get("kind") or "").strip(),
+        str(item.get("action_type") or item.get("action") or "").strip(),
+        str(item.get("primary_process_id") or item.get("process_id") or "").strip(),
+        str(item.get("title") or "").strip(),
+        str(item.get("recommendation") or "").strip(),
+    ]
+    return "|".join(parts)
+
+
+def _promote_landmarks(
+    selected: list[dict[str, Any]],
+    ranked: list[dict[str, Any]],
+    top_n: int,
+) -> tuple[list[dict[str, Any]], list[str]]:
+    if top_n <= 0:
+        return [], []
+    out = list(selected)
+    rank_idx: dict[str, int] = {
+        _item_signature(item): idx for idx, item in enumerate(ranked)
+    }
+    promoted: list[str] = []
+
+    def _has_bucket(items: list[dict[str, Any]], bucket: str) -> bool:
+        return any(_landmark_bucket(item) == bucket for item in items)
+
+    for bucket in _LANDMARK_BUCKETS:
+        if _has_bucket(out, bucket):
+            continue
+        candidate = next((item for item in ranked if _landmark_bucket(item) == bucket), None)
+        if not isinstance(candidate, dict):
+            continue
+        sig = _selection_signature(candidate)
+        existing = {_selection_signature(item) for item in out}
+        if sig in existing:
+            continue
+        if len(out) < top_n:
+            out.append(candidate)
+            promoted.append(bucket)
+            continue
+        replace_idx = None
+        for idx in range(len(out) - 1, -1, -1):
+            if _landmark_bucket(out[idx]) == "":
+                replace_idx = idx
+                break
+        if isinstance(replace_idx, int):
+            out[replace_idx] = candidate
+            promoted.append(bucket)
+
+    out = sorted(
+        out,
+        key=lambda item: rank_idx.get(_item_signature(item), 10**9),
+    )[:top_n]
+    return out, promoted
+
+
+def _lane_bucket(item: dict[str, Any]) -> str:
+    bucket = _landmark_bucket(item)
+    action_type = _extract_action_type(item)
+    if bucket == "payout" or action_type in {
+        "batch_input",
+        "batch_input_refactor",
+        "batch_group_candidate",
+        "batch_or_cache",
+        "dedupe_or_cache",
+        "throttle_or_dedupe",
+    }:
+        return "manual"
+    if bucket in {"qemail", "qpec"} or action_type in {
+        "schedule_shift_target",
+        "reschedule",
+        "tune_schedule",
+        "add_server",
+        "capacity_addition",
+    }:
+        return "infra"
+    human_runs = item.get("modeled_user_runs_reduced")
+    human_touches = item.get("modeled_user_touches_reduced")
+    if isinstance(human_runs, (int, float)) and float(human_runs) > 0:
+        return "manual"
+    if isinstance(human_touches, (int, float)) and float(human_touches) > 0:
+        return "manual"
+    return "infra"
+
+
+def _landmark_bucket(item: dict[str, Any]) -> str:
+    blob = _flatten_text(item).lower()
+    process = str(item.get("primary_process_id") or item.get("process_id") or "").strip().lower()
+    action_type = _extract_action_type(item)
+    if process == "qemail" or "qemail" in blob:
+        return "qemail"
+    if process == "qpec" or "qpec" in blob:
+        return "qpec"
+    if action_type == "add_server" and _contains_any(blob, ["capacity", "server"]):
+        return "qpec"
+    payout_tokens = ("rpt_por002", "poextrprvn", "pognrtrpt", "poextrpexp")
+    if process in {"rpt_por002", "poextrprvn", "pognrtrpt", "poextrpexp"}:
+        return "payout"
+    if action_type == "batch_group_candidate" and any(token in blob for token in payout_tokens):
+        return "payout"
+    return ""
+
+
+_LANDMARK_BUCKETS: tuple[str, ...] = ("qemail", "qpec", "payout")
+
+
+def _landmark_positions(items: list[dict[str, Any]]) -> dict[str, int | None]:
+    positions: dict[str, int | None] = {bucket: None for bucket in _LANDMARK_BUCKETS}
+    for idx, item in enumerate(items, start=1):
+        if not isinstance(item, dict):
+            continue
+        bucket = _landmark_bucket(item)
+        if bucket in positions and positions[bucket] is None:
+            positions[bucket] = idx
+    return positions
+
+
+def _status_yn(identifier: str, ok: bool) -> str:
+    # Hard-gate formatting contract from AGENTS.md.
+    token = "\033[32mY\033[0m" if bool(ok) else "\033[31mN\033[0m"
+    return f"{token}:{identifier}"
+
+
 def _normalize_action_type(item: dict[str, Any]) -> str:
     return str(item.get("action_type") or item.get("action") or "").strip().lower()
 
 
 def _recommendation_group(item: dict[str, Any]) -> tuple[str, str]:
+    landmark = _landmark_bucket(item)
+    if landmark:
+        return ("landmark", "Known High-Value Issues (Independently Found)")
     action_type = _normalize_action_type(item)
     recommendation_text = str(item.get("recommendation") or "").strip().lower()
     if action_type == "batch_group_candidate":
@@ -943,11 +1445,71 @@ def _join_semicolon(theme: _AnsiTheme, parts: list[str]) -> str:
     return theme.c(" ; ", theme.sep).join(parts)
 
 
+def _truncate(text: str, max_len: int) -> str:
+    raw = str(text or "").strip()
+    if len(raw) <= max_len:
+        return raw
+    if max_len <= 3:
+        return raw[:max_len]
+    return raw[: max_len - 3] + "..."
+
+
+def _table_num(value: Any, decimals: int, suffix: str = "") -> str:
+    if isinstance(value, (int, float)):
+        return f"{float(value):.{decimals}f}{suffix}"
+    return "N/A"
+
+
+def _table_triplet(
+    item: dict[str, Any],
+    keys: tuple[str, str, str],
+    *,
+    decimals: int,
+    suffix: str = "",
+) -> str:
+    vals = [item.get(k) for k in keys]
+    return "/".join(_table_num(v, decimals, suffix=suffix) for v in vals)
+
+
+def _freshman_action(item: dict[str, Any], process: str) -> tuple[str, str]:
+    bucket = _landmark_bucket(item)
+    if bucket == "qemail":
+        return ("Tune QEMAIL scheduling to reduce close-window queue pressure", "direct")
+    if bucket == "qpec":
+        return ("Add one process server (QPEC+1) to reduce queue delay", "direct")
+    if bucket == "payout":
+        return ("Convert payout report chain to multi-input processing", "direct")
+
+    action_type = _normalize_action_type(item)
+    plugin_id = str(item.get("plugin_id") or "").strip()
+    recommendation = str(item.get("recommendation") or "").strip()
+    title = str(item.get("title") or "").strip()
+    lowered = recommendation.lower()
+    is_bundle = (
+        plugin_id.startswith("analysis_action_search_")
+        or lowered.startswith("execute the selected actions as one package")
+        or lowered.startswith("execute the selected high-impact actions together")
+    )
+    if is_bundle:
+        return ("Apply optimizer bundle and re-verify bottleneck shift", "bundle")
+    if action_type in {"batch_input", "batch_input_refactor"} and process and process != "n/a":
+        return (f"Convert {process} to batch-input execution", "direct")
+    if action_type in {"batch_or_cache", "dedupe_or_cache", "throttle_or_dedupe"}:
+        return ("Reduce duplicate reruns with cache/reuse strategy", "direct")
+    if action_type in {"schedule_shift_target", "reschedule", "tune_schedule"}:
+        return ("Shift schedule away from high-contention windows", "direct")
+    if action_type in {"add_server", "capacity_addition"}:
+        return ("Add targeted server capacity for close window", "direct")
+    return (_truncate(title or recommendation or "Review and apply targeted optimization", 58), "direct")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--top-n", type=int, default=25)
     ap.add_argument("--max-per-plugin", type=int, default=5)
+    ap.add_argument("--recall-top-n", type=int, default=20)
+    ap.add_argument("--require-landmark-recall", action="store_true")
     ap.add_argument("--theme", choices=("auto", "cyberpunk", "plain"), default="auto")
     args = ap.parse_args()
     theme = _AnsiTheme(_theme_enabled(args.theme))
@@ -959,11 +1521,19 @@ def main() -> int:
         raise SystemExit(f"Missing report.json: {report_path}")
 
     report = _read_json(report_path)
+    process_label_resolver = _build_numeric_process_resolver(report)
     known_issues_mode = str(report.get("known_issues_mode") or "on").strip().lower()
     if known_issues_mode not in {"on", "off"}:
         known_issues_mode = "on"
     recs = report.get("recommendations") if isinstance(report, dict) else None
     known_items, disc_items = _items_from_recs(recs)
+    all_items = [
+        item
+        for item in (
+            (recs.get("items") if isinstance(recs, dict) and isinstance(recs.get("items"), list) else [])
+        )
+        if isinstance(item, dict)
+    ]
     if known_issues_mode != "off":
         known_items = _augment_known_issue_landmarks(report, known_items, disc_items)
         known_items = _collapse_known_items(known_items)
@@ -972,16 +1542,44 @@ def main() -> int:
     _ensure_answer_artifacts(run_id, run_dir, recs, known_items)
     route_map = _route_map_for_run(run_dir)
     ranked = _ranked_actionables(disc_items)
+    require_landmark_recall = bool(args.require_landmark_recall) or (
+        known_issues_mode != "off" and _bool_env(_REQUIRE_LANDMARK_RECALL_ENV, True)
+    )
     items: list[dict[str, Any]] = []
     per_plugin: dict[str, int] = {}
+    seen: set[str] = set()
     for item in ranked:
+        sig = _selection_signature(item)
+        if sig in seen:
+            continue
         pid = str(item.get("plugin_id") or "")
         per_plugin[pid] = int(per_plugin.get(pid, 0)) + 1
         if per_plugin[pid] > int(args.max_per_plugin):
             continue
+        seen.add(sig)
         items.append(item)
         if len(items) >= int(args.top_n):
             break
+    items, promoted_landmarks = _promote_landmarks(items, ranked, int(args.top_n))
+
+    def _item_process_label(item: dict[str, Any]) -> str:
+        raw = str(
+            item.get("primary_process_id")
+            or item.get("process_id")
+            or (item.get("where") or {}).get("process_norm")
+            or _target_processes(item)
+            or "n/a"
+        ).strip()
+        return _display_process_label(raw, item, process_label_resolver)
+
+    def _item_raw_process(item: dict[str, Any]) -> str:
+        return str(
+            item.get("primary_process_id")
+            or item.get("process_id")
+            or (item.get("where") or {}).get("process_norm")
+            or _target_processes(item)
+            or "n/a"
+        ).strip()
 
     print(theme.c("# Actionable Results", theme.title))
     print("")
@@ -1138,11 +1736,112 @@ def main() -> int:
     print("")
     if not items:
         print("No discovery recommendations found in report.json.")
-        return 0
+        return 2 if args.require_landmark_recall and known_issues_mode != "off" else 0
 
     top_n = min(int(args.top_n), len(items))
     selected = items[:top_n]
+    ranked_positions = _landmark_positions(ranked)
+    selected_positions = _landmark_positions(selected)
+    recall_window = max(1, int(args.recall_top_n))
+    recall_gate_failed = False
+
+    if known_issues_mode != "off":
+        print("")
+        print("## Known-Issue Recall QA (Unpinned Ranking)")
+        print(f"- recall_window_top_n: {recall_window}")
+        for bucket in _LANDMARK_BUCKETS:
+            pos_ranked = ranked_positions.get(bucket)
+            pos_selected = selected_positions.get(bucket)
+            in_ranked = isinstance(pos_ranked, int)
+            in_window = isinstance(pos_ranked, int) and int(pos_ranked) <= recall_window
+            print(
+                f"- {_status_yn(f'{bucket}_present_in_ranked', in_ranked)} ; "
+                f"ranked_position={pos_ranked if isinstance(pos_ranked, int) else 'N/A'} ; "
+                f"selected_position={pos_selected if isinstance(pos_selected, int) else 'N/A'}"
+            )
+            print(
+                f"- {_status_yn(f'{bucket}_within_top_{recall_window}', in_window)} ; "
+                f"ranked_position={pos_ranked if isinstance(pos_ranked, int) else 'N/A'}"
+            )
+            if require_landmark_recall and not in_window:
+                recall_gate_failed = True
+        if require_landmark_recall:
+            print(f"- require_landmark_recall: true")
+            print(f"- recall_gate_status: {'FAIL' if recall_gate_failed else 'PASS'}")
+        if promoted_landmarks:
+            print(f"- landmark_promoted_from_ranked: {', '.join(promoted_landmarks)}")
+
+    print("")
+    print(theme.c("## Action Lanes (Client-Controllable)", theme.section))
+    lane_rows: dict[str, list[dict[str, Any]]] = {"manual": [], "infra": []}
+    for item in items:
+        lane = _lane_bucket(item)
+        if lane in lane_rows and len(lane_rows[lane]) < 5:
+            lane_rows[lane].append(item)
+    for lane, label in (("manual", "Manual Effort Removal"), ("infra", "Infrastructure Contention Reduction")):
+        print(theme.c(f"### {label}", theme.title))
+        rows = lane_rows.get(lane) or []
+        if not rows:
+            print("- none")
+            continue
+        for item in rows:
+            raw_process = _item_raw_process(item)
+            process = _item_process_label(item)
+            rec_raw = str(item.get("recommendation") or item.get("title") or "").strip()
+            rec = _truncate(_humanize_recommendation_process(rec_raw, raw_process, process), 90)
+            close_delta = item.get("modeled_delta_hours_close_cycle")
+            if not isinstance(close_delta, (int, float)):
+                close_delta = item.get("delta_hours_close_dynamic")
+            human_touches = item.get("modeled_user_touches_reduced")
+            if not isinstance(human_touches, (int, float)):
+                human_touches = item.get("human_modeled_touch_reduction_count_close_cycle")
+            parts = [
+                _kv(theme, "process", process, theme.cool),
+                _kv(theme, "close_Δh", f"{float(close_delta):.2f}" if isinstance(close_delta, (int, float)) else "N/A", theme.dynamic if isinstance(close_delta, (int, float)) else theme.dim),
+                _kv(theme, "human_touches", f"{float(human_touches):.0f}" if isinstance(human_touches, (int, float)) else "N/A", theme.hot if isinstance(human_touches, (int, float)) else theme.dim),
+            ]
+            print("- " + _join_semicolon(theme, parts))
+            print("  " + theme.c(rec, theme.value))
+
+    print("")
+    print(theme.c(f"## Freshman Table (Top {top_n})", theme.section))
+    print(
+        "| # | process | action | class | Δh acct/static/dyn | eff_idx acct/static/dyn | close Δh | close eff% | human runs | human touches |"
+    )
+    print("|---:|---|---|---|---|---|---:|---:|---:|---:|")
+    for idx, item in enumerate(selected, start=1):
+        process = _item_process_label(item)
+        action_text, action_class = _freshman_action(item, process)
+        delta_triplet = _table_triplet(
+            item,
+            ("delta_hours_accounting_month", "delta_hours_close_static", "delta_hours_close_dynamic"),
+            decimals=2,
+        )
+        eff_idx_triplet = _table_triplet(
+            item,
+            ("efficiency_gain_accounting_month", "efficiency_gain_close_static", "efficiency_gain_close_dynamic"),
+            decimals=6,
+        )
+        close_delta = item.get("modeled_delta_hours_close_cycle")
+        if not isinstance(close_delta, (int, float)):
+            close_delta = item.get("delta_hours_close_dynamic")
+        close_eff = item.get("modeled_efficiency_gain_pct_close_cycle")
+        if not isinstance(close_eff, (int, float)):
+            close_eff = item.get("efficiency_gain_pct_close_dynamic")
+        human_runs = item.get("modeled_user_runs_reduced")
+        if not isinstance(human_runs, (int, float)):
+            human_runs = item.get("human_modeled_run_reduction_count_close_cycle")
+        human_touches = item.get("modeled_user_touches_reduced")
+        if not isinstance(human_touches, (int, float)):
+            human_touches = item.get("human_modeled_touch_reduction_count_close_cycle")
+        print(
+            f"| {idx} | {_truncate(process, 18)} | {_truncate(action_text, 58)} | {action_class} | "
+            f"{delta_triplet} | {eff_idx_triplet} | {_table_num(close_delta, 2)} | {_table_num(close_eff, 3, suffix='%')} | "
+            f"{_table_num(human_runs, 0)} | {_table_num(human_touches, 0)} |"
+        )
+
     group_order = [
+        "landmark",
         "batch_group_candidate",
         "batch_or_cache",
         "batch_input",
@@ -1193,13 +1892,9 @@ def main() -> int:
             if not isinstance(score_value, (int, float)):
                 score_value = item.get("value_score_v2")
             scope_class = str(item.get("scope_class") or "").strip()
-            process = str(
-                item.get("primary_process_id")
-                or item.get("process_id")
-                or (item.get("where") or {}).get("process_norm")
-                or targets
-                or "n/a"
-            ).strip()
+            raw_process = _item_raw_process(item)
+            process = _item_process_label(item)
+            txt = _humanize_recommendation_process(txt, raw_process, process)
             wrapped = textwrap.fill(
                 txt,
                 width=110,
@@ -1254,6 +1949,25 @@ def main() -> int:
                     reasons=("na_reason_accounting_month", "na_reason_close_static", "na_reason_close_dynamic"),
                 )
             )
+            close_delta = item.get("modeled_delta_hours_close_cycle")
+            if not isinstance(close_delta, (int, float)):
+                close_delta = item.get("delta_hours_close_dynamic")
+            close_eff_pct = item.get("modeled_efficiency_gain_pct_close_cycle")
+            if not isinstance(close_eff_pct, (int, float)):
+                close_eff_pct = item.get("efficiency_gain_pct_close_dynamic")
+            close_parts = [
+                _kv(theme, "delta_h_close", f"{float(close_delta):.2f}" if isinstance(close_delta, (int, float)) else "N/A", theme.dynamic if isinstance(close_delta, (int, float)) else theme.dim),
+                _kv(theme, "eff_pct_close", f"{float(close_eff_pct):.3f}%" if isinstance(close_eff_pct, (int, float)) else "N/A", theme.dynamic if isinstance(close_eff_pct, (int, float)) else theme.dim),
+            ]
+            print("   " + _join_semicolon(theme, close_parts))
+            human_parts = [
+                _kv(theme, "human_h_close", f"{float(item.get('modeled_user_hours_saved_close_cycle')):.2f}" if isinstance(item.get("modeled_user_hours_saved_close_cycle"), (int, float)) else "N/A", theme.hot if isinstance(item.get("modeled_user_hours_saved_close_cycle"), (int, float)) else theme.dim),
+                _kv(theme, "human_runs", f"{float(item.get('modeled_user_runs_reduced')):.0f}" if isinstance(item.get("modeled_user_runs_reduced"), (int, float)) else "N/A", theme.hot if isinstance(item.get("modeled_user_runs_reduced"), (int, float)) else theme.dim),
+                _kv(theme, "human_touches", f"{float(item.get('modeled_user_touches_reduced')):.0f}" if isinstance(item.get("modeled_user_touches_reduced"), (int, float)) else "N/A", theme.hot if isinstance(item.get("modeled_user_touches_reduced"), (int, float)) else theme.dim),
+                _kv(theme, "human_status", str(item.get("human_gain_status") or "missing"), theme.value),
+                _kv(theme, "human_reason", str(item.get("human_gain_reason_code") or item.get("human_gain_reason") or "missing"), theme.dim),
+            ]
+            print("   " + _join_semicolon(theme, human_parts))
             tail_parts: list[str] = []
             if obvious_txt:
                 tail_parts.append(f"obviousness={obvious_txt}")
@@ -1264,6 +1978,8 @@ def main() -> int:
             if tail_parts:
                 print("   " + _join_semicolon(theme, [theme.c(part, theme.dim) for part in tail_parts]))
     print("")
+    if require_landmark_recall and recall_gate_failed:
+        return 2
     return 0
 
 
