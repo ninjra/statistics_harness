@@ -2,18 +2,18 @@
 
 - class_rationale: Presentation/report/planner/LLM orchestration plugins.
 - expected_output_type: `report_or_prompt_artifacts`
-- run_id: `full_loaded_3246cc7c_20260218T193803Z`
+- run_id: `baseline_verify_20260225k`
 
 ## Example
 
 - plugin_id: `planner_basic`
 - plugin_type: `planner`
 - actionability_state: `explained_na`
-- reason_code: `NOT_APPLICABLE`
+- reason_code: `NON_DECISION_PLUGIN`
 - finding_kind: `non_actionable_explanation`
-- explanation: planner_basic produced 110 finding(s), but none matched current action-routing rules. This is a planner plugin with no downstream plugin dependencies in this run.
+- explanation: planner_basic is a non-decision plugin (report_or_prompt_artifacts) and is tracked as explained N/A when recommendation lanes are absent.
 
 ## Traceability
 
-- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `full_loaded_3246cc7c_20260218T193803Z`
+- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `baseline_verify_20260225k`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

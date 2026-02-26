@@ -159,6 +159,73 @@ def _safe_explanation_items(report: dict[str, Any]) -> list[dict[str, Any]]:
     return [item for item in items if isinstance(item, dict)]
 
 
+def _safe_non_negative_float(value: Any) -> float | None:
+    if not isinstance(value, (int, float)):
+        return None
+    val = float(value)
+    if val < 0.0:
+        return None
+    return val
+
+
+def _recommendation_metric_contract(items: list[dict[str, Any]]) -> dict[str, Any]:
+    close_dynamic_missing: list[dict[str, Any]] = []
+    human_gain_missing: list[dict[str, Any]] = []
+    for idx, item in enumerate(items):
+        plugin_id = str(item.get("plugin_id") or "").strip()
+        process_id = str(item.get("primary_process_id") or item.get("process_id") or "").strip()
+        status = str(item.get("status") or "").strip().lower()
+
+        close_delta = _safe_non_negative_float(item.get("delta_hours_close_dynamic"))
+        close_delta_alias = _safe_non_negative_float(item.get("modeled_delta_hours_close_cycle"))
+        close_gain_pct = _safe_non_negative_float(item.get("efficiency_gain_pct_close_dynamic"))
+        close_gain_pct_alias = _safe_non_negative_float(item.get("modeled_efficiency_gain_pct_close_cycle"))
+        close_reason = str(item.get("na_reason_close_dynamic") or "").strip()
+        has_close_metric = any(
+            v is not None
+            for v in (close_delta, close_delta_alias, close_gain_pct, close_gain_pct_alias)
+        )
+        if not has_close_metric and not close_reason:
+            close_dynamic_missing.append(
+                {
+                    "index": idx,
+                    "plugin_id": plugin_id,
+                    "process_id": process_id,
+                    "status": status,
+                }
+            )
+
+        user_hours_close = _safe_non_negative_float(item.get("modeled_user_hours_saved_close_cycle"))
+        user_runs_reduced = _safe_non_negative_float(item.get("modeled_user_runs_reduced"))
+        user_touches_reduced = _safe_non_negative_float(item.get("modeled_user_touches_reduced"))
+        human_status = str(item.get("human_gain_status") or "").strip().lower()
+        human_reason = str(item.get("human_gain_reason_code") or item.get("human_gain_reason") or "").strip()
+        has_quantified_human_signal = any(
+            isinstance(v, (int, float)) and float(v) > 0.0
+            for v in (user_hours_close, user_runs_reduced, user_touches_reduced)
+        )
+        has_na_reason = human_status in {"na", "not_applicable"} and bool(human_reason)
+        if not has_quantified_human_signal and not has_na_reason:
+            human_gain_missing.append(
+                {
+                    "index": idx,
+                    "plugin_id": plugin_id,
+                    "process_id": process_id,
+                    "status": status,
+                    "human_gain_status": human_status or None,
+                    "human_gain_reason": human_reason or None,
+                }
+            )
+
+    return {
+        "recommendation_count": int(len(items)),
+        "close_dynamic_metric_missing_count": int(len(close_dynamic_missing)),
+        "close_dynamic_metric_missing_items": close_dynamic_missing[:25],
+        "human_gain_missing_count": int(len(human_gain_missing)),
+        "human_gain_missing_items": human_gain_missing[:25],
+    }
+
+
 def _load_direct_action_plugins(root: Path) -> set[str]:
     path = root / "docs" / "plugin_class_taxonomy.yaml"
     if not path.exists():
@@ -358,6 +425,7 @@ def _build_snapshot(
         if isinstance(recommendation_payload.get("explanations"), dict)
         else []
     )
+    recommendation_metric_contract = _recommendation_metric_contract(recommendation_items)
     recommendation_plugin_ids = {
         str(item.get("plugin_id") or "").strip()
         for item in recommendation_items
@@ -503,6 +571,7 @@ def _build_snapshot(
         "next_step_unmapped_plugins": next_step_unmapped_plugins,
         "next_step_blank_non_actionable_plugins": next_step_blank_non_actionable_plugins,
         "next_step_work_contract": next_step_work_contract,
+        "recommendation_metric_contract": recommendation_metric_contract,
     }
 
 
@@ -632,6 +701,35 @@ def verify_contract(
                 or [],
             },
             "Every non-actionable plugin must map to a deterministic recommended_next_step lane.",
+        )
+    )
+    rec_metric_contract = (
+        primary.get("recommendation_metric_contract")
+        if isinstance(primary.get("recommendation_metric_contract"), dict)
+        else {}
+    )
+    checks.append(
+        _check(
+            "run.recommendations_close_dynamic_metric_present",
+            int(rec_metric_contract.get("close_dynamic_metric_missing_count") or 0) == 0,
+            0,
+            {
+                "count": int(rec_metric_contract.get("close_dynamic_metric_missing_count") or 0),
+                "examples": rec_metric_contract.get("close_dynamic_metric_missing_items") or [],
+            },
+            "Each surfaced recommendation must carry close-window delta/gain context (or deterministic NA reason).",
+        )
+    )
+    checks.append(
+        _check(
+            "run.recommendations_human_gain_present",
+            int(rec_metric_contract.get("human_gain_missing_count") or 0) == 0,
+            0,
+            {
+                "count": int(rec_metric_contract.get("human_gain_missing_count") or 0),
+                "examples": rec_metric_contract.get("human_gain_missing_items") or [],
+            },
+            "Each surfaced recommendation must carry human-impact gain metrics or deterministic NA reason.",
         )
     )
     if compare is not None:

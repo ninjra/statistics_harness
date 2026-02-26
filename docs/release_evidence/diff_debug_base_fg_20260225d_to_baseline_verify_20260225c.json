@@ -1,0 +1,2670 @@
+{
+  "added_plugins": [],
+  "changed_plugins": [
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+      "signature_after": "dd426f59bf52d6eedbf332b06afd37b5f7113c7a550565669c8162e7169a873b",
+      "signature_before": "ddd0e4c4f7e71b9db247803492ed03329938872a8a938a90777d3bed52de5f61",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_action_search_simulated_annealing_v1",
+      "signature_after": "9406d7a2ae0c5f0615693ab6e9ac33389a1d849727d209b0ceab36d8cc3d4d17",
+      "signature_before": "648cb648f2a0a45a76a5f31b777a7e38508c8eea9343f05afcf2f9966ed10751",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_actionable_ops_levers_v1",
+      "signature_after": "232c82cb0ac74da87686f6e8d454ef27e58bbc081cf21a4951aeb056f47f05b1",
+      "signature_before": "6b83c59cdce8a7db8dab72116005ea3666c9e0ef5177344365035102f5b5020d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_aft_survival_lognormal_v1",
+      "signature_after": "08093e95deb70fb560b61df7ac479c5039e453e902fb3cfea671554f8c3de239",
+      "signature_before": "ed0a6fdfcb01d33f401f261d53bcdb76826136206dff8749c07b9f6d8ef7b5e4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_anova_auto",
+      "signature_after": "5112072b51a6318ed3d6825ec0901bfa1d9441c43793ac5d749af08b53914730",
+      "signature_before": "4909786c56b4e0f342bc3290c77512f6760394b0b3361e9818e0cccb6e97cf55",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_association_rules_apriori_v1",
+      "signature_after": "35e95c226f60a9d1b234d9effa427458484c7f57eafee141f79ba95630840baf",
+      "signature_before": "dd3a0d347165ba1e3fbb6b8cfda1f86fedfc77b43cd5ac88beb40237ac1d7d59",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_attribution",
+      "signature_after": "2669bb8e09a6f6d20d2f8f4e0eea81a45b86eff5d62a426e7e0ce4db30ae71f9",
+      "signature_before": "e714335315d06fa096882cef09df905c321ce719ae239b460ac14257bb43fd96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bart_uplift_surrogate_v1",
+      "signature_after": "58e2d27cd83a76bf90c44bf926eb3a718e26d1cfdf5d52581bcfbbd8179b9d7a",
+      "signature_before": "96fd73579efc11739e439e8b353586bc21d8319c33f532044a9867824feeaee4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+      "signature_after": "1c5141664b16ae11f7239d2cac3cee42a9063d488da71f78c75d2567b7b435b1",
+      "signature_before": "477ea63e407e6376ef544651893d758940526b03a33c8b958aad3ff06884e445",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bayesian_point_displacement",
+      "signature_after": "2548bde80540718dee3f651a1063ad96a78b25aacc2e6fb8c3fb560e11b2a5e3",
+      "signature_before": "8db642538d847e040eaac994fb5eeecdb47a98358296ea8c4af3f8e12b54e727",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_benfords_law_anomaly_v1",
+      "signature_after": "09e530406e54b0b0b6eec0ea2134888533f3202974438eca198ba11c63b22032",
+      "signature_before": "289bc3e7552feb2b1cf706b65454a573749cb5b18441a798a25c95dd7c5ecd58",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "metrics_json",
+        "budget_json",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+      "signature_after": "cd5100440415139f164dbebbebe6829ea79cb5d9389bcc646d63d2c9ac0daca0",
+      "signature_before": "239cf9c21d889aa62c7e6ef277d7683cc8eaab8f51ee9c9616a1194d80d0a126",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_biclustering_cheng_church_v1",
+      "signature_after": "a0a4ff97cceacf5c53d0ffec90752a4589bce4cebb46e8bd364d34b05c0abe78",
+      "signature_before": "e7df56bfaa91f421699635e1b06aa8435c65bcecb21205550e1b13b2fc733784",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bocpd_gaussian",
+      "signature_after": "45d90413c39087bf8407b983c95615f5333add9525459f1be1865b102b9138e0",
+      "signature_before": "5162c3e4bfdef248f43f747843753136fe7c80ee4ffa6284006a8864101c2148",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from baseline_verify_20260225b",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+      "signature_after": "c76179dd09f08399870d659a3cfeee23169c0d3753215d795d0d748b624dfa58",
+      "signature_before": "c12fa684df6b44100d933fd1c737b0562086db9d7181b3ab37ebf74e2fb7dc3f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+      "signature_after": "43354ed05d3806c930681f5b0a48d936cc60faabfa8763da6be9eadfbb8b94cd",
+      "signature_before": "324f25d797ea532395f98395e8bba6554f035612f5fc13138c4a0606c7ecd988",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_bundled_donations_v1",
+      "signature_after": "b3ff21de6c53cc80f5ff1f1896a5d20fbc4d89b5d2a3160f30601381e899c46f",
+      "signature_before": "d91708aea1a61b62a601512f8f85f4dd8d587b9d39d46d2f3d0de8619580f536",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_detection_kleinberg",
+      "signature_after": "8d2097797082586af94b11ca53cde31e2f0e7694ef8d3f307900716f8f406a28",
+      "signature_before": "1f4c91e0ee3f8a94fa7736b7a455a883c2d6e3d208ebbf50d4448c131e780670",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_burst_modeling_hawkes_v1",
+      "signature_after": "d84e39caf3f5b8c72e64a5dc37c25cf2d7de1143f04c598d7afaffeec0eee010",
+      "signature_before": "0770310abc00d71ce1cb42aded0ac2b9b92803b4d1e4b7a70c639d51c96bf979",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_busy_period_segmentation_v2",
+      "signature_after": "439d95cf25de59854d3784f2c798815be760c3814d663b3dfff5a3758f84da8c",
+      "signature_before": "bf3a6a3c0bac166d62e697ec25714c544bc73a23053f3dc34b0ce67fa2d2d4af",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "signature_after": "6f777c3a972ad7d369b6219f3bc95c6aa8d832000f7490962d94b12d429eadc3",
+      "signature_before": "8051a6274893ce3138197adf992cdf7d448f56aa8a297f2c4e0c83a24f371049",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_capacity_scaling",
+      "signature_after": "60b88ad7681c26fa16165fdf50fa8944817a9f6bab389bb477a76539ff067bda",
+      "signature_before": "abb908c6975a20bceffb71844be8c3e86faa25b053bf2635ca3aaa08e8cf8148",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cca_crossblock_association_v1",
+      "signature_after": "81992d0306c4b6615476346f3cf7c1cd9daa3a4faea79192692091969f84ee98",
+      "signature_before": "495bdb7741b0a8f4e48eb4a9ef25a97742c93cf78a069c7628fb7dedc40946b8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chain_makespan",
+      "signature_after": "078cb020c01c5610d1099b880a374eb4d1a4301a104b346cb7ec2c3e658089ff",
+      "signature_before": "a8af5c7586565960f9685cd11461db91864ade07fad5efa887a23f014e7691ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_impact_pre_post",
+      "signature_after": "cb4353c243aa0c6ee059d6375937a372103059701fd192217e7d1ed398f9f2e5",
+      "signature_before": "a69fc6f6349366ccaaadf11c1aba9ee44fd940937f4e8ad3a2e076cd057b5332",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_change_score_consensus_v1",
+      "signature_after": "7fb35260bf6bf7fa63fa2c68b3d2cee7561144f23c5299489b330c7551085343",
+      "signature_before": "3a5ea2c76c5a86f18484650d99c49d14ce4e0e50cba1f06ffa7eea6e6fef8033",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_energy_edivisive",
+      "signature_after": "da2994478678b458715a04b3ba0d60fde17925238b66fdd4026d8894deebfe61",
+      "signature_before": "43aade26e03124457bda9fabef8ef72eb1c366b68260b393bd436e43bc2d5114",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_method_survey_guided",
+      "signature_after": "650c1d4d46d4b82a1034f4efcff8360135e023c6a1427a7c67ee74093df91f4d",
+      "signature_before": "a9a759b339192731254b6931fea158f1bdae8a13f606467018e54f0362d5ecbe",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_changepoint_pelt",
+      "signature_after": "ca195c793010a32cc07874def1f3a9f1140769017a28260bab8de721a330d574",
+      "signature_before": "89520999bca334e63e40b6451c9b70b35ef4beb150694dcd2a8a928d8a4bae86",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_chi_square_association",
+      "signature_after": "c42e55a293dcb65c55c9157ba70754f44d9dd50c37b582460852d1848450e46a",
+      "signature_before": "ab013fd102243c0c8f001eae7f09ebf321caf3ca56fbe6953fbe9e3bb52a13d3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_circular_time_of_day_drift_v1",
+      "signature_after": "8355ac0a808d536f97f5c3fa1bc0c56842b1f9239a3dbdfbc34f6fcbfcdef7b9",
+      "signature_before": "38a009eae6a2267100527a855d98cb682baee216c5ae3b8dde3ca3880269f355",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_impact",
+      "signature_after": "119fca748b6570ec32a72e7acef7cb94130bbd47530c1e12793d2525ad296971",
+      "signature_before": "507c38908ace4102d14060f7c8a7b829d119ae78c204ebea67d15c052dfe20c7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_capacity_model",
+      "signature_after": "16e7e441a50c833f9fa8db4f2b98c00b9f4408b682a753b9d35161133b65be2e",
+      "signature_before": "75898f5e29a6bb175ee0f8685e4eca36fa6c931bf8644262ccefe243b8d0b7ff",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_change_point_v1",
+      "signature_after": "c0056fe7383afaa7ee7474b1b653dcb5d487a698ecca65f259988a0c5a2e14c1",
+      "signature_before": "926e88f76fef1e8a780ea5a99fb24c5147772ef744e569f087e7b394bec7094a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_contention",
+      "signature_after": "d82b6cad2ff4018494066063b069e02b1e67dab5c9b4b9e94f2530ebd1653bc6",
+      "signature_before": "6c571fb04d755565fbb75ccaa1a46988bf40e00e7d69576ee5926b67fb51bee1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_duration_shift",
+      "signature_after": "3cc857549ebcd9e9e98de53064f270680b2ea749c4a9fb9ae420c911ea2820bb",
+      "signature_before": "a9cc2cb8da0a979a73ea928d73cecfe17aa668b175d5b8384ad1a6f1cc32bc23",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_revenue_compression",
+      "signature_after": "02d17d579395ad36252571b9c2dfe879076ba9f21ee4507e8532fb6a989c1bc2",
+      "signature_before": "b6f3f8b5826ac3fceb119b7f103d8d56046658d9d166167e8166108584d7a5e0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+      "signature_after": "3b828abadff0fdddb3549539468ef0e77990742bdce2794b9a67c4e768424863",
+      "signature_before": "48f7131287e1ef9f108e6080a64c7002225b6530a8090e5b3983adb7c5faed28",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_uplift",
+      "signature_after": "a430c5ed52a836f65f693423b96b237bb55f55b3e61be61f04c7f393b0d1218c",
+      "signature_before": "4145555a25b2aac3acce53e8616083cf288c73e54aff4637365b80c75d50fbde",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_close_cycle_window_resolver",
+      "signature_after": "cadb891facfbf529964cd736b8e74d68403fe38fa5538a5744c453486bf64a36",
+      "signature_before": "04514de991ee0d5c2e60e0eab2a42a4e3935536226744764f666c99f8a1e35b5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cluster_analysis_auto",
+      "signature_after": "a34ae73bf04b486276fb897eba89e9c98570de3c5724ea6271b8bca246748100",
+      "signature_before": "55775fab2695c9559a83da7144a2b338362d7a42cd21179e3bff5aca904c0204",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_competing_risks_cif_v1",
+      "signature_after": "684a7ee087617974f5ae0394edb5d0e4eadfb211edfd371932798eeafd4e67bc",
+      "signature_before": "28193690ab340bc5a773b1ba753c14e5ff4be5ec9a82e63122dfbabffd79580f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_concurrency_reconstruction",
+      "signature_after": "238c3444c6d1ba52328d0827add5caa802b28d8af0fa37a45dfeacb36aa7d013",
+      "signature_before": "354ec53114e91f57dce3695b3b7d2ce170b9f4a9bc2f182bad9b7f4ff83b1cd8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformal_feature_prediction",
+      "signature_after": "aa41852c7d77254f7b769af7b50c53c98ff0811ab035ebf5a41a2f6ae891cf90",
+      "signature_before": "8743d5a1c001b3a67fba8b59cb4597d575d4bf5c82c93fa16164cdd1a25d68a3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_alignments",
+      "signature_after": "eab0a2c799a27e867f69bf0c3c86cca41f65e221ec18c5132e8cd10e113aa87e",
+      "signature_before": "a240042acbf6bf985f89408b5c7a7f0413055bd8e3330c316bba6e97c025ae23",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_conformance_checking",
+      "signature_after": "f4d814c262bd5b8cb35786fae2c5193fe1b3c1e5d222f12dfa372e0cee1dcfcd",
+      "signature_before": "2c541af398c37684f6f64ca8af60247ee62aa294016f9b71a2f0b97b1ca5bcc7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+      "signature_after": "a22d3a74c8f88ae328056dc387064c396735054b645e86044077ce1f19cf643d",
+      "signature_before": "d5398442e6ec9cb829d0f3d60d154026322bc22e276d7ac66f9161380f0dc9c0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_constraints_violation_detector_v1",
+      "signature_after": "bf3c5ac2edcb4c44cc77d87835e61394d22fd92010fd32ff64fb4ba21adedc49",
+      "signature_before": "7f52a7ab40b8defbaa14c6feffdb26c9c8a809b05f2c37ba9054ca1cd156730c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_contribution_limit_flags_v1",
+      "signature_after": "403d43914fd836d8e62683ec6cf8d468ac54574303be8409e6b2842de0be4bc8",
+      "signature_before": "2553ed3972f636cc05901b6ed920f371d258b0d7e863ca94e0045f47d705c1c4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_cusum",
+      "signature_after": "a66424623b1231610bad617a51489d3ae084eb0691903b76a17e457f642aaaf2",
+      "signature_before": "5ccb990cf528f278c6d22e63ef4a45081adb6f065a65ffd72316c63fde6a1898",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_ewma",
+      "signature_after": "d117a27eac3695dc09a51b1b7db57c7bfc95421620b193268440e20947785abc",
+      "signature_before": "6526884c07100dbbaca47ebdf06407073ffbecfec8bc96d3390a21bce4a0518f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_individuals",
+      "signature_after": "47e2c4429108ec922f887ab4e5c20a642617beb85d93c934c65e8f03fe3720ff",
+      "signature_before": "6384c42b5400fd951a12a9f7592c83f85a36e9e3247160ebc0dbf97fb4dc99ee",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_control_chart_suite",
+      "signature_after": "a17250c6237744b90c1920c4d2fb2e916755d279605200095554058cc9039f0c",
+      "signature_before": "cc4f563970794d56445bbf5fc562d3c8570b3d12af66ea1545fb252f9114d36f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_copula_dependence",
+      "signature_after": "e4b9bb649480af07c34c272a0a0aa819ed4efe8210a9fd8ec9707f31621cb2f2",
+      "signature_before": "ff627b1fffbc33957300aa7dbefd24b62949ccd5a18f036625b468de4ae870f7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cur_decomposition_explain_v1",
+      "signature_after": "e347bbea5dfc59270ff53629844837ae20627afbff4bbbad5a4c40a8fe2f1355",
+      "signature_before": "f21582de2247d775b619a6cc915197745d9b707471b5f6464a4da94a85064c8f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_cusum_on_model_residuals_v1",
+      "signature_after": "81a08f6a23fedeb21f8167d1a9c2d5bc9a4b66ea8c907f45565a9b209501c11d",
+      "signature_before": "613f23a9dab9c18da09e29a9cc5ef36449e5bf6fde1d5d6d15223f7e580ce216",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+      "signature_after": "d2273f86962deab2d5de3da24b16aeace438811fa97b887a3f080be559e5bf54",
+      "signature_before": "d028d62d1b1691809b3218b9c7de8eacbac6807ece916d648a9640ce4f0fe8c3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_density_clustering_hdbscan_v1",
+      "signature_after": "ed2c34b8f57ffa4e688a2fe07fd4c5018402613f83af8ae7251c89c7292e698f",
+      "signature_before": "b49197a46b72a481a7fac33a43646af34fd7d3c2bd3768163909d94de0421c6e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_leiden_v1",
+      "signature_after": "47ca7cfaa3c0c06c28f5b2e4b75b01fc41d604e16c225f1df777c132d9f38e81",
+      "signature_before": "485afcd1666cb9152b7c8f5215bd22850a9c18f5f4019234d6f6ee616bf5606a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_community_louvain_v1",
+      "signature_after": "b7a8579e1abc6479ee269c596447ea123b60dc7e47eb08241270f53a75347f00",
+      "signature_before": "d0522f9e41758e0515f9501e98a228a36e6b81d1f35242847b6ed85ae8db34b2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_critical_path_v1",
+      "signature_after": "89373efa3ae7c3428e2dc73f0ee5b58d3a9a0f6a0f4a592363ccf70fefd1e0cc",
+      "signature_before": "fced5104d93842678878232fdb96de9a0ea884e38fc92ca0237da0a9ffbfd3b4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_graph_change_detection",
+      "signature_after": "fe4d9270e8bf3ccd1d5f183e8ec6d4b4e22aaca6f95c0dfe0107dd87f511b50d",
+      "signature_before": "2c648a306a005b08dbace93e4a1a128a57e5000e2322a2023fd1b422c869af1a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dependency_resolution_join",
+      "signature_after": "4d542797c8efc1b4fe5ada084c40d00ad255417f7451600d3e05c24cf6ec9ef5",
+      "signature_before": "1d497d1d3a39e1e11ef28d7fa3cd5257e40843a4ec869a4d386f2e00d5beb165",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_determinism_discipline",
+      "signature_after": "bae52fd8fea0c007ca40c88f716cd86e377433c79aba2547c28432ed2adf2949",
+      "signature_before": "abb5f8877e7ea281fdf1a7771af034db89758643ea2df53a53fb5fb51c66449f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_diffusion_maps_manifold_v1",
+      "signature_after": "6d1e2041675174532b1719eac5143d3bec5320e7fb6f315fbf490f1a033aad18",
+      "signature_before": "cd21324dfffc5068c9107e4c9262cf18c4e6d014ba31bba7aa4573c374f57b88",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+      "signature_after": "8ac0155ad86e2e19af4e7e7822b8bdc6dae358bd5fb4661f14608e611757c707",
+      "signature_before": "8d409d8688218eb4d07ab63ae125bc3cd5e2fa24d169f183adf708510917815c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+      "signature_after": "1fac0e866071d1facaa872efbffe64dcfe2665154025782ef21a45a0620c4917",
+      "signature_before": "fbad00e2181d5f258c4fcb9f9bdcde7047222adac9ef2ee1f4cf4cc3fc2231ea",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_correlation_screen_v1",
+      "signature_after": "097b9c84a0fb5aca3c5fa4c9b0367a894042035e46606bd82c7f725fbc1e1f2f",
+      "signature_before": "928d5c576509591c6987d8eed47f7cd4e745434f19b159011baa390223b56c1b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distance_covariance_dependence_v1",
+      "signature_after": "272051efd6f775c7a5543759f5e6b1de328dab3f66e7dbf14373efb1ad12f903",
+      "signature_before": "d3a164f10c4670df4ccc4315a5f14955b62ba8b53c76f318e4f02bda65430ab2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_drift_suite",
+      "signature_after": "e65535dd4576a8ceac069ddba9a45362ff6b8f8c0b6c0e46427d3148ffba3b66",
+      "signature_before": "809891fa010d18a1e935f581e78f79727295855db4f57c25cc300d145ac998eb",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+      "signature_after": "f0657863df6f43a830189b0264164dd57a68857fa218e79745be7687beece44a",
+      "signature_before": "52d80cc6e8f44a0bd4927a4d3126c8687043db08f440847f95c0237a42abd3f5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dmd_koopman_modes_v1",
+      "signature_after": "4943fb4c16e2f323e7be3f4653d15339d3e0f5cf953d66117e630a507daa85b5",
+      "signature_before": "f8ddd1fcc62cd18ad22490c49a001c9f207af37b8b31edd64ae7a14c5c4696c5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dp_gmm",
+      "signature_after": "f8e20256c433fa781fb06f2e52ab7a6e14457141641c8c39a19dd834d423d582",
+      "signature_before": "6d1a997ea285db1458f378f407c41e5d1a02f2e7a4e53eafe7c3fde07ab2b26a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_drift_adwin",
+      "signature_after": "92ebaa8f66f6a24087ae49eb23004cd31a4010299735e8403d2af5ce7d234efe",
+      "signature_before": "62074079b79c05a12429b496b405da46e350ed4f2d2a0b4d5f43cbfe3caf6755",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_dynamic_close_detection",
+      "signature_after": "62c6c2f15538e27afaa61a1a83eb1e4ccb3157c77d4df73ece1200dcbad6e68a",
+      "signature_before": "d5780c8fec55cbf86a8d3dc05945a9fa28ffb24eabc1cd11661ab40180c3876c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ebm_action_verifier_v1",
+      "signature_after": "1a69864a8fbcf339cc269d66ac89ef434af83fffcf7d3c724c90874633b140e9",
+      "signature_before": "1b32cb9f03657b5d4d08846a7a3470eb15e60b22f1df7d9c54b8527b0b537895",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_effect_size_report",
+      "signature_after": "0706cac3dd45ea0863c96aae48fc0ef21734740e624a41cc06afaffd4ced6c4c",
+      "signature_before": "7563a642f6cf1691dc86f2f67d51ce2e0227dcf5d3f88575d3ad2a060c70eae4",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+      "signature_after": "647e0c7a1d8b25f6e7eed4db34e6a9fa0a69a9e5dc63e23d4b9cf176222cf406",
+      "signature_before": "eddd598ec58188ec21d5268356cae7073e5a55c90af9eabeebdc90fe12b03717",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+      "signature_after": "1258a31cc9664febbcdb67cde3d2fe825dd73d3e964933bbb588ec9b0673e779",
+      "signature_before": "b9b95db1e7f4d66c7bdce5b85ded4d6cb99ef2df51385e20dda6c064847b87fe",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_energy_distance_two_sample_v1",
+      "signature_after": "3026389a17b332cb640a965aa9226b7e57c708aa5d0259568cc6da98cfc68658",
+      "signature_before": "5d81875ac2bb4a383a537eb52f96e1ab871c64c629bdb4c47d1748ed1c4e0c68",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_event_count_bocpd_poisson",
+      "signature_after": "e7f277afb17146d524b04362d7699262a03178b10fbc6aa3c801a9e57a11a5cc",
+      "signature_before": "7ac211ae38272b73287e427e26428395c72df7e828439a90c437132bec67766e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_gumbel_tail",
+      "signature_after": "aca087f447bcec31c09da0a4c5a5c89182578eaf80ebd7389907e3f76c1d147f",
+      "signature_before": "413ded071b867fcacf9d0ee21562152207b19275a8246929940b69b6963d6e4e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_evt_peaks_over_threshold",
+      "signature_after": "a27780b592dd9d09f531d6464ca39c9cd63db9d47c4c08c9fb767b47720186c3",
+      "signature_before": "460a4f1242544bc0869c7e4a3a0d48d9e48266ba70ba3ca6c07ffb5ffb386be8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_analysis_auto",
+      "signature_after": "c707680d56f5ae36c2199e9f546708770d9ff2c1a735245b3b3bd72c84fbb152",
+      "signature_before": "0572e6035287bca49f55f1ff2a74b994758c4a0dfc9f1b0e6262fb92a8890d00",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_factor_rotation_varimax_v1",
+      "signature_after": "7030bf4841f6414535345b52342e663b5adfaef48a938ebcff2d39912a69b451",
+      "signature_before": "1d2d8771206c98cc4f8e6e179d89afec9b02fb7e357688f940b1bd559907e031",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fisher_exact_enrichment_v1",
+      "signature_after": "7c0196c335a35cff45097b0fb56a5025a5b2ca273bbc04b626c6452ce088c031",
+      "signature_before": "f3cd7c7e1659bcb54d0c2119953e4d83474cba0e8aed89ed23964b2f128e02ba",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+      "signature_after": "e6c1533f259f833d5b3cd0ac4db36e1bb0e4e58f37d1647cf6ca709cec0fd146",
+      "signature_before": "67ec828442b49f3b95c7079344e78861ac6fabc50fb5b583851da83e4ba57b0a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+      "signature_after": "4f7f1e441f321f025a45497b61a6593a7a62a5ae4fed2b62e80da3e4d1ed36e5",
+      "signature_before": "23e92c4c3e0383cce74cfb1fae8d12b5efa130d63456463d99395f9aacd73738",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+      "signature_after": "325fc2e82ffd8c3856e0bf4da6b7068168ebd6cf34a9028b82a20c6f81f0f1a0",
+      "signature_before": "0dfa8d7a4ba085363a320a9af1ecde72fcfc47e7c3557e41ccb011f9d500607f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gam_spline_regression_v1",
+      "signature_after": "f0e029c3daaee73380755e4570310219acdec2b63e34f53342774a4eb39d26e4",
+      "signature_before": "8f7767021e25e6b1bfa3ca29ba08671148dcfd3718ccc34b60364a592bf66fcc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_garch_volatility_shift_v1",
+      "signature_after": "98a1232f9cb62a282cbf5ed470a3a5ff393ecde7d332befbe39ece9218608b21",
+      "signature_before": "734e9190a51d48bc4a03802314417dea03fb19116b2739fd290584b0f851dcd2",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_copula_shift",
+      "signature_after": "665dc743df7406270bc2f79ebe47873759c9937e16f306a95c88035b8b6abfb3",
+      "signature_before": "2789100d869dcc9a4d3fb706875d230d477c9ccd24ce048436ca40b6405cbcc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_knockoffs",
+      "signature_after": "c95a6d15358cc0e8bafeef784a192589ab7e71e5aba6a523da1869dc0090265e",
+      "signature_before": "552f7b5046cf4267ce97580e56bafbbb9e49e63204a83e2ab3d291f8542ee790",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_gaussian_process_regression_v1",
+      "signature_after": "848447df6fa4d230b4fdfab5c43113ed25710000bd49eb0266727f4b60b8ffa2",
+      "signature_before": "ed9cc7e830e35e3074c64d1a74c089f39fe4ae03a472332b1ee9bb6875583f48",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+      "signature_after": "a312f7142d1b15181509130f0ca402a767412e0a717729f0720ed11589089e24",
+      "signature_before": "d4a4ffe2333c40ec83de2b6ea39c52e09a3e5f2f6876d3c1a11660d63aa2597f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ges_score_based_causal_v1",
+      "signature_after": "88571b7e137e2480ee4ff4bfce2e4276503f2d0a0b9275a4d5fbac3474e2e7a1",
+      "signature_before": "ddb88a186d68f682edfc3b3999caf514dfd10fd4edcac0c79c4b0ebad32d3606",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_granger_causality_v1",
+      "signature_after": "1ea63357ba4fc82738e91d3b9b551f5242c65ba2bec710e7dcf54e44990a11c7",
+      "signature_before": "fcc99d3dbc2f84edeb1f9bb48f7fa6c7f051d9fc5c769450ce372ed6fd65def6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_assortativity_shift_v1",
+      "signature_after": "5e520d3adce38c20acc94ff80b3685dce259563a5dd979f7ff69a8fa04ded61c",
+      "signature_before": "2643840c8d7a17b23a05353358cb292e6fb0d0676cbf5ddc7bd97735488e6851",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_min_cut_partition_v1",
+      "signature_after": "c7cad84a3eac548cf3dede6ee41d0777c82bca026f60b606f595899059307cba",
+      "signature_before": "09ea8a0da64242f60135d31c079d5937ab98b5ff57a0362c357a2831e83d60f7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_motif_triads_shift_v1",
+      "signature_after": "542b8427d387439fb0a9be23bb727e41339d50bf33fb01cfd615eb228b8ab2b5",
+      "signature_before": "3de7bf7da90d4b672673599ee44f6d72ba58a5d26a118cb9cd80e1ebf4d1d0d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+      "signature_after": "55c3fb0b422e0242a46102740ce41ea02e357ac324f890482977824402a13873",
+      "signature_before": "278e79922c921055968a87134aef3588ab169422013940aae6dafaefe3835f52",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graph_topology_curves",
+      "signature_after": "cd87b236f6ccc6e02694824655e141fe52d2abfe862455e5dd35927b535b79d4",
+      "signature_before": "77e9a1ccc029057afb0dc71c2358330c670c3e202cfd35717f34b04b961ae62b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_graphical_lasso_dependency_network",
+      "signature_after": "85a0752498e8e146b218c656135ec9d7b90c1de55f27fdc840b11d6e123d85c4",
+      "signature_before": "1410e763f72a6221ba3528ea57a924c7d21d4c136ba4d1f91a6743c695f474ae",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+      "signature_after": "183d778fb5a460e36b6a1c16dbad400085a2c6be21c5137148109876cbd26b31",
+      "signature_before": "aafbd9c6d044d2dbbd7541e075fec1de287ce1cf587f1a35a8ff7aa8534bf584",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hawkes_self_exciting",
+      "signature_after": "7fbe98e6092b9790df07662a4823b50d7b403a5a32678dfb6dce2f759585bd4a",
+      "signature_before": "5f162d0f70a26321a5e45b5ed68c458cd9c9aab988313afc1e6b91100bf30852",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_heavy_tail_index_hill_v1",
+      "signature_after": "b8c96893077d61e756ee3ead1e61c161e219c452ec97cf3bdf030350f69710ed",
+      "signature_before": "07f24e202cb5af87e7bb7ab247d77871ba51cdecffeec026f45c44aa9dc95e38",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+      "signature_after": "44d4ff99356b6abec2716efccaa66a7f5dea332e15c304157a833e61e5ea1f8e",
+      "signature_before": "fa34142511cd96ae8ce7e3b06db4c99b8656811920e692598a8ebb265fde748c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hmm_latent_state_sequences",
+      "signature_after": "efac1acfa4a6f61cc3208242feeb90ef75e9972aaea1c27c97cda72f3101d208",
+      "signature_before": "4caea0acf2a2f0663a139daabbc4b0ac619e30455b4f1a29b4cb81e19785b85b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hold_time_attribution_v1",
+      "signature_after": "65fba2f3f131ade7821588797b37f26c584c6d3ff84f5d9d5c717853adfbd484",
+      "signature_before": "f7a449d92b0cc06c4a91ba90d29c586619d0ae5c2676b1b1f130ae2d02bc76cc",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hsic_independence_screen_v1",
+      "signature_after": "3166c3ebee1a0923bae69f349a4276d1e83f006437d9877dc1f125fdc6a9fa4c",
+      "signature_before": "c104845fdbc22bee86232589236a0eb3c805c1ed2c2672905c60af20faea9b9a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+      "signature_after": "8e91311626037c2eb9e3972f4e7a86e8a12a711d9d1151add4a15e7625f14278",
+      "signature_before": "8892fdb1adca7bd4940a03566f9b993ef724dc19d1aa90bb7ccb7c31bd9833ce",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ica_source_separation_v1",
+      "signature_after": "b07bf6fdd16f6a3539f95275160bbb8353dfebcc5d5c1cf52a1ac7095cbe8289",
+      "signature_before": "38916935474dee81d827fb79d174519817bd9e1138f83806ce8db004d50a1d11",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+      "signature_after": "2f85ec16ab20aa717aa59f68f718ce294c81f81a9d00c9b38a834503e19a3396",
+      "signature_before": "0f279825ae52069c695f0441c1e6e4cca57bfbbeefd211e18094f8fad5b4559e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_action_planner",
+      "signature_after": "9173e82df383afe50c051fe140610d715c8e5a4c0cdc07f0e28d30a060cd4139",
+      "signature_before": "17bde9e373d7ac68c79a75c4951301f372d59911223d15dc305188ea65371f0b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+      "signature_after": "0e56e8b3ecfc2ffe5d4f596c11a1c192f623ee877b12d488d322025564d7e519",
+      "signature_before": "524a0598136e62f470a7ac9337966e2af6faec36181b19f026b96237dac6c14f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ideaspace_normative_gap",
+      "signature_after": "f0c6054c034167be0a53a42926855c6bded705dc56bae46a1c74c44e80823f68",
+      "signature_before": "d4d1058fd11af813e73a62fe7bc55cacbcb9028968c5c341e77d49eb29be0e95",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest",
+      "signature_after": "6187f2cd01a46c050b51f14988651431c6e6ff7c9b4b2ef31cd27e43d7c2242e",
+      "signature_before": "a6259f39147818aab19c9b68a7764a3041f7315d1177a1213f7a3347d27755d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_isolation_forest_anomaly",
+      "signature_after": "6187f2cd01a46c050b51f14988651431c6e6ff7c9b4b2ef31cd27e43d7c2242e",
+      "signature_before": "a6259f39147818aab19c9b68a7764a3041f7315d1177a1213f7a3347d27755d1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_issue_cards_v2",
+      "signature_after": "0685aeb9a902dae21456dccae7965352a677fa87bb15c22a5c598e29a735ac14",
+      "signature_before": "a83c8845d45f67036c6fe146023d4faf40b5713081d6dddb948e0f408a41c15b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kernel_two_sample_mmd",
+      "signature_after": "00859fd308b2fb49998b59edcecf701f814e8638ba7bba723122b6b83c0d5a31",
+      "signature_before": "7fd7d6bb661db594100d2ce4b983a2e4a43619818f16d2c2c664a13443c66083",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_kingman_vut_approx",
+      "signature_after": "2f727b834aa098ceb7db42dee99193e8dc5c968b0708d63045d809df1e9f4e5c",
+      "signature_before": "5f983d8eca9fd6aa5850e05eeaf2df2dc58469dab90390b7d7e6b8a343c25cc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+      "signature_after": "daff07fc0fde603b7472ea1f63606dbf2f2c7869ccac35713348cf18654caabe",
+      "signature_before": "b2c90047a4906b352c6cdb7fd9daf6254bc53a53edbe0dd355dfb3d3abfc23f8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_knockoff_wrapper_rf",
+      "signature_after": "875dbc437ea00cf8337f56a5e3899931bd22f4c1019cf989a2372ad545fbace8",
+      "signature_before": "9b9c3fd214b18cb2b175742f4fa9ca13281d4383a6240309b99c69b8f207baef",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+      "signature_after": "43fb12b9c8d276bde96e7a806eef7ad1aae8107ae36638b56db91148a237ec57",
+      "signature_before": "b9da68446373e79a41439cadc0da31b5dc99974d573831e98b44a39f4ade4244",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lagged_predictability_test",
+      "signature_after": "e2ce163f964aaff953892e7f95a6912a8ebbfe38e8d0473755d2482da7effff9",
+      "signature_before": "6d2cfe5aa68e6b43b34e5b8e6bc7a4688cf5c8c0c82c2ec016cfdaaf9d5c4850",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lingam_causal_discovery_v1",
+      "signature_after": "4a28666636ea8c0348d29abe8ee0bf63fc9dc09bd218f7d52b781ea96bb11f97",
+      "signature_before": "bce9e5d5912a496e414ba7136f3b7cf08d6acb0dd3098a3e9ece3aec97778b1a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_littles_law_consistency",
+      "signature_after": "6d76dd16e70913ff34e1c58c6e41b7b874c5108c39106b89f23ce4457aa48e69",
+      "signature_before": "92e7007e359669dcc7804f439a0878a79f3179380ff391f204e9093af2dc0676",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_local_outlier_factor",
+      "signature_after": "d8be1ee8bc4fa5962bdfc6907fae1a032ae9aa01564993ff26eb7ebdbb73ca86",
+      "signature_before": "16614d3fc1e5f9f03ed168dbc29a239a8e3e8b3c17a74e0071e82d5f88fbc340",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_drain",
+      "signature_after": "2652ca0cc418842bff3b24add797ccdf1f61f2c835a2bdb528bfd4ebf9c60457",
+      "signature_before": "b73761d04ff0a508a10f0e337e6541e0bf8c05463093f228c2d6210ec06fc9d3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_log_template_mining_drain",
+      "signature_after": "2652ca0cc418842bff3b24add797ccdf1f61f2c835a2bdb528bfd4ebf9c60457",
+      "signature_before": "b73761d04ff0a508a10f0e337e6541e0bf8c05463093f228c2d6210ec06fc9d3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+      "signature_after": "bda1a45ffa59223957e5ef4f789a63b639e59ab137220760ef33b88797ef7f34",
+      "signature_before": "7936bee6b6768f8278408b04d3d4007ce986d786da31240d6f8fa713655a59e7",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mann_kendall_trend_test_v1",
+      "signature_after": "3ac447ac9b0935c9d698f71bdf745228731e670deca07db02122460fa715262d",
+      "signature_before": "ecba1e1993acf788e80f6eff5d33aae8c545d72bceaf76c9af00213d81ef1665",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_map_permutation_test_karniski",
+      "signature_after": "7814aa87109722b146103728412d0edc34818566ef7951d67ecc316d147eb603",
+      "signature_before": "e08e4cfac4a793519fa2c7dfc6c839c4fe239b8e364d33ba45780688afdf6116",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_marked_point_process_intensity_v1",
+      "signature_after": "b82986d00ef74209c52236f84edae6dc7697db70896430cadba10fd2a5045421",
+      "signature_before": "d4bfeeb2de1ac32c8807e64f20f667802c8059e9b3b4751f72d8e54dbf3c8231",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_markov_transition_shift",
+      "signature_after": "f2e34762f97112e3300aa7ed1ee6cc25df15a39332d806a4c2df09b0ea6827b0",
+      "signature_before": "67ec24a0e340b5577d0a81f26aa22d0a31f29c648293b1e04c627cd1856cfc6f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_matrix_profile_motifs_discords",
+      "signature_after": "5c6badcdc642d287a1239d8188beff7909e084e60a3fcae8e708059234fe7792",
+      "signature_before": "8f86f562ef05610207c19aa2a8a4a9ad34d131dfdee6c9ecb4f4ae6286c3bb3e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_message_entropy_drift",
+      "signature_after": "0cba9a76355a35e0ffd9142b658e401a609a6cb41a68409037b258363b769125",
+      "signature_before": "ec36442a99eb950bcff44d0d2446c4c75c50009e918612469681ca3b11e0e107",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+      "signature_after": "4a530157c60ad0d27d8629a759054603990433c7b3eadfc2e05fd04383fb2a0b",
+      "signature_before": "6cfed9f0f76ec8d28b49f703436016877ec5060c763f4be9c1e120fc5b613be8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_minimum_covariance_determinant_v1",
+      "signature_after": "768090e16b0ee741fcfab552573477fd5c28a901542136545ac1143b5e0382de",
+      "signature_before": "78e6c1381c4084244283b4a30a67d592179e5e47df538cdbe8ba7082bb73b542",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+      "signature_after": "201cc08f1bcecdd5684f9dc9a385c7b93a89cd5650b6ce521de39ef80a60e0a8",
+      "signature_before": "166ef4916ad8bd2afef95ef697989057257dbfa1d25be702a951330f2083791e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+      "signature_after": "55426b0e94fb1c77eeac2da77d176b3a9f90fc4900057189852702a2fbe99686",
+      "signature_before": "b9965df6f9fb7fd1368fde80b536d7eb34d056da925cd8f80073c850c4b2e7ca",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+      "signature_after": "f55d8ab543dc349aec2817670a4761b005979c703e8063c102ca51f336e32d60",
+      "signature_before": "3ca1d41b7af3cf7c61ff5c32f9a7741f1c29e19ae300dc5e743fa694d5b13240",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiple_testing_fdr",
+      "signature_after": "d91e74d35620d9ef7fc503aefdde3b966af73ae4ae74092b72d480e5d3f297de",
+      "signature_before": "4204a97eee8a7cbd60ab08072469cf222a0c5b39a284e5a3e31a2d3824e58174",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multiscale_entropy_mse_v1",
+      "signature_after": "e051d7b6a33be33783d12c45d06b6a8e8e7628ee74dc537c478b20e0b8571d3e",
+      "signature_before": "5471704e0c965ea7316ce455a0b0dcd53f4a3289dc38c30a8219d0c5bea2af10",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_changepoint_pelt",
+      "signature_after": "9c988f3751751db0d3c9df6cbe7eb3a099926c00f76a0a6ec61bfe7d6cf6850a",
+      "signature_before": "0807f7f58493caef4902328c243b07bbe80ba7b41be307bbaf9094813b538432",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_control_charts",
+      "signature_after": "baa00a43c7715895108ef3e6675131dcd0a11748a1e906dea53871b0f51783a9",
+      "signature_before": "b9574bce5da50e2956888838d191f640c3bce3cf1d857cba49bbadbcbf297cc0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_ewma_control",
+      "signature_after": "bca88feaeb7ffe43e6ed6c3367966353b37eaa7ce6e05d216aa7db2136fade5d",
+      "signature_before": "d529393a1db1b2466bd4df36566be2114927883ef70504de77c445be560cb0e9",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_multivariate_t2_control",
+      "signature_after": "6687214a288a2289f3828fedf5360e1b884fd2b33c6e4d586daa6e5b16a83272",
+      "signature_before": "0444ef95e122072e951222dcb8c54f41854c84d9fe27bbe86d7bbdad862d2d2c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_mutual_information_screen",
+      "signature_after": "e492ac9998e0c1acd92a5045502ecc32f4f8eb2aa1f7ba10b909ef8863f58086",
+      "signature_before": "61a12d6f6da7ac5c5ff7b6821bb854241b952c7d76f53b31d5fafdebf32a2ba0",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+      "signature_after": "d757d001f79b5d363b7c3a17e42854bffd79403945c7ec712352d03f3aaa77b8",
+      "signature_before": "5307bc99f8d78951ecec3feb40d5f423f4e4f0774fd3738ddc22ee37f78ed99c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_neural_additive_model_nam_v1",
+      "signature_after": "2247c4b687269146a86956eff07d975e2947eb95ac713ed45a3261f72eab24db",
+      "signature_before": "694e3618b022f688d2a066abd0c99818c86fc674c5301f4dbbe68c704d84de96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+      "signature_after": "7304028083de5457069c305b6bab4cd23a510b8ba5ffb095f0feb529b52c2ed8",
+      "signature_before": "4091026539e857e302e09cac60ef882b6380bddfdca65ae027d57e4a9332ee99",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+      "signature_after": "62269a313f1a2fa9d83e4f8545de885d3a5fcffcac82cf338a61c3467acea24c",
+      "signature_before": "4f39cebd08cfad939aa372922aba7430e9d7cf34489b9598ec1045a8620d8e82",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_normalizing_flow_density_v1",
+      "signature_after": "05e62d1ac8aa6581173f1b74d2ec30acdf253628bb7ce9715c05f22ed44f334c",
+      "signature_before": "b4d8fe85f77e47712d10918e9b24a6d8beac8d83a0d5a424df38108c27c6fc7b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_notears_linear",
+      "signature_after": "849d7e066c99eba99d52561c0f69849611967e9cd0888c90b177db70f0a247b1",
+      "signature_before": "3d84974c19f12f6fdc0ca24f31d12b0f12a88c1fd5d59ad8da805f03d17dea34",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_one_class_svm",
+      "signature_after": "ec47bbd86849db7e662f4bd0c18e70c11bfc7d088df046cbe5df5acab5d5df8f",
+      "signature_before": "d6b7e20e6c956ddde77647b23da25b771a371253baf53ea817d08fe0145317e6",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_online_conformal_changepoint",
+      "signature_after": "7921ea8c5d815f36f7389a48810505dd5b919148a13c4df1c2cb498a8cce1d11",
+      "signature_before": "cb22c0bddc50b52ab5f9ad0bbf02d09144eb8158df735b30bd2f82705d55abab",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+      "signature_after": "a8b7e90797ef18eb5a44417d99b6f286f2a1cd056bd94b5382bce84a6df815d9",
+      "signature_before": "9ac1139df677304fe04ae9d887b72f601bcb765022b97a33fbde03399c504d9b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+      "signature_after": "fdfafbcb871dfd4c8dc4305180691798d735ec581c44142176035c5723674718",
+      "signature_before": "971697afdeb04a9f5bcd86e236fb0269ae19f06c77fed0fcc5d8337184408827",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+      "signature_after": "397fe3b806bee283124b1c9f1a7bb90db56c8f23a0897a330a712f2c5b3d8445",
+      "signature_before": "f3a7c17a2ce45f449337dab2d6273527eb44d718c2b6cc9d84f4f75fb4d03f88",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_param_variant_explosion_v1",
+      "signature_after": "def434678a67f973b89cb923f8fa643f4b8e9f9bfa8a76e807ce0eca426795a9",
+      "signature_before": "d35d4fe1e427e45c3c35f38d5dbab80425b5022a1c33db944feccfb6d0b5a284",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_partial_correlation_network_shift_v1",
+      "signature_after": "d21215099207aabdca5f9c0353d6a9774d4327e1acecc9054cb914adc8aa747b",
+      "signature_before": "f93317a09a4ad03ba499394cf8a3d752dee39b4f3183357e30232108f0f24a69",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+      "signature_after": "0b6690a1b65f2558a57d545032221a30019267796a7efc0bc3ecfe30089114a5",
+      "signature_before": "04d6bbbeef270f45b131acf4a191792e3874fff08fdc13c8cb923b97df535002",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_auto",
+      "signature_after": "8fbfd3dcbfbec5abc6dcb320b88fd5414aa81fcd1d3610690a4aec4b3857e7a1",
+      "signature_before": "ce2b4a7f5a9d8be32c0a4bab8fb4c88befc53d849eb6d33feacc01868f6176ad",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_pca_control_chart",
+      "signature_after": "d6954fcae83172e1526292d0b8083561069d26f6ff11186b6434bd276eef512b",
+      "signature_before": "0f9bddcf0752da1fdf4ba85ca918bbe73182dc2191c3836d39c456a9d9238be3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_percentile_analysis",
+      "signature_after": "8b54c8ae3564125b594dd9a60e0d0765ff4cd7f00022544109485506f72ba2e6",
+      "signature_before": "82e085bc45c5663ee8de7ed8e06d6162f9379b709f5bf1a37e7d3a09c72bb12a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_periodicity_spectral_scan",
+      "signature_after": "850c489d0ec07e94397172ceba4be37794021c6620eb38553c384e370a972720",
+      "signature_before": "2a15b2a5529eb94fd42a780d1b97fd16cee892ee4c8c86d7a5eeb06d132bde98",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_permutation_entropy_drift_v1",
+      "signature_after": "24f0b98e882f71f8eaf90a1bee8be3f17f2d8374417f9780f4e3a974777e470f",
+      "signature_before": "7d121f49ee7ea74178fcfa9d890773bca7c2d76d4168d1252a9549d809f2fa93",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_phate_trajectory_embedding_v1",
+      "signature_after": "1875e481aae4ec72bda80ab133d4caf5fd641ec542fd7a595e9d897b4c6a9172",
+      "signature_before": "1b56acb123d0a26aec8842d71f0209e19af4ccd494b099afcf98e4b959b1940b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+      "signature_after": "762613d8d648b3861841defc2c0a9416f67f6820ecb28dc04082963676306cd3",
+      "signature_before": "07028bdbf6687c7975210eeb6e38f90c0ec3af22a6c270d1a79ceaa21698b0e3",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+      "signature_after": "65cf015f93e078f549330662d63f61d1e563bd7ced60675c69ac7071d6eb38b3",
+      "signature_before": "dee9e5444dfb12d7ca7fd4312b5e69e77aa06d21ab8e1218580c91e29781138f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_counterfactuals",
+      "signature_after": "1853b6b7b657e624d8d304a8e69b8c31ba32c9ff3498066ece7628e1f2e73a7e",
+      "signature_before": "b71a7591e57068d6297585a3c0f7ce0741a315c5c7bb05fa1d168b941d6e991d",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_drift_conformance_over_time",
+      "signature_after": "95ce29c14b369f029fb0bcc8b956f4ce0e4c5f82297c0b3c3d821ca1e9c3cc6e",
+      "signature_before": "542ff0608ce514e4f2388b7530019d87384efbf7cdbf1c3205dedcc1205ca670",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence",
+      "signature_after": "e4ef6e37fec131faac8eef2bfcaf6944be4a96a66082c55aa9e65e22fd2b4392",
+      "signature_before": "cb9663f2a6dee9e58a81b6efb71dc27646caa98594d6d336273507045a83062f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_sequence_bottlenecks",
+      "signature_after": "7c8a80f6b1d34b5d5c183eada63eb0f7834472c87a2e46c5dba87a28863532a1",
+      "signature_before": "91b3a7b57ea84d376d5b657677046b5727bd2469e67aeb1f2aa22ae8ae4b9e57",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_process_server_levers_v1",
+      "signature_after": "f24c99a0fdf24f8e98c3945d09764bd4dec3bbda9c43c443854f61211f6d55a1",
+      "signature_before": "f9b1e311e6584fe557ab915221d54b6a6952c363139512c6b46f5e121d12e369",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_proportional_hazards_duration",
+      "signature_after": "777366426025b4d55adeb402e2039adc482a8be44204bb68b630ced0630b878f",
+      "signature_before": "ee08677cd210bc0f300b96e2d4d5107219cffcce610818bac3ae658260f5a787",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_loss_boosting_v1",
+      "signature_after": "26aaa4274f54b6f70eb0986ff6eee3c2673a0abacf62a5bb82cc20920244dcfb",
+      "signature_before": "41d37899795f723b74bda9a4442111d15bca490ed8e7b05ece70f7f9e933b375",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+      "signature_after": "c7cf7c748a558d6148e62afcb6dfab5a8b78e9e66602d80abd81e5611880a55a",
+      "signature_before": "6a77f6b027dc264b1346aa88d9c5c2d51f14a668455f74df6e54ae637f5c1244",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_duration",
+      "signature_after": "764cd2a77633530a3295af9358c9846bdca3b89ced8e3ba4837f0195281c76ee",
+      "signature_before": "9cccea7994b6f17985342fe747fa82f8ee1c553f05cb777e80e2572b64307a64",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_regression_forest_v1",
+      "signature_after": "8790f80c5f51c70ccf680c9023187ee20a68fcae3652ff34e07ad83d33f09397",
+      "signature_before": "dcc9f5db2ffcd10449ee86d6934402b4fe90d13bdfef46467f3dacc698880416",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+      "signature_after": "616ce4fa249d8a6d5374b8033f05a2c8e7bc0715986e513f4f1ae0765900b3df",
+      "signature_before": "ed81b6d77c3c73dcd7a70e23594eadefc02297c1ac6e88c774c857cd12c24d88",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_delay_decomposition",
+      "signature_after": "15dfb2c70137a71643b17f930b70ad7f3c0391cc5e295c0261d858aab2ee303e",
+      "signature_before": "25d9a50025d51861d817309976a6f49270d485d2f2a529312e6079f25ddeb733",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_queue_model_fit",
+      "signature_after": "a472b13d00ca837cfdde66f547bc0db232269f7edddf45a2e7feb11981634820",
+      "signature_before": "7ce9004ecea341e1a654570960b47770de960b74f68aba87c550240c38435048",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+      "signature_after": "6b4f7818e2dd43c7c040800865786cddfab15850aef9d4cc917948519eb62428",
+      "signature_before": "f5887ff7aa594fddec962107a81af5d1e9ae90c28138510daa7fd2b265a912ec",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_randomization_test_median_shift_v1",
+      "signature_after": "e59585514cfac7970840e259623d38c2c48070e306e677cdae6abf4874fa8684",
+      "signature_before": "0223cf9d28d050ae4ce5e559fce424f29ceaed80872d5172739e0bc2c230e331",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recommendation_dedupe_v2",
+      "signature_after": "b462473a462abbf97236da3d94b5a09f89dbbbe2e104c5574ee3b81a06ee67e5",
+      "signature_before": "470e9fe80f3edc03ab740d6e39bd71dfebda6a78994d37e33f4ec92e93a9932f",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+      "signature_after": "c5604e906859f1200696500da67e5fd618143f1a108145b3280e96c069d94d40",
+      "signature_before": "2d118c5a24b8d8fea598f72993272af266f9c14f90d41fd04db5088c43641e96",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_red_flags_refined_v1",
+      "signature_after": "064006f063feb8dd3409514f83bbad0bc37a10776d087ef01f2d16bfc4b63084",
+      "signature_before": "5f46709f6a4d22f09c35e38350ed408c1993881dcf45e15b8a4bdec37845ed34",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_regression_auto",
+      "signature_after": "e57cbc512b3812ca7aeb15fe1559c1996b2fe3fa08fe6a3495ab1a62a48aa1e4",
+      "signature_before": "1bc3f3d3baa8666c4f07b678bbfd29976c970051944ce3ecb0521e5eaa3157c8",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_retry_rate_hotspots_v1",
+      "signature_after": "7d0cd93770a295bfcc2f7f0f4a64ff487b4844afcc94f8a2ed21a884103f4e52",
+      "signature_before": "fb9c5f6cdb466034fd1a58ecbf2d4a15e9a41e1edfabb3cf20bfef15e01d988e",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_covariance_outliers",
+      "signature_after": "08b0ffbeff8d9c23f9b78edc190c3563eedd26025226090081ec9a6a86f63417",
+      "signature_before": "7c37279d8d23de24c30b1ec5e9f01dd1b0c8f3fdb0365f914ceae3b0b7ca710b",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_pcp",
+      "signature_after": "4986cc95329fc8a5f892e6f04b626b047bcef8744ba86cc76ee537ff53ccb4b9",
+      "signature_before": "cf24b1cdee402b4b5321500df477b4f1b6e5f563a1719d5ff670dfedda03db0a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_pca_sparse_outliers",
+      "signature_after": "4986cc95329fc8a5f892e6f04b626b047bcef8744ba86cc76ee537ff53ccb4b9",
+      "signature_before": "cf24b1cdee402b4b5321500df477b4f1b6e5f563a1719d5ff670dfedda03db0a",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+      "signature_after": "d5011149e424a64cbe5bd67574ec7baefb730b4f410a098ee474fd4d0d96b907",
+      "signature_before": "d59eb0d0d6ad02acaae4285fc69b43bdb5ec1bf4116fa5c48e928ce824279604",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sample_entropy_irregularity_v1",
+      "signature_after": "e462119fde9e5d3fc586ca9aae24941e58e83133181416d18fbb799ad47f600c",
+      "signature_before": "6b1ce13920eefdada76998e510559eb6350450011464ea9add4c28bc3ecd5031",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_scan_statistics",
+      "signature_after": "8b8162d324266c147580204da4b76e91f7f1f856315c1835a1cad338375168d1",
+      "signature_before": "98eae5d2f582d3c97b3fdb54bf93736f238cc58307455ef6e8e94800d04210f1",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+      "signature_after": "6eb243487e765fd062b2339717f316f9d3d5702767eeb3359581a66e4017925c",
+      "signature_before": "97d4eac02fccbb79e09d84b6954b91720892e59c1e8782fd9708b175aefdf916",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_classification",
+      "signature_after": "42e25a28fa765eb96f863c5a626010c69d553550d6b2f233d29e133bc6a3904d",
+      "signature_before": "553dcab0bb98dd707366d8babac40bf71725b21848cc964d339a07b40c3ac1d5",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    },
+    {
+      "changed_components": [
+        "summary",
+        "debug_json"
+      ],
+      "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+      "signature_after": "338cf39e4df978c4b30657686d65cc80b547ac77dc430f960d0ffc20fbc871cc",
+      "signature_before": "880164718029e34655ba76a75174e09c5df93c316fe3631e1f453e909f5aa86c",
+      "status_after": "ok",
+      "status_before": "ok",
+      "summary_after": "REUSED from debug_base_fg_20260225d",
+      "summary_before": "REUSED from debug_base_fg_20260225c"
+    }
+  ],
+  "component_change_counts": {
+    "artifacts_json": 0,
+    "budget_json": 4,
+    "debug_json": 265,
+    "error_json": 0,
+    "findings_json": 3,
+    "metrics_json": 4,
+    "references_json": 0,
+    "summary": 262
+  },
+  "material_changed_plugins": [
+    "analysis_aft_survival_lognormal_v1",
+    "analysis_bayesian_online_changepoint_studentt_v1",
+    "analysis_benfords_law_anomaly_v1",
+    "analysis_beta_binomial_overdispersion_v1",
+    "report_evidence_index_v1",
+    "transform_cross_dataset_link_graph_v1",
+    "transform_entity_resolution_map_v1"
+  ],
+  "mode": "run_to_run",
+  "plugin_counts": {
+    "added": 0,
+    "after": 273,
+    "before": 273,
+    "material_payload_changed": 7,
+    "payload_changed": 265,
+    "removed": 0,
+    "status_changed": 0
+  },
+  "removed_plugins": [],
+  "run_after": {
+    "completed_at": "2026-02-25T16:42:58.817034+00:00",
+    "created_at": "2026-02-25T16:29:05.095196+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 20260225,
+    "run_id": "baseline_verify_20260225c",
+    "run_seed": 20260225,
+    "status": "aborted"
+  },
+  "run_before": {
+    "completed_at": "2026-02-25T02:45:02.408783+00:00",
+    "created_at": "2026-02-25T02:21:02.770635+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "requested_run_seed": 123,
+    "run_id": "debug_base_fg_20260225d",
+    "run_seed": 123,
+    "status": "completed"
+  },
+  "status_changes": [],
+  "status_counts": {
+    "after": {
+      "ok": 273
+    },
+    "before": {
+      "ok": 273
+    }
+  }
+}

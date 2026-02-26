@@ -1,0 +1,10 @@
+{
+  "run_id": "baseline_verify_20260225j",
+  "recommendation_count": 298,
+  "close_dynamic_metric_missing_count": 0,
+  "human_gain_missing_count": 0,
+  "human_gain_quantified_count": 6,
+  "human_gain_na_count": 292,
+  "close_dynamic_metric_missing_examples": [],
+  "human_gain_missing_examples": []
+}

@@ -4813,14 +4813,14 @@
       "contract_sources": [
         "detected:dataset_loader"
       ],
-      "dataset_loader_mode": "unbounded",
+      "dataset_loader_mode": "bounded",
       "plugin_id": "report_payout_report_v1",
       "plugin_type": "report",
       "unclassified": false,
       "uses_dataset_iter_batches": false,
       "uses_dataset_loader": true,
-      "uses_dataset_loader_bounded": false,
-      "uses_dataset_loader_unbounded": true,
+      "uses_dataset_loader_bounded": true,
+      "uses_dataset_loader_unbounded": false,
       "uses_sql_assist": false,
       "uses_sql_direct": false
     },

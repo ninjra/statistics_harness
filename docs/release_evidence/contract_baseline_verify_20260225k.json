@@ -1,0 +1,2488 @@
+{
+  "checks": [
+    {
+      "actual": "completed",
+      "detail": "Run must complete before recommendations are trusted.",
+      "expected": "completed",
+      "id": "run.completed",
+      "ok": true
+    },
+    {
+      "actual": 0,
+      "detail": "All scheduled plugins must produce a terminal result record.",
+      "expected": 0,
+      "id": "run.results_complete",
+      "ok": true
+    },
+    {
+      "actual": {},
+      "detail": "skipped/degraded/error/aborted are contract violations.",
+      "expected": {},
+      "id": "run.no_bad_plugin_statuses",
+      "ok": true
+    },
+    {
+      "actual": [],
+      "detail": "Direct-action plugins cannot remain in NOT_ROUTED_TO_ACTION once adapters are implemented.",
+      "expected": [],
+      "id": "run.direct_action_not_routed_reason_codes",
+      "ok": true
+    },
+    {
+      "actual": 0,
+      "detail": "Actionable direct-action findings must be surfaced in recommendations, not explanations.",
+      "expected": 0,
+      "id": "run.direct_action_signals_routed",
+      "ok": true
+    },
+    {
+      "actual": [],
+      "detail": "Direct-action plugins without recommendations must carry deterministic reason codes.",
+      "expected": [
+        "ACTION_TYPE_POLICY_BLOCK",
+        "ADAPTER_RULE_MISSING",
+        "CAPACITY_IMPACT_CONSTRAINT",
+        "EXCLUDED_BY_PROCESS_POLICY",
+        "NON_DECISION_PLUGIN",
+        "NO_ACTIONABLE_FINDING_CLASS",
+        "NO_DECISION_SIGNAL",
+        "NO_DIRECT_PROCESS_TARGET",
+        "NO_FINDINGS",
+        "NO_MODELED_CAPACITY_GAIN",
+        "NO_REVENUE_COMPRESSION_PRESSURE",
+        "NO_STATISTICAL_SIGNAL",
+        "OBSERVATION_ONLY",
+        "PLUGIN_ERROR",
+        "PLUGIN_PRECONDITION_UNMET",
+        "PREREQUISITE_UNMET",
+        "SHARE_SHIFT_BELOW_THRESHOLD"
+      ],
+      "id": "run.direct_action_non_actionable_reason_codes",
+      "ok": true
+    },
+    {
+      "actual": 0,
+      "detail": "Legacy NOT_APPLICABLE reason codes are disallowed; explanations must use resolved deterministic reasons.",
+      "expected": 0,
+      "id": "run.no_legacy_not_applicable_reason_codes",
+      "ok": true
+    },
+    {
+      "actual": {
+        "blank_non_actionable": [],
+        "unmapped": []
+      },
+      "detail": "Every non-actionable plugin must map to a deterministic recommended_next_step lane.",
+      "expected": {
+        "blank_non_actionable": [],
+        "unmapped": []
+      },
+      "id": "run.next_step_contract_covered",
+      "ok": true
+    },
+    {
+      "actual": {
+        "count": 0,
+        "examples": []
+      },
+      "detail": "Each surfaced recommendation must carry close-window delta/gain context (or deterministic NA reason).",
+      "expected": 0,
+      "id": "run.recommendations_close_dynamic_metric_present",
+      "ok": true
+    },
+    {
+      "actual": {
+        "count": 0,
+        "examples": []
+      },
+      "detail": "Each surfaced recommendation must carry human-impact gain metrics or deterministic NA reason.",
+      "expected": 0,
+      "id": "run.recommendations_human_gain_present",
+      "ok": true
+    }
+  ],
+  "compare_run": null,
+  "ok": true,
+  "primary_run": {
+    "allowed_non_actionable_reason_codes": [
+      "ACTION_TYPE_POLICY_BLOCK",
+      "ADAPTER_RULE_MISSING",
+      "CAPACITY_IMPACT_CONSTRAINT",
+      "EXCLUDED_BY_PROCESS_POLICY",
+      "NON_DECISION_PLUGIN",
+      "NO_ACTIONABLE_FINDING_CLASS",
+      "NO_DECISION_SIGNAL",
+      "NO_DIRECT_PROCESS_TARGET",
+      "NO_FINDINGS",
+      "NO_MODELED_CAPACITY_GAIN",
+      "NO_REVENUE_COMPRESSION_PRESSURE",
+      "NO_STATISTICAL_SIGNAL",
+      "OBSERVATION_ONLY",
+      "PLUGIN_ERROR",
+      "PLUGIN_PRECONDITION_UNMET",
+      "PREREQUISITE_UNMET",
+      "SHARE_SHIFT_BELOW_THRESHOLD"
+    ],
+    "bad_plugin_status_counts": {},
+    "completed_plugin_results": 273,
+    "confirmed_known_signatures": [
+      {
+        "kind": "close_cycle_contention",
+        "plugin_id": "analysis_close_cycle_contention"
+      }
+    ],
+    "created_at": "2026-02-25T18:22:01.455139+00:00",
+    "dataset_version_id": "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a",
+    "direct_action_invalid_non_actionable_reasons": [],
+    "direct_action_not_routed_reasons": [],
+    "direct_action_plugin_count": 6,
+    "expected_plugin_results": 273,
+    "known_issues_mode": "on",
+    "known_non_independent_count": 0,
+    "known_non_independent_items": [],
+    "known_status": "ok",
+    "legacy_explanation_reason_code_count": 0,
+    "legacy_explanation_reason_codes": [],
+    "missing_plugin_results": 0,
+    "next_step_blank_non_actionable_plugins": [],
+    "next_step_unmapped_plugins": [],
+    "next_step_work_contract": {
+      "blank_non_actionable_next_step_plugins": [],
+      "cluster_counts": {
+        "already_actionable": 256
+      },
+      "pending_plugin_ids": [],
+      "plugin_count": 256,
+      "rows": [
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_action_search_simulated_annealing_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_actionable_ops_levers_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_aft_survival_lognormal_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_anova_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_association_rules_apriori_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_attribution",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bart_uplift_surrogate_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bayesian_online_changepoint_studentt_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bayesian_point_displacement",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_benfords_law_anomaly_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_beta_binomial_overdispersion_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_biclustering_cheng_church_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bocpd_gaussian",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bootstrap_ci_effect_sizes_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_bundled_donations_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_burst_detection_kleinberg",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_burst_modeling_hawkes_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_busy_period_segmentation_v2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_capacity_frontier_envelope_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_capacity_scaling",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_cca_crossblock_association_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_chain_makespan",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_change_impact_pre_post",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_change_score_consensus_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_changepoint_energy_edivisive",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_changepoint_method_survey_guided",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_changepoint_pelt",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_chi_square_association",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_circular_time_of_day_drift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_capacity_impact",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_capacity_model",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_change_point_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_contention",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_duration_shift",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_revenue_compression",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_start_backtrack_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_uplift",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_close_cycle_window_resolver",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_cluster_analysis_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_competing_risks_cif_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_concurrency_reconstruction",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_conformal_feature_prediction",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_conformance_alignments",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_conformance_checking",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_constraints_violation_detector_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_contribution_limit_flags_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_control_chart_cusum",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_control_chart_ewma",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_control_chart_individuals",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_control_chart_suite",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_copula_dependence",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_cur_decomposition_explain_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_cusum_on_model_residuals_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_daily_pattern_alignment_dtw_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_density_clustering_hdbscan_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dependency_community_leiden_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dependency_community_louvain_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dependency_critical_path_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dependency_graph_change_detection",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dependency_resolution_join",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_determinism_discipline",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_diffusion_maps_manifold_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dirichlet_multinomial_categorical_overdispersion_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_discrete_event_queue_simulator_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_distance_correlation_screen_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_distance_covariance_dependence_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_distribution_drift_suite",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_distribution_shift_wasserstein_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dmd_koopman_modes_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dp_gmm",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_drift_adwin",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_dynamic_close_detection",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ebm_action_verifier_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_effect_size_report",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_elastic_net_regularized_glm_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_empirical_bayes_shrinkage_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_energy_distance_two_sample_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_event_count_bocpd_poisson",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_evt_gumbel_tail",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_evt_peaks_over_threshold",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_factor_analysis_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_factor_rotation_varimax_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_fisher_exact_enrichment_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_frequent_directions_cov_sketch_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_frequent_itemsets_fpgrowth_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_fused_lasso_trend_filtering_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_gam_spline_regression_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_garch_volatility_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_gaussian_copula_shift",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_gaussian_knockoffs",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_gaussian_process_regression_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_geometric_median_multivariate_location_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ges_score_based_causal_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_granger_causality_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graph_assortativity_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graph_min_cut_partition_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graph_motif_triads_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graph_pagerank_hotspots_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graph_topology_curves",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_graphical_lasso_dependency_network",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_haar_wavelet_transient_detector_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_hawkes_self_exciting",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_heavy_tail_index_hill_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_higuchi_fractal_dimension_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_hmm_latent_state_sequences",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_hold_time_attribution_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_hsic_independence_screen_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_hurst_exponent_long_memory_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ica_source_separation_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_icp_invariant_causal_prediction_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ideaspace_action_planner",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ideaspace_energy_ebm_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ideaspace_normative_gap",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_isolation_forest",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_isolation_forest_anomaly",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_issue_cards_v2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_kernel_two_sample_mmd",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_kingman_vut_approx",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_knn_graph_two_sample_test_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_knockoff_wrapper_rf",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ksd_stein_discrepancy_anomaly_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_lagged_predictability_test",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_lingam_causal_discovery_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_littles_law_consistency",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_local_outlier_factor",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_log_template_drain",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_log_template_mining_drain",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_lomb_scargle_periodogram_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_mann_kendall_trend_test_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_map_permutation_test_karniski",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_marked_point_process_intensity_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_markov_transition_shift",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_matrix_profile_motifs_discords",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_message_entropy_drift",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_mice_imputation_chained_equations_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_minimum_covariance_determinant_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_mixed_effects_hierarchical_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_monte_carlo_surface_uncertainty",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multicollinearity_vif_screen_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multiple_testing_fdr",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multiscale_entropy_mse_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multivariate_changepoint_pelt",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multivariate_control_charts",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multivariate_ewma_control",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_multivariate_t2_control",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_mutual_information_screen",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_negative_binomial_overdispersion_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_neural_additive_model_nam_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_node2vec_graph_embedding_drift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_normalizing_flow_density_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_notears_linear",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_one_class_svm",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_online_conformal_changepoint",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_outlier_influence_cooks_distance_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_param_near_duplicate_minhash_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_param_near_duplicate_simhash_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_param_variant_explosion_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_partial_correlation_network_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_pc_algorithm_causal_graph_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_pca_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_pca_control_chart",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_percentile_analysis",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_periodicity_spectral_scan",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_permutation_entropy_drift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_phate_trajectory_embedding_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_process_counterfactuals",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_process_drift_conformance_over_time",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_process_sequence",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_process_sequence_bottlenecks",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_process_server_levers_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_proportional_hazards_duration",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_quantile_loss_boosting_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_quantile_mapping_drift_qq_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_quantile_regression_duration",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_quantile_regression_forest_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_quantile_sketch_p2_streaming_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_queue_delay_decomposition",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_queue_model_fit",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_randomization_test_median_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_recommendation_dedupe_v2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_recurrence_quantification_rqa_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_red_flags_refined_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_regression_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_retry_rate_hotspots_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_robust_covariance_outliers",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_robust_pca_pcp",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_robust_pca_sparse_outliers",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_robust_regression_huber_ransac_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sample_entropy_irregularity_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_scan_statistics",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sequence_classification",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sequence_grammar_sequitur_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sequential_patterns_prefixspan",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sequential_patterns_prefixspan_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_similarity_graph_spectral_clustering_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sinkhorn_ot_drift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_spectral_radius_stability_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ssa_decomposition_changepoint_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_state_space_kalman_residuals",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_state_space_smoother_level_shift_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_stl_seasonal_decompose_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_subspace_tracking_oja_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_fabric_sso_eigen",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_fractal_dimension_variogram",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_hydrology_flow_watershed",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_multiscale_wavelet_curvature",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_roughness_metrics",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_rugosity_index",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_surface_terrain_position_index",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_survival_kaplan_meier",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_survival_time_to_event",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_symbolic_regression_gp_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tabpfn_foundation_tabular_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tail_isolation",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tda_betti_curve_changepoint",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tda_mapper_graph",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tda_persistence_landscapes",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tda_persistent_homology",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_template_drift_two_sample",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tensor_cp_parafac_decomp_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_term_burst_kleinberg",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_time_series_analysis_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_topic_model_lda",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_topographic_angle_dynamics",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_topographic_similarity_angle_projection",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_topographic_tanova_permutation",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_traceability_manifest_v2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_transfer_entropy_directional",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_tsne_embedding_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_ttests_auto",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_two_sample_categorical_chi2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_two_sample_numeric_ad",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_two_sample_numeric_ks",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_two_sample_numeric_mann_whitney",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_umap_embedding_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_upload_linkage",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_user_host_savings",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_variant_differential",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_vendor_influence_breadth_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_vendor_politician_timing_permutation_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_waterfall_summary_v2",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_wild_binary_segmentation_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "analysis_zero_inflated_count_model_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "causal_recommendations_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "changepoint_detection_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "process_mining_conformance_v1",
+          "recommended_next_step": null
+        },
+        {
+          "current_actionability_state": "actionable",
+          "current_reason_code": null,
+          "expected_post_state": "actionable",
+          "implementation_status": "already_actionable",
+          "next_step_lane_id": "already_actionable",
+          "plugin_id": "process_mining_discovery_v1",
+          "recommended_next_step": null
+        }
+      ],
+      "state_transition_counts": {
+        "UNSPECIFIED->already_actionable->actionable": 256
+      },
+      "unmapped_next_step_plugins": []
+    },
+    "plugin_status_counts": {
+      "ok": 273
+    },
+    "recommendation_metric_contract": {
+      "close_dynamic_metric_missing_count": 0,
+      "close_dynamic_metric_missing_items": [],
+      "human_gain_missing_count": 0,
+      "human_gain_missing_items": [],
+      "recommendation_count": 298
+    },
+    "recommendations_recompute_mode": "never",
+    "recommendations_recomputed": false,
+    "requested_run_seed": 123,
+    "run_id": "baseline_verify_20260225k",
+    "run_seed": 123,
+    "status": "completed",
+    "unrouted_direct_action_signal_count": 0,
+    "unrouted_direct_action_signals": []
+  },
+  "required_known_signatures": [],
+  "schema_version": "agent_execution_contract.v1"
+}

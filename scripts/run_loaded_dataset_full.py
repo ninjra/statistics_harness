@@ -836,6 +836,31 @@ def _merge_exclude_processes(*sources: list[str]) -> list[str]:
     return merged
 
 
+def _resolve_exclude_processes(
+    explicit: list[str], inferred: list[str], mode: str
+) -> tuple[list[str], str]:
+    normalized = str(mode or "merge").strip().lower()
+    if normalized == "none":
+        return [], "none"
+    if normalized == "explicit_only":
+        values = _merge_exclude_processes(explicit)
+        return values, "explicit" if values else "none"
+    if normalized == "historical_only":
+        values = _merge_exclude_processes(inferred)
+        return values, "historical_dataset" if values else "none"
+
+    values = _merge_exclude_processes(explicit, inferred)
+    if explicit and inferred:
+        source = "explicit+historical_dataset"
+    elif explicit:
+        source = "explicit"
+    elif inferred:
+        source = "historical_dataset"
+    else:
+        source = "none"
+    return values, source
+
+
 def _infer_dataset_exclude_processes(
     db_path: Path, dataset_version_id: str, max_runs: int = 400
 ) -> list[str]:
@@ -1712,6 +1737,41 @@ def _render_recommendations_plain_md(
                     decimals=6,
                 )
             )
+            close_delta = item.get("modeled_delta_hours_close_cycle")
+            if not isinstance(close_delta, (int, float)):
+                close_delta = item.get("delta_hours_close_dynamic")
+            close_eff = item.get("modeled_efficiency_gain_pct_close_cycle")
+            if not isinstance(close_eff, (int, float)):
+                close_eff = item.get("efficiency_gain_pct_close_dynamic")
+            close_delta_txt = f"{float(close_delta):.2f}h" if isinstance(close_delta, (int, float)) else "N/A"
+            close_eff_txt = f"{float(close_eff):.3f}%" if isinstance(close_eff, (int, float)) else "N/A"
+            lines.append(
+                f"   Close-dynamic modeled delta: {close_delta_txt}; close-dynamic efficiency gain: {close_eff_txt}"
+            )
+            human_hours = item.get("modeled_user_hours_saved_close_cycle")
+            human_runs = item.get("modeled_user_runs_reduced")
+            human_touches = item.get("modeled_user_touches_reduced")
+            human_status = str(item.get("human_gain_status") or "").strip().lower()
+            human_reason = str(item.get("human_gain_reason_code") or item.get("human_gain_reason") or "").strip()
+            if any(
+                isinstance(v, (int, float)) and float(v) > 0.0
+                for v in (human_hours, human_runs, human_touches)
+            ):
+                human_h_txt = f"{float(human_hours):.2f}h" if isinstance(human_hours, (int, float)) else "N/A"
+                human_runs_txt = f"{float(human_runs):.0f}" if isinstance(human_runs, (int, float)) else "N/A"
+                human_touches_txt = (
+                    f"{float(human_touches):.0f}" if isinstance(human_touches, (int, float)) else "N/A"
+                )
+                lines.append(
+                    "   Human-side modeled gain (close cycle): "
+                    + f"hours={human_h_txt}; runs_reduced={human_runs_txt}; touches_reduced={human_touches_txt}"
+                )
+            else:
+                reason_txt = human_reason or "MISSING_HUMAN_GAIN_REASON"
+                status_txt = human_status or "missing"
+                lines.append(
+                    f"   Human-side modeled gain (close cycle): N/A (status={status_txt}; reason={reason_txt})"
+                )
             manual_pct = item.get("modeled_manual_run_reduction_pct")
             if isinstance(manual_pct, (int, float)):
                 lines.append(f"   Manual-work reduction (%): {float(manual_pct):.2f}%")
@@ -1825,6 +1885,12 @@ def main() -> int:
         "--exclude-processes",
         default="",
         help="Comma/space/semicolon-separated process ids or patterns to exclude from recommendations.",
+    )
+    parser.add_argument(
+        "--exclude-processes-mode",
+        choices=["merge", "explicit_only", "historical_only", "none"],
+        default=str(os.environ.get("STAT_HARNESS_EXCLUDE_PROCESSES_MODE", "merge") or "merge"),
+        help="merge=explicit+historical; explicit_only=ignore historical; historical_only=ignore explicit; none=disable all excludes.",
     )
     parser.add_argument(
         "--recommendations-top-n",
@@ -1999,17 +2065,11 @@ def main() -> int:
         str(args.exclude_processes or os.environ.get("STAT_HARNESS_EXCLUDE_PROCESSES", ""))
     )
     inferred_exclude_processes = _infer_dataset_exclude_processes(db_path, dataset_version_id)
-    exclude_processes = _merge_exclude_processes(
+    exclude_processes, exclude_processes_source = _resolve_exclude_processes(
         explicit_exclude_processes,
         inferred_exclude_processes,
+        str(args.exclude_processes_mode or "merge"),
     )
-    exclude_processes_source = "none"
-    if explicit_exclude_processes and inferred_exclude_processes:
-        exclude_processes_source = "explicit+historical_dataset"
-    elif explicit_exclude_processes:
-        exclude_processes_source = "explicit"
-    elif inferred_exclude_processes:
-        exclude_processes_source = "historical_dataset"
     if exclude_processes:
         os.environ["STAT_HARNESS_EXCLUDE_PROCESSES"] = ",".join(exclude_processes)
     else:
@@ -2035,13 +2095,22 @@ def main() -> int:
         row_count = None
 
     resource_profile = str(
-        os.environ.get("STAT_HARNESS_RESOURCE_PROFILE", "balanced")
+        os.environ.get("STAT_HARNESS_RESOURCE_PROFILE", "interactive")
     ).strip().lower()
-    if resource_profile not in {"respectful", "balanced", "performance"}:
-        resource_profile = "balanced"
+    if resource_profile not in {"interactive", "respectful", "balanced", "performance"}:
+        resource_profile = "interactive"
+    if resource_profile == "interactive":
+        # Interactive-safe defaults: keep the machine responsive during foreground use.
+        os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "1")
+        os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_TRANSFORM", "1")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_STAGES", "analysis")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT", "20")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_MIN_AVAILABLE_MB", "12288")
+        os.environ.setdefault("STAT_HARNESS_MEM_GOVERNOR_POLL_SECONDS", "2")
+        os.environ.setdefault("STAT_HARNESS_PLUGIN_RLIMIT_AS_MB", "2048")
     # Large datasets: cap parallelism unless explicitly overridden.
     if row_count is not None and row_count >= 200_000:
-        if resource_profile == "respectful":
+        if resource_profile in {"interactive", "respectful"}:
             os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "1")
         else:
             os.environ.setdefault("STAT_HARNESS_MAX_WORKERS_ANALYSIS", "2")

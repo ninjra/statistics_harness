@@ -54,6 +54,13 @@ def _hash_token(value: str) -> str:
     return f"tok_{stable_hash(value):08x}"
 
 
+def _safe_to_datetime_series(series: pd.Series) -> pd.Series:
+    # Convert via object ndarray with cache disabled to avoid Arrow unique-cache
+    # allocations on large datasets.
+    parsed = pd.to_datetime(series.to_numpy(dtype=object, copy=False), errors="coerce", cache=False)
+    return pd.Series(parsed, index=series.index)
+
+
 def build_payout_report(
     df: pd.DataFrame,
     *,
@@ -79,14 +86,14 @@ def build_payout_report(
     duration_s = None
     queue_delay_s = None
     if start_col and end_col and start_col in df.columns and end_col in df.columns:
-        s = pd.to_datetime(df[start_col], errors="coerce")
-        e = pd.to_datetime(df[end_col], errors="coerce")
+        s = _safe_to_datetime_series(df[start_col])
+        e = _safe_to_datetime_series(df[end_col])
         ok = s.notna() & e.notna()
         if ok.any():
             duration_s = (e[ok] - s[ok]).dt.total_seconds().clip(lower=0.0)
     if queue_col and start_col and queue_col in df.columns and start_col in df.columns:
-        q = pd.to_datetime(df[queue_col], errors="coerce")
-        s = pd.to_datetime(df[start_col], errors="coerce")
+        q = _safe_to_datetime_series(df[queue_col])
+        s = _safe_to_datetime_series(df[start_col])
         ok = q.notna() & s.notna()
         if ok.any():
             queue_delay_s = (s[ok] - q[ok]).dt.total_seconds().clip(lower=0.0)
@@ -115,8 +122,8 @@ def build_payout_report(
             out["payout_queue_delay_hours"] = float(np.nansum(qs.to_numpy(dtype=float)) / 3600.0)
         if param_col and param_col in frame.columns:
             params = frame.loc[payout_mask.loc[frame.index], param_col].astype(str)
-            tokens = params.map(_hash_token)
-            out["unique_payout_keys"] = int(tokens.nunique(dropna=True))
+            values = params.to_numpy(dtype=str, copy=False)
+            out["unique_payout_keys"] = int(len({_hash_token(v) for v in values if v}))
         return out
 
     per_source: list[dict[str, Any]] = []

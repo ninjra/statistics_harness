@@ -8,8 +8,11 @@ cd "$ROOT_DIR"
 . "$ROOT_DIR/.venv/bin/activate"
 export PYTHONPATH="$ROOT_DIR/src:$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export STAT_HARNESS_STARTUP_INTEGRITY="${STAT_HARNESS_STARTUP_INTEGRITY:-off}"
-RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-respectful}"
-if [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
+RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-interactive}"
+if [[ "$RESOURCE_PROFILE" == "interactive" ]]; then
+  default_workers_analysis="1"
+  default_nice_level="15"
+elif [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
   default_workers_analysis="1"
   default_nice_level="10"
 elif [[ "$RESOURCE_PROFILE" == "balanced" ]]; then
@@ -21,6 +24,7 @@ else
 fi
 export STAT_HARNESS_RESOURCE_PROFILE="$RESOURCE_PROFILE"
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-$default_workers_analysis}"
+export STAT_HARNESS_MAX_WORKERS_TRANSFORM="${STAT_HARNESS_MAX_WORKERS_TRANSFORM:-1}"
 export STAT_HARNESS_CLI_PROGRESS="${STAT_HARNESS_CLI_PROGRESS:-1}"
 export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"

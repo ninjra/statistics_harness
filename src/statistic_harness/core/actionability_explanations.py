@@ -10,7 +10,6 @@ NON_ADJUSTABLE_PROCESSES = {
     "jbvalcdblk",
     "jbinvoice",
     "postwkfl",
-    "qemail",
     "jbpreproof",
     "rdimpairje",
 }

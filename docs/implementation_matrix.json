@@ -1910,6 +1910,14 @@
     },
     {
       "doc_kind": "normative",
+      "doc_path": "docs/freshman_recommendation_cli_template.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
       "doc_path": "docs/frozen_plugin_surfaces.contract.json",
       "missing_paths": [],
       "plugin_ids": [
@@ -2446,6 +2454,14 @@
         "src/statistic_harness/core/report.py",
         "tests/test_report_explanations_lane.py"
       ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "generated",
+      "doc_path": "docs/plugin-targeting-streaming-validity-plan.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
       "unresolved_plugin_tokens": []
     },
     {
@@ -4523,6 +4539,22 @@
       "unresolved_plugin_tokens": []
     },
     {
+      "doc_kind": "normative",
+      "doc_path": "docs/plugin_run_manifest.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/plugin_validation_contract.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
       "doc_kind": "generated",
       "doc_path": "docs/plugins-validate-runbook-actionable-insights-plan.md",
       "missing_paths": [],
@@ -5736,6 +5768,7 @@
     "docs/each-plugin-delivering-actionable-results-plan.md",
     "docs/evaluation.md",
     "docs/first_release_execution_readout.md",
+    "docs/freshman_recommendation_cli_template.md",
     "docs/frozen_plugin_surfaces.contract.json",
     "docs/frozen_surfaces_contract.md",
     "docs/full_instruction_coverage_report.json",
@@ -5756,6 +5789,7 @@
     "docs/optimal_4pillars_execution_path.md",
     "docs/perf_hotspots.md",
     "docs/plugin-actionability-recommended-next-steps-plan.md",
+    "docs/plugin-targeting-streaming-validity-plan.md",
     "docs/plugin_class_actionability_matrix.json",
     "docs/plugin_class_actionability_matrix.md",
     "docs/plugin_class_taxonomy.yaml",
@@ -5772,6 +5806,8 @@
     "docs/plugin_intent_library.json",
     "docs/plugin_intent_library.md",
     "docs/plugin_manifest.schema.json",
+    "docs/plugin_run_manifest.schema.json",
+    "docs/plugin_validation_contract.schema.json",
     "docs/plugins-validate-runbook-actionable-insights-plan.md",
     "docs/plugins_functionality_matrix.json",
     "docs/plugins_functionality_matrix.md",

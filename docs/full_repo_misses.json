@@ -469,13 +469,49 @@
       {
         "has_todo_marker": true,
         "item_type": "todo_marker",
-        "line_no": 278081,
+        "line_no": 253668,
         "missing_paths": [],
         "plugin_tokens": [],
         "referenced_paths": [],
         "requirement_ids": [],
         "source": "repomix-output.md",
         "text": "38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": true,
+        "item_type": "todo_marker",
+        "line_no": 275640,
+        "missing_paths": [],
+        "plugin_tokens": [],
+        "referenced_paths": [],
+        "requirement_ids": [],
+        "source": "repomix-output.md",
+        "text": "478:         \"text\": \"38: TODO_RE = re.compile(r\\\"(?i)(^\\\\s*-\\\\s*\\\\[\\\\s\\\\])|\\\\b(TBD|FIXME|not implemented|not-implemented)\\\\b\\\")\",",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": true,
+        "item_type": "todo_marker",
+        "line_no": 275705,
+        "missing_paths": [],
+        "plugin_tokens": [],
+        "referenced_paths": [],
+        "requirement_ids": [],
+        "source": "repomix-output.md",
+        "text": "41: - `repomix-output.md:278081` todo_marker: 38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": true,
+        "item_type": "todo_marker",
+        "line_no": 318739,
+        "missing_paths": [],
+        "plugin_tokens": [],
+        "referenced_paths": [],
+        "requirement_ids": [],
+        "source": "repomix-output.md",
+        "text": "476:       \"text\": \"38: TODO_RE = re.compile(r\\\"(?i)(^\\\\s*-\\\\s*\\\\[\\\\s\\\\])|\\\\b(TBD|FIXME|not implemented|not-implemented)\\\\b\\\")\",",
         "unresolved_plugin_tokens": []
       }
     ],
@@ -490,7 +526,7 @@
     "required_sql_not_using": []
   },
   "summary": {
-    "hard_gap_count": 29,
+    "hard_gap_count": 32,
     "optional_sql_not_using_count": 0,
     "recommended_sql_not_using_count": 0,
     "required_sql_not_using_count": 0

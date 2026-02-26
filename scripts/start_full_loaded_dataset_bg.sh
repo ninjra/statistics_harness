@@ -37,37 +37,59 @@ case "$GOLDEN_MODE" in
     ;;
 esac
 
-RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-respectful}"
+RESOURCE_PROFILE="${STAT_HARNESS_RESOURCE_PROFILE:-interactive}"
 case "$RESOURCE_PROFILE" in
-  respectful|balanced|performance) ;;
+  interactive|respectful|balanced|performance) ;;
   *)
-    echo "ERROR: invalid STAT_HARNESS_RESOURCE_PROFILE=$RESOURCE_PROFILE (expected respectful|balanced|performance)"
+    echo "ERROR: invalid STAT_HARNESS_RESOURCE_PROFILE=$RESOURCE_PROFILE (expected interactive|respectful|balanced|performance)"
     exit 2
     ;;
 esac
 
-if [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
+default_taskset_cpulist=""
+if [[ "$RESOURCE_PROFILE" == "interactive" ]]; then
+  default_workers_analysis="1"
+  default_mem_governor_max_used_pct="20"
+  default_mem_governor_min_available_mb="12288"
+  default_plugin_rlimit_mb="2048"
+  default_nice_level="15"
+  default_ionice_class="3"
+  default_ionice_prio="7"
+elif [[ "$RESOURCE_PROFILE" == "respectful" ]]; then
   default_workers_analysis="1"
   default_mem_governor_max_used_pct="30"
   default_mem_governor_min_available_mb="4096"
   default_plugin_rlimit_mb="2560"
   default_nice_level="12"
+  default_ionice_class="2"
+  default_ionice_prio="7"
 elif [[ "$RESOURCE_PROFILE" == "balanced" ]]; then
   default_workers_analysis="2"
   default_mem_governor_max_used_pct="40"
   default_mem_governor_min_available_mb="3072"
   default_plugin_rlimit_mb="3072"
   default_nice_level="7"
+  default_ionice_class="2"
+  default_ionice_prio="7"
 else
   default_workers_analysis="2"
   default_mem_governor_max_used_pct="55"
   default_mem_governor_min_available_mb="2048"
   default_plugin_rlimit_mb="4096"
   default_nice_level="0"
+  default_ionice_class="2"
+  default_ionice_prio="7"
+fi
+if [[ "$RESOURCE_PROFILE" == "interactive" ]] && command -v nproc >/dev/null 2>&1; then
+  cpu_count="$(nproc 2>/dev/null || echo 1)"
+  if [[ "$cpu_count" =~ ^[0-9]+$ ]] && (( cpu_count > 1 )); then
+    default_taskset_cpulist="$((cpu_count - 1))"
+  fi
 fi
 
 export STAT_HARNESS_RESOURCE_PROFILE="$RESOURCE_PROFILE"
 export STAT_HARNESS_MAX_WORKERS_ANALYSIS="${STAT_HARNESS_MAX_WORKERS_ANALYSIS:-$default_workers_analysis}"
+export STAT_HARNESS_MAX_WORKERS_TRANSFORM="${STAT_HARNESS_MAX_WORKERS_TRANSFORM:-1}"
 export STAT_HARNESS_CLI_PROGRESS="${STAT_HARNESS_CLI_PROGRESS:-1}"
 export STAT_HARNESS_REUSE_CACHE="${STAT_HARNESS_REUSE_CACHE:-1}"
 export STAT_HARNESS_STARTUP_INTEGRITY="${STAT_HARNESS_STARTUP_INTEGRITY:-off}"
@@ -96,8 +118,9 @@ export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
 export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
 export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
 export STAT_HARNESS_PROCESS_NICE_LEVEL="${STAT_HARNESS_PROCESS_NICE_LEVEL:-$default_nice_level}"
-export STAT_HARNESS_PROCESS_IONICE_CLASS="${STAT_HARNESS_PROCESS_IONICE_CLASS:-2}"
-export STAT_HARNESS_PROCESS_IONICE_PRIO="${STAT_HARNESS_PROCESS_IONICE_PRIO:-7}"
+export STAT_HARNESS_PROCESS_IONICE_CLASS="${STAT_HARNESS_PROCESS_IONICE_CLASS:-$default_ionice_class}"
+export STAT_HARNESS_PROCESS_IONICE_PRIO="${STAT_HARNESS_PROCESS_IONICE_PRIO:-$default_ionice_prio}"
+export STAT_HARNESS_PROCESS_TASKSET_CPULIST="${STAT_HARNESS_PROCESS_TASKSET_CPULIST:-$default_taskset_cpulist}"
 export STAT_HARNESS_ROUTE_ENABLE="${STAT_HARNESS_ROUTE_ENABLE:-0}"
 export STAT_HARNESS_ROUTE_MAX_DEPTH="${STAT_HARNESS_ROUTE_MAX_DEPTH:-3}"
 export STAT_HARNESS_ROUTE_BEAM_WIDTH="${STAT_HARNESS_ROUTE_BEAM_WIDTH:-6}"
@@ -134,10 +157,14 @@ if [[ "$STAT_HARNESS_ROUTE_ENABLE" == "1" || "$STAT_HARNESS_ROUTE_ENABLE" == "tr
   fi
 fi
 
+taskset_prefix=()
+if [[ -n "$STAT_HARNESS_PROCESS_TASKSET_CPULIST" ]] && command -v taskset >/dev/null 2>&1; then
+  taskset_prefix=(taskset -c "$STAT_HARNESS_PROCESS_TASKSET_CPULIST")
+fi
 if command -v ionice >/dev/null 2>&1; then
-  nohup ionice -c "${STAT_HARNESS_PROCESS_IONICE_CLASS}" -n "${STAT_HARNESS_PROCESS_IONICE_PRIO}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
+  nohup "${taskset_prefix[@]}" ionice -c "${STAT_HARNESS_PROCESS_IONICE_CLASS}" -n "${STAT_HARNESS_PROCESS_IONICE_PRIO}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
 else
-  nohup nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
+  nohup "${taskset_prefix[@]}" nice -n "${STAT_HARNESS_PROCESS_NICE_LEVEL}" python -u scripts/run_loaded_dataset_full.py --dataset-version-id "$DATASET_VERSION_ID" --plugin-set full --run-seed "$RUN_SEED" --run-id "$RUN_ID" --known-issues-mode "$KNOWN_ISSUES_MODE" --orchestrator-mode "$ORCHESTRATOR_MODE" "${route_args[@]}" >"$LOG_PATH" 2>&1 &
 fi
 PID="$!"
 
@@ -179,5 +206,7 @@ echo "MEM_GOVERNOR_MAX_USED_PCT=$STAT_HARNESS_MEM_GOVERNOR_MAX_USED_PCT"
 echo "MEM_GOVERNOR_MIN_AVAILABLE_MB=$STAT_HARNESS_MEM_GOVERNOR_MIN_AVAILABLE_MB"
 echo "PLUGIN_RLIMIT_AS_MB=$STAT_HARNESS_PLUGIN_RLIMIT_AS_MB"
 echo "PROCESS_NICE_LEVEL=$STAT_HARNESS_PROCESS_NICE_LEVEL"
+echo "PROCESS_IONICE_CLASS=$STAT_HARNESS_PROCESS_IONICE_CLASS"
+echo "PROCESS_TASKSET_CPULIST=$STAT_HARNESS_PROCESS_TASKSET_CPULIST"
 echo "ROUTE_ENABLE=$STAT_HARNESS_ROUTE_ENABLE"
 echo "LOG=$LOG_PATH"

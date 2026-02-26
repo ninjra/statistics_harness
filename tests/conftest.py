@@ -20,6 +20,12 @@ from statistic_harness.core.types import PluginContext
 from statistic_harness.core.utils import now_iso
 
 
+@pytest.fixture(autouse=True)
+def _default_pre_report_filter_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Keep historical suite semantics unless a test explicitly overrides/clears it.
+    monkeypatch.setenv("STAT_HARNESS_PRE_REPORT_FILTER_MODE", "strict")
+
+
 @pytest.fixture()
 def run_dir(tmp_path: Path) -> Path:
     run_dir = tmp_path / "run"
