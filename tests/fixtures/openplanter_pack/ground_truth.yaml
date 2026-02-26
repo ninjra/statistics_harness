@@ -1,0 +1,28 @@
+schema_version: openplanter_ground_truth.v1
+dataset: openplanter_pack_fixture
+
+expected:
+  entity_resolution:
+    min_entity_count: 2
+    required_aliases:
+      - canonical: ACME INC
+        aliases: ["Acme Inc", "Acme Incorporated", "Acme, Inc."]
+  cross_links:
+    min_edge_count: 1
+    required_relations: ["vendor_employer"]
+  bundled_donations:
+    min_findings: 1
+  contribution_limit_flags:
+    min_flags: 1
+  timing_permutation:
+    min_pairs: 1
+  red_flags_refined:
+    min_findings: 1
+  evidence_index:
+    required_artifacts:
+      - entity_map.json
+      - cross_links.csv
+      - contribution_limit_flags.csv
+      - bundling_events.csv
+      - vendor_politician_timing.csv
+

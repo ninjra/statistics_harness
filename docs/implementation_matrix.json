@@ -4800,6 +4800,24 @@
     },
     {
       "doc_kind": "normative",
+      "doc_path": "docs/runbooks/cross_shell_execution.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [
+        "scripts/run_cross_dataset_openplanter_pack.py"
+      ],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/schemas/actionable_recommendation_contract_v2.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
       "doc_path": "docs/schemas/causal.schema.json",
       "missing_paths": [],
       "plugin_ids": [],
@@ -4809,6 +4827,14 @@
     {
       "doc_kind": "normative",
       "doc_path": "docs/schemas/changepoints.schema.json",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
+      "doc_path": "docs/schemas/cross_dataset_role_map.schema.json",
       "missing_paths": [],
       "plugin_ids": [],
       "referenced_paths": [],
@@ -5835,8 +5861,11 @@
     "docs/report.schema.json",
     "docs/result_quality_contract.md",
     "docs/run_manifest.schema.json",
+    "docs/runbooks/cross_shell_execution.md",
+    "docs/schemas/actionable_recommendation_contract_v2.json",
     "docs/schemas/causal.schema.json",
     "docs/schemas/changepoints.schema.json",
+    "docs/schemas/cross_dataset_role_map.schema.json",
     "docs/schemas/kona_route_plan.schema.json",
     "docs/schemas/process_mining.schema.json",
     "docs/sql_adoption_execution_order.md",

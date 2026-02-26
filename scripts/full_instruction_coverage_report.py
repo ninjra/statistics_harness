@@ -21,6 +21,7 @@ EXCLUDED_GENERATED_NAMES = {
     "full_repo_misses.json",
     "full_repo_misses.md",
     "plugin-targeting-streaming-validity-plan.md",
+    "repomix-output.md",
 }
 
 PATH_RE = re.compile(
