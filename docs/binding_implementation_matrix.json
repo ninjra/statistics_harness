@@ -2743,6 +2743,28 @@
     },
     {
       "doc_kind": "binding",
+      "doc_path": "docs/plugin_run_manifest.schema.json",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
+      "doc_path": "docs/plugin_validation_contract.schema.json",
+      "missing_paths": [],
+      "missing_requirement_enforcement_paths": {},
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "requirement_enforcement_paths": {},
+      "requirement_ids": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "binding",
       "doc_path": "docs/plugins_validate_runbook.md",
       "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
@@ -3972,6 +3994,8 @@
     "docs/plugin_intent_library.json",
     "docs/plugin_intent_library.md",
     "docs/plugin_manifest.schema.json",
+    "docs/plugin_run_manifest.schema.json",
+    "docs/plugin_validation_contract.schema.json",
     "docs/plugins_validate_runbook.md",
     "docs/proc_log_synth_custom_issues_6mo_sheet_v2.xlsx",
     "docs/proc_log_synth_custom_issues_8mo_sheet_v4_2.xlsx",

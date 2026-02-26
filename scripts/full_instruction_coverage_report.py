@@ -20,6 +20,7 @@ EXCLUDED_GENERATED_NAMES = {
     "full_instruction_coverage_report.md",
     "full_repo_misses.json",
     "full_repo_misses.md",
+    "plugin-targeting-streaming-validity-plan.md",
 }
 
 PATH_RE = re.compile(

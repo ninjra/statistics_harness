@@ -7260,6 +7260,7 @@ docs/operator_playbook_autonomous_insights.md
 docs/optimal_4pillars_execution_path.md
 docs/perf_hotspots.md
 docs/plugin-actionability-recommended-next-steps-plan.md
+docs/plugin-targeting-streaming-validity-plan.md
 docs/plugin_class_actionability_matrix.json
 docs/plugin_class_actionability_matrix.md
 docs/plugin_class_taxonomy.yaml
@@ -7276,6 +7277,8 @@ docs/plugin_example_cards/synthesis_verification.md
 docs/plugin_intent_library.json
 docs/plugin_intent_library.md
 docs/plugin_manifest.schema.json
+docs/plugin_run_manifest.schema.json
+docs/plugin_validation_contract.schema.json
 docs/plugins-validate-runbook-actionable-insights-plan.md
 docs/plugins_functionality_matrix.json
 docs/plugins_functionality_matrix.md
@@ -8721,10 +8724,12 @@ scripts/build_final_validation_summary.py
 scripts/build_golden_release_evidence_pack.py
 scripts/build_ideaspace_baseline.py
 scripts/build_plugin_class_actionability_matrix.py
+scripts/build_plugin_run_manifest.py
 scripts/build_plugins_validate_runbook_map.py
 scripts/build_post_run_bundle.py
 scripts/canonicalize_repo_improvements_catalog.py
 scripts/check_text2sql_env.py
+scripts/classify_plugin_validity.py
 scripts/compare_dataset_runs.py
 scripts/compare_kona_route_quality.py
 scripts/compare_plugin_actionability_runs.py
@@ -9377,6 +9382,8 @@ tests/test_audit_plugin_actionability_contract.py
 tests/test_audit_plugin_actionability_lanes.py
 tests/test_auth.py
 tests/test_binding_implementation_matrix.py
+tests/test_build_plugin_run_manifest.py
+tests/test_classify_plugin_validity.py
 tests/test_cli_plugins_validate.py
 tests/test_close_cycle_active_mask.py
 tests/test_close_cycle_spillover.py
@@ -9531,6 +9538,7 @@ tools/cx.sh
 tools/cyberpunk_style_probe.py
 tools/repo_hygiene/verify_repo_cleanup_policy.py
 tools/sitecustomize.py
+tools/wsl_compile_worker_guard.sh
 tools/wslmem.ps1
 unimplemented/codex_decision_report_v2.md
 unimplemented/codex_plugins_2.md

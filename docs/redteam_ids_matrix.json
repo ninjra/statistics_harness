@@ -476,6 +476,8 @@
           "tests/test_analysis_lane_orchestrator.py",
           "tests/test_audit_plugin_actionability_contract.py",
           "tests/test_binding_implementation_matrix.py",
+          "tests/test_build_plugin_run_manifest.py",
+          "tests/test_classify_plugin_validity.py",
           "tests/test_cli_plugins_validate.py",
           "tests/test_codex_catalog_artifacts.py",
           "tests/test_compare_plugin_actionability_runs.py",
@@ -863,6 +865,7 @@
           "tests/plugins/test_hdbscan_v1.py",
           "tests/test_analysis_lane_orchestrator.py",
           "tests/test_atomic_writes.py",
+          "tests/test_build_plugin_run_manifest.py",
           "tests/test_cli_plugins_validate.py",
           "tests/test_compare_run_outputs.py",
           "tests/test_config_defaults.py",
@@ -1064,6 +1067,7 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/test_build_plugin_run_manifest.py",
           "tests/test_recommendation_schema_contract.py",
           "tests/test_redteam_requirements_full.py",
           "tests/test_report_schema.py",

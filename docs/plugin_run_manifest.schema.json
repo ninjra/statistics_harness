@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Statistic Harness Plugin Run Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "run_id",
+    "run_seed",
+    "requested_run_seed",
+    "dataset_hash",
+    "dataset_version_id",
+    "run_status",
+    "plugin_registry_hash",
+    "plugin_count",
+    "plugins"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["plugin_run_manifest.v1"]
+    },
+    "generated_at": { "type": "string" },
+    "run_id": { "type": "string" },
+    "run_seed": { "type": "integer" },
+    "requested_run_seed": { "type": ["integer", "null"] },
+    "dataset_hash": { "type": ["string", "null"] },
+    "dataset_version_id": { "type": ["string", "null"] },
+    "run_status": { "type": ["string", "null"] },
+    "run_manifest_path": { "type": ["string", "null"] },
+    "plugin_registry_hash": { "type": "string" },
+    "plugin_count": { "type": "integer", "minimum": 0 },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin_id",
+          "declared",
+          "executed",
+          "has_result",
+          "execution_count",
+          "execution_status",
+          "result_status",
+          "plugin_type",
+          "plugin_version",
+          "entrypoint",
+          "code_hash",
+          "settings_hash",
+          "execution_fingerprint",
+          "dataset_hash",
+          "latest_execution_id",
+          "latest_result_id"
+        ],
+        "properties": {
+          "plugin_id": { "type": "string" },
+          "declared": { "type": "boolean" },
+          "executed": { "type": "boolean" },
+          "has_result": { "type": "boolean" },
+          "execution_count": { "type": "integer", "minimum": 0 },
+          "execution_status": { "type": ["string", "null"] },
+          "result_status": { "type": ["string", "null"] },
+          "plugin_type": { "type": ["string", "null"] },
+          "plugin_version": { "type": ["string", "null"] },
+          "entrypoint": { "type": ["string", "null"] },
+          "code_hash": { "type": ["string", "null"] },
+          "settings_hash": { "type": ["string", "null"] },
+          "execution_fingerprint": { "type": ["string", "null"] },
+          "dataset_hash": { "type": ["string", "null"] },
+          "latest_execution_id": { "type": ["integer", "null"] },
+          "latest_result_id": { "type": ["integer", "null"] }
+        }
+      }
+    }
+  }
+}

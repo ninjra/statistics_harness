@@ -60,6 +60,7 @@ GENERATED_DOC_PATHS = {
     "docs/codex_statistics_harness_blueprint.md",
     "docs/plugins-validate-runbook-actionable-insights-plan.md",
     "docs/openplanter-cross-dataset-plugins-plan.md",
+    "docs/plugin-targeting-streaming-validity-plan.md",
 }
 
 

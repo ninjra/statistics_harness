@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Statistic Harness Plugin Validity Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "run_id",
+    "run_seed",
+    "dataset_hash",
+    "plugin_registry_hash",
+    "git_commit",
+    "plugin_count",
+    "classification_counts",
+    "plugins"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["plugin_validation_contract.v1"]
+    },
+    "generated_at": { "type": "string" },
+    "run_id": { "type": "string" },
+    "run_seed": { "type": "integer" },
+    "dataset_hash": { "type": ["string", "null"] },
+    "plugin_registry_hash": { "type": "string" },
+    "git_commit": { "type": ["string", "null"] },
+    "plugin_count": { "type": "integer", "minimum": 0 },
+    "classification_counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin_id",
+          "state",
+          "reason_code",
+          "targeting_status",
+          "streaming_contract_status",
+          "logic_status",
+          "marker_status",
+          "downstream_consumers",
+          "metrics",
+          "evidence"
+        ],
+        "properties": {
+          "plugin_id": { "type": "string" },
+          "state": {
+            "type": "string",
+            "enum": [
+              "PASS_ACTIONABLE",
+              "PASS_VALID_LOW_SIGNAL",
+              "PASS_VALID_MARKER_ABSENT",
+              "FAIL_TARGETING",
+              "FAIL_STREAMING_CONTRACT",
+              "FAIL_LOGIC"
+            ]
+          },
+          "reason_code": { "type": "string" },
+          "targeting_status": {
+            "type": "string",
+            "enum": ["pass", "fail", "unknown"]
+          },
+          "streaming_contract_status": {
+            "type": "string",
+            "enum": ["pass", "fail", "unknown"]
+          },
+          "logic_status": {
+            "type": "string",
+            "enum": ["pass", "fail", "unknown"]
+          },
+          "marker_status": {
+            "type": "string",
+            "enum": ["present", "absent", "unknown"]
+          },
+          "downstream_consumers": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "accounting_month",
+              "close_static",
+              "close_dynamic",
+              "overall"
+            ],
+            "properties": {
+              "accounting_month": { "$ref": "#/definitions/windowMetric" },
+              "close_static": { "$ref": "#/definitions/windowMetric" },
+              "close_dynamic": { "$ref": "#/definitions/windowMetric" },
+              "overall": { "$ref": "#/definitions/windowMetric" }
+            }
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "run_seed",
+              "dataset_hash",
+              "plugin_registry_hash",
+              "schema_version",
+              "git_commit",
+              "serialized_output_hash"
+            ],
+            "properties": {
+              "run_seed": { "type": "integer" },
+              "dataset_hash": { "type": ["string", "null"] },
+              "plugin_registry_hash": { "type": "string" },
+              "schema_version": { "type": "string" },
+              "git_commit": { "type": ["string", "null"] },
+              "serialized_output_hash": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "windowMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delta_hours", "efficiency_gain_pct"],
+      "properties": {
+        "delta_hours": { "type": ["number", "null"] },
+        "efficiency_gain_pct": { "type": ["number", "null"] }
+      }
+    }
+  }
+}
