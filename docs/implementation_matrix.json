@@ -1910,6 +1910,14 @@
     },
     {
       "doc_kind": "normative",
+      "doc_path": "docs/freshman_recommendation_cli_template.md",
+      "missing_paths": [],
+      "plugin_ids": [],
+      "referenced_paths": [],
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "doc_kind": "normative",
       "doc_path": "docs/frozen_plugin_surfaces.contract.json",
       "missing_paths": [],
       "plugin_ids": [
@@ -5736,6 +5744,7 @@
     "docs/each-plugin-delivering-actionable-results-plan.md",
     "docs/evaluation.md",
     "docs/first_release_execution_readout.md",
+    "docs/freshman_recommendation_cli_template.md",
     "docs/frozen_plugin_surfaces.contract.json",
     "docs/frozen_surfaces_contract.md",
     "docs/full_instruction_coverage_report.json",

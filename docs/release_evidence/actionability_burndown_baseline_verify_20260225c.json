@@ -1,0 +1,128 @@
+{
+  "before_run_id": "debug_base_fg_20260225d",
+  "comparison": {
+    "after_run_id": "baseline_verify_20260225c",
+    "before_run_id": "debug_base_fg_20260225d",
+    "lane_counts": {
+      "report_snapshot_serialization": {
+        "after": 4,
+        "before": 0,
+        "delta": 4
+      }
+    },
+    "newly_unresolved_plugins": [
+      "llm_prompt_builder",
+      "llm_text2sql_local_generate_v1",
+      "report_bundle",
+      "report_plain_english_v1"
+    ],
+    "reason_counts": {
+      "REPORT_SNAPSHOT_OMISSION": {
+        "after": 4,
+        "before": 0,
+        "delta": 4
+      }
+    },
+    "resolved_plugins": [],
+    "unchanged_unresolved_plugins": [],
+    "unresolved_count_after": 4,
+    "unresolved_count_before": 0,
+    "unresolved_count_delta": 4
+  },
+  "lane_counts": {
+    "report_snapshot_serialization": 4
+  },
+  "lane_samples": {
+    "report_snapshot_serialization": [
+      "llm_prompt_builder",
+      "llm_text2sql_local_generate_v1",
+      "report_bundle",
+      "report_plain_english_v1"
+    ]
+  },
+  "reason_counts": {
+    "REPORT_SNAPSHOT_OMISSION": 4
+  },
+  "reason_samples": {
+    "REPORT_SNAPSHOT_OMISSION": [
+      "llm_prompt_builder",
+      "llm_text2sql_local_generate_v1",
+      "report_bundle",
+      "report_plain_english_v1"
+    ]
+  },
+  "recomputed_recommendations": false,
+  "run_id": "baseline_verify_20260225c",
+  "schema_version": "actionability_burndown.v1",
+  "unresolved_count": 4,
+  "unresolved_plugins": [
+    {
+      "actionability_state": "explained_non_actionable",
+      "actionable_via_discovery": false,
+      "expected_post_state": "explained_non_actionable",
+      "finding_count": 0,
+      "finding_kind_preview": [],
+      "next_step_lane_id": "report_snapshot_serialization",
+      "plugin_id": "llm_prompt_builder",
+      "plugin_name": "LLM Prompt Builder",
+      "plugin_status": "ok",
+      "plugin_summary": "REUSED from debug_base_fg_20260225d",
+      "plugin_type": "llm",
+      "reason_code": "REPORT_SNAPSHOT_OMISSION",
+      "reason_code_detail": null,
+      "recommendation_count": 0,
+      "recommended_next_step": "Plugin executed but is missing from report.plugins snapshot; include it in report serialization."
+    },
+    {
+      "actionability_state": "explained_non_actionable",
+      "actionable_via_discovery": false,
+      "expected_post_state": "explained_non_actionable",
+      "finding_count": 0,
+      "finding_kind_preview": [],
+      "next_step_lane_id": "report_snapshot_serialization",
+      "plugin_id": "llm_text2sql_local_generate_v1",
+      "plugin_name": "Local Text2SQL Pack Generator (v1)",
+      "plugin_status": "ok",
+      "plugin_summary": "REUSED from debug_base_fg_20260225d",
+      "plugin_type": "llm",
+      "reason_code": "REPORT_SNAPSHOT_OMISSION",
+      "reason_code_detail": null,
+      "recommendation_count": 0,
+      "recommended_next_step": "Plugin executed but is missing from report.plugins snapshot; include it in report serialization."
+    },
+    {
+      "actionability_state": "explained_non_actionable",
+      "actionable_via_discovery": false,
+      "expected_post_state": "explained_non_actionable",
+      "finding_count": 0,
+      "finding_kind_preview": [],
+      "next_step_lane_id": "report_snapshot_serialization",
+      "plugin_id": "report_bundle",
+      "plugin_name": "Report Bundle",
+      "plugin_status": "ok",
+      "plugin_summary": "Report generated; indexed 2227 vectors",
+      "plugin_type": "report",
+      "reason_code": "REPORT_SNAPSHOT_OMISSION",
+      "reason_code_detail": null,
+      "recommendation_count": 0,
+      "recommended_next_step": "Plugin executed but is missing from report.plugins snapshot; include it in report serialization."
+    },
+    {
+      "actionability_state": "explained_non_actionable",
+      "actionable_via_discovery": false,
+      "expected_post_state": "explained_non_actionable",
+      "finding_count": 0,
+      "finding_kind_preview": [],
+      "next_step_lane_id": "report_snapshot_serialization",
+      "plugin_id": "report_plain_english_v1",
+      "plugin_name": "Plain-English Report (v1)",
+      "plugin_status": "ok",
+      "plugin_summary": "Wrote plain_report.md",
+      "plugin_type": "report",
+      "reason_code": "REPORT_SNAPSHOT_OMISSION",
+      "reason_code_detail": null,
+      "recommendation_count": 0,
+      "recommended_next_step": "Plugin executed but is missing from report.plugins snapshot; include it in report serialization."
+    }
+  ]
+}

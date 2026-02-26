@@ -38,7 +38,10 @@
 - `docs/plugins-validate-runbook-actionable-insights-plan.md:363` reference_text: - **Location**: `docs/release_evidence/freshman_top20_baseline_vs_synth.md`
 - `docs/plugins-validate-runbook-actionable-insights-plan.md:379` reference_text: - **Location**: `src/statistic_harness/core/pipeline.py`, `scripts/runtime_stats.py`, `docs/release_evidence/plugin_runtime_matrix.json`
 - `docs/plugins-validate-runbook-actionable-insights-plan.md:409` reference_text: - **Location**: `scripts/*.sh`, `scripts/*.ps1`, `docs/runbooks/cross_shell_execution.md`
-- `repomix-output.md:278081` todo_marker: 38: TODO_RE = re.compile(r"(?i)(^\s*-\s*\[\s\])|\b(TBD|FIXME|not implemented|not-implemented)\b")
+- `repomix-output.md:253668` todo_marker: 38: TODO_RE = re.compile(r"(?i)(^\s*-\s*\[\s\])|\b(TBD|FIXME|not implemented|not-implemented)\b")
+- `repomix-output.md:275640` todo_marker: 478:         "text": "38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+- `repomix-output.md:275705` todo_marker: 41: - `repomix-output.md:278081` todo_marker: 38: TODO_RE = re.compile(r"(?i)(^\s*-\s*\[\s\])|\b(TBD|FIXME|not implemented|not-implemented)\b")
+- `repomix-output.md:318739` todo_marker: 476:       "text": "38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
 
 ## Soft Gaps
 - required_sql_not_using: []

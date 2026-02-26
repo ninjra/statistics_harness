@@ -2179,14 +2179,10 @@ class Pipeline:
                 for spec in layer:
                     run_spec(spec)
 
-        # Final snapshot sync:
-        # regenerate canonical report artifacts after all plugin stages so report.plugins
-        # includes post-bundle report plugins and llm plugins executed later in the run.
-        if report_spec is not None:
-            refreshed_report = build_report(
-                self.storage, run_id, run_dir, Path("docs/report.schema.json")
-            )
-            write_report(refreshed_report, run_dir)
+        # Do not regenerate report artifacts here.
+        # Final synthesis happens once below, after final status is computed.
+        # Running build_report twice on large runs increases tail latency and has caused
+        # stale-finalization hangs before run status can transition out of "running".
 
         plugin_results = self.storage.fetch_plugin_results(run_id)
         plugin_executions = self.storage.fetch_plugin_executions(run_id)

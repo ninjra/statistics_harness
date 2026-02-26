@@ -13,29 +13,29 @@
       "card_path": "docs/plugin_example_cards/ingest_profile_transform.md",
       "class_id": "ingest_profile_transform",
       "plugin_id": "profile_basic",
-      "reason_code": "NO_FINDINGS"
+      "reason_code": "NON_DECISION_PLUGIN"
     },
     {
       "actionability_state": "explained_na",
       "card_path": "docs/plugin_example_cards/reporting_llm_post_processing.md",
       "class_id": "reporting_llm_post_processing",
       "plugin_id": "planner_basic",
-      "reason_code": "NOT_APPLICABLE"
+      "reason_code": "NON_DECISION_PLUGIN"
     },
     {
       "actionability_state": "actionable",
       "card_path": "docs/plugin_example_cards/supporting_signal_detectors.md",
       "class_id": "supporting_signal_detectors",
-      "plugin_id": "analysis_close_cycle_contention",
+      "plugin_id": "analysis_action_search_mip_batched_scheduler_v1",
       "reason_code": ""
     },
     {
-      "actionability_state": "explained_na",
+      "actionability_state": "actionable",
       "card_path": "docs/plugin_example_cards/synthesis_verification.md",
       "class_id": "synthesis_verification",
       "plugin_id": "analysis_issue_cards_v2",
-      "reason_code": "NOT_APPLICABLE"
+      "reason_code": ""
     }
   ],
-  "run_id": "full_loaded_3246cc7c_20260218T193803Z"
+  "run_id": "baseline_verify_20260225k"
 }

@@ -2,18 +2,19 @@
 
 - class_rationale: Plugins that aggregate, verify, dedupe, or validate outputs from other plugins.
 - expected_output_type: `derived_findings_or_validation`
-- run_id: `full_loaded_3246cc7c_20260218T193803Z`
+- run_id: `baseline_verify_20260225k`
 
 ## Example
 
 - plugin_id: `analysis_issue_cards_v2`
 - plugin_type: `analysis`
-- actionability_state: `explained_na`
-- reason_code: `NOT_APPLICABLE`
-- finding_kind: `non_actionable_explanation`
-- explanation: analysis_issue_cards_v2 produced 1 finding(s), but none matched current action-routing rules.
+- actionability_state: `actionable`
+- finding_kind: `plugin_actionability_backstop`
+- action_type: `batch_or_cache`
+- modeled_percent: 0.00
+- recommendation: Actionability backstop for analysis_issue_cards_v2: map `issue_cards_summary` signal to a direct batch or cache change on jbprepay, then validate against accounting-window deltas.
 
 ## Traceability
 
-- class `synthesis_verification` -> plugin `analysis_issue_cards_v2` -> run `full_loaded_3246cc7c_20260218T193803Z`
+- class `synthesis_verification` -> plugin `analysis_issue_cards_v2` -> run `baseline_verify_20260225k`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

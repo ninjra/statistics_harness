@@ -14,6 +14,8 @@ INTERVAL_SECONDS="${3:-30}"
 KNOWN_ISSUES_MODE="${4:-${STAT_HARNESS_KNOWN_ISSUES_MODE:-on}}"
 ORCHESTRATOR_MODE="${5:-${STAT_HARNESS_ORCHESTRATOR_MODE:-two_lane_strict}}"
 GOLDEN_MODE="${6:-${STAT_HARNESS_GOLDEN_MODE:-strict}}"
+RECALL_TOP_N="${STAT_HARNESS_REQUIRED_LANDMARK_RECALL_TOP_N:-30}"
+REQUIRE_LANDMARK_RECALL="${STAT_HARNESS_REQUIRE_LANDMARK_RECALL:-1}"
 D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_D_STATE_STREAK_THRESHOLD:-8}"
 PYTEST_D_STATE_STREAK_THRESHOLD="${STAT_HARNESS_PYTEST_D_STATE_STREAK_THRESHOLD:-8}"
 AUTONOMOUS_NOVELTY_MIN="${STAT_HARNESS_AUTONOMOUS_NOVELTY_MIN:-1}"
@@ -36,6 +38,8 @@ echo "INTERVAL_SECONDS=$INTERVAL_SECONDS"
 echo "KNOWN_ISSUES_MODE=$KNOWN_ISSUES_MODE"
 echo "ORCHESTRATOR_MODE=$ORCHESTRATOR_MODE"
 echo "GOLDEN_MODE=$GOLDEN_MODE"
+echo "RECALL_TOP_N=$RECALL_TOP_N"
+echo "REQUIRE_LANDMARK_RECALL=$REQUIRE_LANDMARK_RECALL"
 echo "PYTEST_D_STATE_STREAK_THRESHOLD=$PYTEST_D_STATE_STREAK_THRESHOLD"
 echo "AUTONOMOUS_NOVELTY_MIN=$AUTONOMOUS_NOVELTY_MIN"
 echo "AUTONOMOUS_NOVELTY_MAX_JACCARD=$AUTONOMOUS_NOVELTY_MAX_JACCARD"
@@ -202,7 +206,11 @@ while true; do
 done
 
 echo "STEP=show_actionable_results RUN_ID=$RUN_ID"
-python scripts/show_actionable_results.py --run-id "$RUN_ID" | tee "$CHECK_DIR/show_actionable_results.log"
+show_cmd=(python scripts/show_actionable_results.py --run-id "$RUN_ID" --recall-top-n "$RECALL_TOP_N")
+if [[ "$KNOWN_ISSUES_MODE" == "on" && "$REQUIRE_LANDMARK_RECALL" != "0" ]]; then
+  show_cmd+=(--require-landmark-recall)
+fi
+"${show_cmd[@]}" | tee "$CHECK_DIR/show_actionable_results.log"
 
 echo "STEP=build_summary"
 python scripts/build_final_validation_summary.py --run-id "$RUN_ID" --out "$CHECK_DIR/summary.json" | tee "$CHECK_DIR/summary_console.log"
@@ -246,6 +254,9 @@ actionable_plugin_count="$(python -c "import json,sys; from pathlib import Path;
 runtime_contract_mismatch_count="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('runtime_contract_mismatch_count') or 0))" "$CHECK_DIR/summary.json")"
 summary_orchestrator_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('orchestrator_mode') or ''))" "$CHECK_DIR/summary.json")"
 summary_golden_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('golden_mode') or ''))" "$CHECK_DIR/summary.json")"
+summary_pre_report_filter_mode="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(str(d.get('pre_report_filter_mode') or 'unknown'))" "$CHECK_DIR/summary.json")"
+summary_pre_report_drop_total="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print(int(d.get('pre_report_drop_count_total') or 0))" "$CHECK_DIR/summary.json")"
+summary_no_pre_report_filter_violation="$(python -c "import json,sys; from pathlib import Path; p=Path(sys.argv[1]); d=json.loads(p.read_text(encoding='utf-8')); print('1' if bool(d.get('no_pre_report_filter_violation')) else '0')" "$CHECK_DIR/summary.json")"
 
 ok=true
 if [[ "$hang_aborted" -ne 0 ]]; then ok=false; fi
@@ -265,6 +276,8 @@ if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" == 
 if [[ "$runtime_contract_mismatch_count" -gt 0 && "$STREAMING_POLICY_STRICT" != "1" ]]; then
   echo "STREAMING_POLICY_WARNING runtime_contract_mismatch_count=$runtime_contract_mismatch_count (set STAT_HARNESS_STREAMING_POLICY_STRICT=1 to fail)"
 fi
+echo "PRE_REPORT_FILTER_CONTRACT mode=$summary_pre_report_filter_mode drop_total=$summary_pre_report_drop_total violation=$summary_no_pre_report_filter_violation"
+if [[ "$summary_no_pre_report_filter_violation" != "0" ]]; then ok=false; fi
 if [[ -n "$summary_orchestrator_mode" && "$summary_orchestrator_mode" != "$ORCHESTRATOR_MODE" ]]; then ok=false; fi
 if [[ -n "$summary_golden_mode" && "$summary_golden_mode" != "$GOLDEN_MODE" ]]; then ok=false; fi
 if [[ "$KNOWN_ISSUES_MODE" == "off" || "$summary_known_issues_mode" == "off" ]]; then

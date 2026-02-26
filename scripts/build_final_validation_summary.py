@@ -88,6 +88,69 @@ def _recommendation_plugin_ids(items: Any) -> set[str]:
     return out
 
 
+def _safe_non_negative_float(value: Any) -> float | None:
+    if not isinstance(value, (int, float)):
+        return None
+    val = float(value)
+    if val < 0.0:
+        return None
+    return val
+
+
+def _recommendation_metric_contract(items: Any) -> dict[str, Any]:
+    rows = items if isinstance(items, list) else []
+    close_missing: list[dict[str, Any]] = []
+    human_missing: list[dict[str, Any]] = []
+    for idx, item in enumerate(rows):
+        if not isinstance(item, dict):
+            continue
+        plugin_id = str(item.get("plugin_id") or "").strip()
+        process_id = str(item.get("primary_process_id") or item.get("process_id") or "").strip()
+        status = str(item.get("status") or "").strip().lower()
+
+        close_delta = _safe_non_negative_float(item.get("delta_hours_close_dynamic"))
+        close_delta_alias = _safe_non_negative_float(item.get("modeled_delta_hours_close_cycle"))
+        close_eff = _safe_non_negative_float(item.get("efficiency_gain_pct_close_dynamic"))
+        close_eff_alias = _safe_non_negative_float(item.get("modeled_efficiency_gain_pct_close_cycle"))
+        close_reason = str(item.get("na_reason_close_dynamic") or "").strip()
+        if not any(v is not None for v in (close_delta, close_delta_alias, close_eff, close_eff_alias)) and not close_reason:
+            close_missing.append(
+                {
+                    "index": idx,
+                    "plugin_id": plugin_id,
+                    "process_id": process_id,
+                    "status": status,
+                }
+            )
+
+        human_hours = _safe_non_negative_float(item.get("modeled_user_hours_saved_close_cycle"))
+        human_runs = _safe_non_negative_float(item.get("modeled_user_runs_reduced"))
+        human_touches = _safe_non_negative_float(item.get("modeled_user_touches_reduced"))
+        human_status = str(item.get("human_gain_status") or "").strip().lower()
+        human_reason = str(item.get("human_gain_reason_code") or item.get("human_gain_reason") or "").strip()
+        has_quantified_human_signal = any(
+            isinstance(v, (int, float)) and float(v) > 0.0
+            for v in (human_hours, human_runs, human_touches)
+        )
+        has_na_reason = human_status in {"na", "not_applicable"} and bool(human_reason)
+        if not has_quantified_human_signal and not has_na_reason:
+            human_missing.append(
+                {
+                    "index": idx,
+                    "plugin_id": plugin_id,
+                    "process_id": process_id,
+                    "status": status,
+                }
+            )
+    return {
+        "recommendation_count": int(len(rows)),
+        "close_dynamic_metric_missing_count": int(len(close_missing)),
+        "close_dynamic_metric_missing_items": close_missing[:25],
+        "human_gain_missing_count": int(len(human_missing)),
+        "human_gain_missing_items": human_missing[:25],
+    }
+
+
 def _load_recommendation_block(run_dir: Path) -> dict[str, Any]:
     report_path = run_dir / "report.json"
     if not report_path.exists():
@@ -326,6 +389,29 @@ def build_summary(run_id: str) -> dict[str, object]:
         discovery_block = recommendations.get("discovery") if isinstance(recommendations.get("discovery"), dict) else {}
         known_items = known_block.get("items") if isinstance(known_block.get("items"), list) else []
         discovery_items = discovery_block.get("items") if isinstance(discovery_block.get("items"), list) else []
+        pre_report_filter_mode = str(discovery_block.get("pre_report_filter_mode") or "").strip().lower() or "unknown"
+        candidate_count_before_top_n = int(
+            discovery_block.get("candidate_count_before_top_n")
+            if isinstance(discovery_block.get("candidate_count_before_top_n"), (int, float))
+            else len(discovery_items)
+        )
+        pre_report_drop_counts = {
+            "dropped_non_direct_process": int(discovery_block.get("dropped_non_direct_process") or 0),
+            "dropped_chain_bound_process": int(discovery_block.get("dropped_chain_bound_process") or 0),
+            "dropped_without_modeled_hours": int(discovery_block.get("dropped_without_modeled_hours") or 0),
+            "dropped_by_action_cap": int(discovery_block.get("dropped_by_action_cap") or 0),
+        }
+        pre_report_drop_count_total = int(sum(pre_report_drop_counts.values()))
+        top_n_applied = bool(discovery_block.get("top_n_applied"))
+        no_pre_report_filter_violation = bool(
+            pre_report_filter_mode == "passthrough"
+            and (
+                pre_report_drop_count_total > 0
+                or candidate_count_before_top_n != int(len(discovery_items))
+                or top_n_applied
+            )
+        )
+        recommendation_metric_contract = _recommendation_metric_contract(recommendation_items)
         actionable_ids = _recommendation_plugin_ids(recommendation_items)
         explanations_block = recommendations.get("explanations")
         explanation_items = (
@@ -524,6 +610,26 @@ def build_summary(run_id: str) -> dict[str, object]:
             "recommendation_item_count": int(len(recommendation_items)),
             "known_recommendation_count": int(len(known_items)),
             "discovery_recommendation_count": int(len(discovery_items)),
+            "discovery_candidate_count_before_top_n": int(candidate_count_before_top_n),
+            "pre_report_filter_mode": pre_report_filter_mode,
+            "pre_report_drop_counts": pre_report_drop_counts,
+            "pre_report_drop_count_total": int(pre_report_drop_count_total),
+            "pre_report_top_n_applied": bool(top_n_applied),
+            "no_pre_report_filter_violation": bool(no_pre_report_filter_violation),
+            "recommendation_close_dynamic_metric_missing_count": int(
+                recommendation_metric_contract.get("close_dynamic_metric_missing_count") or 0
+            ),
+            "recommendation_close_dynamic_metric_missing_items": recommendation_metric_contract.get(
+                "close_dynamic_metric_missing_items"
+            )
+            or [],
+            "recommendation_human_gain_missing_count": int(
+                recommendation_metric_contract.get("human_gain_missing_count") or 0
+            ),
+            "recommendation_human_gain_missing_items": recommendation_metric_contract.get(
+                "human_gain_missing_items"
+            )
+            or [],
             "actionable_plugin_count": int(len(actionable_ids)),
             "explained_non_actionable_count": int(len(explained_ids_effective)),
             "unexplained_plugin_count": int(len(unexplained)),

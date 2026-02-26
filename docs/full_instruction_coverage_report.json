@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 3244,
+  "item_count": 3254,
   "items": [
     {
       "has_todo_marker": false,
@@ -467,13 +467,49 @@
     {
       "has_todo_marker": true,
       "item_type": "todo_marker",
-      "line_no": 278081,
+      "line_no": 253668,
       "missing_paths": [],
       "plugin_tokens": [],
       "referenced_paths": [],
       "requirement_ids": [],
       "source": "repomix-output.md",
       "text": "38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": true,
+      "item_type": "todo_marker",
+      "line_no": 275640,
+      "missing_paths": [],
+      "plugin_tokens": [],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "repomix-output.md",
+      "text": "478:         \"text\": \"38: TODO_RE = re.compile(r\\\"(?i)(^\\\\s*-\\\\s*\\\\[\\\\s\\\\])|\\\\b(TBD|FIXME|not implemented|not-implemented)\\\\b\\\")\",",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": true,
+      "item_type": "todo_marker",
+      "line_no": 275705,
+      "missing_paths": [],
+      "plugin_tokens": [],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "repomix-output.md",
+      "text": "41: - `repomix-output.md:278081` todo_marker: 38: TODO_RE = re.compile(r\"(?i)(^\\s*-\\s*\\[\\s\\])|\\b(TBD|FIXME|not implemented|not-implemented)\\b\")",
+      "unresolved_plugin_tokens": []
+    },
+    {
+      "has_todo_marker": true,
+      "item_type": "todo_marker",
+      "line_no": 318739,
+      "missing_paths": [],
+      "plugin_tokens": [],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "repomix-output.md",
+      "text": "476:       \"text\": \"38: TODO_RE = re.compile(r\\\"(?i)(^\\\\s*-\\\\s*\\\\[\\\\s\\\\])|\\\\b(TBD|FIXME|not implemented|not-implemented)\\\\b\\\")\",",
       "unresolved_plugin_tokens": []
     }
   ],
@@ -489,8 +525,8 @@
     "codex_kona_route_updates.md": 1,
     "docs/openplanter-cross-dataset-plugins-plan.md": 19,
     "docs/plugins-validate-runbook-actionable-insights-plan.md": 8,
-    "repomix-output.md": 1
+    "repomix-output.md": 4
   },
-  "missing_item_count": 29,
-  "source_count": 73
+  "missing_item_count": 32,
+  "source_count": 74
 }

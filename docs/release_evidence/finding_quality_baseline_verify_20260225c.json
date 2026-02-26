@@ -1,0 +1,10 @@
+{
+  "blank_kind_findings_count": 0,
+  "missing_measurement_type_count": 0,
+  "ok": true,
+  "plugin_count": 273,
+  "plugins_with_blank_kind_findings": {},
+  "plugins_with_missing_measurement_type": {},
+  "run_id": "baseline_verify_20260225c",
+  "violations": []
+}

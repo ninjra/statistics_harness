@@ -50,6 +50,7 @@ _RECENCY_DECAY_PER_MONTH_ENV = "STAT_HARNESS_RECENCY_DECAY_PER_MONTH"
 _RECENCY_MIN_WEIGHT_ENV = "STAT_HARNESS_RECENCY_MIN_WEIGHT"
 _REQUIRE_MODELED_HOURS_ENV = "STAT_HARNESS_REQUIRE_MODELED_HOURS"
 _REQUIRE_DIRECT_PROCESS_ACTION_ENV = "STAT_HARNESS_REQUIRE_DIRECT_PROCESS_ACTION"
+_PRE_REPORT_FILTER_MODE_ENV = "STAT_HARNESS_PRE_REPORT_FILTER_MODE"
 _DIRECT_PROCESS_ACTION_TYPES_ENV = "STAT_HARNESS_DIRECT_PROCESS_ACTION_TYPES"
 _CHAIN_BOUND_RATIO_MIN_ENV = "STAT_HARNESS_CHAIN_BOUND_RATIO_MIN"
 _RANKING_VERSION_ENV = "STAT_HARNESS_RANKING_VERSION"
@@ -81,15 +82,26 @@ def _allow_known_issue_synthetic_matches() -> bool:
 def _require_modeled_hours() -> bool:
     raw = os.environ.get(_REQUIRE_MODELED_HOURS_ENV, "").strip().lower()
     if not raw:
-        return True
+        return not _pre_report_passthrough_enabled()
     return raw in {"1", "true", "yes", "on"}
 
 
 def _require_direct_process_action() -> bool:
     raw = os.environ.get(_REQUIRE_DIRECT_PROCESS_ACTION_ENV, "").strip().lower()
     if not raw:
-        return True
+        return not _pre_report_passthrough_enabled()
     return raw in {"1", "true", "yes", "on"}
+
+
+def _pre_report_filter_mode() -> str:
+    raw = os.environ.get(_PRE_REPORT_FILTER_MODE_ENV, "").strip().lower()
+    if raw in {"strict", "passthrough"}:
+        return raw
+    return "passthrough"
+
+
+def _pre_report_passthrough_enabled() -> bool:
+    return _pre_report_filter_mode() != "strict"
 
 
 def _direct_process_action_types() -> set[str]:
@@ -861,7 +873,9 @@ def _include_capacity_recommendations() -> bool:
 
 
 def _suppressed_action_types() -> set[str]:
-    # Default: hide only the truly generic tuning knobs; keep structural levers visible.
+    if _pre_report_passthrough_enabled():
+        return set()
+    # Strict-mode default: hide only the truly generic tuning knobs; keep structural levers visible.
     defaults = {"tune_threshold"}
     raw = os.environ.get(_SUPPRESS_ACTION_TYPES_ENV, "").strip()
     if raw == "":
@@ -875,6 +889,8 @@ def _suppressed_action_types() -> set[str]:
 
 
 def _max_per_action_type() -> dict[str, int]:
+    if _pre_report_passthrough_enabled():
+        return {}
     # Breadth-first defaults: prevent one action type from drowning out the rest.
     defaults: dict[str, int] = {
         "batch_input": 8,
@@ -966,7 +982,9 @@ def _discovery_top_n() -> int | None:
 
 
 def _max_obviousness() -> float:
-    # Lower = more "needle in haystack". Defaults to filtering out generic obvious actions.
+    if _pre_report_passthrough_enabled():
+        return 1.0
+    # Lower = more "needle in haystack". Strict mode defaults to filtering out generic obvious actions.
     raw = os.environ.get(_MAX_OBVIOUSNESS_ENV, "").strip()
     if not raw:
         return 0.74
@@ -2452,13 +2470,41 @@ def _build_discovery_recommendations(
             for f in contention_plugin.get("findings") or []
             if isinstance(f, dict) and f.get("kind") == "close_cycle_contention"
         ]
-        findings = sorted(
-            findings,
-            key=lambda row: float(row.get("estimated_improvement_pct") or 0.0)
-            * float(row.get("close_count") or 0.0),
-            reverse=True,
-        )
-        for item in findings[:3]:
+        def _contention_rank(row: dict[str, Any]) -> tuple[float, float, float]:
+            modeled_hours = row.get("modeled_reduction_hours")
+            modeled_score = (
+                float(modeled_hours)
+                if isinstance(modeled_hours, (int, float)) and float(modeled_hours) > 0.0
+                else 0.0
+            )
+            imp_pct = row.get("estimated_improvement_pct")
+            close_count = row.get("close_count")
+            combined = (
+                float(imp_pct) * float(close_count)
+                if isinstance(imp_pct, (int, float)) and isinstance(close_count, (int, float))
+                else 0.0
+            )
+            close_score = float(close_count) if isinstance(close_count, (int, float)) else 0.0
+            return modeled_score, combined, close_score
+
+        findings = sorted(findings, key=_contention_rank, reverse=True)
+        selected_contention: list[dict[str, Any]] = []
+        selected_processes: set[str] = set()
+        selection_limit = 5
+        for candidate in findings:
+            process = candidate.get("process_norm") or candidate.get("process")
+            if not isinstance(process, str) or not process.strip():
+                continue
+            process_key = process.strip().lower()
+            if excluded_match and excluded_match(process_key):
+                continue
+            if process_key in selected_processes:
+                continue
+            selected_contention.append(candidate)
+            selected_processes.add(process_key)
+            if len(selected_contention) >= selection_limit:
+                break
+        for item in selected_contention:
             process = item.get("process_norm") or item.get("process")
             if not isinstance(process, str) or not process.strip():
                 continue
@@ -2483,6 +2529,11 @@ def _build_discovery_recommendations(
             impact_hours = 0.0
             if isinstance(median_close, (int, float)) and isinstance(median_open, (int, float)) and isinstance(close_count, (int, float)):
                 impact_hours = (max(0.0, float(median_close) - float(median_open)) * float(close_count)) / 3600.0
+            modeled_delta_hours = (
+                float(modeled_reduction_hours)
+                if isinstance(modeled_reduction_hours, (int, float)) and float(modeled_reduction_hours) > 0.0
+                else impact_hours
+            )
 
             context = _metric_context_from_item("close_cycle_contention", item, report)
             confidence_weight = _confidence_weight(item, {})
@@ -2531,8 +2582,9 @@ def _build_discovery_recommendations(
                     "contains": None,
                     "observed_count": close_count,
                     "evidence": [evidence],
-                    "action": "isolate_process",
-                    "modeled_delta": None,
+                    "action": "tune_schedule",
+                    "action_type": "tune_schedule",
+                    "modeled_delta": modeled_delta_hours,
                     "measurement_type": item.get("measurement_type") or "measured",
                     "impact_hours": impact_hours,
                     "confidence_weight": confidence_weight,
@@ -4714,14 +4766,8 @@ def _build_discovery_recommendations(
                 }
             )
 
-    # Plugin actionability backstop:
-    # ensure each plugin contributes at least one process-targeted recommendation
-    # when no first-class adapter emitted one.
-    actionable_plugin_ids_pre_sort = {
-        str(row.get("plugin_id") or "").strip()
-        for row in items
-        if isinstance(row, dict) and str(row.get("plugin_id") or "").strip()
-    }
+    pre_report_filter_mode = _pre_report_filter_mode()
+    passthrough_mode = pre_report_filter_mode == "passthrough"
     fallback_any_processes: list[str] = []
     preferred_from_items = [
         _normalize_process_hint(_recommendation_process_hint(row))
@@ -4757,103 +4803,168 @@ def _build_discovery_recommendations(
         "tda_betti_curve_changepoint": "tune_schedule",
         "bayesian_point_displacement": "tune_schedule",
     }
-    for pid, plugin in plugins.items():
-        plugin_id = str(pid or "").strip()
-        if not plugin_id or plugin_id in actionable_plugin_ids_pre_sort:
-            continue
-        if not isinstance(plugin, dict):
-            continue
-        findings = [f for f in (plugin.get("findings") or []) if isinstance(f, dict)]
-        if not _has_backstop_decision_signal(plugin_id, findings):
-            continue
-        # If this plugin already emits actionable_ops_lever rows that were filtered for policy reasons,
-        # keep it non-actionable to preserve strict direct-action semantics.
-        if any(str(f.get("kind") or "").strip() == "actionable_ops_lever" for f in findings):
-            continue
-        process = ""
-        top_kind = ""
-        if findings:
-            top_kind = str(findings[0].get("kind") or "").strip().lower()
-        for finding in findings[:6]:
-            targets = _target_process_ids_for_finding(finding)
-            process = next((p for p in targets if isinstance(p, str) and p), "")
-            if not process:
-                evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
-                metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
-                process = _normalize_process_hint(
-                    finding.get("process_norm")
-                    or finding.get("process")
-                    or finding.get("process_id")
-                    or evidence.get("process_norm")
-                    or evidence.get("process")
-                    or evidence.get("process_id")
-                    or metrics.get("process_norm")
-                    or metrics.get("process")
-                    or metrics.get("process_id")
-                )
-            if process:
-                break
-        if not process:
-            process = fallback_any_processes[0]
-        if excluded_match and excluded_match(process):
-            alt = next((p for p in fallback_any_processes if not (excluded_match and excluded_match(p))), "")
-            process = alt or process
-        action_type = str(backstop_kind_to_action.get(top_kind) or "batch_or_cache")
-        score_hint = 1.0
-        if findings:
-            first = findings[0]
-            for key in ("score", "severity_score", "effect_size", "drift_score"):
-                value = first.get(key)
-                if isinstance(value, (int, float)):
-                    score_hint = abs(float(value))
-                    break
-        if score_hint <= 0.0:
-            score_hint = 1.0
-        score_factor = max(0.25, min(3.0, score_hint))
-        process_basis_hours = _queue_wait_hours_for_process(report, process)
-        if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
-            process_basis_hours = 1.0
-        impact_hours = max(0.05, min(2.0, float(process_basis_hours) * 0.03 * score_factor))
-        confidence_weight = 0.50
-        controllability_weight = 0.55
-        relevance_score = impact_hours * confidence_weight * controllability_weight
-        kind_label = top_kind or "plugin_signal"
-        rec_text = (
-            f"Actionability backstop for {plugin_id}: map `{kind_label}` signal to a direct "
-            f"{action_type.replace('_', ' ')} change on {process}, then validate against accounting-window deltas."
-        )
-        evidence_row: dict[str, Any] = {
-            "plugin_status": str(plugin.get("status") or "").strip().lower() or "ok",
-            "top_kind": kind_label,
-            "finding_count": int(len(findings)),
-            "backstop": True,
+    if not passthrough_mode:
+        # Strict mode only: synthesize backstop rows so each plugin has at least one adapter-shaped output.
+        actionable_plugin_ids_pre_sort = {
+            str(row.get("plugin_id") or "").strip()
+            for row in items
+            if isinstance(row, dict) and str(row.get("plugin_id") or "").strip()
         }
-        items.append(
-            {
-                "title": f"Backstop action for {plugin_id}",
-                "status": "discovered",
-                "category": "discovery",
-                "recommendation": rec_text,
-                "plugin_id": plugin_id,
-                "kind": "plugin_actionability_backstop",
-                "where": {"process_norm": process},
-                "contains": None,
-                "observed_count": int(len(findings)),
-                "evidence": [evidence_row],
-                "action": action_type,
-                "action_type": action_type,
-                "target": process,
-                "modeled_delta": impact_hours,
-                "measurement_type": "modeled",
-                "impact_hours": impact_hours,
-                "confidence_weight": confidence_weight,
-                "controllability_weight": controllability_weight,
-                "relevance_score": relevance_score,
+        for pid, plugin in plugins.items():
+            plugin_id = str(pid or "").strip()
+            if not plugin_id or plugin_id in actionable_plugin_ids_pre_sort:
+                continue
+            if not isinstance(plugin, dict):
+                continue
+            findings = [f for f in (plugin.get("findings") or []) if isinstance(f, dict)]
+            if not _has_backstop_decision_signal(plugin_id, findings):
+                continue
+            # If this plugin already emits actionable_ops_lever rows that were filtered for policy reasons,
+            # keep it non-actionable to preserve strict direct-action semantics.
+            if any(str(f.get("kind") or "").strip() == "actionable_ops_lever" for f in findings):
+                continue
+            process = ""
+            top_kind = ""
+            if findings:
+                top_kind = str(findings[0].get("kind") or "").strip().lower()
+            for finding in findings[:6]:
+                targets = _target_process_ids_for_finding(finding)
+                process = next((p for p in targets if isinstance(p, str) and p), "")
+                if not process:
+                    evidence = finding.get("evidence") if isinstance(finding.get("evidence"), dict) else {}
+                    metrics = evidence.get("metrics") if isinstance(evidence.get("metrics"), dict) else {}
+                    process = _normalize_process_hint(
+                        finding.get("process_norm")
+                        or finding.get("process")
+                        or finding.get("process_id")
+                        or evidence.get("process_norm")
+                        or evidence.get("process")
+                        or evidence.get("process_id")
+                        or metrics.get("process_norm")
+                        or metrics.get("process")
+                        or metrics.get("process_id")
+                    )
+                if process:
+                    break
+            if not process:
+                process = fallback_any_processes[0]
+            if excluded_match and excluded_match(process):
+                alt = next((p for p in fallback_any_processes if not (excluded_match and excluded_match(p))), "")
+                process = alt or process
+            action_type = str(backstop_kind_to_action.get(top_kind) or "batch_or_cache")
+            score_hint = 1.0
+            if findings:
+                first = findings[0]
+                for key in ("score", "severity_score", "effect_size", "drift_score"):
+                    value = first.get(key)
+                    if isinstance(value, (int, float)):
+                        score_hint = abs(float(value))
+                        break
+            if score_hint <= 0.0:
+                score_hint = 1.0
+            score_factor = max(0.25, min(3.0, score_hint))
+            process_basis_hours = _queue_wait_hours_for_process(report, process)
+            if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
+                process_basis_hours = 1.0
+            impact_hours = max(0.05, min(2.0, float(process_basis_hours) * 0.03 * score_factor))
+            confidence_weight = 0.50
+            controllability_weight = 0.55
+            relevance_score = impact_hours * confidence_weight * controllability_weight
+            kind_label = top_kind or "plugin_signal"
+            rec_text = (
+                f"Actionability backstop for {plugin_id}: map `{kind_label}` signal to a direct "
+                f"{action_type.replace('_', ' ')} change on {process}, then validate against accounting-window deltas."
+            )
+            evidence_row: dict[str, Any] = {
+                "plugin_status": str(plugin.get("status") or "").strip().lower() or "ok",
+                "top_kind": kind_label,
+                "finding_count": int(len(findings)),
+                "backstop": True,
             }
-        )
+            items.append(
+                {
+                    "title": f"Backstop action for {plugin_id}",
+                    "status": "discovered",
+                    "category": "discovery",
+                    "recommendation": rec_text,
+                    "plugin_id": plugin_id,
+                    "kind": "plugin_actionability_backstop",
+                    "where": {"process_norm": process},
+                    "contains": None,
+                    "observed_count": int(len(findings)),
+                    "evidence": [evidence_row],
+                    "action": action_type,
+                    "action_type": action_type,
+                    "target": process,
+                    "modeled_delta": impact_hours,
+                    "measurement_type": "modeled",
+                    "impact_hours": impact_hours,
+                    "confidence_weight": confidence_weight,
+                    "controllability_weight": controllability_weight,
+                    "relevance_score": relevance_score,
+                }
+            )
 
     # Sort before dedupe so that higher-value items "win" when text merges occur.
     items = sorted(items, key=_discovery_recommendation_sort_key, reverse=True)
+    baselines = _duration_baselines(report, storage, run_dir=run_dir)
+    qemail_model: dict[str, float] | None = None
+    if not (excluded_match and excluded_match("qemail")):
+        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        action_type = _normalize_action_type(
+            str(item.get("action_type") or item.get("action") or "").strip(),
+            str(item.get("recommendation") or item.get("title") or ""),
+        )
+        if action_type:
+            item["action_type"] = action_type
+            item["action"] = action_type
+        obviousness_score = _action_type_obviousness(action_type)
+        item["obviousness_score"] = float(obviousness_score)
+        item["obviousness_rank"] = _obviousness_rank(float(obviousness_score))
+
+    if passthrough_mode:
+        full_items = [
+            _enrich_recommendation_item(item, report, baselines, qemail_model)
+            for item in items
+            if isinstance(item, dict)
+        ]
+        full_items = _apply_recency_weight(full_items)
+        if _ranking_version() == "v2":
+            for row in full_items:
+                value_score = _safe_num(row.get("value_score_v2"))
+                if not isinstance(value_score, (int, float)):
+                    value_score = _safe_num(row.get("client_value_score"))
+                if isinstance(value_score, (int, float)):
+                    row["relevance_score"] = float(value_score)
+                    row["ranking_metric"] = "client_value_score_v2"
+        full_items = sorted(full_items, key=_final_recommendation_sort_key)
+        actionable_plugin_ids_all = sorted(_actionable_plugin_ids(full_items))
+        candidate_count_before_top_n = int(len(full_items))
+        status = "ok" if full_items else "none"
+        summary = (
+            f"Generated {len(full_items)} discovery recommendation(s) from plugin findings. "
+            "Pre-report filter mode=passthrough; no suppression/caps/direct-action/modeled-hours filtering applied."
+            if full_items
+            else "No discovery recommendations generated from plugin findings."
+        )
+        return {
+            "status": status,
+            "summary": summary,
+            "items": full_items,
+            "actionable_plugin_ids_all": actionable_plugin_ids_all,
+            "candidate_count_before_top_n": candidate_count_before_top_n,
+            "pre_report_filter_mode": pre_report_filter_mode,
+            "dropped_non_direct_process": 0,
+            "dropped_chain_bound_process": 0,
+            "retained_chain_bound_process": 0,
+            "dropped_without_modeled_hours": 0,
+            "dropped_by_action_cap": 0,
+            "cap_diversity_overrides": 0,
+            "top_n_applied": False,
+        }
 
     controls = _recommendation_controls(report)
     suppressed = _suppressed_action_types()
@@ -4960,10 +5071,6 @@ def _build_discovery_recommendations(
         kept.append(item)
 
     deduped = _dedupe_recommendations_text(kept)
-    baselines = _duration_baselines(report, storage, run_dir=run_dir)
-    qemail_model: dict[str, float] | None = None
-    if not (excluded_match and excluded_match("qemail")):
-        qemail_model = _process_removal_model(report, storage, "qemail", run_dir=run_dir)
     deduped = [
         _enrich_recommendation_item(item, report, baselines, qemail_model)
         for item in deduped
@@ -5227,6 +5334,14 @@ def _build_discovery_recommendations(
         "items": deduped,
         "actionable_plugin_ids_all": actionable_plugin_ids_all,
         "candidate_count_before_top_n": candidate_count_before_top_n,
+        "pre_report_filter_mode": pre_report_filter_mode,
+        "dropped_non_direct_process": int(dropped_non_direct_process),
+        "dropped_chain_bound_process": int(dropped_chain_bound_process),
+        "retained_chain_bound_process": int(retained_chain_bound_process),
+        "dropped_without_modeled_hours": int(dropped_without_modeled_hours),
+        "dropped_by_action_cap": int(dropped_by_action_cap),
+        "cap_diversity_overrides": int(cap_diversity_overrides),
+        "top_n_applied": bool(isinstance(top_n, int) and top_n > 0),
     }
 
 
@@ -6760,6 +6875,68 @@ def _attach_client_value_metrics(
     enriched["modeled_user_hours_saved_close_cycle"] = user_rollups["close_cycle"]
     enriched["modeled_user_hours_saved_month"] = user_rollups["month"]
     enriched["modeled_user_hours_saved_annualized"] = user_rollups["annualized"]
+    enriched["human_modeled_delta_hours_close_cycle"] = (
+        float(user_rollups["close_cycle"])
+        if isinstance(user_rollups.get("close_cycle"), (int, float))
+        and float(user_rollups["close_cycle"]) >= 0.0
+        else None
+    )
+    enriched["human_modeled_run_reduction_count_close_cycle"] = (
+        float(user_touches_reduced)
+        if isinstance(user_touches_reduced, (int, float)) and float(user_touches_reduced) >= 0.0
+        else None
+    )
+    enriched["human_modeled_touch_reduction_count_close_cycle"] = (
+        float(user_touches_reduced)
+        if isinstance(user_touches_reduced, (int, float)) and float(user_touches_reduced) >= 0.0
+        else None
+    )
+
+    close_delta_dynamic = _safe_num(enriched.get("delta_hours_close_dynamic"))
+    close_eff_pct_dynamic = _safe_num(enriched.get("efficiency_gain_pct_close_dynamic"))
+    enriched["modeled_delta_hours_close_cycle"] = (
+        float(close_delta_dynamic)
+        if isinstance(close_delta_dynamic, (int, float)) and float(close_delta_dynamic) >= 0.0
+        else None
+    )
+    enriched["modeled_efficiency_gain_pct_close_cycle"] = (
+        float(close_eff_pct_dynamic)
+        if isinstance(close_eff_pct_dynamic, (int, float)) and float(close_eff_pct_dynamic) >= 0.0
+        else None
+    )
+
+    user_hours_close_value = _safe_num(enriched.get("modeled_user_hours_saved_close_cycle"))
+    user_runs_reduced = _safe_num(enriched.get("modeled_user_runs_reduced"))
+    user_touches_reduced = _safe_num(enriched.get("modeled_user_touches_reduced"))
+    has_human_gain = any(
+        isinstance(v, (int, float)) and float(v) > 0.0
+        for v in (user_hours_close_value, user_runs_reduced, user_touches_reduced)
+    )
+    if has_human_gain:
+        enriched["human_gain_status"] = "quantified"
+        enriched["human_gain_reason_code"] = "QUANTIFIED_FROM_USER_SIGNAL"
+        enriched["human_gain_reason"] = "Derived from observed user concentration/manual-loop signals."
+    else:
+        infra_action_types = {
+            "add_server",
+            "tune_schedule",
+            "reschedule",
+            "reduce_spillover_past_eom",
+            "isolate_or_reschedule",
+            "isolate_process_family_lane",
+        }
+        if action_type in infra_action_types or primary_process in {"qpec", "qemail"}:
+            reason_code = "INFRASTRUCTURE_LEVER_NO_DIRECT_USER_SIGNAL"
+            reason = "Infrastructure/queue lever; per-user manual-touch reduction cannot be directly inferred."
+        elif isinstance(close_delta_dynamic, (int, float)) and float(close_delta_dynamic) > 0.0:
+            reason_code = "NO_USER_ATTRIBUTION_SIGNAL"
+            reason = "Close-window gain is modeled, but user-level attribution was not present in this evidence slice."
+        else:
+            reason_code = "NO_MODELED_HUMAN_GAIN"
+            reason = "No close-window user-impact signal available for this recommendation."
+        enriched["human_gain_status"] = "na"
+        enriched["human_gain_reason_code"] = reason_code
+        enriched["human_gain_reason"] = reason
 
     top_user_redacted = str(
         enriched.get("top_user_redacted")
