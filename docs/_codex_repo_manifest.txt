@@ -7171,7 +7171,11 @@ codex/PROJECT_SPEC.md
 codex_kona_route_updates.md
 config/actionability_thresholds.yaml
 config/app.yaml
+config/chunk_invariance_tolerances.yaml
+config/plugin_test_coverage_exemptions.json
+config/recommendation_weights.yaml
 config/repo_cleanup/tracked_binary_allowlist.txt
+config/reporting.yaml
 conftest.py
 docs/4_pillars_scoring_spec.md
 docs/_codex_plugin_catalog.md
@@ -7239,6 +7243,7 @@ docs/docs_plugin_aliases.json
 docs/each-plugin-delivering-actionable-results-plan.md
 docs/evaluation.md
 docs/first_release_execution_readout.md
+docs/four-pillars-implementation-plan.md
 docs/freshman_recommendation_cli_template.md
 docs/frozen_plugin_surfaces.contract.json
 docs/frozen_surfaces_contract.md
@@ -8724,6 +8729,9 @@ s
 scripts/actionability_burndown.py
 scripts/api_smoke.py
 scripts/audit_plugin_actionability.py
+scripts/audit_plugin_process_targeting.py
+scripts/audit_plugin_streaming_contract.py
+scripts/audit_plugin_targeting_windows.py
 scripts/backfill_stat_plugin_cache_keys.py
 scripts/binding_implementation_matrix.py
 scripts/bootstrap.ps1
@@ -8745,6 +8753,7 @@ scripts/compare_run_outputs.py
 scripts/docs_coverage_matrix.py
 scripts/download_text2sql_models.py
 scripts/ensure_dataset_indexes.py
+scripts/evaluator_harness.py
 scripts/finalize_optimal_4pillars.py
 scripts/fix_wsl_dns.sh
 scripts/fixtures/sample.csv
@@ -8799,6 +8808,7 @@ scripts/repair_run_plain_report.py
 scripts/repair_stale_running_runs.py
 scripts/reset_baseline.sh
 scripts/run_analysis.ps1
+scripts/run_chunk_invariance.py
 scripts/run_cli_example.ps1
 scripts/run_cli_example.sh
 scripts/run_cross_dataset_openplanter_pack.py
@@ -8850,8 +8860,11 @@ scripts/verify_agent_execution_contract.py
 scripts/verify_docs_and_plugin_matrices.py
 scripts/verify_frozen_plugin_surfaces.py
 scripts/verify_network_dns.sh
+scripts/verify_no_runtime_network.py
 scripts/verify_openplanter_pack_release_gate.py
 scripts/verify_plugin_result_contract.py
+scripts/verify_plugin_test_coverage.py
+scripts/verify_report_artifacts_contract.py
 scripts/verify_topo_tda_addon_pack_plan.py
 scripts/watch_gauntlet.ps1
 scripts/watch_gauntlet.sh
@@ -8920,6 +8933,7 @@ src/statistic_harness/core/leftfield_top20_plugins.py
 src/statistic_harness/core/lever_library.py
 src/statistic_harness/core/lineage.py
 src/statistic_harness/core/migrations.py
+src/statistic_harness/core/normalized_reader.py
 src/statistic_harness/core/openplanter_pack.py
 src/statistic_harness/core/optimization_models.py
 src/statistic_harness/core/orchestrator.py
@@ -8933,9 +8947,12 @@ src/statistic_harness/core/plugin_registry.py
 src/statistic_harness/core/plugin_runner.py
 src/statistic_harness/core/process_filters.py
 src/statistic_harness/core/process_matcher.py
+src/statistic_harness/core/ranking.py
+src/statistic_harness/core/recommendation_filters.py
 src/statistic_harness/core/report.py
 src/statistic_harness/core/report_v2_utils.py
 src/statistic_harness/core/retention.py
+src/statistic_harness/core/run_context.py
 src/statistic_harness/core/similarity.py
 src/statistic_harness/core/sql_assist.py
 src/statistic_harness/core/sql_dump_import.py
@@ -8974,8 +8991,10 @@ src/statistic_harness/core/tokenize_params.py
 src/statistic_harness/core/top20_plugins.py
 src/statistic_harness/core/types.py
 src/statistic_harness/core/upload_cas.py
+src/statistic_harness/core/user_effort_model.py
 src/statistic_harness/core/utils.py
 src/statistic_harness/core/vector_store.py
+src/statistic_harness/core/windowing.py
 src/statistic_harness/ui/__init__.py
 src/statistic_harness/ui/server.py
 src/statistic_harness/ui/static/app.css
@@ -9168,8 +9187,14 @@ temp/run_debug/state.sqlite
 tests/conftest.py
 tests/core/test_entity_resolution.py
 tests/core/test_evidence_links.py
+tests/core/test_normalized_reader.py
+tests/core/test_ranking_module.py
+tests/core/test_recommendation_filters.py
+tests/core/test_run_context_module.py
 tests/core/test_seed_propagation.py
 tests/core/test_sql_dump_import.py
+tests/core/test_user_effort_model.py
+tests/core/test_windowing_module.py
 tests/fixtures/db/generate_golden_dbs.py
 tests/fixtures/db/v1.sqlite
 tests/fixtures/db/v10.sqlite
@@ -9412,6 +9437,9 @@ tests/test_append_only.py
 tests/test_atomic_writes.py
 tests/test_audit_plugin_actionability_contract.py
 tests/test_audit_plugin_actionability_lanes.py
+tests/test_audit_plugin_process_targeting.py
+tests/test_audit_plugin_streaming_contract.py
+tests/test_audit_plugin_targeting_windows.py
 tests/test_auth.py
 tests/test_binding_implementation_matrix.py
 tests/test_build_plugin_run_manifest.py
@@ -9436,6 +9464,7 @@ tests/test_erp_inference.py
 tests/test_erp_next_wave_no_skip.py
 tests/test_evaluation.py
 tests/test_evaluator.py
+tests/test_evaluator_harness_script.py
 tests/test_feature_flags.py
 tests/test_finalize_optimal_4pillars.py
 tests/test_four_pillars_scoring.py
@@ -9517,8 +9546,10 @@ tests/test_report_plugins_stage.py
 tests/test_report_pre_report_filter_contract.py
 tests/test_report_schema.py
 tests/test_report_window_range_chunking.py
+tests/test_reporting_config_top_n.py
 tests/test_retention.py
 tests/test_row_trace.py
+tests/test_run_chunk_invariance.py
 tests/test_run_loaded_dataset_full_exclude_modes.py
 tests/test_run_manifest.py
 tests/test_run_preflight_extensions.py
@@ -9561,7 +9592,10 @@ tests/test_upload_cas.py
 tests/test_upload_limits.py
 tests/test_vector_store.py
 tests/test_verify_agent_execution_contract.py
+tests/test_verify_no_runtime_network.py
 tests/test_verify_plugin_result_contract.py
+tests/test_verify_plugin_test_coverage.py
+tests/test_verify_report_artifacts_contract.py
 tools/apply_codex_theme_all_projects.py
 tools/cp.cmd
 tools/cr.cmd

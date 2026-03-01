@@ -24,11 +24,10 @@ class _Ctx:
 def test_changepoint_detection_v1_runs(tmp_path: Path) -> None:
     from plugins.changepoint_detection_v1.plugin import Plugin
 
-    df = pd.DataFrame(
-        {
-            "y": [1, 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 11, 10, 10, 9, 10, 10, 10, 10, 10, 10, 10, 10],
-        }
-    )
+    # Need enough points with a clear shift so z-score exceeds threshold (2.0)
+    pre = [1.0] * 30
+    post = [10.0] * 30
+    df = pd.DataFrame({"y": pre + post})
     res = Plugin().run(_Ctx(df, tmp_path))
     assert res.status in {"ok", "skipped"}
     if res.status == "ok":

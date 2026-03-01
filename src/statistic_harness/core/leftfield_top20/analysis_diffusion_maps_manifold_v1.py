@@ -27,10 +27,11 @@ def run(ctx) -> PluginResult:
         x = x[idx, :]
         sampled_rows = int(x.shape[0])
     k = rbf_kernel(x)
-    p = k / np.maximum(1e-9, k.sum(axis=1, keepdims=True))
-    eigvals, eigvecs = np.linalg.eig(p)
-    eigvals = np.real(eigvals)
-    eigvecs = np.real(eigvecs)
+    d = k.sum(axis=1)
+    d_inv_sqrt = np.where(d > 1e-12, 1.0 / np.sqrt(d), 0.0)
+    sym_matrix = (d_inv_sqrt[:, None] * k) * d_inv_sqrt[None, :]
+    sym_matrix = (sym_matrix + sym_matrix.T) / 2.0
+    eigvals, eigvecs = np.linalg.eigh(sym_matrix)
     order = np.argsort(eigvals)[::-1]
     eigvals = eigvals[order]
     eigvecs = eigvecs[:, order]

@@ -1,0 +1,7 @@
+schema_version: recommendation_weights.v1
+weights:
+  modeled_delta_hours_close_dynamic: 0.40
+  modeled_delta_hours: 0.25
+  manual_touch_reduction_count: 0.20
+  close_contention_reduction_pct: 0.15
+

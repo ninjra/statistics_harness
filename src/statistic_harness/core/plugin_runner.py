@@ -1089,6 +1089,14 @@ def _run_request(request: dict[str, Any]) -> dict[str, Any]:
                 row_limit: int | None = None,
             ):
                 size = batch_size
+                force_batch_raw = os.environ.get("STAT_HARNESS_FORCE_BATCH_SIZE", "").strip()
+                if force_batch_raw:
+                    try:
+                        forced = int(force_batch_raw)
+                    except ValueError:
+                        forced = 0
+                    if forced > 0:
+                        size = forced
                 if size is None:
                     raw = budget.get("batch_size")
                     if isinstance(raw, int) and raw > 0:

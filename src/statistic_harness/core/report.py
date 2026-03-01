@@ -35,6 +35,11 @@ from .accounting_windows import (
     load_accounting_windows_from_run,
     window_ranges,
 )
+from .ranking import load_weights as _load_ranking_weights, weighted_score as _weighted_score
+from .user_effort_model import effort_score as _effort_score, modeled_touch_reduction as _modeled_touch_reduction
+
+_RANKING_WEIGHTS_PATH = Path(__file__).resolve().parents[3] / "config" / "recommendation_weights.yaml"
+_RANKING_WEIGHTS_CACHE: dict[str, float] | None = None
 
 _INCLUDE_KNOWN_RECOMMENDATIONS_ENV = "STAT_HARNESS_INCLUDE_KNOWN_RECOMMENDATIONS"
 _ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES_ENV = "STAT_HARNESS_ALLOW_KNOWN_ISSUE_SYNTHETIC_MATCHES"
@@ -60,6 +65,8 @@ _REPORT_MD_MAX_STRING_LEN_ENV = "STAT_HARNESS_REPORT_MD_MAX_STRING_LEN"
 _REPORT_MD_MAX_EVIDENCE_IDS_ENV = "STAT_HARNESS_REPORT_MD_MAX_EVIDENCE_IDS"
 _PLUGIN_CLASS_TAXONOMY_PATH = Path(__file__).resolve().parents[3] / "docs" / "plugin_class_taxonomy.yaml"
 _PLUGIN_CLASS_TAXONOMY_CACHE: dict[str, Any] | None = None
+_REPORTING_CONFIG_PATH = Path(__file__).resolve().parents[3] / "config" / "reporting.yaml"
+_REPORTING_CONFIG_CACHE: dict[str, Any] | None = None
 
 
 def _include_known_recommendations() -> bool:
@@ -972,13 +979,32 @@ def _min_relevance_score() -> float:
 
 def _discovery_top_n() -> int | None:
     raw = os.environ.get(_DISCOVERY_TOP_N_ENV, "").strip()
-    if not raw:
-        return None
+    if raw:
+        try:
+            value = int(raw)
+        except (TypeError, ValueError):
+            value = 0
+        return value if value > 0 else None
+    cfg = _reporting_config()
+    cfg_top_n = cfg.get("recommendation_top_n") if isinstance(cfg, dict) else None
+    if isinstance(cfg_top_n, (int, float)) and int(cfg_top_n) > 0:
+        return int(cfg_top_n)
+    return None
+
+
+def _reporting_config() -> dict[str, Any]:
+    global _REPORTING_CONFIG_CACHE
+    if _REPORTING_CONFIG_CACHE is not None:
+        return dict(_REPORTING_CONFIG_CACHE)
+    if not _REPORTING_CONFIG_PATH.exists():
+        _REPORTING_CONFIG_CACHE = {}
+        return {}
     try:
-        value = int(raw)
-    except (TypeError, ValueError):
-        return None
-    return value if value > 0 else None
+        payload = yaml.safe_load(_REPORTING_CONFIG_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        payload = {}
+    _REPORTING_CONFIG_CACHE = payload if isinstance(payload, dict) else {}
+    return dict(_REPORTING_CONFIG_CACHE)
 
 
 def _max_obviousness() -> float:
@@ -1205,26 +1231,15 @@ def _final_recommendation_sort_key(item: dict[str, Any]) -> tuple[Any, ...]:
             kind,
         )
 
-    value_score = float(_safe_num(item.get("value_score_v2")) or _safe_num(item.get("client_value_score")) or 0.0)
-    close_dynamic_delta = float(_safe_num(item.get("delta_hours_close_dynamic")) or _safe_num(item.get("modeled_delta_hours")) or 0.0)
-    close_dynamic_eff = float(_safe_num(item.get("efficiency_gain_close_dynamic")) or 0.0)
-    acct_delta = float(_safe_num(item.get("delta_hours_accounting_month")) or _safe_num(item.get("modeled_delta_hours")) or 0.0)
-    manual_pct = float(_safe_num(item.get("modeled_manual_run_reduction_pct")) or 0.0)
+    weighted_rank = float(_safe_num(item.get("weighted_rank_score")) or 0.0)
     metric_confidence = float(
         _safe_num(item.get("metric_confidence"))
         or _safe_num(item.get("confidence_weight"))
         or 0.0
     )
-    scope_type = str(item.get("scope_type") or "").strip().lower()
-    scope_rank = 0 if scope_type == "single_process" else 1
     return (
-        -close_dynamic_delta,
-        -close_dynamic_eff,
-        -acct_delta,
-        -value_score,
+        -weighted_rank,
         -metric_confidence,
-        scope_rank,
-        -manual_pct,
         primary_process,
         plugin_id,
         kind,
@@ -6989,9 +7004,9 @@ def _attach_client_value_metrics(
     confidence = max(0.0, min(1.0, float(confidence)))
     enriched["metric_confidence"] = confidence
 
-    user_effort_score = (
-        max(0.0, float(user_rollups["close_cycle"] or 0.0))
-        + math.log1p(max(0.0, float(user_touches_reduced or 0.0)))
+    user_effort_score = _effort_score(
+        close_hours_saved=float(user_rollups["close_cycle"] or 0.0),
+        touches_reduced=float(user_touches_reduced or 0.0),
     )
     close_window_score = (
         max(0.0, float(rollups["close_cycle"] or 0.0))
@@ -7007,11 +7022,11 @@ def _attach_client_value_metrics(
         ambiguity_penalty = 0.20 + (0.10 * max(0.0, float(len(targets) - 1)))
 
     value_score = (
-        (0.45 * user_effort_score)
-        + (0.30 * close_window_score)
-        + (0.15 * server_contention_score)
-        + (0.10 * confidence)
-        + (0.20 * targeting_bonus)
+        (0.375 * user_effort_score)
+        + (0.25 * close_window_score)
+        + (0.125 * server_contention_score)
+        + (0.083 * confidence)
+        + (0.167 * targeting_bonus)
         - ambiguity_penalty
     )
     enriched["value_components"] = {
@@ -7024,6 +7039,11 @@ def _attach_client_value_metrics(
     }
     enriched["client_value_score"] = float(value_score)
     enriched["value_score_v2"] = float(value_score)
+
+    global _RANKING_WEIGHTS_CACHE
+    if _RANKING_WEIGHTS_CACHE is None:
+        _RANKING_WEIGHTS_CACHE = _load_ranking_weights(_RANKING_WEIGHTS_PATH)
+    enriched["weighted_rank_score"] = _weighted_score(enriched, _RANKING_WEIGHTS_CACHE)
     modeled_efficiency_gain_pct = _safe_num(enriched.get("efficiency_gain_pct_close_dynamic"))
     if not isinstance(modeled_efficiency_gain_pct, (int, float)):
         modeled_efficiency_gain_pct = _safe_num(enriched.get("modeled_percent"))
@@ -7172,19 +7192,22 @@ def _enrich_recommendation_item(
         delta_hours = None
     if isinstance(modeled_percent, (int, float)) and float(modeled_percent) <= 0.0:
         modeled_percent = None
+    enrichment_path: list[str] = []
     if (
         isinstance(delta_hours, (int, float))
         and float(delta_hours) > 0.0
         and not isinstance(modeled_percent, (int, float))
     ):
-        if not isinstance(basis_hours, (int, float)) or float(basis_hours) <= 0.0:
-            basis_hours = float(delta_hours)
         if isinstance(basis_hours, (int, float)) and float(basis_hours) > 0.0:
             modeled_percent = max(
                 0.0,
                 min(100.0, (float(delta_hours) / float(basis_hours)) * 100.0),
             )
+            enrichment_path.append("percent_from_delta_and_basis")
+        else:
+            enrichment_path.append("percent_unavailable_no_basis")
 
+    enriched["enrichment_path"] = enrichment_path
     enriched["modeled_basis_hours"] = float(basis_hours) if isinstance(basis_hours, (int, float)) else None
     enriched["modeled_delta_hours"] = float(delta_hours) if isinstance(delta_hours, (int, float)) else None
     if isinstance(enriched.get("modeled_delta_hours"), (int, float)):
@@ -7470,30 +7493,35 @@ def _queue_delay_results(report: dict[str, Any], run_dir: Path) -> dict[str, Any
 
 
 def _recommendation_merge_key(item: dict[str, Any]) -> tuple[str, str]:
-    text = str(item.get("recommendation") or "").strip()
-    title = str(item.get("title") or "").strip()
-    plugin_id = str(item.get("plugin_id") or "")
-    where = item.get("where") if isinstance(item.get("where"), dict) else None
-    contains = item.get("contains") if isinstance(item.get("contains"), dict) else None
+    action_type = str(item.get("action_type") or item.get("action") or "").strip().lower()
+    target_ids = item.get("target_process_ids")
+    if isinstance(target_ids, (list, tuple, set)):
+        target_key = ",".join(sorted(str(t).strip().lower() for t in target_ids if t))
+    else:
+        proc = str(
+            item.get("primary_process_id")
+            or _recommendation_process_hint(item)
+            or _item_process_norm(item)
+            or ""
+        ).strip().lower()
+        target_key = proc
     scope_class = str(item.get("scope_class") or "").strip().lower()
-    where_key = json_dumps(where) if where else ""
-    contains_key = json_dumps(contains) if contains else ""
+
+    if not action_type:
+        text = str(item.get("recommendation") or "").strip().lower()
+        title = str(item.get("title") or "").strip().lower()
+        if text.startswith("add one server") or "3rd server" in title or "third server" in title:
+            action_type = "capacity_add_server"
+        elif "close-cycle capacity" in title or "close-cycle capacity" in text:
+            action_type = "close_cycle_capacity"
+        elif text:
+            action_type = text[:80]
+        else:
+            action_type = title[:80]
+
+    merge_base = f"{action_type}:{target_key}:{scope_class}"
     delta = item.get("modeled_delta")
     delta_text = _format_issue_value(delta) if delta is not None else ""
-
-    text_lower = text.lower()
-    title_lower = title.lower()
-    if text_lower.startswith("add one server") or "3rd server" in title_lower or "3rd server" in text_lower or "third server" in title_lower or "third server" in text_lower:
-        base = "capacity_add_server"
-    elif "close-cycle capacity" in title_lower or "close-cycle capacity" in text_lower:
-        base = "close_cycle_capacity"
-    elif text_lower.startswith("act on "):
-        base = f"act_on:{plugin_id}:{where_key}:{contains_key}"
-    elif text:
-        base = text_lower
-    else:
-        base = title_lower
-    merge_base = f"{scope_class}:{base}" if scope_class else base
     return merge_base, delta_text
 
 
@@ -8349,7 +8377,6 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
     if discovery_summary:
         lines.append(discovery_summary)
     if discovery_items:
-        discovery_items = _dedupe_recommendations_text(discovery_items)
         discovery_items = _filter_recommendations_by_process(
             discovery_items, excluded_processes
         )
@@ -8432,7 +8459,6 @@ def write_report(report: dict[str, Any], run_dir: Path) -> None:
         if known_summary:
             lines.append(known_summary)
         if known_items:
-            known_items = _dedupe_recommendations_text(known_items)
             lines.append("| Status | Recommendation |")
             lines.append("|---|---|")
             for item in known_items:
@@ -8861,11 +8887,6 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
         report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
     excluded_processes = _explicit_excluded_processes(report)
-    excluded_processes = _explicit_excluded_processes(report)
-    discovery_items = _dedupe_recommendations_text(discovery_items)
-    discovery_items = _filter_recommendations_by_process(
-        discovery_items, excluded_processes
-    )
     discovery_items = _filter_recommendations_by_process(
         discovery_items, excluded_processes
     )
@@ -8995,7 +9016,6 @@ def _write_business_summary(report: dict[str, Any], run_dir: Path) -> None:
         lines.append("## Known-Issue Checks (Pass Gate)")
         if known_summary:
             lines.append(known_summary)
-        known_items = _dedupe_recommendations_text(known_items)
         lines.append("| Status | Issue | Recommendation |")
         lines.append("|---|---|---|")
         for item in known_items[:10]:
@@ -9026,7 +9046,6 @@ def _write_engineering_summary(report: dict[str, Any], run_dir: Path) -> None:
     known_items, discovery_items, _, _ = _split_recommendations(
         report.get("recommendations") if isinstance(report.get("recommendations"), dict) else None
     )
-    discovery_items = _dedupe_recommendations_text(discovery_items)
     recs = sorted(discovery_items, key=_final_recommendation_sort_key)[:3]
     merged_notes: list[str] = []
 

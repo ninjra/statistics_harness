@@ -5,11 +5,20 @@ from typing import Iterable
 import numpy as np
 
 
-def robust_center_scale(values: Iterable[float]) -> tuple[float, float]:
+def robust_center_scale(
+    values: Iterable[float],
+    log_transform: bool | None = None,
+) -> tuple[float, float]:
     arr = np.asarray(list(values), dtype=float)
     arr = arr[~np.isnan(arr)]
     if arr.size == 0:
         return 0.0, 1.0
+    if log_transform is None:
+        from scipy.stats import skew
+        sk = float(skew(arr))
+        log_transform = sk > 2.0 and float(np.min(arr)) >= 0.0
+    if log_transform:
+        arr = np.log1p(arr)
     median = float(np.median(arr))
     mad = float(np.median(np.abs(arr - median)))
     scale = mad * 1.4826
@@ -78,7 +87,7 @@ def cramers_v(table: np.ndarray) -> float:
     col_sums = observed.sum(axis=0, keepdims=True)
     expected = row_sums @ col_sums / total
     valid = expected > 0
-    chi2 = float(((observed - expected) ** 2 / np.where(valid, expected, 1.0)).sum())
+    chi2 = float(np.sum((observed[valid] - expected[valid]) ** 2 / expected[valid]))
     r, c = observed.shape
     denom = total * (min(r - 1, c - 1) or 1)
     if denom <= 0:

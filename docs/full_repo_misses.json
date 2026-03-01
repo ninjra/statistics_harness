@@ -1,21 +1,118 @@
 {
   "generated_by": "scripts/full_repo_misses.py",
   "hard_gaps": {
-    "binding_missing_any": false,
-    "docs_missing_any_normative": false,
-    "instruction_coverage_items": [],
+    "binding_missing_any": true,
+    "docs_missing_any_normative": true,
+    "instruction_coverage_items": [
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 169,
+        "missing_paths": [
+          "tests/contracts/test_chunk_invariance.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/contracts/test_chunk_invariance.py"
+        ],
+        "requirement_ids": [],
+        "source": "CLAUDE.md",
+        "text": "- `tests/contracts/test_chunk_invariance.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 170,
+        "missing_paths": [
+          "tests/perf/test_plugin_resource_budget.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/perf/test_plugin_resource_budget.py"
+        ],
+        "requirement_ids": [],
+        "source": "CLAUDE.md",
+        "text": "- `tests/perf/test_plugin_resource_budget.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 171,
+        "missing_paths": [
+          "tests/integration/test_known_issue_rediscovery_baseline.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/integration/test_known_issue_rediscovery_baseline.py"
+        ],
+        "requirement_ids": [],
+        "source": "CLAUDE.md",
+        "text": "- `tests/integration/test_known_issue_rediscovery_baseline.py`",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 117,
+        "missing_paths": [
+          "tests/contracts/test_chunk_invariance.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/contracts/test_chunk_invariance.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/four-pillars-implementation-plan.md",
+        "text": "- **Location**: `tests/contracts/test_chunk_invariance.py`,",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 145,
+        "missing_paths": [
+          "tests/perf/test_plugin_resource_budget.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/perf/test_plugin_resource_budget.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/four-pillars-implementation-plan.md",
+        "text": "- **Location**: `tests/perf/test_plugin_resource_budget.py`,",
+        "unresolved_plugin_tokens": []
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 251,
+        "missing_paths": [
+          "tests/integration/test_known_issue_rediscovery_baseline.py"
+        ],
+        "plugin_tokens": [],
+        "referenced_paths": [
+          "tests/integration/test_known_issue_rediscovery_baseline.py"
+        ],
+        "requirement_ids": [],
+        "source": "docs/four-pillars-implementation-plan.md",
+        "text": "- **Location**: `tests/integration/test_known_issue_rediscovery_baseline.py`,",
+        "unresolved_plugin_tokens": []
+      }
+    ],
     "plugin_data_access_unclassified": [],
     "plugin_missing_dep_edges": {},
     "redteam_missing_required_ids": []
   },
-  "has_hard_gaps": false,
+  "has_hard_gaps": true,
   "soft_gaps": {
     "optional_sql_not_using": [],
     "recommended_sql_not_using": [],
     "required_sql_not_using": []
   },
   "summary": {
-    "hard_gap_count": 0,
+    "hard_gap_count": 8,
     "optional_sql_not_using_count": 0,
     "recommended_sql_not_using_count": 0,
     "required_sql_not_using_count": 0

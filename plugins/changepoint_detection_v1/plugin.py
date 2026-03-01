@@ -72,29 +72,51 @@ class Plugin:
             left = float(np.mean(series[idx - window : idx]))
             right = float(np.mean(series[idx : idx + window]))
             deltas.append((idx, abs(right - left)))
-        best_idx, best_delta = max(deltas, key=lambda x: x[1])
-        denom = max(1e-9, max(delta for _, delta in deltas))
-        score = float(best_delta / denom)
 
-        finding = {
-            "kind": "changepoint",
-            "column": value_column,
-            "index": int(best_idx),
-            "prob": float(round(score, 6)),
-        }
+        all_delta_vals = np.array([d for _, d in deltas], dtype=float)
+        mean_delta = float(np.mean(all_delta_vals))
+        std_delta = float(np.std(all_delta_vals))
+        z_threshold = float(ctx.settings.get("z_threshold", 2.0))
+
+        significant_changepoints: list[dict] = []
+        for idx, delta in sorted(deltas, key=lambda x: x[1], reverse=True):
+            if std_delta > 1e-9:
+                z_score = (delta - mean_delta) / std_delta
+            else:
+                z_score = 0.0
+            if z_score >= z_threshold:
+                significant_changepoints.append({
+                    "index": int(idx),
+                    "z_score": float(round(z_score, 6)),
+                    "delta": float(round(delta, 6)),
+                    "segment_before_mean": float(np.mean(series[max(0, idx - window) : idx])),
+                    "segment_after_mean": float(np.mean(series[idx : idx + window])),
+                })
+
+        max_changepoints = int(ctx.settings.get("max_changepoints", 10))
+        significant_changepoints = significant_changepoints[:max_changepoints]
+
+        findings = []
+        for cp in significant_changepoints:
+            findings.append({
+                "kind": "changepoint",
+                "column": value_column,
+                "index": cp["index"],
+                "prob": float(round(min(1.0, cp["z_score"] / 5.0), 6)),
+                "z_score": cp["z_score"],
+            })
+
         artifact_payload = {
             "schema_version": "changepoints.v1",
             "plugin_id": "changepoint_detection_v1",
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "series": value_column,
-            "changepoints": [
-                {
-                    "index": int(best_idx),
-                    "score": float(round(score, 6)),
-                    "segment_before_mean": float(np.mean(series[max(0, best_idx - window) : best_idx])),
-                    "segment_after_mean": float(np.mean(series[best_idx : best_idx + window])),
-                }
-            ],
+            "changepoints": significant_changepoints,
+            "null_distribution": {
+                "mean_delta": float(round(mean_delta, 6)),
+                "std_delta": float(round(std_delta, 6)),
+                "z_threshold": z_threshold,
+            },
         }
         artifacts_dir = ctx.artifacts_dir("changepoint_detection_v1")
         out_path = artifacts_dir / "changepoints.json"
@@ -108,14 +130,14 @@ class Plugin:
         ]
         return PluginResult(
             status="ok",
-            summary="Computed deterministic changepoint candidate",
+            summary=f"Detected {len(significant_changepoints)} significant changepoint(s)",
             metrics={
                 "rows_used": int(len(series)),
                 "value_column": value_column,
-                "changepoints": 1,
+                "changepoints": len(significant_changepoints),
             },
-            findings=[finding],
+            findings=findings,
             artifacts=artifacts,
             references=[],
-            debug={"value_column": value_column, "window": window},
+            debug={"value_column": value_column, "window": window, "z_threshold": z_threshold},
         )

@@ -33,6 +33,10 @@ dependencies = [
   "simpy",
   "dtaidistance",
   "simhash",
+  "lifelines",
+  "ruptures",
+  "dowhy",
+  "scipy",
 ]
 
 [project.optional-dependencies]

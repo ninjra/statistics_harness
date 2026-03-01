@@ -1,0 +1,5 @@
+schema_version: chunk_invariance_tolerances.v1
+hours_abs: 0.01
+percent_abs: 0.001
+count_abs: 0
+

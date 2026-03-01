@@ -823,6 +823,67 @@ def _burst_detection(
     return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
+def _bocpd_student_t(data: np.ndarray, hazard_lambda: float = 200.0, threshold: float = 0.5) -> list[int]:
+    n = len(data)
+    if n < 5:
+        return []
+    max_run = min(n, 500)
+    run_length_probs = np.zeros((n + 1, max_run + 1))
+    run_length_probs[0, 0] = 1.0
+    mu0 = float(np.mean(data))
+    kappa0 = 1.0
+    alpha0 = 1.0
+    beta0 = float(np.var(data) + 1e-6)
+    mu_params = np.full(max_run + 1, mu0)
+    kappa_params = np.full(max_run + 1, kappa0)
+    alpha_params = np.full(max_run + 1, alpha0)
+    beta_params = np.full(max_run + 1, beta0)
+    changepoints: list[int] = []
+    h = 1.0 / hazard_lambda
+    for t in range(n):
+        x = data[t]
+        active = min(t + 1, max_run)
+        pred_var = beta_params[:active] * (kappa_params[:active] + 1) / (alpha_params[:active] * kappa_params[:active])
+        pred_var = np.maximum(pred_var, 1e-12)
+        pred_mean = mu_params[:active]
+        z = (x - pred_mean) / np.sqrt(pred_var)
+        df = 2.0 * alpha_params[:active]
+        from scipy.stats import t as t_dist
+        log_pred = t_dist.logpdf(z, df) - 0.5 * np.log(pred_var)
+        pred = np.exp(log_pred)
+        pred = np.maximum(pred, 1e-300)
+        growth = run_length_probs[t, :active] * pred * (1 - h)
+        change = np.sum(run_length_probs[t, :active] * pred * h)
+        new_rl = np.zeros(max_run + 1)
+        new_rl[0] = change
+        end = min(active + 1, max_run + 1)
+        new_rl[1:end] = growth[:end - 1]
+        total = new_rl.sum()
+        if total > 0:
+            new_rl /= total
+        run_length_probs[t + 1, :] = new_rl
+        new_kappa = kappa_params[:active] + 1
+        new_mu = (kappa_params[:active] * mu_params[:active] + x) / new_kappa
+        new_alpha = alpha_params[:active] + 0.5
+        new_beta = beta_params[:active] + 0.5 * kappa_params[:active] * (x - mu_params[:active]) ** 2 / new_kappa
+        updated_mu = np.full(max_run + 1, mu0)
+        updated_kappa = np.full(max_run + 1, kappa0)
+        updated_alpha = np.full(max_run + 1, alpha0)
+        updated_beta = np.full(max_run + 1, beta0)
+        end = min(active, max_run)
+        updated_mu[1:end + 1] = new_mu[:end]
+        updated_kappa[1:end + 1] = new_kappa[:end]
+        updated_alpha[1:end + 1] = new_alpha[:end]
+        updated_beta[1:end + 1] = new_beta[:end]
+        mu_params = updated_mu
+        kappa_params = updated_kappa
+        alpha_params = updated_alpha
+        beta_params = updated_beta
+        if new_rl[0] > threshold and t > 5:
+            changepoints.append(t)
+    return changepoints
+
+
 def _event_count_bocpd_poisson(
     plugin_id: str,
     ctx,
@@ -841,24 +902,34 @@ def _event_count_bocpd_poisson(
     counts = df.groupby("_bucket").size()
     if counts.size < 10:
         return PluginResult("skipped", "Insufficient time buckets", _basic_metrics(df, sample_meta), [], [], None)
-    rolling = counts.rolling(window=5, min_periods=3).mean()
-    diff = rolling.diff().abs()
-    idx = int(np.argmax(diff.fillna(0.0)))
-    change_bucket = counts.index[idx]
-    evidence = {"metrics": {"rolling_mean_delta": float(diff.iloc[idx]), "bucket": str(change_bucket)}}
-    finding = _make_finding(
-        plugin_id,
-        f"bocpd:{change_bucket}",
-        "Poisson count change detected",
-        "Event counts shift in time.",
-        "BOCPD-style rolling mean change.",
-        evidence,
-        where={"bucket": str(change_bucket)},
-        severity="warn",
-        confidence=min(1.0, float(diff.iloc[idx]) / max(counts.mean(), 1e-6)),
-    )
-    artifacts = [_artifact(ctx, plugin_id, "bocpd_poisson.json", evidence, "json")]
-    return PluginResult("ok", "BOCPD Poisson scan complete", _basic_metrics(df, sample_meta), [finding], artifacts, None)
+    data = counts.to_numpy(dtype=float)
+    hazard_lambda = float(config.get("bocpd", {}).get("hazard_lambda", 200.0))
+    cp_threshold = float(config.get("bocpd", {}).get("threshold", 0.5))
+    changepoints = _bocpd_student_t(data, hazard_lambda=hazard_lambda, threshold=cp_threshold)
+    findings = []
+    for cp_idx in changepoints[:10]:
+        if cp_idx < len(counts.index):
+            change_bucket = counts.index[cp_idx]
+            left_data = data[max(0, cp_idx - 5):cp_idx]
+            right_data = data[cp_idx:min(len(data), cp_idx + 5)]
+            delta = float(np.mean(right_data) - np.mean(left_data)) if left_data.size > 0 and right_data.size > 0 else 0.0
+            evidence = {"metrics": {"bucket": str(change_bucket), "mean_shift": delta, "method": "bocpd_student_t"}}
+            findings.append(_make_finding(
+                plugin_id,
+                f"bocpd:{change_bucket}",
+                "BOCPD changepoint detected",
+                "Run-length posterior indicates regime change.",
+                "Bayesian Online Changepoint Detection (Adams & MacKay 2007) with Student-t sufficient statistics.",
+                evidence,
+                where={"bucket": str(change_bucket)},
+                severity="warn",
+                confidence=min(1.0, abs(delta) / max(float(np.std(data)), 1e-6)),
+            ))
+    artifacts = []
+    if findings:
+        artifacts.append(_artifact(ctx, plugin_id, "bocpd_poisson.json", [f for f in findings], "json"))
+    summary = _summary_or_skip(f"BOCPD detected {len(findings)} changepoint(s)", findings)
+    return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
 def _hawkes_self_exciting(
@@ -1110,7 +1181,7 @@ def _pca_control_chart(
     return PluginResult("ok", "PCA control chart complete", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
-def _binary_segmentation(
+def _binary_segmentation_fallback(
     series: np.ndarray, min_size: int, penalty: float
 ) -> list[int]:
     n = series.size
@@ -1139,8 +1210,8 @@ def _binary_segmentation(
             best_idx = idx
     if best_idx is None or best_gain < penalty:
         return []
-    left = _binary_segmentation(series[:best_idx], min_size, penalty)
-    right = [best_idx + cp for cp in _binary_segmentation(series[best_idx:], min_size, penalty)]
+    left = _binary_segmentation_fallback(series[:best_idx], min_size, penalty)
+    right = [best_idx + cp for cp in _binary_segmentation_fallback(series[best_idx:], min_size, penalty)]
     return left + [best_idx] + right
 
 
@@ -1163,21 +1234,33 @@ def _changepoint_pelt(
     series = series[:max_points]
     min_size = int(config.get("pelt", {}).get("min_segment_size", 50))
     penalty = float(config.get("pelt", {}).get("penalty_beta", 2.0)) * math.log(len(series)) * 1.0
-    changepoints = sorted(set(_binary_segmentation(series, min_size, penalty)))
-    changepoints = changepoints[: int(config.get("pelt", {}).get("max_changepoints", 20))]
+    max_cps = int(config.get("pelt", {}).get("max_changepoints", 20))
+
+    method_used = "pelt"
+    try:
+        import ruptures
+        algo = ruptures.Pelt(model="rbf", min_size=min_size).fit(series)
+        changepoints = algo.predict(pen=penalty)
+        changepoints = [cp for cp in changepoints if cp < len(series)]
+        changepoints = sorted(set(changepoints))[:max_cps]
+    except ImportError:
+        method_used = "binary_segmentation_fallback"
+        changepoints = sorted(set(_binary_segmentation_fallback(series, min_size, penalty)))
+        changepoints = changepoints[:max_cps]
+
     findings = []
     for cp in changepoints:
         left = series[max(0, cp - min_size) : cp]
-        right = series[cp : cp + min_size]
+        right = series[cp : min(len(series), cp + min_size)]
         effect = _effect_size(left, right)
-        evidence = {"metrics": {"index": cp, "effect_size": effect}}
+        evidence = {"metrics": {"index": cp, "effect_size": effect, "method": method_used}}
         findings.append(
             _make_finding(
                 plugin_id,
                 f"{numeric_cols[0]}:{cp}",
                 f"Changepoint in {numeric_cols[0]}",
                 "Segment boundary detected.",
-                "Binary segmentation approximates PELT with SSE cost.",
+                f"Changepoint detected via {method_used}.",
                 evidence,
                 where={"column": numeric_cols[0], "index": int(cp)},
                 severity="warn" if abs(effect) > 0.5 else "info",
@@ -1187,7 +1270,7 @@ def _changepoint_pelt(
     artifacts = []
     if findings:
         artifacts.append(_artifact(ctx, plugin_id, "changepoints.json", findings, "json"))
-    summary = _summary_or_skip("Changepoint detection complete", findings)
+    summary = _summary_or_skip(f"PELT changepoint detection complete ({method_used})", findings)
     return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
@@ -1224,18 +1307,37 @@ def _changepoint_energy_edivisive(
             best_idx = idx
     findings = []
     if best_idx is not None:
-        evidence = {"metrics": {"index": best_idx, "energy_stat": best_stat}}
+        n_perm = 200
+        seed = int(getattr(ctx, "run_seed", 0) or 0)
+        rng = np.random.default_rng(seed)
+        exceed_count = 0
+        for _ in range(n_perm):
+            shuffled = rng.permutation(series)
+            perm_best = 0.0
+            for pidx in range(20, max_points - 20, max(1, (max_points - 40) // 20)):
+                pl = shuffled[:pidx]
+                pr = shuffled[pidx:]
+                pdlr = np.mean(np.abs(pl[:, None] - pr[None, :]))
+                pdll = np.mean(np.abs(pl[:, None] - pl[None, :]))
+                pdrr = np.mean(np.abs(pr[:, None] - pr[None, :]))
+                pstat = 2 * pdlr - pdll - pdrr
+                if pstat > perm_best:
+                    perm_best = pstat
+            if perm_best >= best_stat:
+                exceed_count += 1
+        confidence = 1.0 - (exceed_count / n_perm)
+        evidence = {"metrics": {"index": best_idx, "energy_stat": best_stat, "permutation_confidence": confidence}}
         findings.append(
             _make_finding(
                 plugin_id,
                 f"{numeric_cols[0]}:{best_idx}",
                 f"Energy changepoint in {numeric_cols[0]}",
                 "Energy statistic peaks at a boundary.",
-                "E-divisive style energy statistic indicates change.",
+                "E-divisive style energy statistic with permutation test.",
                 evidence,
                 where={"column": numeric_cols[0], "index": int(best_idx)},
-                severity="warn",
-                confidence=min(1.0, best_stat / (abs(best_stat) + 1e-6)),
+                severity="warn" if confidence > 0.8 else "info",
+                confidence=confidence,
             )
         )
     artifacts = []
@@ -1243,6 +1345,48 @@ def _changepoint_energy_edivisive(
         artifacts.append(_artifact(ctx, plugin_id, "energy_changepoint.json", findings, "json"))
     summary = _summary_or_skip("Energy changepoint detection complete", findings)
     return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
+
+
+def _adwin_detect(series: np.ndarray, delta: float = 0.002) -> list[int]:
+    n = len(series)
+    if n < 20:
+        return []
+    std_global = float(np.std(series))
+    if std_global > 0:
+        series_norm = (series - np.mean(series)) / std_global
+    else:
+        series_norm = series - np.mean(series)
+    drift_points: list[int] = []
+    window_start = 0
+    cumsum = np.cumsum(series_norm)
+    for t in range(20, n):
+        best_cut = None
+        best_diff = 0.0
+        window_len = t - window_start
+        if window_len < 10:
+            continue
+        for k_exp in range(2, int(math.log2(max(2, window_len))) + 1):
+            cut = t - min(2 ** k_exp, window_len - 5)
+            if cut <= window_start or cut >= t:
+                continue
+            n_left = cut - window_start
+            n_right = t - cut
+            if n_left < 5 or n_right < 5:
+                continue
+            sum_left = cumsum[cut - 1] - (cumsum[window_start - 1] if window_start > 0 else 0.0)
+            sum_right = cumsum[t - 1] - cumsum[cut - 1]
+            mean_left = sum_left / n_left
+            mean_right = sum_right / n_right
+            diff_val = abs(mean_right - mean_left)
+            m = 1.0 / n_left + 1.0 / n_right
+            eps_cut = math.sqrt(2.0 * m * math.log(2.0 * math.log(max(2, n_left + n_right)) / delta))
+            if diff_val > eps_cut and diff_val > best_diff:
+                best_diff = diff_val
+                best_cut = cut
+        if best_cut is not None:
+            drift_points.append(best_cut)
+            window_start = best_cut
+    return drift_points
 
 
 def _drift_adwin(
@@ -1260,35 +1404,35 @@ def _drift_adwin(
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 100:
         return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
-    window = min(200, series.size // 2)
-    if window <= 10:
-        return PluginResult("skipped", "Window too small", _basic_metrics(df, sample_meta), [], [], None)
-    left = series[-2 * window : -window]
-    right = series[-window:]
-    mean_left = float(np.mean(left))
-    mean_right = float(np.mean(right))
-    diff = abs(mean_right - mean_left)
-    eps = math.sqrt(math.log(4 * window) / (2 * window))
-    evidence = {"metrics": {"mean_left": mean_left, "mean_right": mean_right, "diff": diff, "epsilon": eps}}
+
+    adwin_delta = float(config.get("adwin", {}).get("delta", 0.002))
+    drift_points = _adwin_detect(series, delta=adwin_delta)
+
     findings = []
-    if diff > eps:
+    for dp in drift_points[:10]:
+        left = series[max(0, dp - 50):dp]
+        right = series[dp:min(len(series), dp + 50)]
+        mean_left = float(np.mean(left)) if left.size > 0 else 0.0
+        mean_right = float(np.mean(right)) if right.size > 0 else 0.0
+        diff = abs(mean_right - mean_left)
+        evidence = {"metrics": {"index": dp, "mean_left": mean_left, "mean_right": mean_right, "diff": diff, "method": "adwin_dynamic_windowing"}}
         findings.append(
             _make_finding(
                 plugin_id,
-                f"{numeric_cols[0]}:adwin",
-                f"ADWIN drift in {numeric_cols[0]}",
-                "Recent window mean differs from previous window.",
-                "ADWIN-style Hoeffding bound exceeded.",
+                f"{numeric_cols[0]}:adwin:{dp}",
+                f"ADWIN drift at index {dp} in {numeric_cols[0]}",
+                "Dynamic windowing detected significant mean shift.",
+                "ADWIN with Hoeffding bound on exponentially growing buckets.",
                 evidence,
-                where={"column": numeric_cols[0]},
+                where={"column": numeric_cols[0], "index": dp},
                 severity="warn",
-                confidence=min(1.0, diff / (eps + 1e-6)),
+                confidence=min(1.0, diff / max(float(np.std(series)), 1e-6)),
             )
         )
     artifacts = []
     if findings:
         artifacts.append(_artifact(ctx, plugin_id, "adwin_drift.json", findings, "json"))
-    summary = _summary_or_skip("ADWIN drift check complete", findings)
+    summary = _summary_or_skip(f"ADWIN detected {len(findings)} drift point(s)", findings)
     return PluginResult("ok", summary, _basic_metrics(df, sample_meta), findings, artifacts, None)
 
 
@@ -2204,6 +2348,32 @@ def _duration_columns(inferred: dict[str, Any], df: pd.DataFrame) -> list[str]:
     return preferred or numeric_cols
 
 
+def _detect_censoring(df: pd.DataFrame, inferred: dict[str, Any]) -> np.ndarray | None:
+    status_col = inferred.get("status_column")
+    if not status_col or status_col not in df.columns:
+        for c in df.columns:
+            cl = str(c).lower()
+            if cl in {"status", "status_cd", "state", "event_status"}:
+                status_col = str(c)
+                break
+    if status_col and status_col in df.columns:
+        status_vals = df[status_col].astype(str).str.lower()
+        running_markers = {"running", "queued", "pending", "active", "in_progress", "waiting"}
+        event_observed = (~status_vals.isin(running_markers)).astype(int).to_numpy()
+        return event_observed
+    end_col = inferred.get("end_time_column")
+    if not end_col:
+        for c in df.columns:
+            cl = str(c).lower()
+            if any(tok in cl for tok in ["end_dt", "end_date", "finish", "complete"]):
+                end_col = str(c)
+                break
+    if end_col and end_col in df.columns:
+        event_observed = df[end_col].notna().astype(int).to_numpy()
+        return event_observed
+    return None
+
+
 def _survival_kaplan_meier(
     plugin_id: str,
     ctx,
@@ -2220,22 +2390,69 @@ def _survival_kaplan_meier(
     durations = df[col].dropna().to_numpy(dtype=float)
     if durations.size < 30:
         return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
-    median = float(np.median(durations))
+
+    event_flags = _detect_censoring(df, inferred)
+    if event_flags is not None:
+        mask = df[col].notna()
+        event_flags = event_flags[mask.to_numpy()][:len(durations)]
+    else:
+        event_flags = np.ones(len(durations), dtype=int)
+
+    method_used = "kaplan_meier_lifelines"
+    try:
+        from lifelines import KaplanMeierFitter
+        kmf = KaplanMeierFitter()
+        kmf.fit(durations, event_observed=event_flags)
+        km_median = float(kmf.median_survival_time_) if np.isfinite(kmf.median_survival_time_) else float(np.median(durations))
+        ci = kmf.confidence_interval_survival_function_
+        ci_lower = float(ci.iloc[:, 0].iloc[len(ci) // 2]) if len(ci) > 0 else None
+        ci_upper = float(ci.iloc[:, 1].iloc[len(ci) // 2]) if len(ci) > 0 else None
+        survival_curve = []
+        sf = kmf.survival_function_
+        step = max(1, len(sf) // 20)
+        for i in range(0, len(sf), step):
+            survival_curve.append({"time": float(sf.index[i]), "probability": float(sf.iloc[i, 0])})
+    except ImportError:
+        method_used = "naive_summary_fallback"
+        km_median = float(np.median(durations))
+        ci_lower = None
+        ci_upper = None
+        survival_curve = []
+
+    censored_count = int((event_flags == 0).sum())
+    naive_median = float(np.median(durations))
     p90 = float(np.quantile(durations, 0.9))
-    evidence = {"metrics": {"median": median, "p90": p90, "column": col}}
+    evidence = {
+        "metrics": {
+            "km_median": km_median,
+            "naive_median": naive_median,
+            "p90": p90,
+            "column": col,
+            "censored_count": censored_count,
+            "total_count": int(len(durations)),
+            "method": method_used,
+        }
+    }
+    if ci_lower is not None:
+        evidence["metrics"]["ci_lower_50pct"] = ci_lower
+    if ci_upper is not None:
+        evidence["metrics"]["ci_upper_50pct"] = ci_upper
+    if survival_curve:
+        evidence["survival_curve"] = survival_curve
+
     finding = _make_finding(
         plugin_id,
         f"{col}:km",
-        f"Survival summary for {col}",
-        "Duration distribution summarized.",
-        "Kaplan-Meier style summary (median, p90).",
+        f"Kaplan-Meier survival for {col}",
+        f"Median survival: {km_median:.2f} (naive: {naive_median:.2f}). {censored_count} censored observations.",
+        f"Kaplan-Meier estimator with censoring via {method_used}.",
         evidence,
         where={"column": col},
         severity="info",
-        confidence=0.5,
+        confidence=0.7 if censored_count > 0 else 0.5,
     )
     artifacts = [_artifact(ctx, plugin_id, "survival_summary.json", evidence, "json")]
-    return PluginResult("ok", "Survival analysis complete", _basic_metrics(df, sample_meta), [finding], artifacts, None)
+    return PluginResult("ok", "Kaplan-Meier survival analysis complete", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
 def _proportional_hazards_duration(
@@ -2256,26 +2473,76 @@ def _proportional_hazards_duration(
     groups = df[group_col].dropna().astype(str)
     if groups.nunique() < 2:
         return PluginResult("skipped", "Insufficient group variety", _basic_metrics(df, sample_meta), [], [], None)
-    top_group = groups.value_counts().index[0]
-    left = df.loc[groups == top_group, col].dropna().to_numpy(dtype=float)
-    right = df.loc[groups != top_group, col].dropna().to_numpy(dtype=float)
-    if left.size == 0 or right.size == 0:
-        return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
-    ratio = float(np.median(left) / (np.median(right) + 1e-6))
-    evidence = {"metrics": {"hazard_ratio_proxy": ratio, "group": top_group, "column": col}}
+
+    event_flags = _detect_censoring(df, inferred)
+
+    method_used = "cox_ph_lifelines"
+    try:
+        from lifelines import CoxPHFitter
+        numeric_covariates = []
+        for c in df.select_dtypes(include="number").columns:
+            cn = str(c)
+            if cn != col and cn not in duration_cols:
+                numeric_covariates.append(cn)
+        categorical_dummies = pd.get_dummies(groups, prefix=group_col, drop_first=True)
+        covariates = list(categorical_dummies.columns)[:5] + numeric_covariates[:5]
+        cph_df = pd.concat([df[[col]].reset_index(drop=True), categorical_dummies.reset_index(drop=True)], axis=1)
+        for nc in numeric_covariates[:5]:
+            cph_df[nc] = pd.to_numeric(df[nc], errors="coerce").fillna(0).reset_index(drop=True)
+        if event_flags is not None:
+            cph_df["__event__"] = event_flags[:len(cph_df)]
+        else:
+            cph_df["__event__"] = 1
+        cph_df = cph_df.dropna(subset=[col])
+        cph_df = cph_df[cph_df[col] > 0]
+        if len(cph_df) < 20:
+            raise ValueError("Insufficient data for Cox PH")
+        fit_cols = [col, "__event__"] + [c for c in covariates if c in cph_df.columns]
+        cph = CoxPHFitter(penalizer=0.1)
+        cph.fit(cph_df[fit_cols], duration_col=col, event_col="__event__")
+        hazard_ratios = []
+        for cov_name in cph.summary.index:
+            hr = float(cph.hazard_ratios_[cov_name])
+            p_val = float(cph.summary.loc[cov_name, "p"])
+            ci_lo = float(np.exp(cph.summary.loc[cov_name, "coef lower 95%"]))
+            ci_hi = float(np.exp(cph.summary.loc[cov_name, "coef upper 95%"]))
+            hazard_ratios.append({
+                "covariate": cov_name,
+                "hazard_ratio": round(hr, 4),
+                "p_value": round(p_val, 6),
+                "ci_95_lower": round(ci_lo, 4),
+                "ci_95_upper": round(ci_hi, 4),
+            })
+        concordance = float(cph.concordance_index_)
+    except (ImportError, Exception):
+        method_used = "median_ratio_fallback"
+        top_group = groups.value_counts().index[0]
+        left = df.loc[groups == top_group, col].dropna().to_numpy(dtype=float)
+        right = df.loc[groups != top_group, col].dropna().to_numpy(dtype=float)
+        if left.size == 0 or right.size == 0:
+            return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
+        ratio = float(np.median(left) / (np.median(right) + 1e-6))
+        hazard_ratios = [{"covariate": top_group, "hazard_ratio": round(ratio, 4), "p_value": None, "ci_95_lower": None, "ci_95_upper": None}]
+        concordance = None
+
+    evidence = {"metrics": {"hazard_ratios": hazard_ratios, "method": method_used, "column": col, "group_column": group_col}}
+    if concordance is not None:
+        evidence["metrics"]["concordance_index"] = round(concordance, 4)
+    sig_ratios = [hr for hr in hazard_ratios if hr.get("p_value") is not None and hr["p_value"] < 0.05]
+    summary_text = f"Cox PH: {len(sig_ratios)} significant covariate(s)" if sig_ratios else "Cox PH analysis complete"
     finding = _make_finding(
         plugin_id,
-        f"{col}:{group_col}:{top_group}",
-        "Proportional hazards proxy",
-        "Median duration ratio differs by group.",
-        "Median ratio used as hazard proxy.",
+        f"{col}:{group_col}:cox",
+        f"Cox proportional hazards for {col}",
+        summary_text,
+        f"Hazard ratios via {method_used}.",
         evidence,
-        where={"column": col, "group": {group_col: top_group}},
-        severity="warn" if ratio > 1.5 else "info",
-        confidence=min(1.0, abs(ratio - 1.0)),
+        where={"column": col, "group_column": group_col},
+        severity="warn" if sig_ratios else "info",
+        confidence=concordance if concordance is not None else 0.5,
     )
     artifacts = [_artifact(ctx, plugin_id, "hazards_proxy.json", evidence, "json")]
-    return PluginResult("ok", "Proportional hazards proxy complete", _basic_metrics(df, sample_meta), [finding], artifacts, None)
+    return PluginResult("ok", f"Proportional hazards complete ({method_used})", _basic_metrics(df, sample_meta), [finding], artifacts, None)
 
 
 def _quantile_regression_duration(

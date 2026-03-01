@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+from scipy.stats import norm as _norm
 
 from statistic_harness.core.types import PluginResult
 
@@ -26,7 +27,7 @@ def run(ctx) -> PluginResult:
         ranks[order] = np.arange(n, dtype=float)
         u = (ranks + 0.5) / float(n + 1)
         u = np.clip(u, 1e-6, 1 - 1e-6)
-        z[:, j] = np.log(u / (1.0 - u))
+        z[:, j] = _norm.ppf(u)
     mu = z.mean(axis=0)
     cov = np.cov(z.T) + np.eye(m) * 1e-5
     inv_cov = np.linalg.pinv(cov)

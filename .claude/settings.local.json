@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(python:*)",
+      "Bash(pip show:*)",
+      "Bash(pip3 show:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(.venv/bin/pip list:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(python3:*)",
+      "mcp__plugin_context-mode_context-mode__batch_execute",
+      "mcp__plugin_context-mode_context-mode__execute",
+      "Bash(git stash:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

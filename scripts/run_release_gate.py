@@ -50,6 +50,8 @@ def _release_gate_payload(
     state_db: str,
     pytest_args: str,
     top_n: int,
+    ground_truth: str,
+    release_candidate: bool,
     out_dir: Path,
 ) -> dict[str, Any]:
     steps: dict[str, dict[str, Any]] = {}
@@ -71,7 +73,142 @@ def _release_gate_payload(
     )
     steps["verify_openplanter_pack_release_gate"] = pytest_step
 
+    no_network_out = out_dir / "no_runtime_network_contract.json"
+    files["no_runtime_network_contract_json"] = str(no_network_out)
+    no_network_cmd = [
+        sys.executable,
+        "scripts/verify_no_runtime_network.py",
+        "--out-json",
+        str(no_network_out),
+        "--strict",
+    ]
     if run_id:
+        no_network_cmd.extend(["--run-id", run_id])
+    steps["verify_no_runtime_network"] = _run_step(no_network_cmd)
+
+    coverage_out = out_dir / "plugin_test_coverage.json"
+    files["plugin_test_coverage_json"] = str(coverage_out)
+    steps["verify_plugin_test_coverage"] = _run_step(
+        [
+            sys.executable,
+            "scripts/verify_plugin_test_coverage.py",
+            "--out-json",
+            str(coverage_out),
+            "--strict",
+        ]
+    )
+
+    if run_id:
+        report_contract_out = out_dir / f"report_contract_{run_id}.json"
+        files["report_contract_json"] = str(report_contract_out)
+        steps["verify_report_artifacts_contract"] = _run_step(
+            [
+                sys.executable,
+                "scripts/verify_report_artifacts_contract.py",
+                "--run-id",
+                run_id,
+                "--out-json",
+                str(report_contract_out),
+                "--strict",
+            ]
+        )
+
+        streaming_out = out_dir / f"streaming_contract_audit_{run_id}.json"
+        files["streaming_contract_audit_json"] = str(streaming_out)
+        steps["audit_plugin_streaming_contract"] = _run_step(
+            [
+                sys.executable,
+                "scripts/audit_plugin_streaming_contract.py",
+                "--run-id",
+                run_id,
+                "--out-json",
+                str(streaming_out),
+                "--strict",
+            ]
+        )
+
+        targeting_windows_out = out_dir / f"targeting_window_audit_{run_id}.json"
+        files["targeting_window_audit_json"] = str(targeting_windows_out)
+        steps["audit_plugin_targeting_windows"] = _run_step(
+            [
+                sys.executable,
+                "scripts/audit_plugin_targeting_windows.py",
+                "--run-id",
+                run_id,
+                "--out-json",
+                str(targeting_windows_out),
+                "--strict",
+            ]
+        )
+
+        process_targeting_out = out_dir / f"process_targeting_audit_{run_id}.json"
+        files["process_targeting_audit_json"] = str(process_targeting_out)
+        steps["audit_plugin_process_targeting"] = _run_step(
+            [
+                sys.executable,
+                "scripts/audit_plugin_process_targeting.py",
+                "--run-id",
+                run_id,
+                "--out-json",
+                str(process_targeting_out),
+                "--strict",
+            ]
+        )
+
+        plugin_contract_out = out_dir / f"plugin_contract_{run_id}.json"
+        files["plugin_contract_json"] = str(plugin_contract_out)
+        steps["verify_plugin_result_contract"] = _run_step(
+            [
+                sys.executable,
+                "scripts/verify_plugin_result_contract.py",
+                "--run-id",
+                run_id,
+                "--out-json",
+                str(plugin_contract_out),
+                "--strict",
+            ]
+        )
+
+        resolved_ground_truth = str(ground_truth or "").strip()
+        if not resolved_ground_truth:
+            default_ground_truth = ROOT / "appdata" / "runs" / run_id / "ground_truth.yaml"
+            if default_ground_truth.exists():
+                resolved_ground_truth = str(default_ground_truth)
+
+        if resolved_ground_truth:
+            evaluator_out = out_dir / f"evaluator_{run_id}.json"
+            files["evaluator_json"] = str(evaluator_out)
+            steps["evaluator_harness"] = _run_step(
+                [
+                    sys.executable,
+                    "scripts/evaluator_harness.py",
+                    "--report-json",
+                    str(ROOT / "appdata" / "runs" / run_id / "report.json"),
+                    "--ground-truth",
+                    resolved_ground_truth,
+                    "--out-json",
+                    str(evaluator_out),
+                    "--strict",
+                ]
+            )
+        elif release_candidate:
+            steps["evaluator_harness"] = {
+                "cmd": [
+                    sys.executable,
+                    "scripts/evaluator_harness.py",
+                    "--report-json",
+                    str(ROOT / "appdata" / "runs" / run_id / "report.json"),
+                    "--ground-truth",
+                    "<required>",
+                ],
+                "rc": 1,
+                "stdout": "",
+                "stderr": (
+                    "Release-candidate gate requires ground truth: pass --ground-truth "
+                    "or provide appdata/runs/<run_id>/ground_truth.yaml"
+                ),
+            }
+
         bundle_step = _run_step(
             [
                 sys.executable,
@@ -100,6 +237,7 @@ def _release_gate_payload(
         "run_id": run_id or None,
         "before_run_id": before_run_id or None,
         "known_issues_mode": known_issues_mode,
+        "release_candidate": bool(release_candidate),
         "steps": steps,
         "files": files,
     }
@@ -118,6 +256,8 @@ def main() -> int:
     parser.add_argument("--state-db", default=str(ROOT / "appdata" / "state.sqlite"))
     parser.add_argument("--pytest-args", default="-q")
     parser.add_argument("--top-n", type=int, default=20)
+    parser.add_argument("--ground-truth", default="")
+    parser.add_argument("--release-candidate", action="store_true")
     parser.add_argument("--out-dir", default=str(DEFAULT_OUT_DIR))
     parser.add_argument("--out", default="")
     args = parser.parse_args()
@@ -134,6 +274,8 @@ def main() -> int:
         state_db=str(args.state_db).strip(),
         pytest_args=str(args.pytest_args).strip(),
         top_n=int(args.top_n),
+        ground_truth=str(args.ground_truth).strip(),
+        release_candidate=bool(args.release_candidate),
         out_dir=out_dir,
     )
 

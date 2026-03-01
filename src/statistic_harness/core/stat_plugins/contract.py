@@ -15,7 +15,7 @@ REQUIRED_TOP_KEYS = {
     "debug",
 }
 
-VALID_STATUS = {"ok", "na", "skipped", "error"}
+VALID_STATUS = {"ok", "na", "skipped", "error", "degraded"}
 VALID_SEVERITY = {"info", "warn", "critical"}
 
 

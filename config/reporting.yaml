@@ -1,0 +1,3 @@
+schema_version: reporting_config.v1
+recommendation_top_n: 20
+
