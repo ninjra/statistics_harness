@@ -34,10 +34,10 @@ def run(ctx) -> PluginResult:
         except Exception:
             continue
         for pidx, c in zip(parents, coef):
-            w = float(abs(c))
-            if w > 0.05:
+            w = float(c)
+            if abs(w) > 0.05:
                 edges.append({"src": prepared.numeric_cols[pidx], "dst": prepared.numeric_cols[dst], "weight": w})
-    edges.sort(key=lambda r: float(r["weight"]), reverse=True)
+    edges.sort(key=lambda r: abs(float(r["weight"])), reverse=True)
     edges = edges[: int(config.get("top_k") or 12)]
     artifacts = [artifact(ctx, PLUGIN_ID, "lingam_proxy_edges.json", {"ordering": [prepared.numeric_cols[i] for i in order], "edges": edges})]
     findings = []

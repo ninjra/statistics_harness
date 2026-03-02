@@ -38,6 +38,7 @@ def _standardize(matrix: np.ndarray) -> np.ndarray:
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["robust_pca"] = {**DEFAULTS["robust_pca"], **config.get("robust_pca", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

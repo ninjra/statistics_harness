@@ -112,6 +112,25 @@ def _merge_budget_into_config(config: dict[str, Any], budget: dict[str, Any] | N
     return merged
 
 
+def _enrich_findings(findings: list[dict], plugin_id: str) -> None:
+    """Auto-enrich findings missing contract-required fields.
+
+    The plugin contract requires every finding dict to contain:
+    id, severity, confidence, title, what, why.
+    This post-processor backfills missing fields so downstream consumers
+    (report builder, verifier) never see incomplete findings.
+    """
+    for i, f in enumerate(findings):
+        if not isinstance(f, dict):
+            continue
+        f.setdefault("id", f"{plugin_id}:finding:{i}")
+        f.setdefault("severity", "info")
+        f.setdefault("confidence", 0.5)
+        f.setdefault("title", f.get("kind", f"Finding {i}"))
+        f.setdefault("what", f.get("title", f.get("kind", f"Finding {i}")))
+        f.setdefault("why", f.get("recommendation", "Review finding details."))
+
+
 def run_plugin(plugin_id: str, ctx) -> PluginResult:
     if plugin_id in ALIAS_MAP:
         return _delegate_alias(ALIAS_MAP[plugin_id], ctx)
@@ -245,6 +264,9 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
             references=default_references_for_plugin(plugin_id),
             debug={"warnings": ["exception"], "exception": str(exc)},
         )
+
+    # Enrich findings with contract-required fields as a safety net
+    _enrich_findings(result.findings, plugin_id)
 
     if result.references is None or len(result.references) == 0:
         result.references = default_references_for_plugin(plugin_id)
@@ -419,8 +441,8 @@ def _two_sample_numeric(
         return float(p), float(stat)
     if test == "ad" and HAS_SCIPY:
         stat, crit, p = scipy_stats.anderson_ksamp([left, right])
-        p = p / 100.0 if p > 1 else p
-        return float(p), float(stat)
+        p = float(np.clip(p, 0.0, 1.0))
+        return p, float(stat)
     if test == "mw" and HAS_SCIPY:
         stat, p = scipy_stats.mannwhitneyu(left, right, alternative="two-sided")
         return float(p), float(stat)

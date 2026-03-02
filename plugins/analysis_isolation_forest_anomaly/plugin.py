@@ -48,6 +48,7 @@ def _fit_iforest(X: np.ndarray, seed: int, cfg: dict[str, Any]) -> np.ndarray | 
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["iforest"] = {**DEFAULTS["iforest"], **config.get("iforest", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

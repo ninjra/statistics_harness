@@ -54,11 +54,20 @@ def finding(
     recommendation: str,
     score: float | None = None,
     evidence: dict[str, Any] | None = None,
+    severity: str = "info",
+    what: str | None = None,
+    why: str | None = None,
 ) -> dict[str, Any]:
-    payload = {
+    confidence = float(max(0.0, min(1.0, score))) if isinstance(score, (int, float)) else 0.5
+    payload: dict[str, Any] = {
+        "id": f"{plugin_id}:{hash(title) & 0xFFFFFFFF:08x}",
+        "severity": severity,
+        "confidence": confidence,
+        "title": title,
+        "what": what or title,
+        "why": why or recommendation,
         "plugin_id": plugin_id,
         "kind": "leftfield_signal",
-        "title": title,
         "recommendation": recommendation,
     }
     if isinstance(score, (int, float)):
@@ -73,7 +82,8 @@ def degraded(plugin_id: str, summary: str, metrics: dict[str, Any] | None = None
 
 
 def rng(ctx, config: dict[str, Any]) -> np.random.Generator:
-    seed = int(config.get("seed") or getattr(ctx, "run_seed", 0) or 0)
+    # run_seed takes priority over config["seed"] to honour the determinism contract
+    seed = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
     return np.random.default_rng(seed)
 
 

@@ -144,14 +144,18 @@ CATEGORY_ROUTES: list[tuple[list[str], callable, str, list]] = [
         ["template_drift", "message_entropy", "topic_model", "burst"],
         ds_process_log, "ds_process_log", [],
     ),
-    # Time series generic
+    # Time series detectors (expect changepoint detection)
     (
         ["matrix_profile", "kalman", "hawkes", "event_count_bocpd",
-         "haar_wavelet", "hurst_exponent", "permutation_entropy",
-         "recurrence_quantification", "multiscale_entropy",
-         "sample_entropy", "higuchi_fractal", "marked_point_process",
-         "spectral_radius"],
+         "marked_point_process"],
         ds_changepoint_known, "ds_changepoint_known", [],
+    ),
+    # Time series metric plugins (compute metrics, not detect events)
+    (
+        ["haar_wavelet", "hurst_exponent", "permutation_entropy",
+         "recurrence_quantification", "multiscale_entropy",
+         "sample_entropy", "higuchi_fractal", "spectral_radius"],
+        ds_known_normal, "ds_known_normal", [],
     ),
     # Dimensionality / decomposition / regression
     (

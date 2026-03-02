@@ -42,6 +42,8 @@ class Plugin:
                 "skipped", "No complete numeric rows", {"count": 0}, [], [], None
             )
 
+        seed = int(getattr(ctx, "run_seed", 0) or 0)
+        rng = np.random.default_rng(seed)
         max_cols = ctx.settings.get("max_target_cols")
         alpha = float(ctx.settings.get("alpha", 0.1))
         findings = []
@@ -57,6 +59,10 @@ class Plugin:
             if X.size == 0:
                 continue
             n = len(y)
+            # Shuffle indices for exchangeability (conformal prediction requirement)
+            perm = rng.permutation(n)
+            X = X[perm]
+            y = y[perm]
             n_train = int(0.6 * n)
             n_calib = int(0.2 * n)
             train_idx = slice(0, n_train)
@@ -67,7 +73,10 @@ class Plugin:
             model.fit(X[train_idx], y[train_idx])
             calib_pred = model.predict(X[calib_idx])
             resid = np.abs(y[calib_idx] - calib_pred)
-            q = np.quantile(resid, 1 - alpha)
+            # Finite-sample quantile correction: ceil((n_calib+1)*(1-alpha))/n_calib
+            n_cal = len(resid)
+            corrected_level = min(1.0, np.ceil((n_cal + 1) * (1 - alpha)) / n_cal)
+            q = np.quantile(resid, corrected_level)
             test_pred = model.predict(X[test_idx])
             lower = test_pred - q
             upper = test_pred + q

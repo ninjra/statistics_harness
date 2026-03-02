@@ -143,8 +143,14 @@ def check_effect_sizes_finite(result: PluginResult, known: dict[str, Any]) -> Ch
 
 
 def check_findings_present(result: PluginResult, known: dict[str, Any]) -> CheckResult:
-    """Verify findings are present when the dataset should trigger them."""
-    if known.get("has_changepoint") is True or known.get("two_sample_should_reject") is True:
+    """Verify findings are present when the dataset should trigger them.
+
+    Only fires when ``expect_findings`` is explicitly True in known_answers.
+    Dataset-level flags (has_changepoint, two_sample_should_reject) no longer
+    auto-activate this check — many plugins routed to those datasets compute
+    metrics rather than detect events, so 0 findings is correct for them.
+    """
+    if known.get("expect_findings") is True:
         if result.status in ("ok",) and len(result.findings) == 0:
             return CheckResult("findings_present", False, "Expected findings but got none")
     return CheckResult("findings_present", True, "OK")
@@ -219,6 +225,15 @@ def run_verification(case: VerificationCase) -> VerificationResult:
             duration_ms=elapsed,
         )
     elapsed = (time.perf_counter() - t0) * 1000
+
+    if result is None:
+        return VerificationResult(
+            plugin_id=case.plugin_id,
+            dataset_name=case.dataset_name,
+            status="ERROR",
+            error="Plugin returned None instead of PluginResult",
+            duration_ms=elapsed,
+        )
 
     # Inject plugin_id for contract check
     known_with_id = {**case.known_answers, "_plugin_id": case.plugin_id}

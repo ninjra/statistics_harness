@@ -79,6 +79,7 @@ def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int)
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["control_chart"] = {**DEFAULTS["control_chart"], **config.get("control_chart", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

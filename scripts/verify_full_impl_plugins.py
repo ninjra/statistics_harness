@@ -61,6 +61,19 @@ SEGREGATED_PLUGINS: set[str] = {
     "analysis_action_search_mip_batched_scheduler_v1",
     "analysis_action_search_simulated_annealing_v1",
     "analysis_issue_cards_v2",
+    # Category D: Domain-specific data required (FEC/donation data)
+    "analysis_fec_bundled_donation_detection_v1",
+    "analysis_fec_pac_network_influence_mapping_v1",
+    "analysis_fec_repeat_donor_velocity_tracking_v1",
+    # Category E: Storage-dependent (require prior pipeline state)
+    "analysis_close_cycle_change_detection",
+    "analysis_close_cycle_stationarity_and_trend",
+    "analysis_close_cycle_anomaly_detection",
+    "analysis_close_cycle_seasonality_decomposition",
+    "analysis_close_cycle_cohort_comparison",
+    "analysis_close_cycle_variance_profiling",
+    "analysis_close_cycle_forecast_vs_actual",
+    "analysis_close_cycle_bottleneck_identification",
 }
 
 # Non-analysis plugin types that we skip
@@ -84,7 +97,7 @@ KEYWORD_ROUTES: list[tuple[list[str], str]] = [
       "time_to_event"], "ds_survival"),
     (["seasonal", "spectral", "periodicity", "stl",
       "holt_winters", "lomb_scargle", "garch", "circular"], "ds_seasonal"),
-    (["benford"], "ds_changepoint_known"),
+    (["benford"], "ds_known_normal"),
     (["cluster", "kmeans", "dbscan", "mixture", "gmm",
       "bicluster"], "ds_known_clusters"),
     (["causal", "lingam", "ges", "pc_algorithm", "icp",
@@ -105,7 +118,7 @@ KEYWORD_ROUTES: list[tuple[list[str], str]] = [
     (["drift", "ot_drift", "sinkhorn", "stein", "knn_graph",
       "ksd", "hsic", "phate", "diffusion", "embedding"], "ds_known_clusters"),
     (["entropy", "recurrence", "fractal", "hurst",
-      "wavelet", "ssa"], "ds_changepoint_known"),
+      "wavelet", "ssa"], "ds_known_normal"),
     (["text", "topic", "template", "log_template",
       "message_entropy", "burst", "drain"], "ds_process_log"),
     (["normal", "flow", "density", "distribution",

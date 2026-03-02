@@ -176,9 +176,13 @@ def _finalize(
     metrics = _basic_metrics(df, sample_meta)
     if extra_metrics:
         metrics.update(extra_metrics)
+    # Move volatile runtime_ms from metrics to debug so determinism checks pass.
+    runtime_ms = int(metrics.pop("runtime_ms", 0))
     ctx.logger(
-        f"END runtime_ms={int(metrics.get('runtime_ms', 0))} findings={len(findings)}"
+        f"END runtime_ms={runtime_ms} findings={len(findings)}"
     )
+    merged_debug = dict(debug or {})
+    merged_debug["runtime_ms"] = runtime_ms
     return PluginResult(
         "ok",
         summary,
@@ -186,7 +190,7 @@ def _finalize(
         findings,
         artifacts,
         None,
-        debug=debug or {},
+        debug=merged_debug,
     )
 
 

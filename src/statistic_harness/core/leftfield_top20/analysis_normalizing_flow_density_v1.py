@@ -36,6 +36,6 @@ def run(ctx) -> PluginResult:
     logp = -0.5 * mahal
     cutoff = float(np.quantile(logp, 0.05))
     out_idx = np.where(logp <= cutoff)[0]
-    artifacts = [artifact(ctx, PLUGIN_ID, "normalizing_flow_density_proxy.json", {"logp_cutoff_p05": cutoff, "outlier_row_indices": [int(i) for i in out_idx[:200]], "outlier_count": int(len(out_idx))})]
-    findings = [finding(PLUGIN_ID, "Flow-like density outliers identified", "Review low-density rows to uncover unusual process/value combinations affecting close reliability.", float(len(out_idx)), {"outlier_count": int(len(out_idx)), "cutoff": cutoff})]
-    return PluginResult("ok", "Computed normalizing-flow-like density proxy", {"outlier_count": int(len(out_idx)), "logp_cutoff_p05": cutoff}, findings, artifacts, None)
+    artifacts = [artifact(ctx, PLUGIN_ID, "rank_gaussianization_density_proxy.json", {"logp_cutoff_p05": cutoff, "outlier_row_indices": [int(i) for i in out_idx[:200]], "outlier_count": int(len(out_idx))})]
+    findings = [finding(PLUGIN_ID, "Rank-based Gaussianization density outliers identified", "Review low-density rows to uncover unusual process/value combinations affecting close reliability.", float(len(out_idx)), {"outlier_count": int(len(out_idx)), "cutoff": cutoff})]
+    return PluginResult("ok", "Computed rank-based Gaussianization density proxy", {"outlier_count": int(len(out_idx)), "logp_cutoff_p05": cutoff}, findings, artifacts, None)

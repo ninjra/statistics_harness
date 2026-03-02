@@ -45,6 +45,7 @@ def _template(text: str) -> str:
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["log_templates"] = {**DEFAULTS["log_templates"], **config.get("log_templates", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

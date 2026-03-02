@@ -55,7 +55,12 @@ def _chi2_p_value(chi2: float, df: int) -> float:
 
         return float(chi2_dist.sf(chi2, df))
     except Exception:
-        return float(math.exp(-0.5 * chi2))
+        # Wilson-Hilferty normal approximation for chi-square survival function
+        if df <= 0 or chi2 <= 0:
+            return 1.0
+        z = ((chi2 / df) ** (1.0 / 3.0) - (1.0 - 2.0 / (9.0 * df))) / math.sqrt(2.0 / (9.0 * df))
+        # Standard normal survival approximation
+        return float(max(0.0, min(1.0, 0.5 * math.erfc(z / math.sqrt(2.0)))))
 
 
 def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int) -> list[tuple[str, pd.Index]]:
@@ -75,6 +80,7 @@ def _group_row_indices(df: pd.DataFrame, group_cols: list[str], max_groups: int)
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["drift"] = {**DEFAULTS["drift"], **config.get("drift", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

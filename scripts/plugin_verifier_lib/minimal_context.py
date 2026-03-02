@@ -14,6 +14,31 @@ import pandas as pd
 from statistic_harness.core.types import PluginContext
 
 
+class _NullStorage:
+    """Stub storage that returns empty results for all queries.
+
+    Prevents AttributeError when plugins call ctx.storage.get(...) etc.
+    """
+
+    def get(self, *args: Any, **kwargs: Any) -> Any:
+        return None
+
+    def put(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
+    def query(self, *args: Any, **kwargs: Any) -> list:
+        return []
+
+    def exists(self, *args: Any, **kwargs: Any) -> bool:
+        return False
+
+    def delete(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
+    def __bool__(self) -> bool:
+        return False
+
+
 def make_minimal_context(
     df: pd.DataFrame,
     run_dir: Path | None = None,
@@ -44,6 +69,6 @@ def make_minimal_context(
         settings=merged_settings,
         run_seed=run_seed,
         logger=lambda msg: None,
-        storage=None,
+        storage=_NullStorage(),
         dataset_loader=lambda: frame.copy(),
     )

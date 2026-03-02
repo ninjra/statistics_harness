@@ -130,7 +130,10 @@ def classify_verification_failure(vr: VerificationResult) -> list[ClassifiedIssu
     # Check for known pre-classified issues
     for pre in PRE_CLASSIFIED:
         pid = pre["plugin_id"]
-        if pid == vr.plugin_id or vr.plugin_id.startswith(pid.split(":")[0]):
+        # Exact match, or plugin_id matches the full colon-delimited prefix
+        if pid == vr.plugin_id or (
+            ":" in pid and vr.plugin_id == pid.split(":")[0]
+        ):
             issues.append(ClassifiedIssue(
                 plugin_id=vr.plugin_id,
                 issue_type=pre["issue_type"],

@@ -72,6 +72,7 @@ def _pca_residuals(matrix: np.ndarray, components: int) -> np.ndarray:
 class Plugin:
     def run(self, ctx) -> PluginResult:
         config = merge_config(ctx.settings)
+        config["seed"] = int(getattr(ctx, "run_seed", 0) or config.get("seed", 0) or 0)
         config["mv_control"] = {**DEFAULTS["mv_control"], **config.get("mv_control", {})}
         timer = BudgetTimer(config.get("time_budget_ms"))
 

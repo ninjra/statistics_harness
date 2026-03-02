@@ -52,7 +52,7 @@ def standardized_median_diff(left: Iterable[float], right: Iterable[float]) -> f
     return float(np.median(left_arr) - np.median(right_arr)) / scale
 
 
-def cliffs_delta(left: Iterable[float], right: Iterable[float], max_pairs: int = 2000000) -> float:
+def cliffs_delta(left: Iterable[float], right: Iterable[float], max_pairs: int = 2000000, seed: int = 0) -> float:
     left_arr = np.asarray(list(left), dtype=float)
     right_arr = np.asarray(list(right), dtype=float)
     left_arr = left_arr[~np.isnan(left_arr)]
@@ -63,8 +63,10 @@ def cliffs_delta(left: Iterable[float], right: Iterable[float], max_pairs: int =
         return 0.0
     pair_count = n_left * n_right
     if pair_count > max_pairs:
-        left_idx = np.linspace(0, n_left - 1, int(np.sqrt(max_pairs)), dtype=int)
-        right_idx = np.linspace(0, n_right - 1, int(np.sqrt(max_pairs)), dtype=int)
+        rng = np.random.default_rng(seed)
+        sample_size = int(np.sqrt(max_pairs))
+        left_idx = rng.choice(n_left, size=min(sample_size, n_left), replace=False)
+        right_idx = rng.choice(n_right, size=min(sample_size, n_right), replace=False)
         left_arr = left_arr[left_idx]
         right_arr = right_arr[right_idx]
         n_left = left_arr.size

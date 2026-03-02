@@ -91,6 +91,9 @@ def _normalize_result_payload(result: Any) -> dict[str, Any]:
     metrics = payload.get("metrics") or {}
     metrics.pop("runtime_ms", None)
     payload["metrics"] = metrics
+    debug = payload.get("debug") or {}
+    debug.pop("runtime_ms", None)
+    payload["debug"] = debug
     return _round_payload(payload)
 
 
