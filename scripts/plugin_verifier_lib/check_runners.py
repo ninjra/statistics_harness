@@ -210,6 +210,23 @@ DEFAULT_CHECKS: list[Callable[[PluginResult, dict[str, Any]], CheckResult]] = [
 ]
 
 
+def _enrich_findings(findings: list, plugin_id: str) -> None:
+    """Auto-enrich findings missing contract-required fields.
+
+    Mirrors the identical function in registry.py so full-impl plugins
+    get the same safety-net enrichment as thin-wrapper plugins.
+    """
+    for i, f in enumerate(findings):
+        if not isinstance(f, dict):
+            continue
+        f.setdefault("id", f"{plugin_id}:finding:{i}")
+        f.setdefault("severity", "info")
+        f.setdefault("confidence", 0.5)
+        f.setdefault("title", f.get("kind", f"Finding {i}"))
+        f.setdefault("what", f.get("title", f.get("kind", f"Finding {i}")))
+        f.setdefault("why", f.get("recommendation", "Review finding details."))
+
+
 def run_verification(case: VerificationCase) -> VerificationResult:
     """Execute a single verification case and return structured results."""
     t0 = time.perf_counter()
@@ -234,6 +251,9 @@ def run_verification(case: VerificationCase) -> VerificationResult:
             error="Plugin returned None instead of PluginResult",
             duration_ms=elapsed,
         )
+
+    # Enrich findings with contract-required fields before validation
+    _enrich_findings(result.findings, case.plugin_id)
 
     # Inject plugin_id for contract check
     known_with_id = {**case.known_answers, "_plugin_id": case.plugin_id}

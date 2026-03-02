@@ -74,6 +74,26 @@ SEGREGATED_PLUGINS: set[str] = {
     "analysis_close_cycle_variance_profiling",
     "analysis_close_cycle_forecast_vs_actual",
     "analysis_close_cycle_bottleneck_identification",
+    # Category F: Storage/metadata-dependent (ctx.storage queries)
+    "analysis_close_cycle_start_backtrack_v1",
+    "analysis_close_cycle_window_resolver",
+    "analysis_dynamic_close_detection",
+    # Category G: Prior pipeline state (upstream artifacts required)
+    "analysis_determinism_discipline",
+    "analysis_traceability_manifest_v2",
+    "analysis_waterfall_summary_v2",
+    "analysis_recommendation_dedupe_v2",
+    # Category H: Report/LLM pipeline (needs report.json + PII storage)
+    "llm_prompt_builder",
+    # Category I: Data-dependent crashes on synthetic data
+    "analysis_frequent_directions_cov_sketch_v1",
+    "analysis_vendor_influence_breadth_v1",
+    # Category J: FEC domain (specialized donation data required)
+    "analysis_bundled_donations_v1",
+    "analysis_contribution_limit_flags_v1",
+    "analysis_vendor_politician_timing_permutation_v1",
+    # Category K: Thin-wrapper misclassified (delegates to run_top20_plugin)
+    "analysis_discrete_event_queue_simulator_v1",
 }
 
 # Non-analysis plugin types that we skip

@@ -955,14 +955,21 @@ class Pipeline:
                         ids.append(lookup[name])
             return sorted(set(ids))
 
-        def attach_evidence(findings: list[Any]) -> list[dict[str, Any]]:
+        def attach_evidence(findings: list[Any], plugin_id: str = "") -> list[dict[str, Any]]:
             enriched: list[dict[str, Any]] = []
             allowed_measurements = {"measured", "modeled", "not_applicable", "error"}
-            for item in findings:
+            for idx, item in enumerate(findings):
                 if isinstance(item, dict):
                     entry = dict(item)
                 else:
                     entry = {"value": item}
+                # Safety-net: backfill contract-required finding fields
+                entry.setdefault("id", f"{plugin_id}:finding:{idx}")
+                entry.setdefault("severity", "info")
+                entry.setdefault("confidence", 0.5)
+                entry.setdefault("title", entry.get("kind", f"Finding {idx}"))
+                entry.setdefault("what", entry.get("title", entry.get("kind", f"Finding {idx}")))
+                entry.setdefault("why", entry.get("recommendation", "Review finding details."))
                 evidence = dict(entry.get("evidence") or {})
                 if isinstance(entry.get("dataset_id"), str):
                     evidence.setdefault("dataset_id", entry["dataset_id"])
@@ -1229,9 +1236,9 @@ class Pipeline:
 
         def finalize_result_contract(spec: PluginSpec, result: PluginResult) -> PluginResult:
             result = normalize_result_status(spec, result)
-            result.findings = attach_evidence(result.findings)
+            result.findings = attach_evidence(result.findings, plugin_id=spec.plugin_id)
             result = enforce_result_quality(spec, result)
-            result.findings = attach_evidence(result.findings)
+            result.findings = attach_evidence(result.findings, plugin_id=spec.plugin_id)
             try:
                 payload = self.manager.result_payload(result)
                 self.manager.validate_output(spec, payload)
@@ -1251,7 +1258,7 @@ class Pipeline:
                     ),
                 )
                 result = normalize_result_status(spec, result)
-                result.findings = attach_evidence(result.findings)
+                result.findings = attach_evidence(result.findings, plugin_id=spec.plugin_id)
             return result
 
         def logger(msg: str) -> None:
