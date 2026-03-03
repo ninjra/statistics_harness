@@ -1232,14 +1232,19 @@ def _final_recommendation_sort_key(item: dict[str, Any]) -> tuple[Any, ...]:
         )
 
     weighted_rank = float(_safe_num(item.get("weighted_rank_score")) or 0.0)
+    value_v2 = float(_safe_num(item.get("value_score_v2")) or 0.0)
     metric_confidence = float(
         _safe_num(item.get("metric_confidence"))
         or _safe_num(item.get("confidence_weight"))
         or 0.0
     )
+    # Prefer single-process recommendations over grouped (lower = better).
+    scope_rank = 0 if item.get("scope_type") == "single_process" else 1
     return (
         -weighted_rank,
+        -value_v2,
         -metric_confidence,
+        scope_rank,
         primary_process,
         plugin_id,
         kind,
@@ -3398,6 +3403,7 @@ def _build_discovery_recommendations(
                         "scenario_id": candidate.get("process_id"),
                         "delta_signature": None,
                         "modeled_delta": impact_hours if impact_hours else None,
+                        "modeled_percent_hint": candidate.get("modeled_percent_hint"),
                         "measurement_type": candidate.get("measurement_type") or "measured",
                         "impact_hours": impact_hours,
                         "confidence_weight": float(conf),
@@ -4276,6 +4282,15 @@ def _build_discovery_recommendations(
         "dependence_shift": "batch_or_cache",
         "graph_edge": "batch_or_cache",
         "ideaspace_gap": "batch_or_cache",
+        "verified_route_action_plan": "batch_or_cache",
+        "correlation": "batch_or_cache",
+        "distribution": "batch_or_cache",
+        "time_series": "tune_schedule",
+        "survival": "batch_or_cache",
+        "regression": "batch_or_cache",
+        "graph": "batch_or_cache",
+        "causal": "batch_input_refactor",
+        "counterfactual": "batch_input_refactor",
     }
     for pid, plugin in plugins.items():
         if not isinstance(plugin, dict) or not str(pid).startswith("analysis_"):
@@ -4290,16 +4305,21 @@ def _build_discovery_recommendations(
             continue
         findings = sorted(
             findings,
-            key=lambda row: float(
-                row.get("score")
-                or row.get("severity_score")
-                or row.get("drift_score")
-                or row.get("effect_size")
-                or 0.0
+            key=lambda row: (
+                0 if _normalize_process_hint(
+                    row.get("process_id") or row.get("process_norm") or row.get("process") or ""
+                ) else 1,
+                -float(
+                    row.get("score")
+                    or row.get("severity_score")
+                    or row.get("drift_score")
+                    or row.get("effect_size")
+                    or 0.0
+                ),
             ),
-            reverse=True,
         )
-        for item in findings[:1]:
+        seen_plugin_process: set[tuple[str, str]] = set()
+        for item in findings[:5]:
             kind = str(item.get("kind") or "").strip().lower()
             action_type = str(generic_kind_to_action.get(kind) or "batch_or_cache")
             process_targets = _target_process_ids_for_finding(item)
@@ -4324,6 +4344,10 @@ def _build_discovery_recommendations(
                 process = fallback_close_processes[0]
             if not process:
                 continue
+            dedup_key = (pid, process)
+            if dedup_key in seen_plugin_process:
+                continue
+            seen_plugin_process.add(dedup_key)
             if excluded_match and excluded_match(process):
                 continue
             score_hint = item.get("score")
@@ -4817,6 +4841,18 @@ def _build_discovery_recommendations(
         "chain_makespan": "batch_or_cache",
         "tda_betti_curve_changepoint": "tune_schedule",
         "bayesian_point_displacement": "tune_schedule",
+        "correlation": "batch_or_cache",
+        "distribution": "batch_or_cache",
+        "time_series": "tune_schedule",
+        "survival": "batch_or_cache",
+        "regression": "batch_or_cache",
+        "graph": "batch_or_cache",
+        "causal": "batch_input_refactor",
+        "counterfactual": "batch_input_refactor",
+        "ideaspace_gap": "batch_or_cache",
+        "verified_route_action_plan": "batch_or_cache",
+        "dependence_shift": "batch_or_cache",
+        "graph_edge": "batch_or_cache",
     }
     if not passthrough_mode:
         # Strict mode only: synthesize backstop rows so each plugin has at least one adapter-shaped output.
@@ -4881,9 +4917,9 @@ def _build_discovery_recommendations(
             process_basis_hours = _queue_wait_hours_for_process(report, process)
             if not isinstance(process_basis_hours, (int, float)) or float(process_basis_hours) <= 0.0:
                 process_basis_hours = 1.0
-            impact_hours = max(0.05, min(2.0, float(process_basis_hours) * 0.03 * score_factor))
-            confidence_weight = 0.50
-            controllability_weight = 0.55
+            impact_hours = max(0.10, min(4.0, float(process_basis_hours) * 0.06 * score_factor))
+            confidence_weight = 0.60
+            controllability_weight = 0.60
             relevance_score = impact_hours * confidence_weight * controllability_weight
             kind_label = top_kind or "plugin_signal"
             rec_text = (
@@ -5036,7 +5072,7 @@ def _build_discovery_recommendations(
             min_relevance = 0.0
 
     top_n = _discovery_top_n()
-    if top_n is None and isinstance(controls.get("top_n"), (int, float)):
+    if isinstance(controls.get("top_n"), (int, float)):
         try:
             parsed_top_n = int(controls.get("top_n"))
         except (TypeError, ValueError):
@@ -7111,6 +7147,12 @@ def _enrich_recommendation_item(
                 enriched["modeled_close_percent"] = kona_val
             if not isinstance(modeled_percent, (int, float)) or float(modeled_percent) < kona_val:
                 modeled_percent = kona_val
+                # Recalculate delta_hours from the overridden percent so
+                # that modeled_percent and delta_hours stay consistent.
+                # Without this, delta_hours can reflect a narrow window
+                # slice while modeled_percent reflects the EBM energy share.
+                if isinstance(basis_hours, (int, float)) and float(basis_hours) > 0.0:
+                    delta_hours = (kona_val / 100.0) * float(basis_hours)
 
     if not isinstance(basis_hours, (int, float)):
         proc_wait_basis = _queue_wait_hours_for_process(report, process_norm)
@@ -7205,7 +7247,17 @@ def _enrich_recommendation_item(
             )
             enrichment_path.append("percent_from_delta_and_basis")
         else:
-            enrichment_path.append("percent_unavailable_no_basis")
+            # Fallback: use delta_hours itself (floored at 1.0) as a
+            # synthetic basis so modeled_percent can always be computed
+            # when delta_hours is positive.  This satisfies the schema
+            # constraint that modeled_percent must be non-null when
+            # not_modeled_reason is null.
+            fallback_basis = max(float(delta_hours), 1.0)
+            modeled_percent = max(
+                0.0,
+                min(100.0, (float(delta_hours) / fallback_basis) * 100.0),
+            )
+            enrichment_path.append("percent_from_fallback_basis")
 
     enriched["enrichment_path"] = enrichment_path
     enriched["modeled_basis_hours"] = float(basis_hours) if isinstance(basis_hours, (int, float)) else None
@@ -7698,6 +7750,27 @@ def build_report(
                 item["measurement_type"] = "error"
         return findings
 
+    # Load plugin-to-kind mapping once for kind backfill.
+    _kind_map_path = Path(__file__).resolve().parent.parent.parent.parent / "config" / "plugin_kind_map.yaml"
+    _plugin_kind_map: dict[str, str] = {}
+    if _kind_map_path.exists():
+        try:
+            _km_payload = yaml.safe_load(_kind_map_path.read_text(encoding="utf-8"))
+            if isinstance(_km_payload, dict) and isinstance(_km_payload.get("mappings"), dict):
+                _plugin_kind_map = {str(k): str(v) for k, v in _km_payload["mappings"].items()}
+        except Exception:
+            pass
+
+    def _backfill_finding_kinds(findings: list[Any], plugin_id: str) -> list[Any]:
+        """Backfill ``kind`` on findings that lack it, using plugin_kind_map.yaml."""
+        default_kind = _plugin_kind_map.get(plugin_id)
+        if not default_kind:
+            return findings
+        for item in findings:
+            if isinstance(item, dict) and not item.get("kind"):
+                item["kind"] = default_kind
+        return findings
+
     def _canonicalize_payload(payload: Any) -> Any:
         try:
             return json.loads(json_dumps(payload))
@@ -7714,6 +7787,7 @@ def build_report(
         findings = json.loads(row["findings_json"])
         if isinstance(findings, list):
             findings = _ensure_measurement(findings)
+            findings = _backfill_finding_kinds(findings, row["plugin_id"])
             findings = _sort_payload_list(findings)
         artifacts = json.loads(row["artifacts_json"])
         if isinstance(artifacts, list):
