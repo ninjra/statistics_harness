@@ -49,11 +49,14 @@ class Plugin:
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
         value_cols = inferred.get("value_columns") or []
+        group_cols = inferred.get("group_by") or []
+        process_col = group_cols[0] if group_cols else None
 
         if len(value_cols) < 2:
             return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
 
-        matrix = df[value_cols].dropna().to_numpy(dtype=float)
+        numeric_df = df[value_cols].dropna()
+        matrix = numeric_df.to_numpy(dtype=float)
         if matrix.size == 0:
             return PluginResult("skipped", "No numeric data after filtering", {}, [], [], None)
 
@@ -84,6 +87,9 @@ class Plugin:
         outlier_idx = np.where(outlier_mask)[0]
         outlier_idx = outlier_idx[: int(config.get("max_findings", 30))]
 
+        # Map sample indices back to dataframe indices for process_id lookup.
+        df_indices = numeric_df.index.to_numpy()
+
         findings: list[dict[str, Any]] = []
         for idx in outlier_idx:
             if timer.exceeded():
@@ -93,8 +99,18 @@ class Plugin:
             top_cols = [value_cols[i] for i in top_idx]
             residual_score = float(residual_norm[idx] / (residual_threshold + 1e-9))
             score_score = float(score_norm[idx] / (score_threshold + 1e-9))
+            where: dict[str, Any] = {"row_index": int(idx)}
+            if process_col is not None and idx < len(df_indices):
+                df_idx = df_indices[idx]
+                try:
+                    proc_val = str(df.at[df_idx, process_col] if df_idx in df.index else "")
+                    if proc_val and proc_val.lower() not in {"", "nan", "none"}:
+                        where["group"] = f"{process_col}={proc_val}"
+                        where["process_id"] = proc_val
+                except Exception:
+                    pass
             findings.append(
-                {
+                {"kind": "anomaly",
                     "id": stable_id(f"rpca:{idx}:{top_cols}"),
                     "severity": "warn",
                     "confidence": min(1.0, max(residual_score, score_score)),
@@ -110,7 +126,7 @@ class Plugin:
                             "top_columns": top_cols,
                         }
                     },
-                    "where": {"row_index": int(idx)},
+                    "where": where,
                     "recommendation": "Inspect row for unusual metric combination.",
                     "measurement_type": "measured",
                     "references": [

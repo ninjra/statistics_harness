@@ -59,11 +59,14 @@ class Plugin:
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
         value_cols = inferred.get("value_columns") or []
+        group_cols = inferred.get("group_by") or []
+        process_col = group_cols[0] if group_cols else None
 
         if len(value_cols) < 2:
             return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
 
-        matrix = df[value_cols].dropna().to_numpy(dtype=float)
+        numeric_df = df[value_cols].dropna()
+        matrix = numeric_df.to_numpy(dtype=float)
         if matrix.size == 0:
             return PluginResult("skipped", "No numeric data after filtering", {}, [], [], None)
 
@@ -86,6 +89,9 @@ class Plugin:
         top_k = int(cfg.get("score_top_k", 50))
         top_idx = np.argsort(scores)[::-1][:top_k]
 
+        # Map sample indices back to dataframe indices for process_id lookup.
+        df_indices = numeric_df.index.to_numpy()
+
         findings: list[dict[str, Any]] = []
         for rank, idx in enumerate(top_idx[: int(config.get("max_findings", 30))], start=1):
             if timer.exceeded():
@@ -94,8 +100,18 @@ class Plugin:
             z = np.abs(robust_zscores(row))
             contrib_idx = np.argsort(z)[::-1][:3]
             top_cols = [value_cols[i] for i in contrib_idx]
+            where: dict[str, Any] = {"row_index": int(idx)}
+            if process_col is not None and idx < len(df_indices):
+                df_idx = df_indices[idx]
+                try:
+                    proc_val = str(df.at[df_idx, process_col] if df_idx in df.index else "")
+                    if proc_val and proc_val.lower() not in {"", "nan", "none"}:
+                        where["group"] = f"{process_col}={proc_val}"
+                        where["process_id"] = proc_val
+                except Exception:
+                    pass
             findings.append(
-                {
+                {"kind": "anomaly",
                     "id": stable_id(f"iforest:{idx}:{top_cols}"),
                     "severity": "warn",
                     "confidence": min(1.0, float(scores[idx]) / (float(scores[top_idx[0]]) + 1e-9)),
@@ -108,7 +124,7 @@ class Plugin:
                             "top_columns": top_cols,
                         }
                     },
-                    "where": {"row_index": int(idx)},
+                    "where": where,
                     "recommendation": "Inspect raw row for unusual parameter combinations.",
                     "measurement_type": "measured",
                     "references": [

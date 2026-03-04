@@ -309,6 +309,25 @@ def _target_process_ids_for_finding(finding: dict[str, Any]) -> list[str]:
             token = _normalize_process_hint(row.get(key))
             if token:
                 out.append(token)
+    # Extract process hints from where.group labels.
+    where = finding.get("where") if isinstance(finding.get("where"), dict) else {}
+    group_raw = where.get("group")
+    if isinstance(group_raw, dict):
+        # Dict-style group: {"PROCESS_ID": "jbcreateje"} or {"MODULE_CD": "qra"}
+        for _gv in group_raw.values():
+            token = _normalize_process_hint(_gv)
+            if token:
+                out.append(token)
+    elif isinstance(group_raw, str) and "=" in group_raw:
+        # String-style group: "process_id=qemail"
+        _gl_val = group_raw.split("=", 1)[1].strip()
+        token = _normalize_process_hint(_gl_val)
+        if token:
+            out.append(token)
+    for key in ("process_norm", "process", "process_id"):
+        token = _normalize_process_hint(where.get(key))
+        if token:
+            out.append(token)
     deduped: list[str] = []
     seen: set[str] = set()
     for token in out:
@@ -7762,13 +7781,15 @@ def build_report(
             pass
 
     def _backfill_finding_kinds(findings: list[Any], plugin_id: str) -> list[Any]:
-        """Backfill ``kind`` on findings that lack it, using plugin_kind_map.yaml."""
+        """Backfill ``kind`` on findings that lack it or have generic placeholder, using plugin_kind_map.yaml."""
         default_kind = _plugin_kind_map.get(plugin_id)
         if not default_kind:
             return findings
         for item in findings:
-            if isinstance(item, dict) and not item.get("kind"):
-                item["kind"] = default_kind
+            if isinstance(item, dict):
+                current = item.get("kind") or ""
+                if not current or current == "plugin_observation":
+                    item["kind"] = default_kind
         return findings
 
     def _canonicalize_payload(payload: Any) -> Any:
