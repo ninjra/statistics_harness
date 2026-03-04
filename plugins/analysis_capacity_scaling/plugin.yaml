@@ -27,3 +27,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Capacity Scaling"
+  reference_key: "capacity_scaling"
+  paper: ""
+  finding_kind: "capacity_scale_model"

@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Minimum Covariance Determinant"
+  reference_key: "minimum_covariance_determinant"
+  paper: ""
+  finding_kind: "anomaly"

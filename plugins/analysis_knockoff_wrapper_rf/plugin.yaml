@@ -20,3 +20,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Knockoff Wrapper Rf"
+  reference_key: "knockoff_wrapper_rf"
+  paper: ""
+  finding_kind: "causal"

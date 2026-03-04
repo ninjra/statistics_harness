@@ -154,6 +154,7 @@ class Plugin:
                     severity = "critical"
 
                 finding = {
+                    "kind": "anomaly",
                     "id": stable_id(f"{value_col}:{label}:{last_idx}"),
                     "severity": severity,
                     "confidence": min(1.0, max(0.2, float(abs(zscores[last_idx]) / z_thresh))),

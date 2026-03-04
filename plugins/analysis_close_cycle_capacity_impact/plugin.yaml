@@ -46,3 +46,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Close Cycle Capacity Impact"
+  reference_key: "close_cycle_capacity_impact"
+  paper: ""
+  finding_kind: "capacity_scale_model"

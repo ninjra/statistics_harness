@@ -2,7 +2,7 @@
 
 - class_rationale: Plugins expected to emit direct recommendations with concrete changes.
 - expected_output_type: `recommendation_items`
-- run_id: `baseline_verify_20260225k`
+- run_id: `debug_fg_20260225T2315Z`
 
 ## Example
 
@@ -16,5 +16,5 @@
 
 ## Traceability
 
-- class `direct_action_generators` -> plugin `analysis_actionable_ops_levers_v1` -> run `baseline_verify_20260225k`
+- class `direct_action_generators` -> plugin `analysis_actionable_ops_levers_v1` -> run `debug_fg_20260225T2315Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

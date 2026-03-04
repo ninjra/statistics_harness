@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Distribution Shift Wasserstein"
+  reference_key: "distribution_shift_wasserstein"
+  paper: ""
+  finding_kind: "distribution"

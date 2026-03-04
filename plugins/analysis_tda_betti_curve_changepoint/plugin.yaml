@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "TDA Betti Curve Changepoint"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "tda_betti_curve_changepoint"

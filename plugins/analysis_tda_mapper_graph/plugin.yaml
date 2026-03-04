@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "TDA Mapper Graph"
+  reference_key: "tda_survey"
+  paper: ""
+  finding_kind: "graph"

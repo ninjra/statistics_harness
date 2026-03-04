@@ -22,3 +22,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Discrete Event Queue Simulator"
+  reference_key: "discrete_event_queue_simulator"
+  paper: ""
+  finding_kind: "chain_makespan"

@@ -116,7 +116,7 @@ class Plugin:
         findings: list[dict[str, Any]] = []
         for (a, b), count in unexpected[: int(config.get("max_findings", 30))]:
             findings.append(
-                {
+                {"kind": "process_variant",
                     "id": stable_id(f"{a}->{b}:{count}"),
                     "severity": "warn",
                     "confidence": 0.6,

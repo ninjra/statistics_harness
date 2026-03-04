@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Marked Point Process Intensity"
+  reference_key: "marked_point_process_intensity"
+  paper: ""
+  finding_kind: "time_series"

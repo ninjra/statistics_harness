@@ -24,3 +24,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Online Conformal Changepoint"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "changepoint"

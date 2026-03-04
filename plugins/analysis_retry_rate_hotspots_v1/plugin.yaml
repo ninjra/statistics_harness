@@ -22,3 +22,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Retry Rate Hotspots"
+  reference_key: "retry_rate_hotspots"
+  paper: ""
+  finding_kind: "anomaly"

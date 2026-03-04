@@ -92,6 +92,16 @@
         "description": { "type": "string" },
         "defaults": { "type": "object" }
       }
+    },
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": { "type": "string" },
+        "reference_key": { "type": "string" },
+        "paper": { "type": "string" },
+        "finding_kind": { "type": "string" }
+      }
     }
   }
 }

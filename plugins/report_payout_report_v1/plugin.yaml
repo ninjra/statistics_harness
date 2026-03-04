@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Report Payout Report"
+  reference_key: "report_payout_report"
+  paper: ""
+  finding_kind: "report"

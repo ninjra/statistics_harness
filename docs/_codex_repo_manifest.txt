@@ -9,6 +9,7 @@
 .aider.tags.cache.v4/e5/b5/c10521699c65091a0d36916567e5.val
 .aider.tags.cache.v4/ee/93/3942ce49f7e4a63d19e171675cdf.val
 .aider.tags.cache.v4/f1/3a/1525d37b29cfdb652271db5b6694.val
+.claude/settings.local.json
 .codex/STATE.md
 .github/workflows/repo-hygiene.yml
 .gitignore
@@ -7162,6 +7163,7 @@
 .venv_wsl/pyvenv.cfg
 AGENTS.md
 CHANGELOG.md
+CLAUDE.md
 GEMINI.md
 LICENSE
 Makefile
@@ -7364,6 +7366,7 @@ docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md
 docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md
 docs/release_evidence/hotspots_baseline_verify_20260225c.md
 docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md
+docs/release_evidence/known_issue_detection_matrix.json
 docs/release_evidence/kona_route_requirement_map.json
 docs/release_evidence/kona_route_skill_rationale.md
 docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json
@@ -8743,6 +8746,7 @@ scripts/build_plugin_class_actionability_matrix.py
 scripts/build_plugin_run_manifest.py
 scripts/build_plugins_validate_runbook_map.py
 scripts/build_post_run_bundle.py
+scripts/build_verification_priority_matrix.py
 scripts/canonicalize_repo_improvements_catalog.py
 scripts/check_text2sql_env.py
 scripts/classify_plugin_validity.py
@@ -8793,6 +8797,12 @@ scripts/patch_topo_tda_addon_manifests.py
 scripts/plan_repo_improvements_rollout.py
 scripts/plugin_data_access_matrix.py
 scripts/plugin_functional_audit.py
+scripts/plugin_verifier_lib/__init__.py
+scripts/plugin_verifier_lib/check_runners.py
+scripts/plugin_verifier_lib/issue_classifier.py
+scripts/plugin_verifier_lib/minimal_context.py
+scripts/plugin_verifier_lib/report_builder.py
+scripts/plugin_verifier_lib/synthetic_datasets.py
 scripts/plugins_functionality_matrix.py
 scripts/print_table_schema.py
 scripts/promote_sql_pack.py
@@ -8857,13 +8867,16 @@ scripts/update_docs_and_plugin_matrices.py
 scripts/validate_plugin_finding_quality.py
 scripts/validate_repo_improvement_dependencies.py
 scripts/verify_agent_execution_contract.py
+scripts/verify_determinism.py
 scripts/verify_docs_and_plugin_matrices.py
 scripts/verify_frozen_plugin_surfaces.py
+scripts/verify_full_impl_plugins.py
 scripts/verify_network_dns.sh
 scripts/verify_no_runtime_network.py
 scripts/verify_openplanter_pack_release_gate.py
 scripts/verify_plugin_result_contract.py
 scripts/verify_plugin_test_coverage.py
+scripts/verify_registry_handlers.py
 scripts/verify_report_artifacts_contract.py
 scripts/verify_topo_tda_addon_pack_plan.py
 scripts/watch_gauntlet.ps1
@@ -8933,6 +8946,7 @@ src/statistic_harness/core/leftfield_top20_plugins.py
 src/statistic_harness/core/lever_library.py
 src/statistic_harness/core/lineage.py
 src/statistic_harness/core/migrations.py
+src/statistic_harness/core/models.py
 src/statistic_harness/core/normalized_reader.py
 src/statistic_harness/core/openplanter_pack.py
 src/statistic_harness/core/optimization_models.py
@@ -8945,12 +8959,15 @@ src/statistic_harness/core/planner.py
 src/statistic_harness/core/plugin_manager.py
 src/statistic_harness/core/plugin_registry.py
 src/statistic_harness/core/plugin_runner.py
+src/statistic_harness/core/plugin_runtime.py
 src/statistic_harness/core/process_filters.py
 src/statistic_harness/core/process_matcher.py
 src/statistic_harness/core/ranking.py
 src/statistic_harness/core/recommendation_filters.py
 src/statistic_harness/core/report.py
 src/statistic_harness/core/report_v2_utils.py
+src/statistic_harness/core/reporting/__init__.py
+src/statistic_harness/core/reporting/freshman_formatter.py
 src/statistic_harness/core/retention.py
 src/statistic_harness/core/run_context.py
 src/statistic_harness/core/similarity.py
@@ -8964,6 +8981,7 @@ src/statistic_harness/core/stat_plugins/__init__.py
 src/statistic_harness/core/stat_plugins/actionability_contract.py
 src/statistic_harness/core/stat_plugins/actionability_envelope.py
 src/statistic_harness/core/stat_plugins/actionability_metrics.py
+src/statistic_harness/core/stat_plugins/base.py
 src/statistic_harness/core/stat_plugins/budget.py
 src/statistic_harness/core/stat_plugins/code_hash.py
 src/statistic_harness/core/stat_plugins/columns.py
@@ -9185,8 +9203,11 @@ temp/rev_test/state.sqlite
 temp/run_debug/artifacts/analysis_close_cycle_contention/results.json
 temp/run_debug/state.sqlite
 tests/conftest.py
+tests/contracts/__init__.py
+tests/contracts/test_chunk_invariance.py
 tests/core/test_entity_resolution.py
 tests/core/test_evidence_links.py
+tests/core/test_fail_closed_dependency_wiring.py
 tests/core/test_normalized_reader.py
 tests/core/test_ranking_module.py
 tests/core/test_recommendation_filters.py
@@ -9223,6 +9244,7 @@ tests/fixtures/db/v7.sqlite
 tests/fixtures/db/v8.sqlite
 tests/fixtures/db/v9.sqlite
 tests/fixtures/enertia_eventlog.csv
+tests/fixtures/ground_truth.yaml
 tests/fixtures/ground_truth_enertia.yaml
 tests/fixtures/ground_truth_quorum.yaml
 tests/fixtures/ground_truth_repo_improvements_wave1.yaml
@@ -9238,9 +9260,14 @@ tests/fixtures/synth_clusters.csv
 tests/fixtures/synth_linear.csv
 tests/fixtures/synth_shift_corr.csv
 tests/fixtures/synth_timeseries.csv
+tests/integration/test_compare_dataset_runs.py
 tests/integration/test_cross_dataset_pipeline_fail_closed.py
+tests/integration/test_evaluator_harness.py
+tests/integration/test_known_issue_rediscovery_baseline.py
 tests/integration/test_openplanter_cross_dataset_pack.py
+tests/integration/test_report_artifacts_contract.py
 tests/perf/test_cross_dataset_pack_resource_budget.py
+tests/perf/test_plugin_resource_budget.py
 tests/plugins/openplanter_pack_test_utils.py
 tests/plugins/test_action_search_annealing_v1.py
 tests/plugins/test_action_search_mip_v1.py
@@ -9465,6 +9492,7 @@ tests/test_erp_next_wave_no_skip.py
 tests/test_evaluation.py
 tests/test_evaluator.py
 tests/test_evaluator_harness_script.py
+tests/test_exempted_analysis_plugins_smoke.py
 tests/test_feature_flags.py
 tests/test_finalize_optimal_4pillars.py
 tests/test_four_pillars_scoring.py

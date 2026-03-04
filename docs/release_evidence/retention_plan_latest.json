@@ -1,22 +1,57 @@
 {
   "apply": {
-    "deleted_count": 15,
+    "deleted_count": 50,
     "deleted_files": [
-      "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.csv",
-      "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.json",
-      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.csv",
-      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.json",
-      "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.stdout.json",
-      "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
-      "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
-      "docs/release_evidence/optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "docs/release_evidence/optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "docs/release_evidence/optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
-      "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
-      "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
-      "docs/release_evidence/verify_contract_debug_fg_baseline_20260221T1923Z.json",
-      "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json"
+      "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.md",
+      "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
+      "docs/release_evidence/actionability_burndown_baseline_verify_20260225c.json",
+      "docs/release_evidence/actionability_burndown_baseline_verify_20260225c.md",
+      "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
+      "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json",
+      "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
+      "docs/release_evidence/actionability_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "docs/release_evidence/bundle_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/bundle_baseline_verify_20260225c.json",
+      "docs/release_evidence/contract_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/contract_baseline_verify_20260225c.json",
+      "docs/release_evidence/contract_baseline_verify_20260225c_post_metric_gate.json",
+      "docs/release_evidence/contract_baseline_verify_20260225i.json",
+      "docs/release_evidence/contract_baseline_verify_20260225j.json",
+      "docs/release_evidence/contract_baseline_verify_20260225k.json",
+      "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/diff_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "docs/release_evidence/final_validation_baseline_verify_20260225c.json",
+      "docs/release_evidence/final_validation_baseline_verify_20260225c_post_metric_gate.json",
+      "docs/release_evidence/final_validation_baseline_verify_20260225i.json",
+      "docs/release_evidence/finding_quality_baseline_verify_20260225c.json",
+      "docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md",
+      "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
+      "docs/release_evidence/hotspots_baseline_verify_20260225c.md",
+      "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
+      "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
+      "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
+      "docs/release_evidence/non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "docs/release_evidence/non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.md",
+      "docs/release_evidence/plugin_contract_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/plugin_contract_baseline_verify_20260225c.json",
+      "docs/release_evidence/recommendation_metric_gate_baseline_verify_20260225j.json",
+      "docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/top_recommendations_baseline_full_pslever_20260224a.json",
+      "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
+      "docs/release_evidence/top_recommendations_baseline_verify_20260225c.json",
+      "docs/release_evidence/verify_contract_baseline_verify_20260225c.json",
+      "docs/release_evidence/verify_contract_d53963415b994c59b41e9ef5e23710e6.json"
     ],
     "failed_count": 0,
     "failed_files": [],
@@ -25,7 +60,7 @@
   },
   "db_path": "/mnt/d/projects/statistics_harness/statistics_harness/appdata/state.sqlite",
   "evidence_dir": "/mnt/d/projects/statistics_harness/statistics_harness/docs/release_evidence",
-  "generated_at_utc": "2026-02-24T18:11:47.509652+00:00",
+  "generated_at_utc": "2026-03-03T02:39:47.286269+00:00",
   "keep_files": [
     {
       "file": "docs/release_evidence/actionability_71883748cf2243839eb0bfddb6b2d61e.csv",
@@ -64,80 +99,6 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "name": "actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_20260223b",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "name": "actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.json",
-      "name": "actionability_burndown_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.md",
-      "name": "actionability_burndown_baseline_full_pslever_20260224a.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
-      "name": "actionability_burndown_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
-      "name": "actionability_burndown_baseline_full_with_runbook30_probe.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
-      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.csv",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "d53963415b994c59b41e9ef5e23710e6"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json",
-      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "d53963415b994c59b41e9ef5e23710e6"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
-      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "d53963415b994c59b41e9ef5e23710e6"
-      ]
-    },
-    {
       "file": "docs/release_evidence/actionability_thresholds.md",
       "name": "actionability_thresholds.md",
       "reason": "unscoped_file",
@@ -160,22 +121,6 @@
       "name": "baseline_before_vs_fullset_after.json",
       "reason": "unscoped_file",
       "referenced_run_ids": []
-    },
-    {
-      "file": "docs/release_evidence/bundle_baseline_full_pslever_20260224a.json",
-      "name": "bundle_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
-      "name": "bundle_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
     },
     {
       "file": "docs/release_evidence/compare_actionability_baseline_20260223b_to_probe.json",
@@ -298,44 +243,22 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/contract_baseline_full_pslever_20260224a.json",
-      "name": "contract_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
+      "file": "docs/release_evidence/diff_13734_to_debug_d1cf_20260225.json",
+      "name": "diff_13734_to_debug_d1cf_20260225.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
-      "name": "contract_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
+      "file": "docs/release_evidence/diff_13734_to_debug_de7_20260225.json",
+      "name": "diff_13734_to_debug_de7_20260225.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
       "file": "docs/release_evidence/diff_18b6_to_d539.json",
       "name": "diff_18b6_to_d539.json",
       "reason": "unscoped_file",
       "referenced_run_ids": []
-    },
-    {
-      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "name": "diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_20260223b",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "name": "diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a",
-        "baseline_full_with_runbook30_probe"
-      ]
     },
     {
       "file": "docs/release_evidence/diff_eb325f_to_a8fdd_baseline.json",
@@ -356,6 +279,12 @@
       "referenced_run_ids": []
     },
     {
+      "file": "docs/release_evidence/freshman_top20_baseline_vs_synth.md",
+      "name": "freshman_top20_baseline_vs_synth.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
+    },
+    {
       "file": "docs/release_evidence/golden_release_summary.json",
       "name": "golden_release_summary.json",
       "reason": "unscoped_file",
@@ -368,28 +297,10 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md",
-      "name": "hotspots_baseline_full_pslever_20260224a.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
-      "name": "hotspots_baseline_full_with_runbook30_probe.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
-      "name": "hotspots_before_baseline_full_with_runbook30_probe.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
+      "file": "docs/release_evidence/known_issue_detection_matrix.json",
+      "name": "known_issue_detection_matrix.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
       "file": "docs/release_evidence/kona_route_requirement_map.json",
@@ -402,42 +313,6 @@
       "name": "kona_route_skill_rationale.md",
       "reason": "unscoped_file",
       "referenced_run_ids": []
-    },
-    {
-      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_20260223b",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
-      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_20260223b",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a",
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
-      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a",
-        "baseline_full_with_runbook30_probe"
-      ]
     },
     {
       "file": "docs/release_evidence/non_actionable_reason_before_after.json",
@@ -458,20 +333,16 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/plugin_contract_baseline_full_pslever_20260224a.json",
-      "name": "plugin_contract_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
+      "file": "docs/release_evidence/plugin_runtime_matrix.json",
+      "name": "plugin_runtime_matrix.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
-      "name": "plugin_contract_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
+      "file": "docs/release_evidence/plugins_validate_runbook_contract.md",
+      "name": "plugins_validate_runbook_contract.md",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
       "file": "docs/release_evidence/plugins_validate_runbook_dependency_matrix.csv",
@@ -678,20 +549,10 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json",
-      "name": "release_gate_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json",
-      "name": "release_gate_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
+      "file": "docs/release_evidence/plugins_validate_schema.json",
+      "name": "plugins_validate_schema.json",
+      "reason": "unscoped_file",
+      "referenced_run_ids": []
     },
     {
       "file": "docs/release_evidence/retention_plan_latest.json",
@@ -700,51 +561,28 @@
       "referenced_run_ids": []
     },
     {
-      "file": "docs/release_evidence/top_recommendations_baseline_full_pslever_20260224a.json",
-      "name": "top_recommendations_baseline_full_pslever_20260224a.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_pslever_20260224a"
-      ]
-    },
-    {
-      "file": "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
-      "name": "top_recommendations_baseline_full_with_runbook30_probe.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "baseline_full_with_runbook30_probe"
-      ]
-    },
-    {
       "file": "docs/release_evidence/verify_contract_71883748cf2243839eb0bfddb6b2d61e.json",
       "name": "verify_contract_71883748cf2243839eb0bfddb6b2d61e.json",
       "reason": "references_kept_run_ids",
       "referenced_run_ids": [
         "71883748cf2243839eb0bfddb6b2d61e"
       ]
-    },
-    {
-      "file": "docs/release_evidence/verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
-      "name": "verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
-      "reason": "references_kept_run_ids",
-      "referenced_run_ids": [
-        "d53963415b994c59b41e9ef5e23710e6"
-      ]
     }
   ],
   "keep_per_dataset": 3,
   "kept_runs_by_dataset": {
     "3246cc7cd7d57a317ddc05e80e6f6f5bfe7f50deb0ee7af8db50d04bae180e1a": [
-      "baseline_full_pslever_20260224a",
-      "baseline_full_with_runbook30_20260223b",
-      "baseline_full_with_runbook30_probe"
+      "debug_fg_20260225T2315Z",
+      "full_loaded_3246cc7c_20260225T224944Z",
+      "full_loaded_3246cc7c_20260303T010605Z"
     ],
     "d1cf34daa3ad6289468136707d204d486245dfc46b8f4a3212111f4308cdbf39": [
       "71883748cf2243839eb0bfddb6b2d61e",
+      "debug_d1cf_fg_20260225a",
       "route_plan_synth8m_20260222a"
     ],
     "de7c1da5a4ea6e8c684872d7857bb608492f63a9c7e0b7ca014fa0f093a88e66": [
-      "d53963415b994c59b41e9ef5e23710e6",
+      "debug_de7_fg_20260225b",
       "route_plan_synth6m_20260222a",
       "route_plan_synth6m_20260222b"
     ]
@@ -752,138 +590,430 @@
   "pin_files": [
     "openplanter_pack_release_gate.json"
   ],
-  "pin_run_ids": [],
+  "pin_run_ids": [
+    "full_loaded_3246cc7c_20260303T010605Z"
+  ],
   "prune_files": [
     {
-      "file": "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.csv",
-      "name": "actionability_debug_fg_baseline_20260221T1923Z.csv",
+      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "actionability_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "debug_fg_baseline_20260221T1923Z"
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
       ]
     },
     {
-      "file": "docs/release_evidence/actionability_debug_fg_baseline_20260221T1923Z.json",
-      "name": "actionability_debug_fg_baseline_20260221T1923Z.json",
+      "file": "docs/release_evidence/actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "actionability_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "debug_fg_baseline_20260221T1923Z"
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
       ]
     },
     {
-      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.csv",
-      "name": "actionability_dryrun_debug_20260221T1630Z.csv",
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.json",
+      "name": "actionability_burndown_baseline_full_pslever_20260224a.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "dryrun_debug_20260221T1630Z"
+        "baseline_full_pslever_20260224a"
       ]
     },
     {
-      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.json",
-      "name": "actionability_dryrun_debug_20260221T1630Z.json",
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_pslever_20260224a.md",
+      "name": "actionability_burndown_baseline_full_pslever_20260224a.md",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "dryrun_debug_20260221T1630Z"
+        "baseline_full_pslever_20260224a"
       ]
     },
     {
-      "file": "docs/release_evidence/actionability_dryrun_debug_20260221T1630Z.stdout.json",
-      "name": "actionability_dryrun_debug_20260221T1630Z.stdout.json",
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.json",
+      "name": "actionability_burndown_baseline_full_with_runbook30_probe.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "dryrun_debug_20260221T1630Z"
+        "baseline_full_with_runbook30_probe"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
-      "name": "optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.json",
+      "file": "docs/release_evidence/actionability_burndown_baseline_full_with_runbook30_probe.md",
+      "name": "actionability_burndown_baseline_full_with_runbook30_probe.md",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_actionable_sync_20260220T2310Z"
+        "baseline_full_with_runbook30_probe"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
-      "name": "optimal_4pillars_triage_baseline_actionable_sync_20260220T2310Z.md",
+      "file": "docs/release_evidence/actionability_burndown_baseline_verify_20260225c.json",
+      "name": "actionability_burndown_baseline_verify_20260225c.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_actionable_sync_20260220T2310Z"
+        "baseline_verify_20260225c"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "name": "optimal_compare_actionability_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "file": "docs/release_evidence/actionability_burndown_baseline_verify_20260225c.md",
+      "name": "actionability_burndown_baseline_verify_20260225c.md",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_actionable_sync_20260220T180352Z",
-        "baseline_optimal_20260221T0210Z"
+        "baseline_verify_20260225c"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "name": "optimal_compare_outputs_baseline_actionable_sync_20260220T180352Z_to_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.csv",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.csv",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_actionable_sync_20260220T180352Z",
-        "baseline_optimal_20260221T0210Z"
+        "d53963415b994c59b41e9ef5e23710e6"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
-      "name": "optimal_contract_baseline_optimal_20260221T0210Z_20260221T041442Z.json",
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.json",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_optimal_20260221T0210Z"
+        "d53963415b994c59b41e9ef5e23710e6"
       ]
     },
     {
-      "file": "docs/release_evidence/optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
-      "name": "optimal_hotspots_baseline_optimal_20260221T0210Z_20260221T041442Z.md",
+      "file": "docs/release_evidence/actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
+      "name": "actionability_d53963415b994c59b41e9ef5e23710e6.stdout.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "baseline_optimal_20260221T0210Z"
+        "d53963415b994c59b41e9ef5e23710e6"
       ]
     },
     {
-      "file": "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
-      "name": "plugin_actionability_audit_full_loaded_debug_20260219T1700Z.csv",
+      "file": "docs/release_evidence/actionability_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "name": "actionability_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "full_loaded_debug_20260219T1700Z"
+        "baseline_verify_20260225c",
+        "debug_base_fg_20260225d"
       ]
     },
     {
-      "file": "docs/release_evidence/plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
-      "name": "plugin_actionability_audit_full_loaded_debug_20260219T1700Z.json",
+      "file": "docs/release_evidence/bundle_baseline_full_pslever_20260224a.json",
+      "name": "bundle_baseline_full_pslever_20260224a.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "full_loaded_debug_20260219T1700Z"
+        "baseline_full_pslever_20260224a"
       ]
     },
     {
-      "file": "docs/release_evidence/verify_contract_debug_fg_baseline_20260221T1923Z.json",
-      "name": "verify_contract_debug_fg_baseline_20260221T1923Z.json",
+      "file": "docs/release_evidence/bundle_baseline_full_with_runbook30_probe.json",
+      "name": "bundle_baseline_full_with_runbook30_probe.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "debug_fg_baseline_20260221T1923Z"
+        "baseline_full_with_runbook30_probe"
       ]
     },
     {
-      "file": "docs/release_evidence/verify_contract_full_loaded_debug_20260219T1700Z.json",
-      "name": "verify_contract_full_loaded_debug_20260219T1700Z.json",
+      "file": "docs/release_evidence/bundle_baseline_verify_20260225c.json",
+      "name": "bundle_baseline_verify_20260225c.json",
       "reason": "references_pruned_run_ids",
       "referenced_run_ids": [
-        "full_loaded_debug_20260219T1700Z"
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_full_pslever_20260224a.json",
+      "name": "contract_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json",
+      "name": "contract_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_verify_20260225c.json",
+      "name": "contract_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_verify_20260225c_post_metric_gate.json",
+      "name": "contract_baseline_verify_20260225c_post_metric_gate.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_verify_20260225i.json",
+      "name": "contract_baseline_verify_20260225i.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225i"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_verify_20260225j.json",
+      "name": "contract_baseline_verify_20260225j.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225j"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/contract_baseline_verify_20260225k.json",
+      "name": "contract_baseline_verify_20260225k.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225k"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "diff_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "diff_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/diff_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "name": "diff_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c",
+        "debug_base_fg_20260225d"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/final_validation_baseline_verify_20260225c.json",
+      "name": "final_validation_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/final_validation_baseline_verify_20260225c_post_metric_gate.json",
+      "name": "final_validation_baseline_verify_20260225c_post_metric_gate.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/final_validation_baseline_verify_20260225i.json",
+      "name": "final_validation_baseline_verify_20260225i.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225i"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/finding_quality_baseline_verify_20260225c.json",
+      "name": "finding_quality_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_baseline_full_pslever_20260224a.md",
+      "name": "hotspots_baseline_full_pslever_20260224a.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_baseline_full_with_runbook30_probe.md",
+      "name": "hotspots_baseline_full_with_runbook30_probe.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_baseline_verify_20260225c.md",
+      "name": "hotspots_baseline_verify_20260225c.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/hotspots_before_baseline_full_with_runbook30_probe.md",
+      "name": "hotspots_before_baseline_full_with_runbook30_probe.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_20260223b_to_baseline_full_with_runbook30_probe.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_20260223b",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
+      "name": "non_actionable_reason_baseline_full_with_runbook30_probe_to_baseline_full_pslever_20260224a.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a",
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "name": "non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c",
+        "debug_base_fg_20260225d"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.md",
+      "name": "non_actionable_reason_debug_base_fg_20260225d_to_baseline_verify_20260225c.md",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c",
+        "debug_base_fg_20260225d"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_contract_baseline_full_pslever_20260224a.json",
+      "name": "plugin_contract_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_contract_baseline_full_with_runbook30_probe.json",
+      "name": "plugin_contract_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/plugin_contract_baseline_verify_20260225c.json",
+      "name": "plugin_contract_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/recommendation_metric_gate_baseline_verify_20260225j.json",
+      "name": "recommendation_metric_gate_baseline_verify_20260225j.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225j"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/release_gate_baseline_full_pslever_20260224a.json",
+      "name": "release_gate_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/release_gate_baseline_full_with_runbook30_probe.json",
+      "name": "release_gate_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/top_recommendations_baseline_full_pslever_20260224a.json",
+      "name": "top_recommendations_baseline_full_pslever_20260224a.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_pslever_20260224a"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/top_recommendations_baseline_full_with_runbook30_probe.json",
+      "name": "top_recommendations_baseline_full_with_runbook30_probe.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_full_with_runbook30_probe"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/top_recommendations_baseline_verify_20260225c.json",
+      "name": "top_recommendations_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_baseline_verify_20260225c.json",
+      "name": "verify_contract_baseline_verify_20260225c.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "baseline_verify_20260225c"
+      ]
+    },
+    {
+      "file": "docs/release_evidence/verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
+      "name": "verify_contract_d53963415b994c59b41e9ef5e23710e6.json",
+      "reason": "references_pruned_run_ids",
+      "referenced_run_ids": [
+        "d53963415b994c59b41e9ef5e23710e6"
       ]
     }
   ],
   "schema_version": "release_evidence_retention_plan.v1",
   "stats": {
-    "file_count": 120,
-    "keep_file_count": 105,
-    "kept_run_id_count": 8,
-    "known_run_id_count": 229,
-    "prune_file_count": 15,
-    "run_count": 229
+    "file_count": 133,
+    "keep_file_count": 83,
+    "kept_run_id_count": 9,
+    "known_run_id_count": 263,
+    "prune_file_count": 50,
+    "run_count": 263
   }
 }

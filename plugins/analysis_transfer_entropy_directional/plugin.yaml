@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Transfer Entropy"
+  reference_key: "transfer_entropy"
+  paper: "Schreiber (2000)"
+  finding_kind: "correlation"

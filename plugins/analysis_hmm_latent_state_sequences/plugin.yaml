@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Hidden Markov Model"
+  reference_key: "hmm"
+  paper: "Baum et al. (1970)"
+  finding_kind: "cluster"

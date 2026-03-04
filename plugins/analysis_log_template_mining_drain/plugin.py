@@ -91,7 +91,7 @@ class Plugin:
             if info["count"] > min_count:
                 continue
             findings.append(
-                {
+                {"kind": "process_variant",
                     "id": stable_id(f"tpl:{tpl}"),
                     "severity": "info",
                     "confidence": 0.5,

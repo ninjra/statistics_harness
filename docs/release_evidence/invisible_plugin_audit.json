@@ -2,18 +2,18 @@
   "schema_version": "v1",
   "summary": {
     "total_plugins_with_findings": 262,
-    "contributing_plugins": 37,
-    "invisible_plugins_with_findings": 225,
-    "total_non_actionable_explanations": 197,
-    "suspect_false_negatives": 66
+    "contributing_plugins": 44,
+    "invisible_plugins_with_findings": 218,
+    "total_non_actionable_explanations": 120,
+    "suspect_false_negatives": 11
   },
   "reason_code_summary": {
-    "OBSERVATION_ONLY": 109,
     "NO_STATISTICAL_SIGNAL": 36,
+    "OBSERVATION_ONLY": 31,
+    "ADAPTER_RULE_MISSING": 11,
     "MISSING_PREREQUISITE": 11,
-    "ADAPTER_RULE_MISSING": 10,
     "PLUGIN_PRECONDITION_UNMET": 10,
-    "NO_ACTIONABLE_FINDING_CLASS": 5,
+    "NO_ACTIONABLE_FINDING_CLASS": 6,
     "QUADRATIC_CAP_EXCEEDED": 3,
     "PLUGIN_ERROR": 2,
     "BELOW_ACTIONABILITY_THRESHOLD": 2,
@@ -24,318 +24,9 @@
     "NO_HOLD_DOMINANT_PROCESSES": 1,
     "NO_FEATURES_ELIGIBLE": 1,
     "NO_ACTIONABLE_PROCESS_SERVER_LEVER": 1,
-    "MISSING_REQUIRED_COLUMNS": 1,
     "NO_SIGNIFICANT_EFFECT": 1
   },
   "suspect_false_negatives": [
-    {
-      "plugin_id": "analysis_control_chart_cusum",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_control_chart_ewma",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_control_chart_individuals",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_control_chart_suite",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_distribution_drift_suite",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_multivariate_control_charts",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_robust_pca_pcp",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_robust_pca_sparse_outliers",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 30.0
-    },
-    {
-      "plugin_id": "analysis_isolation_forest",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 0.9999999968,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 29.999999904
-    },
-    {
-      "plugin_id": "analysis_isolation_forest_anomaly",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 0.9999999968,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 29.999999904
-    },
-    {
-      "plugin_id": "analysis_stl_seasonal_decompose_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 0.95,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.95) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 28.5
-    },
-    {
-      "plugin_id": "analysis_seasonal_holt_winters_forecast_residuals_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 0.9,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.90) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 27.0
-    },
-    {
-      "plugin_id": "analysis_fisher_exact_enrichment_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 30,
-      "max_confidence": 0.7,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.70) with 30 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 21.0
-    },
-    {
-      "plugin_id": "analysis_two_sample_categorical_chi2",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 14,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 14 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 14.0
-    },
-    {
-      "plugin_id": "analysis_multivariate_changepoint_pelt",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 20,
-      "max_confidence": 0.6,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.60) with 20 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 12.0
-    },
-    {
-      "plugin_id": "analysis_drift_adwin",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 10,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 10 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 10.0
-    },
-    {
-      "plugin_id": "analysis_effect_size_report",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 9,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 9 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 9.0
-    },
-    {
-      "plugin_id": "analysis_quantile_regression_forest_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 10,
-      "max_confidence": 0.65,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.65) with 10 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 6.5
-    },
-    {
-      "plugin_id": "analysis_evt_gumbel_tail",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 5,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 5 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 5.0
-    },
-    {
-      "plugin_id": "analysis_benfords_law_anomaly_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 5,
-      "max_confidence": 0.85,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.85) with 5 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 4.25
-    },
-    {
-      "plugin_id": "analysis_multiple_testing_fdr",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 2,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 2 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 2.0
-    },
-    {
-      "plugin_id": "analysis_multicollinearity_vif_screen_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 2,
-      "max_confidence": 0.9,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.90) with 2 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.8
-    },
     {
       "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",
       "reason_code": "ADAPTER_RULE_MISSING",
@@ -361,20 +52,6 @@
       ],
       "suspect_reasons": [
         "Finding kind 'actionable_ops_lever' has no routing rule"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_burst_detection_kleinberg",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
       ],
       "priority_score": 1.0
     },
@@ -407,146 +84,6 @@
       "priority_score": 1.0
     },
     {
-      "plugin_id": "analysis_hawkes_self_exciting",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_multivariate_ewma_control",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_multivariate_t2_control",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_process_drift_conformance_over_time",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_robust_covariance_outliers",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_state_space_kalman_residuals",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_template_drift_two_sample",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_term_burst_kleinberg",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_variant_differential",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 1.0,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (1.00) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 1.0
-    },
-    {
-      "plugin_id": "analysis_changepoint_energy_edivisive",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.985,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.98) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.985
-    },
-    {
       "plugin_id": "analysis_nonnegative_matrix_factorization_v1",
       "reason_code": "ADAPTER_RULE_MISSING",
       "finding_count": 1,
@@ -559,20 +96,6 @@
         "Finding kind 'actionable_ops_lever' has no routing rule"
       ],
       "priority_score": 0.9773
-    },
-    {
-      "plugin_id": "analysis_bsts_intervention_counterfactual_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.95,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.95) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.95
     },
     {
       "plugin_id": "analysis_minimum_covariance_determinant_v1",
@@ -589,20 +112,6 @@
       "priority_score": 0.9287
     },
     {
-      "plugin_id": "analysis_beta_binomial_overdispersion_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.9,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.90) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.9
-    },
-    {
       "plugin_id": "analysis_mice_imputation_chained_equations_v1",
       "reason_code": "ADAPTER_RULE_MISSING",
       "finding_count": 1,
@@ -613,34 +122,6 @@
       ],
       "suspect_reasons": [
         "Finding kind 'actionable_ops_lever' has no routing rule"
-      ],
-      "priority_score": 0.9
-    },
-    {
-      "plugin_id": "analysis_partial_correlation_network_shift_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.9,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.90) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.9
-    },
-    {
-      "plugin_id": "analysis_piecewise_linear_trend_changepoints_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.9,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.90) with 1 findings marked OBSERVATION_ONLY"
       ],
       "priority_score": 0.9
     },
@@ -659,76 +140,6 @@
       "priority_score": 0.8921
     },
     {
-      "plugin_id": "analysis_negative_binomial_overdispersion_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.88,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.88) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.88
-    },
-    {
-      "plugin_id": "analysis_gam_spline_regression_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.85,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.85) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.85
-    },
-    {
-      "plugin_id": "analysis_zero_inflated_count_model_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.85,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.85) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.85
-    },
-    {
-      "plugin_id": "analysis_graph_pagerank_hotspots_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.83,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.83) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.83
-    },
-    {
-      "plugin_id": "analysis_lomb_scargle_periodogram_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.8277587217,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.83) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.8277587217
-    },
-    {
       "plugin_id": "analysis_ideaspace_energy_ebm_v1",
       "reason_code": "OBSERVATION_ONLY",
       "finding_count": 1,
@@ -743,160 +154,6 @@
       "priority_score": 0.8
     },
     {
-      "plugin_id": "analysis_distance_covariance_dependence_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.78,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.78) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.78
-    },
-    {
-      "plugin_id": "analysis_quantile_loss_boosting_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.72,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.72) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.72
-    },
-    {
-      "plugin_id": "analysis_capacity_frontier_envelope_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.71,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.71) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.71
-    },
-    {
-      "plugin_id": "analysis_spectral_radius_stability_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.68,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.68) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.68
-    },
-    {
-      "plugin_id": "analysis_higuchi_fractal_dimension_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.66,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.66) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.66
-    },
-    {
-      "plugin_id": "analysis_poisson_regression_rate_drivers_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.66,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.66) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.66
-    },
-    {
-      "plugin_id": "analysis_factor_rotation_varimax_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.65,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.65) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.65
-    },
-    {
-      "plugin_id": "analysis_random_matrix_marchenko_pastur_denoise_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.65,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.65) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.65
-    },
-    {
-      "plugin_id": "analysis_sparse_pca_interpretable_components_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.65,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.65) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.65
-    },
-    {
-      "plugin_id": "analysis_periodicity_spectral_scan",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.6433634842,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.64) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.6433634842
-    },
-    {
-      "plugin_id": "analysis_aft_survival_lognormal_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.64,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.64) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.64
-    },
-    {
       "plugin_id": "analysis_tsne_embedding_v1",
       "reason_code": "ADAPTER_RULE_MISSING",
       "finding_count": 1,
@@ -909,34 +166,6 @@
         "Finding kind 'actionable_ops_lever' has no routing rule"
       ],
       "priority_score": 0.629
-    },
-    {
-      "plugin_id": "analysis_competing_risks_cif_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.62,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.62) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.62
-    },
-    {
-      "plugin_id": "analysis_ica_source_separation_v1",
-      "reason_code": "OBSERVATION_ONLY",
-      "finding_count": 1,
-      "max_confidence": 0.62,
-      "has_process_targeting": false,
-      "finding_kinds": [
-        "plugin_observation"
-      ],
-      "suspect_reasons": [
-        "High confidence (0.62) with 1 findings marked OBSERVATION_ONLY"
-      ],
-      "priority_score": 0.62
     },
     {
       "plugin_id": "analysis_dependency_critical_path_v1",
@@ -963,6 +192,16 @@
       "finding_count": 1,
       "has_process_targeting": true,
       "max_confidence": 1.0
+    },
+    {
+      "plugin_id": "analysis_capacity_frontier_envelope_v1",
+      "mapped_kind": "capacity_scale_model",
+      "finding_kinds": [
+        "capacity_scale_model"
+      ],
+      "finding_count": 1,
+      "has_process_targeting": false,
+      "max_confidence": 0.71
     },
     {
       "plugin_id": "analysis_constrained_clustering_cop_kmeans_v1",

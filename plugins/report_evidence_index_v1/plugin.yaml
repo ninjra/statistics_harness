@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Report Evidence Index"
+  reference_key: "report_evidence_index"
+  paper: ""
+  finding_kind: "report"

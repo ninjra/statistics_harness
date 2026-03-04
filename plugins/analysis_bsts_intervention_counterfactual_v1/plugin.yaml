@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Bsts Intervention Counterfactual"
+  reference_key: "bsts_intervention_counterfactual"
+  paper: ""
+  finding_kind: "counterfactual"

@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Map Permutation Test Karniski"
+  reference_key: "map_permutation_test_karniski"
+  paper: ""
+  finding_kind: "distribution"

@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Geometric Median Multivariate Location"
+  reference_key: "geometric_median_multivariate_location"
+  paper: ""
+  finding_kind: "distribution"

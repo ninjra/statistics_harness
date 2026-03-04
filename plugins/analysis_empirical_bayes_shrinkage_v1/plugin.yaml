@@ -22,3 +22,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Empirical Bayes Shrinkage"
+  reference_key: "empirical_bayes_shrinkage"
+  paper: ""
+  finding_kind: "bayesian_point_displacement"

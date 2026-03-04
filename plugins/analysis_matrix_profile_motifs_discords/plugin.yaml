@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Matrix Profile"
+  reference_key: "matrix_profile"
+  paper: "Yeh et al. (2016)"
+  finding_kind: "time_series"

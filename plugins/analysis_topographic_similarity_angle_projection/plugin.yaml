@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Topographic Similarity Angle Projection"
+  reference_key: "topographic_similarity_angle_projection"
+  paper: ""
+  finding_kind: "distribution"

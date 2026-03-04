@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Quantile Sketch P2 Streaming"
+  reference_key: "quantile_sketch_p2_streaming"
+  paper: ""
+  finding_kind: "percentile_stats"

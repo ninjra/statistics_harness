@@ -31,3 +31,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Transform Normalize Mixed"
+  reference_key: "transform_normalize_mixed"
+  paper: ""
+  finding_kind: "transform"

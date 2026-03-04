@@ -37,3 +37,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Queue Delay Decomposition"
+  reference_key: "queue_delay_decomposition"
+  paper: ""
+  finding_kind: "chain_makespan"

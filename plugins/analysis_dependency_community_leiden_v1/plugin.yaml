@@ -22,3 +22,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Dependency Community Leiden"
+  reference_key: "dependency_community_leiden"
+  paper: ""
+  finding_kind: "graph"

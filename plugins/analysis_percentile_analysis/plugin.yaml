@@ -25,3 +25,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Percentile Analysis"
+  reference_key: "percentile_analysis"
+  paper: ""
+  finding_kind: "percentile_stats"

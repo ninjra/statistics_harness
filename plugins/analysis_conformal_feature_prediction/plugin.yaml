@@ -20,3 +20,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Conformal Feature Prediction"
+  reference_key: "conformal_feature_prediction"
+  paper: ""
+  finding_kind: "counterfactual"

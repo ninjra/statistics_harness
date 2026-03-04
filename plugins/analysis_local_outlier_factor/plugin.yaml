@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Local Outlier Factor"
+  reference_key: "lof"
+  paper: "Breunig et al. (2000)"
+  finding_kind: "anomaly"

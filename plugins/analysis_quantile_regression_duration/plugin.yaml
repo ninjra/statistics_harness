@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Quantile Regression (Duration)"
+  reference_key: "quantile_regression"
+  paper: ""
+  finding_kind: "regression"

@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Permutation Entropy Drift"
+  reference_key: "permutation_entropy_drift"
+  paper: ""
+  finding_kind: "time_series"

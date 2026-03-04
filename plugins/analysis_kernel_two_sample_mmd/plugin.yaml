@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "MMD Kernel Two-Sample"
+  reference_key: "mmd"
+  paper: "Gretton et al. (2012)"
+  finding_kind: "distribution"

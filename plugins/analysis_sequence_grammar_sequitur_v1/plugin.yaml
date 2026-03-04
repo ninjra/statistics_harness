@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Sequence Grammar Sequitur"
+  reference_key: "sequence_grammar_sequitur"
+  paper: ""
+  finding_kind: "sequence_classification"

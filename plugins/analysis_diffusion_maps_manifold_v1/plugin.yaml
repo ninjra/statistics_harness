@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Diffusion Maps Manifold"
+  reference_key: "diffusion_maps_manifold"
+  paper: ""
+  finding_kind: "cluster"

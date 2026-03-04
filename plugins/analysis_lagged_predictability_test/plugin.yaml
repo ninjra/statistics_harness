@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Lagged Predictability Test"
+  reference_key: "granger"
+  paper: ""
+  finding_kind: "time_series"

@@ -21,3 +21,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Dirichlet Process Gaussian Mixture"
+  reference_key: "dp_gmm"
+  paper: "Blei & Jordan (2006)"
+  finding_kind: "cluster"

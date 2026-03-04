@@ -29,3 +29,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "User Host Savings"
+  reference_key: "user_host_savings"
+  paper: ""
+  finding_kind: "capacity_scale_model"

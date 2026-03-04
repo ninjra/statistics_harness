@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Mutual Information Screen"
+  reference_key: "mutual_information_screen"
+  paper: ""
+  finding_kind: "correlation"

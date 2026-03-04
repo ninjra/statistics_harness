@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Dependency Critical Path"
+  reference_key: "dependency_critical_path"
+  paper: ""
+  finding_kind: "graph"

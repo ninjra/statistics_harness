@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Mann-Whitney U Two-Sample"
+  reference_key: "two_sample_numeric_mann_whitney"
+  paper: ""
+  finding_kind: "distribution"

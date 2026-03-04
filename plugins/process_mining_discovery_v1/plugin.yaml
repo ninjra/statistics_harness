@@ -22,3 +22,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Process Mining Discovery"
+  reference_key: "process_mining_discovery"
+  paper: ""
+  finding_kind: "unknown"

@@ -25,3 +25,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Dynamic Close Detection"
+  reference_key: "dynamic_close_detection"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

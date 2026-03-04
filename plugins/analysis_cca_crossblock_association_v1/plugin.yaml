@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Cca Crossblock Association"
+  reference_key: "cca_crossblock_association"
+  paper: ""
+  finding_kind: "correlation"

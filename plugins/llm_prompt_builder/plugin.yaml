@@ -16,3 +16,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Llm Prompt Builder"
+  reference_key: "llm_prompt_builder"
+  paper: ""
+  finding_kind: "llm"

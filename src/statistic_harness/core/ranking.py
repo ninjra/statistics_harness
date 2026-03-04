@@ -7,10 +7,11 @@ import yaml
 
 
 DEFAULT_WEIGHTS = {
-    "modeled_delta_hours_close_dynamic": 0.40,
-    "modeled_delta_hours": 0.25,
-    "manual_touch_reduction_count": 0.20,
-    "close_contention_reduction_pct": 0.15,
+    "modeled_delta_hours_close_cycle": 0.25,
+    "modeled_delta_hours": 0.15,
+    "modeled_user_touches_reduced": 0.15,
+    "modeled_contention_reduction_pct_close": 0.10,
+    "value_score_v2": 0.35,
 }
 
 

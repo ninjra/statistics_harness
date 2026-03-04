@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Sequential Patterns Prefixspan"
+  reference_key: "sequential_patterns_prefixspan"
+  paper: ""
+  finding_kind: "sequence_classification"

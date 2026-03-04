@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "CUSUM Control Chart"
+  reference_key: "control_chart"
+  paper: "Page (1954)"
+  finding_kind: "anomaly"

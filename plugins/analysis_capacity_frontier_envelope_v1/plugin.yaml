@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Capacity Frontier Envelope"
+  reference_key: "capacity_frontier_envelope"
+  paper: ""
+  finding_kind: "capacity_scale_model"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Variant Differential"
+  reference_key: "variant_differential"
+  paper: ""
+  finding_kind: "process_variant"

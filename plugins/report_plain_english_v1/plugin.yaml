@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Report Plain English"
+  reference_key: "report_plain_english"
+  paper: ""
+  finding_kind: "report"

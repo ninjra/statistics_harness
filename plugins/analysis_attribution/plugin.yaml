@@ -27,3 +27,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Attribution Analysis"
+  reference_key: "attribution"
+  paper: ""
+  finding_kind: "role_inference"

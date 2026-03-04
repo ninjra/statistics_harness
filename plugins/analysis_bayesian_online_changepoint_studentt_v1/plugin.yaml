@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Bayesian Online Changepoint Studentt"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "changepoint"

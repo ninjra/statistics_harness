@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Normalizing Flow Density"
+  reference_key: "normalizing_flow_density"
+  paper: ""
+  finding_kind: "distribution"

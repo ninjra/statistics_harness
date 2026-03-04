@@ -42,3 +42,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Close Cycle Uplift"
+  reference_key: "close_cycle_uplift"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

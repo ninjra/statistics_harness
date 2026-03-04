@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Little's Law Consistency"
+  reference_key: "little"
+  paper: "Little (1961)"
+  finding_kind: "process_variant"

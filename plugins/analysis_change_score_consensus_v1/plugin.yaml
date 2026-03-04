@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Change Score Consensus"
+  reference_key: "change_score_consensus"
+  paper: ""
+  finding_kind: "dependence_shift"

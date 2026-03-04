@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Pc Algorithm Causal Graph"
+  reference_key: "pc_algorithm_causal_graph"
+  paper: ""
+  finding_kind: "causal"

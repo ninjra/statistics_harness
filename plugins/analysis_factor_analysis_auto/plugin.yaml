@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Auto Factor Analysis"
+  reference_key: "factor_analysis_auto"
+  paper: ""
+  finding_kind: "cluster"

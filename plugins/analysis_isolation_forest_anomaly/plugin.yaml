@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Isolation Forest Anomaly"
+  reference_key: "isolation_forest"
+  paper: "Liu et al. (2008)"
+  finding_kind: "anomaly"

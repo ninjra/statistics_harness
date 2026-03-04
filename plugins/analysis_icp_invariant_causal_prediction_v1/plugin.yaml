@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Icp Invariant Causal Prediction"
+  reference_key: "icp_invariant_causal_prediction"
+  paper: ""
+  finding_kind: "causal"

@@ -135,6 +135,7 @@ class Plugin:
             top_idx = np.argsort(diff)[::-1][:3]
             top_cols = [value_cols[i] for i in top_idx]
             finding = {
+                "kind": "changepoint",
                 "id": stable_id(f"cp:{cp}:{top_cols}"),
                 "severity": "warn",
                 "confidence": 0.6,

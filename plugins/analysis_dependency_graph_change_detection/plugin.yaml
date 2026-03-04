@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Dependency Graph Change Detection"
+  reference_key: "dependency_graph_change_detection"
+  paper: ""
+  finding_kind: "graph"

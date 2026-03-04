@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Action Search Mip Batched Scheduler"
+  reference_key: "action_search_mip_batched_scheduler"
+  paper: ""
+  finding_kind: "chain_makespan"

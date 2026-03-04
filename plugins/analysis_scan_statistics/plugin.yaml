@@ -22,3 +22,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Scan Statistics"
+  reference_key: "scan_statistics"
+  paper: ""
+  finding_kind: "anomaly"

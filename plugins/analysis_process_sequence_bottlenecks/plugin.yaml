@@ -30,3 +30,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Process Bottleneck Analysis"
+  reference_key: "process_mining"
+  paper: ""
+  finding_kind: "process_variant"

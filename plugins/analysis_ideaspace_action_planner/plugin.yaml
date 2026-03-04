@@ -32,3 +32,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ideaspace Action Planner"
+  reference_key: "ideaspace_action_planner"
+  paper: ""
+  finding_kind: "ideaspace_gap"

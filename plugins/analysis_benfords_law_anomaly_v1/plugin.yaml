@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Benfords Law Anomaly"
+  reference_key: "benfords_law_anomaly"
+  paper: ""
+  finding_kind: "anomaly"

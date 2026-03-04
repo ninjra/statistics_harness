@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Negative Binomial Overdispersion"
+  reference_key: "negative_binomial_overdispersion"
+  paper: ""
+  finding_kind: "distribution"

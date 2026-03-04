@@ -69,13 +69,13 @@ def _report_signature(report: dict) -> dict:
         if isinstance(d, float) and d > 0.0:
             total_delta_hours += d
         dd = _as_float(
-            row.get("modeled_delta_hours_close_dynamic")
+            row.get("modeled_delta_hours_close_cycle")
             or row.get("delta_hours_close_dynamic")
         )
         if isinstance(dd, float) and dd > 0.0:
             total_delta_close_dynamic += dd
         pct = _as_float(
-            row.get("modeled_efficiency_gain_pct_close_dynamic")
+            row.get("modeled_efficiency_gain_pct_close_cycle")
             or row.get("efficiency_gain_pct_close_dynamic")
         )
         if isinstance(pct, float) and pct >= 0.0:
@@ -92,8 +92,8 @@ def _report_signature(report: dict) -> dict:
     return {
         "recommendation_count": len(typed_items),
         "total_modeled_delta_hours": round(total_delta_hours, 6),
-        "total_modeled_delta_hours_close_dynamic": round(total_delta_close_dynamic, 6),
-        "avg_efficiency_gain_pct_close_dynamic": round(
+        "total_modeled_delta_hours_close_cycle": round(total_delta_close_dynamic, 6),
+        "avg_efficiency_gain_pct_close_cycle": round(
             sum(avg_vals) / len(avg_vals), 6
         )
         if avg_vals
@@ -116,15 +116,15 @@ def _compare_signatures(
         errors.append("TOTAL_MODELED_DELTA_HOURS_DRIFT")
     if (
         abs(
-            float(candidate["total_modeled_delta_hours_close_dynamic"])
-            - float(baseline["total_modeled_delta_hours_close_dynamic"])
+            float(candidate["total_modeled_delta_hours_close_cycle"])
+            - float(baseline["total_modeled_delta_hours_close_cycle"])
         )
         > hours_tol
     ):
         errors.append("CLOSE_DYNAMIC_DELTA_HOURS_DRIFT")
 
-    base_pct = baseline.get("avg_efficiency_gain_pct_close_dynamic")
-    cand_pct = candidate.get("avg_efficiency_gain_pct_close_dynamic")
+    base_pct = baseline.get("avg_efficiency_gain_pct_close_cycle")
+    cand_pct = candidate.get("avg_efficiency_gain_pct_close_cycle")
     if isinstance(base_pct, (int, float)) and isinstance(cand_pct, (int, float)):
         if abs(float(cand_pct) - float(base_pct)) > pct_tol:
             errors.append("CLOSE_DYNAMIC_EFFICIENCY_PCT_DRIFT")

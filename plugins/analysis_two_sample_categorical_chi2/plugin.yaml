@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Chi-Square Two-Sample (Categorical)"
+  reference_key: "two_sample_categorical_chi2"
+  paper: ""
+  finding_kind: "distribution"

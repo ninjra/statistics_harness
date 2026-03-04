@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Principal Component Analysis"
+  reference_key: "pca_auto"
+  paper: ""
+  finding_kind: "cluster"

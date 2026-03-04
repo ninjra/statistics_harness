@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Multivariate Changepoint Pelt"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "changepoint"

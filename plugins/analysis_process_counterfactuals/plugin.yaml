@@ -29,3 +29,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Process Counterfactuals"
+  reference_key: "process_counterfactuals"
+  paper: ""
+  finding_kind: "counterfactual"

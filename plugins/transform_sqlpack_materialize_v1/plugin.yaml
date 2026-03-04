@@ -23,3 +23,9 @@ sandbox:
     - plugins
     - docs
     - run_dir
+
+citation:
+  method: "Transform Sqlpack Materialize"
+  reference_key: "transform_sqlpack_materialize"
+  paper: ""
+  finding_kind: "transform"

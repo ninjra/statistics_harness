@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Similarity Graph Spectral Clustering"
+  reference_key: "similarity_graph_spectral_clustering"
+  paper: ""
+  finding_kind: "graph"

@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Constraints Violation Detector"
+  reference_key: "constraints_violation_detector"
+  paper: ""
+  finding_kind: "anomaly"

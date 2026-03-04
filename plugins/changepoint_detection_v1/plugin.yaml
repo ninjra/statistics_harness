@@ -21,3 +21,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Changepoint Detection"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "unknown"

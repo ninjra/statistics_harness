@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - docs
+
+citation:
+  method: "Planner Basic"
+  reference_key: "planner_basic"
+  paper: ""
+  finding_kind: "planner"

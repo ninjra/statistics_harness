@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Frequent Directions Cov Sketch"
+  reference_key: "frequent_directions_cov_sketch"
+  paper: ""
+  finding_kind: "correlation"

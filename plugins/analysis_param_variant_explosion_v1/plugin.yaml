@@ -22,3 +22,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Param Variant Explosion"
+  reference_key: "param_variant_explosion"
+  paper: ""
+  finding_kind: "process_variant"

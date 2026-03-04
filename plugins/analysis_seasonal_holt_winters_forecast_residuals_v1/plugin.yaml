@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Seasonal Holt Winters Forecast Residuals"
+  reference_key: "seasonal_holt_winters_forecast_residuals"
+  paper: ""
+  finding_kind: "time_series"

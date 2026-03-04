@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Partial Correlation Network Shift"
+  reference_key: "partial_correlation_network_shift"
+  paper: ""
+  finding_kind: "correlation"

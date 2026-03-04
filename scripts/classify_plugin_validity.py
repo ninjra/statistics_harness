@@ -295,12 +295,10 @@ def _classify_plugin_row(
             [
                 "delta_hours_close_dynamic",
                 "modeled_delta_hours_close_cycle",
-                "modeled_delta_hours_close_dynamic",
             ],
             [
                 "efficiency_gain_pct_close_dynamic",
                 "modeled_efficiency_gain_pct_close_cycle",
-                "modeled_efficiency_gain_pct_close_dynamic",
             ],
         ),
         "overall": _window_metric_from_rows(

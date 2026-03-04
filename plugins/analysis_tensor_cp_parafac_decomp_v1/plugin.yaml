@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Tensor Cp Parafac Decomp"
+  reference_key: "tensor_cp_parafac_decomp"
+  paper: ""
+  finding_kind: "cluster"

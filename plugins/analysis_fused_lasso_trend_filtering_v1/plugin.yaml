@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Fused Lasso Trend Filtering"
+  reference_key: "fused_lasso_trend_filtering"
+  paper: ""
+  finding_kind: "changepoint"

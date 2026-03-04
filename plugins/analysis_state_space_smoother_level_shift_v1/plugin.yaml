@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "State Space Smoother Level Shift"
+  reference_key: "kalman"
+  paper: ""
+  finding_kind: "changepoint"

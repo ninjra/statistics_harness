@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Auto Time-Series"
+  reference_key: "time_series_analysis_auto"
+  paper: ""
+  finding_kind: "time_series"

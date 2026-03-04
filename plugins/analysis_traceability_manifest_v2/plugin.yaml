@@ -19,3 +19,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Traceability Manifest"
+  reference_key: "traceability_manifest"
+  paper: ""
+  finding_kind: "role_inference"

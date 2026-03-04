@@ -28,3 +28,9 @@ sandbox:
     - docs
     - run_dir
     - models
+
+citation:
+  method: "Llm Text2sql Local Generate"
+  reference_key: "llm_text2sql_local_generate"
+  paper: ""
+  finding_kind: "llm"

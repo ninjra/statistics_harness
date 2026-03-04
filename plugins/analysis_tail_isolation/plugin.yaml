@@ -28,3 +28,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Tail Isolation"
+  reference_key: "tail_isolation"
+  paper: ""
+  finding_kind: "tail_isolation"

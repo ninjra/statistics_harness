@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Change Impact Pre Post"
+  reference_key: "change_impact_pre_post"
+  paper: ""
+  finding_kind: "counterfactual"

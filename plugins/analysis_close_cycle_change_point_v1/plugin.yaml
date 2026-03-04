@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Close Cycle Change Point"
+  reference_key: "close_cycle_change_point"
+  paper: ""
+  finding_kind: "changepoint"

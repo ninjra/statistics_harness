@@ -17,3 +17,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Transform Template"
+  reference_key: "transform_template"
+  paper: ""
+  finding_kind: "transform"

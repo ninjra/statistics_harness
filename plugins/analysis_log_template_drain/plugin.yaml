@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Log Template Drain"
+  reference_key: "drain"
+  paper: ""
+  finding_kind: "process_variant"

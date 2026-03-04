@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Sample Entropy Irregularity"
+  reference_key: "sample_entropy_irregularity"
+  paper: ""
+  finding_kind: "time_series"

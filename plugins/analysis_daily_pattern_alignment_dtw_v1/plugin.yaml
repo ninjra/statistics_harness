@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Daily Pattern Alignment Dtw"
+  reference_key: "daily_pattern_alignment_dtw"
+  paper: ""
+  finding_kind: "time_series"

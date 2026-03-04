@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Gam Spline Regression"
+  reference_key: "gam_spline_regression"
+  paper: ""
+  finding_kind: "regression"

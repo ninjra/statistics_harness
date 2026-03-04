@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Hurst Exponent Long Memory"
+  reference_key: "hurst_exponent_long_memory"
+  paper: ""
+  finding_kind: "time_series"

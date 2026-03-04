@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Umap Embedding"
+  reference_key: "umap_embedding"
+  paper: ""
+  finding_kind: "cluster"

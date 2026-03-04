@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "ADWIN Drift Detection"
+  reference_key: "adwin"
+  paper: "Bifet & Gavalda (2007)"
+  finding_kind: "changepoint"

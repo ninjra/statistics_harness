@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Neural Additive Model Nam"
+  reference_key: "neural_additive_model_nam"
+  paper: ""
+  finding_kind: "regression"

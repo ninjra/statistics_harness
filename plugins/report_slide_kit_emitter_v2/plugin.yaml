@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Report Slide Kit Emitter"
+  reference_key: "report_slide_kit_emitter"
+  paper: ""
+  finding_kind: "report"

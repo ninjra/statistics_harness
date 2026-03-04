@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Periodicity Spectral Scan"
+  reference_key: "periodicity_spectral_scan"
+  paper: ""
+  finding_kind: "time_series"

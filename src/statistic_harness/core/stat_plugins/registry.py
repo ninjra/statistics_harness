@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from importlib import import_module
+from pathlib import Path
 from typing import Any, Callable, Iterable
 
 import math
 import statistics
 
+import yaml
 import numpy as np
 import pandas as pd
 
@@ -112,6 +114,30 @@ def _merge_budget_into_config(config: dict[str, Any], budget: dict[str, Any] | N
     return merged
 
 
+_PLUGIN_KIND_MAP_CACHE: dict[str, str] | None = None
+
+
+def _get_plugin_kind_map() -> dict[str, str]:
+    """Load and cache the plugin-to-kind mapping from config/plugin_kind_map.yaml."""
+    global _PLUGIN_KIND_MAP_CACHE
+    if _PLUGIN_KIND_MAP_CACHE is not None:
+        return _PLUGIN_KIND_MAP_CACHE
+    kind_map_path = Path(__file__).resolve().parents[4] / "config" / "plugin_kind_map.yaml"
+    if not kind_map_path.exists():
+        _PLUGIN_KIND_MAP_CACHE = {}
+        return _PLUGIN_KIND_MAP_CACHE
+    try:
+        payload = yaml.safe_load(kind_map_path.read_text(encoding="utf-8"))
+    except Exception:
+        _PLUGIN_KIND_MAP_CACHE = {}
+        return _PLUGIN_KIND_MAP_CACHE
+    if isinstance(payload, dict) and isinstance(payload.get("mappings"), dict):
+        _PLUGIN_KIND_MAP_CACHE = {str(k): str(v) for k, v in payload["mappings"].items()}
+    else:
+        _PLUGIN_KIND_MAP_CACHE = {}
+    return _PLUGIN_KIND_MAP_CACHE
+
+
 def _enrich_findings(findings: list[dict], plugin_id: str) -> None:
     """Auto-enrich findings missing contract-required fields.
 
@@ -120,6 +146,7 @@ def _enrich_findings(findings: list[dict], plugin_id: str) -> None:
     This post-processor backfills missing fields so downstream consumers
     (report builder, verifier) never see incomplete findings.
     """
+    default_kind = _get_plugin_kind_map().get(plugin_id)
     for i, f in enumerate(findings):
         if not isinstance(f, dict):
             continue
@@ -129,6 +156,8 @@ def _enrich_findings(findings: list[dict], plugin_id: str) -> None:
         f.setdefault("title", f.get("kind", f"Finding {i}"))
         f.setdefault("what", f.get("title", f.get("kind", f"Finding {i}")))
         f.setdefault("why", f.get("recommendation", "Review finding details."))
+        if default_kind and not f.get("kind"):
+            f["kind"] = default_kind
 
 
 def run_plugin(plugin_id: str, ctx) -> PluginResult:
@@ -388,6 +417,7 @@ def _make_finding(
     measurement_type: str = "measured",
     scope: dict[str, Any] | None = None,
     assumptions: list[str] | None = None,
+    kind: str | None = None,
 ) -> dict[str, Any]:
     finding = {
         "id": stable_id(f"{plugin_id}:{key}"),
@@ -401,6 +431,8 @@ def _make_finding(
         "recommendation": recommendation or "",
         "measurement_type": measurement_type,
     }
+    if kind:
+        finding["kind"] = kind
     if measurement_type == "modeled":
         finding["scope"] = scope or {"dataset": "full"}
         finding["assumptions"] = assumptions or ["modeled using simplified assumptions"]

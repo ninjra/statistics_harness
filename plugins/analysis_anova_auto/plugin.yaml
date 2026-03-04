@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "ANOVA"
+  reference_key: "anova_auto"
+  paper: ""
+  finding_kind: "percentile_stats"

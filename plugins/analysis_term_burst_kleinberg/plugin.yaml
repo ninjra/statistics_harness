@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Term Burst Kleinberg"
+  reference_key: "kleinberg_burst"
+  paper: ""
+  finding_kind: "time_series"

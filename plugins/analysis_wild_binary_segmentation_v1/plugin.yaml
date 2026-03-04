@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Wild Binary Segmentation"
+  reference_key: "wild_binary_segmentation"
+  paper: ""
+  finding_kind: "changepoint"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Queue Model Fit"
+  reference_key: "queue_model_fit"
+  paper: ""
+  finding_kind: "chain_makespan"

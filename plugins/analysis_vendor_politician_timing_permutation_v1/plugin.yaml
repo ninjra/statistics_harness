@@ -34,3 +34,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Vendor Politician Timing Permutation"
+  reference_key: "vendor_politician_timing_permutation"
+  paper: ""
+  finding_kind: "role_inference"

@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Topographic Angle Dynamics"
+  reference_key: "topographic_angle_dynamics"
+  paper: ""
+  finding_kind: "distribution"

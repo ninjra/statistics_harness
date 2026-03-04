@@ -176,21 +176,7 @@
     {
       "doc_kind": "binding",
       "doc_path": "docs/four-pillars-implementation-plan.md",
-      "missing_paths": [
-        "docs/release_evidence/known_issue_detection_matrix.json",
-        "src/statistic_harness/core/models.py",
-        "src/statistic_harness/core/plugin_runtime.py",
-        "src/statistic_harness/core/reporting/freshman_formatter.py",
-        "src/statistic_harness/core/stat_plugins/base.py",
-        "tests/contracts/test_chunk_invariance.py",
-        "tests/core/test_fail_closed_dependency_wiring.py",
-        "tests/fixtures/ground_truth.yaml",
-        "tests/integration/test_compare_dataset_runs.py",
-        "tests/integration/test_evaluator_harness.py",
-        "tests/integration/test_known_issue_rediscovery_baseline.py",
-        "tests/integration/test_report_artifacts_contract.py",
-        "tests/perf/test_plugin_resource_budget.py"
-      ],
+      "missing_paths": [],
       "missing_requirement_enforcement_paths": {},
       "plugin_ids": [],
       "referenced_paths": [
@@ -4069,7 +4055,7 @@
     "docs",
     "repo-root *-plan.md"
   ],
-  "missing_any": true,
+  "missing_any": false,
   "scanned_docs": [
     "docs/4_pillars_scoring_spec.md",
     "docs/accounting-month-global-windows-golden-implementation-plan.md",

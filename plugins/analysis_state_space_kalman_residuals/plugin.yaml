@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "State Space Kalman Residuals"
+  reference_key: "kalman"
+  paper: ""
+  finding_kind: "time_series"

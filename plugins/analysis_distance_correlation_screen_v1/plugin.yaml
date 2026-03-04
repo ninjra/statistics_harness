@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Distance Correlation Screen"
+  reference_key: "distance_correlation_screen"
+  paper: ""
+  finding_kind: "correlation"

@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Surface Roughness Metrics"
+  reference_key: "surface_roughness_metrics"
+  paper: ""
+  finding_kind: "distribution"

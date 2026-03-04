@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Transform Entity Resolution Map"
+  reference_key: "transform_entity_resolution_map"
+  paper: ""
+  finding_kind: "transform"

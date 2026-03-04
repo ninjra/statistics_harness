@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Bart Uplift Surrogate"
+  reference_key: "bart_uplift_surrogate"
+  paper: ""
+  finding_kind: "causal"

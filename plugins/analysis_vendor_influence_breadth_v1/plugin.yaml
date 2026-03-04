@@ -21,3 +21,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Vendor Influence Breadth"
+  reference_key: "vendor_influence_breadth"
+  paper: ""
+  finding_kind: "role_inference"

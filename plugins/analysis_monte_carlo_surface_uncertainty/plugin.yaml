@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Monte Carlo Surface Uncertainty"
+  reference_key: "monte_carlo_surface_uncertainty"
+  paper: ""
+  finding_kind: "distribution"

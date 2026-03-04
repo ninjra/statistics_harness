@@ -18,3 +18,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Issue Cards"
+  reference_key: "issue_cards"
+  paper: ""
+  finding_kind: "role_inference"

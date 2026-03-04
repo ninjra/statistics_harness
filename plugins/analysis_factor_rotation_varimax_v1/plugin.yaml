@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Factor Rotation Varimax"
+  reference_key: "factor_rotation_varimax"
+  paper: ""
+  finding_kind: "cluster"

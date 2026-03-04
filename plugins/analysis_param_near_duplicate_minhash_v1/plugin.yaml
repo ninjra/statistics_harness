@@ -32,3 +32,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Param Near Duplicate Minhash"
+  reference_key: "param_near_duplicate_minhash"
+  paper: ""
+  finding_kind: "process_variant"

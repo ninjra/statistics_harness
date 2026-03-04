@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Robust Pca Sparse Outliers"
+  reference_key: "robust_pca"
+  paper: ""
+  finding_kind: "anomaly"

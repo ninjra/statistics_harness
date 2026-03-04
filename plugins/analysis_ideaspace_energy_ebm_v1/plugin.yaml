@@ -26,3 +26,8 @@ sandbox:
     - plugins
     - run_dir
 
+citation:
+  method: "Ideaspace Energy Ebm"
+  reference_key: "ideaspace_energy_ebm"
+  paper: ""
+  finding_kind: "ideaspace_gap"

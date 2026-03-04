@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Sparse Pca Interpretable Components"
+  reference_key: "sparse_pca_interpretable_components"
+  paper: ""
+  finding_kind: "cluster"

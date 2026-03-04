@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Mann Kendall Trend Test"
+  reference_key: "mann_kendall_trend_test"
+  paper: ""
+  finding_kind: "time_series"

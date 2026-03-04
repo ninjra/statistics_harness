@@ -19,3 +19,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Transform Sql Intents Pack"
+  reference_key: "transform_sql_intents_pack"
+  paper: ""
+  finding_kind: "transform"

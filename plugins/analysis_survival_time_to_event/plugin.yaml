@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Survival Time-to-Event"
+  reference_key: "kaplan_meier"
+  paper: ""
+  finding_kind: "survival"

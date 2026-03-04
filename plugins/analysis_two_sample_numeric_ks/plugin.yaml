@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Kolmogorov-Smirnov Two-Sample"
+  reference_key: "two_sample_numeric_ks"
+  paper: ""
+  finding_kind: "distribution"

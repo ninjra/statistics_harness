@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Surface Multiscale Wavelet Curvature"
+  reference_key: "surface_multiscale_wavelet_curvature"
+  paper: ""
+  finding_kind: "distribution"

@@ -16,3 +16,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Determinism Discipline"
+  reference_key: "determinism_discipline"
+  paper: ""
+  finding_kind: "role_inference"

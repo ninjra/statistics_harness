@@ -16,3 +16,9 @@ sandbox:
   - appdata
   - plugins
   - docs
+
+citation:
+  method: "Report Bundle"
+  reference_key: "report_bundle"
+  paper: ""
+  finding_kind: "report"

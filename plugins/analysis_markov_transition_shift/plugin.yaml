@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Markov Transition Shift"
+  reference_key: "markov_transition_shift"
+  paper: ""
+  finding_kind: "process_variant"

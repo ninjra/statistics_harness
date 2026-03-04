@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Haar Wavelet Transient Detector"
+  reference_key: "haar_wavelet_transient_detector"
+  paper: ""
+  finding_kind: "time_series"

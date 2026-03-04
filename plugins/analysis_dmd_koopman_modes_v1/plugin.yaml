@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Dmd Koopman Modes"
+  reference_key: "dmd_koopman_modes"
+  paper: ""
+  finding_kind: "time_series"

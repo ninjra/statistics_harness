@@ -22,3 +22,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "NOTEARS Linear"
+  reference_key: "notears"
+  paper: "Zheng et al. (2018)"
+  finding_kind: "causal"

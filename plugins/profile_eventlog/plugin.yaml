@@ -19,3 +19,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Profile Eventlog"
+  reference_key: "profile_eventlog"
+  paper: ""
+  finding_kind: "profile"

@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Elastic Net Regularized Glm"
+  reference_key: "elastic_net_regularized_glm"
+  paper: ""
+  finding_kind: "regression"

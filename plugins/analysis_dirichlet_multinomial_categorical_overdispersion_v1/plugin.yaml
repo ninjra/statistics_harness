@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Dirichlet Multinomial Categorical Overdispersion"
+  reference_key: "dirichlet_multinomial_categorical_overdispersion"
+  paper: ""
+  finding_kind: "distribution"

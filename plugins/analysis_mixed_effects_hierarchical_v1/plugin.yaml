@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Mixed Effects Hierarchical"
+  reference_key: "mixed_effects_hierarchical"
+  paper: ""
+  finding_kind: "regression"

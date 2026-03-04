@@ -22,3 +22,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Sequence Classification"
+  reference_key: "sequence_classification"
+  paper: ""
+  finding_kind: "sequence_classification"

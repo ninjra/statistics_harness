@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Quantile Regression Forest"
+  reference_key: "quantile_regression"
+  paper: ""
+  finding_kind: "regression"

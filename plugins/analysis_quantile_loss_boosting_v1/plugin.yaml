@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Quantile Loss Boosting"
+  reference_key: "quantile_loss_boosting"
+  paper: ""
+  finding_kind: "regression"

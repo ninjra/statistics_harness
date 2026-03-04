@@ -24,3 +24,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Chain Makespan"
+  reference_key: "chain_makespan"
+  paper: ""
+  finding_kind: "chain_makespan"

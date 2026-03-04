@@ -123,8 +123,9 @@ def _make_finding(
     confidence: float = 0.5,
     where: dict[str, Any] | None = None,
     measurement_type: str = "measured",
+    kind: str | None = None,
 ) -> dict[str, Any]:
-    return {
+    finding = {
         "id": _safe_id(plugin_id, key),
         "severity": severity,
         "confidence": float(max(0.0, min(1.0, confidence))),
@@ -136,6 +137,9 @@ def _make_finding(
         "recommendation": recommendation,
         "measurement_type": measurement_type,
     }
+    if kind:
+        finding["kind"] = kind
+    return finding
 
 
 def _ok_with_reason(

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "PELT Changepoint"
+  reference_key: "pelt"
+  paper: "Killick et al. (2012)"
+  finding_kind: "changepoint"

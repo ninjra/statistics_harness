@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Bayesian Point Displacement"
+  reference_key: "bayesian_point_displacement"
+  paper: "Tanir et al. (2008)"
+  finding_kind: "bayesian_point_displacement"

@@ -139,7 +139,7 @@ class Plugin:
             top_columns = [value_cols[i] for i in top_idx]
 
             findings.append(
-                {
+                {"kind": "anomaly",
                     "id": stable_id(f"{label}:{alarm_idx}:{top_columns}"),
                     "severity": "warn",
                     "confidence": min(1.0, float(t2[alarm_idx] / (t2_threshold + 1e-9))),

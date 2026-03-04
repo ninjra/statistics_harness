@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Graph Motif Triads Shift"
+  reference_key: "graph_motif_triads_shift"
+  paper: ""
+  finding_kind: "graph"

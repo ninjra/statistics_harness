@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Surface Terrain Position Index"
+  reference_key: "surface_terrain_position_index"
+  paper: ""
+  finding_kind: "distribution"

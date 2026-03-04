@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Cur Decomposition Explain"
+  reference_key: "cur_decomposition_explain"
+  paper: ""
+  finding_kind: "cluster"

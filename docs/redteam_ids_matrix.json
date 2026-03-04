@@ -298,10 +298,13 @@
       },
       "evidence": {
         "test_paths": [
+          "tests/contracts/test_chunk_invariance.py",
           "tests/core/test_seed_propagation.py",
           "tests/integration/test_cross_dataset_pipeline_fail_closed.py",
+          "tests/integration/test_known_issue_rediscovery_baseline.py",
           "tests/integration/test_openplanter_cross_dataset_pack.py",
           "tests/perf/test_cross_dataset_pack_resource_budget.py",
+          "tests/perf/test_plugin_resource_budget.py",
           "tests/plugins/openplanter_pack_test_utils.py",
           "tests/plugins/test_action_search_annealing_v1.py",
           "tests/plugins/test_action_search_mip_v1.py",
@@ -509,6 +512,7 @@
           "tests/test_evaluation.py",
           "tests/test_evaluator.py",
           "tests/test_evaluator_harness_script.py",
+          "tests/test_exempted_analysis_plugins_smoke.py",
           "tests/test_four_pillars_scoring.py",
           "tests/test_frozen_surfaces_contract.py",
           "tests/test_generate_codex_plugin_catalog.py",
@@ -1618,6 +1622,7 @@
         "test_paths": [
           "tests/conftest.py",
           "tests/core/test_normalized_reader.py",
+          "tests/perf/test_plugin_resource_budget.py",
           "tests/plugins/test_analysis_anova_auto.py",
           "tests/plugins/test_analysis_bayesian_point_displacement.py",
           "tests/plugins/test_analysis_burst_detection_kleinberg.py",
@@ -1770,6 +1775,7 @@
           "tests/test_audit_plugin_streaming_contract.py",
           "tests/test_dataset_streaming.py",
           "tests/test_erp_next_wave_no_skip.py",
+          "tests/test_exempted_analysis_plugins_smoke.py",
           "tests/test_ideaspace_plugins.py",
           "tests/test_ideaspace_utils.py",
           "tests/test_ingest_tabular.py",

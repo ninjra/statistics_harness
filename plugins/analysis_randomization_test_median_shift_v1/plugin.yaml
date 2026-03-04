@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Randomization Test Median Shift"
+  reference_key: "randomization_test_median_shift"
+  paper: ""
+  finding_kind: "distribution"

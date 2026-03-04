@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Anderson-Darling Two-Sample"
+  reference_key: "two_sample_numeric_ad"
+  paper: ""
+  finding_kind: "distribution"

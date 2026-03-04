@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Distribution Drift Suite"
+  reference_key: "distribution_drift_suite"
+  paper: ""
+  finding_kind: "distribution"

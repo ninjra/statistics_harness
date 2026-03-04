@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Recommendation Dedupe"
+  reference_key: "recommendation_dedupe"
+  paper: ""
+  finding_kind: "role_inference"

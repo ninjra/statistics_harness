@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Chi-Square Association"
+  reference_key: "chi_square_association"
+  paper: "Pearson (1900)"
+  finding_kind: "chi_square_association"

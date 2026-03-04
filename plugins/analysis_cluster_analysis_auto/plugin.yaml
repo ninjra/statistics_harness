@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Auto Clustering"
+  reference_key: "cluster_analysis_auto"
+  paper: ""
+  finding_kind: "cluster"

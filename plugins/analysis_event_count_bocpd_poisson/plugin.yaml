@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Event Count Bocpd Poisson"
+  reference_key: "event_count_bocpd_poisson"
+  paper: ""
+  finding_kind: "changepoint"

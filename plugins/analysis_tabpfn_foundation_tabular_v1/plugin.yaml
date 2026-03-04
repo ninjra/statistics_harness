@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Tabpfn Foundation Tabular"
+  reference_key: "tabpfn_foundation_tabular"
+  paper: ""
+  finding_kind: "regression"

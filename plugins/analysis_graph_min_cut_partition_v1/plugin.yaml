@@ -21,3 +21,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Graph Min Cut Partition"
+  reference_key: "graph_min_cut_partition"
+  paper: ""
+  finding_kind: "graph"

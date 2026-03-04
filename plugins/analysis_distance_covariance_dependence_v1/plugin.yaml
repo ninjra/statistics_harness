@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Distance Covariance Dependence"
+  reference_key: "distance_covariance_dependence"
+  paper: ""
+  finding_kind: "correlation"

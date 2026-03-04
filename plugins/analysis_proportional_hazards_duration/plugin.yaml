@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Cox Proportional Hazards"
+  reference_key: "cox"
+  paper: "Cox (1972)"
+  finding_kind: "survival"

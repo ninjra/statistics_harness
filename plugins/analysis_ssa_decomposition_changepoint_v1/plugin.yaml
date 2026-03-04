@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ssa Decomposition Changepoint"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "time_series"

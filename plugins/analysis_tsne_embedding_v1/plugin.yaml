@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Tsne Embedding"
+  reference_key: "tsne_embedding"
+  paper: ""
+  finding_kind: "cluster"

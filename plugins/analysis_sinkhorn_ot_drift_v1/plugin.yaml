@@ -27,3 +27,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Sinkhorn Ot Drift"
+  reference_key: "sinkhorn_ot_drift"
+  paper: ""
+  finding_kind: "distribution"

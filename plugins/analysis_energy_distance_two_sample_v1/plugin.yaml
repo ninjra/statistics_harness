@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Energy Distance Two Sample"
+  reference_key: "energy_distance_two_sample"
+  paper: ""
+  finding_kind: "distribution"

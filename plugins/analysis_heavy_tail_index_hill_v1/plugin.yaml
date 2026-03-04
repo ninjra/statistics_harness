@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Heavy Tail Index Hill"
+  reference_key: "heavy_tail_index_hill"
+  paper: ""
+  finding_kind: "tail_isolation"

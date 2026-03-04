@@ -23,3 +23,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Gaussian Copula Shift"
+  reference_key: "copula"
+  paper: ""
+  finding_kind: "dependence_shift"

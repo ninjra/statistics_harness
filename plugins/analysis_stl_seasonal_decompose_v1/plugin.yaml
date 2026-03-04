@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Stl Seasonal Decompose"
+  reference_key: "stl_seasonal_decompose"
+  paper: ""
+  finding_kind: "time_series"

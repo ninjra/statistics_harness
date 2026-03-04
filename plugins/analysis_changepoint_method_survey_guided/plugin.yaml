@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Changepoint Method Survey Guided"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "changepoint"

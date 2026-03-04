@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Copula Dependence"
+  reference_key: "copula"
+  paper: ""
+  finding_kind: "correlation"

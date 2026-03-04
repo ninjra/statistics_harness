@@ -25,3 +25,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Concurrency Reconstruction"
+  reference_key: "concurrency_reconstruction"
+  paper: ""
+  finding_kind: "process_variant"

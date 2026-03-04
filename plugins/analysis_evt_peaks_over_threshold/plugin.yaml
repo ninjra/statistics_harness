@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Peaks Over Threshold (EVT)"
+  reference_key: "evt"
+  paper: ""
+  finding_kind: "tail_isolation"

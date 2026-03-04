@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Biclustering Cheng Church"
+  reference_key: "biclustering_cheng_church"
+  paper: ""
+  finding_kind: "cluster"

@@ -20,3 +20,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Causal Recommendations"
+  reference_key: "causal_recommendations"
+  paper: ""
+  finding_kind: "unknown"

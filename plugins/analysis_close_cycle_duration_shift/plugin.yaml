@@ -38,3 +38,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Close Cycle Duration Shift"
+  reference_key: "close_cycle_duration_shift"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

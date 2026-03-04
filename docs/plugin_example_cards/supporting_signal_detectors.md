@@ -2,7 +2,7 @@
 
 - class_rationale: Plugins that produce measurable signals feeding downstream decision plugins.
 - expected_output_type: `findings_or_metrics`
-- run_id: `baseline_verify_20260225k`
+- run_id: `debug_fg_20260225T2315Z`
 
 ## Example
 
@@ -16,5 +16,5 @@
 
 ## Traceability
 
-- class `supporting_signal_detectors` -> plugin `analysis_action_search_mip_batched_scheduler_v1` -> run `baseline_verify_20260225k`
+- class `supporting_signal_detectors` -> plugin `analysis_action_search_mip_batched_scheduler_v1` -> run `debug_fg_20260225T2315Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

@@ -34,3 +34,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Param Near Duplicate Simhash"
+  reference_key: "param_near_duplicate_simhash"
+  paper: ""
+  finding_kind: "process_variant"

@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Action Search Simulated Annealing"
+  reference_key: "action_search_simulated_annealing"
+  paper: ""
+  finding_kind: "chain_makespan"

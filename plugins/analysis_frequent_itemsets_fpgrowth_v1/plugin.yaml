@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Frequent Itemsets Fpgrowth"
+  reference_key: "frequent_itemsets_fpgrowth"
+  paper: ""
+  finding_kind: "chi_square_association"

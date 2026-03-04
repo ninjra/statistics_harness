@@ -24,3 +24,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Report Decision Bundle"
+  reference_key: "report_decision_bundle"
+  paper: ""
+  finding_kind: "report"

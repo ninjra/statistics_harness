@@ -17,3 +17,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Profile Basic"
+  reference_key: "profile_basic"
+  paper: ""
+  finding_kind: "profile"

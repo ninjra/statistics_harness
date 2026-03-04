@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Granger Causality"
+  reference_key: "granger"
+  paper: ""
+  finding_kind: "time_series"

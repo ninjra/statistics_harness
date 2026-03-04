@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Gaussian Process Regression"
+  reference_key: "gaussian_process_regression"
+  paper: ""
+  finding_kind: "regression"

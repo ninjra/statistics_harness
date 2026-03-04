@@ -22,3 +22,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Dependency Community Louvain"
+  reference_key: "dependency_community_louvain"
+  paper: ""
+  finding_kind: "graph"

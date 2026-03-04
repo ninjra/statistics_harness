@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Kaplan-Meier Survival"
+  reference_key: "kaplan_meier"
+  paper: "Kaplan & Meier (1958)"
+  finding_kind: "survival"

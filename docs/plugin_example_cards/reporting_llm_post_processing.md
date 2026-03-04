@@ -2,7 +2,7 @@
 
 - class_rationale: Presentation/report/planner/LLM orchestration plugins.
 - expected_output_type: `report_or_prompt_artifacts`
-- run_id: `baseline_verify_20260225k`
+- run_id: `debug_fg_20260225T2315Z`
 
 ## Example
 
@@ -15,5 +15,5 @@
 
 ## Traceability
 
-- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `baseline_verify_20260225k`
+- class `reporting_llm_post_processing` -> plugin `planner_basic` -> run `debug_fg_20260225T2315Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

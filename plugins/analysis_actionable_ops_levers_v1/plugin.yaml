@@ -20,3 +20,8 @@ sandbox:
   - plugins
   - run_dir
 
+citation:
+  method: "Actionable Ops Levers"
+  reference_key: "actionable_ops_levers"
+  paper: ""
+  finding_kind: "role_inference"

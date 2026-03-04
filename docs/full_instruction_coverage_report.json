@@ -1,116 +1,35 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 2663,
+  "item_count": 2662,
   "items": [
     {
       "has_todo_marker": false,
       "item_type": "reference_text",
-      "line_no": 169,
+      "line_no": 40,
       "missing_paths": [
-        "tests/contracts/test_chunk_invariance.py"
+        "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json"
       ],
       "plugin_tokens": [],
       "referenced_paths": [
-        "tests/contracts/test_chunk_invariance.py"
+        "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json"
       ],
       "requirement_ids": [],
-      "source": "CLAUDE.md",
-      "text": "- `tests/contracts/test_chunk_invariance.py`",
-      "unresolved_plugin_tokens": []
-    },
-    {
-      "has_todo_marker": false,
-      "item_type": "reference_text",
-      "line_no": 170,
-      "missing_paths": [
-        "tests/perf/test_plugin_resource_budget.py"
-      ],
-      "plugin_tokens": [],
-      "referenced_paths": [
-        "tests/perf/test_plugin_resource_budget.py"
-      ],
-      "requirement_ids": [],
-      "source": "CLAUDE.md",
-      "text": "- `tests/perf/test_plugin_resource_budget.py`",
-      "unresolved_plugin_tokens": []
-    },
-    {
-      "has_todo_marker": false,
-      "item_type": "reference_text",
-      "line_no": 171,
-      "missing_paths": [
-        "tests/integration/test_known_issue_rediscovery_baseline.py"
-      ],
-      "plugin_tokens": [],
-      "referenced_paths": [
-        "tests/integration/test_known_issue_rediscovery_baseline.py"
-      ],
-      "requirement_ids": [],
-      "source": "CLAUDE.md",
-      "text": "- `tests/integration/test_known_issue_rediscovery_baseline.py`",
-      "unresolved_plugin_tokens": []
-    },
-    {
-      "has_todo_marker": false,
-      "item_type": "reference_text",
-      "line_no": 117,
-      "missing_paths": [
-        "tests/contracts/test_chunk_invariance.py"
-      ],
-      "plugin_tokens": [],
-      "referenced_paths": [
-        "tests/contracts/test_chunk_invariance.py"
-      ],
-      "requirement_ids": [],
-      "source": "docs/four-pillars-implementation-plan.md",
-      "text": "- **Location**: `tests/contracts/test_chunk_invariance.py`,",
-      "unresolved_plugin_tokens": []
-    },
-    {
-      "has_todo_marker": false,
-      "item_type": "reference_text",
-      "line_no": 145,
-      "missing_paths": [
-        "tests/perf/test_plugin_resource_budget.py"
-      ],
-      "plugin_tokens": [],
-      "referenced_paths": [
-        "tests/perf/test_plugin_resource_budget.py"
-      ],
-      "requirement_ids": [],
-      "source": "docs/four-pillars-implementation-plan.md",
-      "text": "- **Location**: `tests/perf/test_plugin_resource_budget.py`,",
-      "unresolved_plugin_tokens": []
-    },
-    {
-      "has_todo_marker": false,
-      "item_type": "reference_text",
-      "line_no": 251,
-      "missing_paths": [
-        "tests/integration/test_known_issue_rediscovery_baseline.py"
-      ],
-      "plugin_tokens": [],
-      "referenced_paths": [
-        "tests/integration/test_known_issue_rediscovery_baseline.py"
-      ],
-      "requirement_ids": [],
-      "source": "docs/four-pillars-implementation-plan.md",
-      "text": "- **Location**: `tests/integration/test_known_issue_rediscovery_baseline.py`,",
+      "source": "docs/each-plugin-delivering-actionable-results-plan.md",
+      "text": "- `docs/release_evidence/contract_baseline_full_with_runbook30_probe.json`",
       "unresolved_plugin_tokens": []
     }
   ],
   "matrix_status": {
-    "binding_missing_any": true,
-    "docs_missing_any_normative": true,
+    "binding_missing_any": false,
+    "docs_missing_any_normative": false,
     "plugin_data_access_unclassified": [],
     "plugin_functionality_missing_dep_edges": {},
     "redteam_missing_required_ids": [],
     "sql_required_not_using_sql": []
   },
   "missing_by_source": {
-    "CLAUDE.md": 3,
-    "docs/four-pillars-implementation-plan.md": 3
+    "docs/each-plugin-delivering-actionable-results-plan.md": 1
   },
-  "missing_item_count": 6,
+  "missing_item_count": 1,
   "source_count": 78
 }

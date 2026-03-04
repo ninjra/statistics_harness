@@ -21,3 +21,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Bayesian Online Changepoint (Gaussian)"
+  reference_key: "bocpd_gaussian"
+  paper: "Adams & MacKay (2007)"
+  finding_kind: "changepoint"

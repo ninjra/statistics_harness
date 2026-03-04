@@ -30,12 +30,12 @@
       "reason_code": ""
     },
     {
-      "actionability_state": "actionable",
+      "actionability_state": "explained_na",
       "card_path": "docs/plugin_example_cards/synthesis_verification.md",
       "class_id": "synthesis_verification",
       "plugin_id": "analysis_issue_cards_v2",
-      "reason_code": ""
+      "reason_code": "OBSERVATION_ONLY"
     }
   ],
-  "run_id": "baseline_verify_20260225k"
+  "run_id": "debug_fg_20260225T2315Z"
 }

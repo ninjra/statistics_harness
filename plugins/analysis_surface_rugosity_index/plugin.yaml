@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Surface Rugosity Index"
+  reference_key: "surface_rugosity_index"
+  paper: ""
+  finding_kind: "distribution"

@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Symbolic Regression Gp"
+  reference_key: "symbolic_regression_gp"
+  paper: ""
+  finding_kind: "regression"

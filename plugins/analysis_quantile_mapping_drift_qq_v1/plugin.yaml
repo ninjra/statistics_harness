@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Quantile Mapping Drift Qq"
+  reference_key: "quantile_mapping_drift_qq"
+  paper: ""
+  finding_kind: "distribution"

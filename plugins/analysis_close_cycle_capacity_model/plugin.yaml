@@ -45,3 +45,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Close Cycle Capacity Model"
+  reference_key: "close_cycle_capacity_model"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

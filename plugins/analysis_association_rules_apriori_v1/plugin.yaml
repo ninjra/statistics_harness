@@ -29,3 +29,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Association Rules Apriori"
+  reference_key: "association_rules_apriori"
+  paper: ""
+  finding_kind: "chi_square_association"

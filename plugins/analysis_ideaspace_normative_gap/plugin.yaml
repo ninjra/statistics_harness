@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ideaspace Normative Gap"
+  reference_key: "ideaspace_normative_gap"
+  paper: ""
+  finding_kind: "ideaspace_gap"

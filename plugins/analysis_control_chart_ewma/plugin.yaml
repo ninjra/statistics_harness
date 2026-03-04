@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "EWMA Control Chart"
+  reference_key: "control_chart"
+  paper: "Roberts (1959)"
+  finding_kind: "anomaly"

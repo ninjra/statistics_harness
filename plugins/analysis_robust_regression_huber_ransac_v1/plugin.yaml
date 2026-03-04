@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Robust Regression Huber Ransac"
+  reference_key: "robust_regression_huber_ransac"
+  paper: ""
+  finding_kind: "regression"

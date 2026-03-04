@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Density Clustering Hdbscan"
+  reference_key: "density_clustering_hdbscan"
+  paper: ""
+  finding_kind: "cluster"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Extreme Value Theory (Gumbel)"
+  reference_key: "evt"
+  paper: "Fisher & Tippett (1928)"
+  finding_kind: "tail_isolation"

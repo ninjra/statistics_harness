@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Hsic Independence Screen"
+  reference_key: "hsic_independence_screen"
+  paper: ""
+  finding_kind: "correlation"

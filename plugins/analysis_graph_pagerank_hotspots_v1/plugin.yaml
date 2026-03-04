@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Graph Pagerank Hotspots"
+  reference_key: "graph_pagerank_hotspots"
+  paper: ""
+  finding_kind: "graph"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Template Drift Two Sample"
+  reference_key: "template_drift_two_sample"
+  paper: ""
+  finding_kind: "distribution"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Kingman VUT Approximation"
+  reference_key: "kingman"
+  paper: "Kingman (1961)"
+  finding_kind: "chain_makespan"

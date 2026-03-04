@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Latent Dirichlet Allocation"
+  reference_key: "lda"
+  paper: "Blei et al. (2003)"
+  finding_kind: "cluster"

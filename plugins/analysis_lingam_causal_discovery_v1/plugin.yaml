@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Lingam Causal Discovery"
+  reference_key: "lingam_causal_discovery"
+  paper: ""
+  finding_kind: "causal"

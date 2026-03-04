@@ -24,3 +24,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Dependency Resolution Join"
+  reference_key: "dependency_resolution_join"
+  paper: ""
+  finding_kind: "graph_edge"

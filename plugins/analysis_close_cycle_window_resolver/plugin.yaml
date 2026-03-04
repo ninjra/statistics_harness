@@ -29,3 +29,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Close Cycle Window Resolver"
+  reference_key: "close_cycle_window_resolver"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Surface Fabric Sso Eigen"
+  reference_key: "surface_fabric_sso_eigen"
+  paper: ""
+  finding_kind: "distribution"

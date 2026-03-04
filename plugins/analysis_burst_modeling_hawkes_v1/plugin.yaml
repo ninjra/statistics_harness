@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Burst Modeling Hawkes"
+  reference_key: "kleinberg_burst"
+  paper: ""
+  finding_kind: "time_series"

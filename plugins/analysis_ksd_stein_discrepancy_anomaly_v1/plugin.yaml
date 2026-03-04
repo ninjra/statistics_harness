@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ksd Stein Discrepancy Anomaly"
+  reference_key: "ksd_stein_discrepancy_anomaly"
+  paper: ""
+  finding_kind: "anomaly"

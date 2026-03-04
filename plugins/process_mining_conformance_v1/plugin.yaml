@@ -23,3 +23,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Process Mining Conformance"
+  reference_key: "process_mining"
+  paper: ""
+  finding_kind: "unknown"

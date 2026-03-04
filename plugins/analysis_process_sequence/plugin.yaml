@@ -20,3 +20,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Process Sequence Analysis"
+  reference_key: "process_mining"
+  paper: ""
+  finding_kind: "process_variant"

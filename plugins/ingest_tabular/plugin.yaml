@@ -19,3 +19,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Ingest Tabular"
+  reference_key: "ingest_tabular"
+  paper: ""
+  finding_kind: "ingest"

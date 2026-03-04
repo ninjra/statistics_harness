@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Effect Size Report"
+  reference_key: "effect_size_report"
+  paper: ""
+  finding_kind: "distribution"

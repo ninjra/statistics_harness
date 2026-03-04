@@ -28,3 +28,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Busy Period Segmentation"
+  reference_key: "busy_period_segmentation"
+  paper: ""
+  finding_kind: "chain_makespan"

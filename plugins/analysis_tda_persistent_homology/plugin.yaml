@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "TDA Persistent Homology"
+  reference_key: "tda_survey"
+  paper: "Edelsbrunner et al. (2002)"
+  finding_kind: "tda_betti_curve_changepoint"

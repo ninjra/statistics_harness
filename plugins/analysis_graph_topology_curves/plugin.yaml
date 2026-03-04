@@ -19,3 +19,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Graph Topology Curves"
+  reference_key: "graph_topology_curves"
+  paper: ""
+  finding_kind: "graph"

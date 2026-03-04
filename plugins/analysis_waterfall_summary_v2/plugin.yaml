@@ -19,3 +19,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Waterfall Summary"
+  reference_key: "waterfall_summary"
+  paper: ""
+  finding_kind: "role_inference"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Process Drift Conformance Over Time"
+  reference_key: "process_mining"
+  paper: ""
+  finding_kind: "process_variant"

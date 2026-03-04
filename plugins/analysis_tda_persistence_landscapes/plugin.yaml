@@ -19,3 +19,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "TDA Persistence Landscapes"
+  reference_key: "tda_survey"
+  paper: ""
+  finding_kind: "tda_betti_curve_changepoint"

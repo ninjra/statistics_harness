@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Robust Covariance Outliers"
+  reference_key: "robust_covariance_outliers"
+  paper: ""
+  finding_kind: "anomaly"

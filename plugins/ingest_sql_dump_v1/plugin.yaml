@@ -24,3 +24,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ingest Sql Dump"
+  reference_key: "ingest_sql_dump"
+  paper: ""
+  finding_kind: "ingest"

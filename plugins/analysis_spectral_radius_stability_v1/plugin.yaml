@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Spectral Radius Stability"
+  reference_key: "spectral_radius_stability"
+  paper: ""
+  finding_kind: "time_series"

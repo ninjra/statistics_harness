@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Conformance Checking"
+  reference_key: "process_mining"
+  paper: ""
+  finding_kind: "process_variant"

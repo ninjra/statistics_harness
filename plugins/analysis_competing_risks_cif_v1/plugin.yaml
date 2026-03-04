@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Competing Risks Cif"
+  reference_key: "competing_risks_cif"
+  paper: ""
+  finding_kind: "survival"

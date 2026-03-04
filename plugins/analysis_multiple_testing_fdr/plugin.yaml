@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "FDR Multiple Testing"
+  reference_key: "bh_fdr"
+  paper: "Benjamini & Hochberg (1995)"
+  finding_kind: "distribution"

@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Knn Graph Two Sample Test"
+  reference_key: "knn_graph_two_sample_test"
+  paper: ""
+  finding_kind: "distribution"

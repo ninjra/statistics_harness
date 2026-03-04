@@ -2,7 +2,7 @@
 
 - class_rationale: Data ingestion, profiling, and normalization plugins.
 - expected_output_type: `dataset_or_schema_artifacts`
-- run_id: `baseline_verify_20260225k`
+- run_id: `debug_fg_20260225T2315Z`
 
 ## Example
 
@@ -15,5 +15,5 @@
 
 ## Traceability
 
-- class `ingest_profile_transform` -> plugin `profile_basic` -> run `baseline_verify_20260225k`
+- class `ingest_profile_transform` -> plugin `profile_basic` -> run `debug_fg_20260225T2315Z`
 - Source artifact: `docs/plugin_class_actionability_matrix.json`

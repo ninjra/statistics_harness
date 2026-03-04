@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Higuchi Fractal Dimension"
+  reference_key: "higuchi_fractal_dimension"
+  paper: ""
+  finding_kind: "time_series"

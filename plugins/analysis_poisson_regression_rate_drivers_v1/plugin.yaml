@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Poisson Regression Rate Drivers"
+  reference_key: "poisson_regression_rate_drivers"
+  paper: ""
+  finding_kind: "regression"

@@ -23,3 +23,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Ges Score Based Causal"
+  reference_key: "ges_score_based_causal"
+  paper: ""
+  finding_kind: "causal"

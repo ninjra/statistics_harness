@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Multivariate Control Charts"
+  reference_key: "control_chart"
+  paper: ""
+  finding_kind: "anomaly"

@@ -51,3 +51,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Close Cycle Contention"
+  reference_key: "close_cycle_contention"
+  paper: ""
+  finding_kind: "close_cycle_capacity_model"

@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Hawkes Self Exciting"
+  reference_key: "hawkes"
+  paper: "Hawkes (1971)"
+  finding_kind: "time_series"

@@ -18,3 +18,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Mice Imputation Chained Equations"
+  reference_key: "mice_imputation_chained_equations"
+  paper: ""
+  finding_kind: "distribution"

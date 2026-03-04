@@ -26,3 +26,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Node2vec Graph Embedding Drift"
+  reference_key: "node2vec_graph_embedding_drift"
+  paper: ""
+  finding_kind: "graph"

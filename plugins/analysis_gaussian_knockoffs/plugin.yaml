@@ -20,3 +20,9 @@ sandbox:
   fs_allowlist:
   - appdata
   - plugins
+
+citation:
+  method: "Gaussian Knockoffs"
+  reference_key: "gaussian_knockoffs"
+  paper: ""
+  finding_kind: "causal"

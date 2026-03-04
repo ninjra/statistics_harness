@@ -30,3 +30,9 @@ settings:
 sandbox:
   no_network: true
   fs_allowlist: [run_dir]
+
+citation:
+  method: "Piecewise Linear Trend Changepoints"
+  reference_key: "pelt"
+  paper: ""
+  finding_kind: "changepoint"

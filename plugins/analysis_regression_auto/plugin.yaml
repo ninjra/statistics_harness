@@ -18,3 +18,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Auto Regression"
+  reference_key: "regression_auto"
+  paper: ""
+  finding_kind: "regression"

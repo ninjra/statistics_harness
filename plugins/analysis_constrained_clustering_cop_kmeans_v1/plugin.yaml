@@ -25,3 +25,9 @@ sandbox:
   - appdata
   - plugins
   - run_dir
+
+citation:
+  method: "Constrained Clustering Cop Kmeans"
+  reference_key: "constrained_clustering_cop_kmeans"
+  paper: ""
+  finding_kind: "cluster"

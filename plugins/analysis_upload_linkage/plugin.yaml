@@ -25,3 +25,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Upload Linkage"
+  reference_key: "upload_linkage"
+  paper: ""
+  finding_kind: "chi_square_association"

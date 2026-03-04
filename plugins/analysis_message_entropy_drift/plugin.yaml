@@ -17,3 +17,9 @@ sandbox:
     - appdata
     - plugins
     - run_dir
+
+citation:
+  method: "Message Entropy Drift"
+  reference_key: "message_entropy_drift"
+  paper: ""
+  finding_kind: "process_variant"

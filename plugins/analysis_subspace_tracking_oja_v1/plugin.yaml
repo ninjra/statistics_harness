@@ -31,3 +31,9 @@ sandbox:
   no_network: true
   fs_allowlist:
     - run_dir
+
+citation:
+  method: "Subspace Tracking Oja"
+  reference_key: "subspace_tracking_oja"
+  paper: ""
+  finding_kind: "cluster"
