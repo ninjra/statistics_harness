@@ -301,3 +301,316 @@ mappings:
   analysis_close_cycle_uplift: close_cycle_capacity_model
   analysis_close_cycle_window_resolver: close_cycle_capacity_model
   analysis_dynamic_close_detection: close_cycle_capacity_model
+
+  # ── new plugins (Tier 1) ──────────────────────────────────────────────
+  analysis_shap_feature_attribution_v1: role_inference
+  analysis_conformal_prediction_interval_v1: distribution
+  analysis_interrupted_time_series_v1: counterfactual
+  analysis_double_ml_ate_v1: causal
+  analysis_diff_in_diff_v1: counterfactual
+  analysis_synthetic_control_v1: counterfactual
+  analysis_regression_discontinuity_v1: counterfactual
+
+  # ── new plugins (Tier 2) ──────────────────────────────────────────────
+  analysis_gradient_boosting_importance_v1: role_inference
+  analysis_bayesian_ab_test_v1: distribution
+  analysis_cuped_variance_reduction_v1: distribution
+  analysis_propensity_score_matching_v1: causal
+  analysis_inverse_propensity_weighting_v1: causal
+  analysis_meta_learner_cate_v1: causal
+  analysis_causal_forest_hte_v1: causal
+  analysis_causal_cross_validation_v1: causal
+
+  # ── new plugins (Tier 3) ──────────────────────────────────────────────
+  analysis_concept_drift_ddm_v1: changepoint
+  analysis_sliced_wasserstein_drift_v1: distribution
+  analysis_compositional_logratio_v1: distribution
+  analysis_instrumental_variables_2sls_v1: causal
+  analysis_shapley_interactions_v1: role_inference
+  analysis_fairness_bias_detection_v1: distribution
+  analysis_temporal_fusion_transformer_v1: time_series
+  analysis_sindy_dynamics_discovery_v1: time_series
+  analysis_functional_data_analysis_v1: distribution
+
+  # ── new plugins (Tier 4) ──────────────────────────────────────────────
+  analysis_thompson_sampling_bandit_v1: distribution
+  analysis_bayesian_optimization_v1: distribution
+  analysis_information_bottleneck_v1: cluster
+  analysis_conditional_density_estimation_v1: distribution
+  analysis_reservoir_computing_esn_v1: time_series
+  analysis_autoencoder_anomaly_v1: anomaly
+  analysis_neural_ode_dynamics_v1: time_series
+
+  # ── new plugins (Kona / DAAF) ────────────────────────────────────────
+  analysis_kona_signal_coverage_audit_v1: role_inference
+  analysis_finding_to_lever_bridge_v1: role_inference
+  analysis_fragility_perturbation_v1: distribution
+  analysis_cross_entity_transfer_v1: role_inference
+
+  # ── bioinformatics ─────────────────────────────────────────────────────
+  analysis_smith_waterman_workflow_align_v1: bioinformatics
+  analysis_meme_motif_discovery_v1: bioinformatics
+  analysis_hmm_workflow_state_v1: bioinformatics
+  analysis_phylogenetic_workflow_tree_v1: bioinformatics
+
+  # ── ecology ────────────────────────────────────────────────────────────
+  analysis_shannon_diversity_index_v1: ecology
+  analysis_rarefaction_coverage_v1: ecology
+  analysis_lotka_volterra_competition_v1: ecology
+  analysis_niche_overlap_pianka_v1: ecology
+  analysis_hardy_weinberg_param_coupling_v1: ecology
+  analysis_linkage_disequilibrium_steps_v1: ecology
+  analysis_fst_machine_differentiation_v1: ecology
+  analysis_wright_fisher_config_drift_v1: ecology
+
+  # ── epidemiology ───────────────────────────────────────────────────────
+  analysis_sir_failure_cascade_v1: epidemiology
+  analysis_cascade_r0_reproduction_v1: epidemiology
+  analysis_contact_tracing_superspreader_v1: epidemiology
+  analysis_epicurve_classification_v1: epidemiology
+
+  # ── pharmacokinetics ───────────────────────────────────────────────────
+  analysis_compartment_redistribution_v1: pharmacokinetics
+  analysis_half_life_utilization_v1: pharmacokinetics
+  analysis_hill_equation_dose_response_v1: pharmacokinetics
+  analysis_michaelis_menten_saturation_v1: pharmacokinetics
+
+  # ── agriculture / regression ───────────────────────────────────────────
+  analysis_response_surface_interaction_v1: regression
+  analysis_job_sequence_cache_rotation_v1: chain_makespan
+  analysis_soil_depletion_resource_v1: time_series
+  analysis_liebig_minimum_constraint_v1: capacity_scale_model
+
+  # ── physics ────────────────────────────────────────────────────────────
+  analysis_ising_model_correlation_v1: physics
+  analysis_percolation_fragility_v1: physics
+  analysis_renormalization_multiscale_v1: physics
+  analysis_partition_function_landscape_v1: physics
+
+  # ── fluid_dynamics ─────────────────────────────────────────────────────
+  analysis_reynolds_number_analogue_v1: fluid_dynamics
+  analysis_navier_stokes_backpressure_v1: fluid_dynamics
+  analysis_vorticity_thrashing_v1: fluid_dynamics
+
+  # ── thermodynamics ─────────────────────────────────────────────────────
+  analysis_entropy_production_rate_v1: thermodynamics
+  analysis_carnot_efficiency_bound_v1: thermodynamics
+  analysis_exergy_waste_analysis_v1: thermodynamics
+  analysis_maxwell_demon_monitoring_v1: thermodynamics
+
+  # ── materials_science ──────────────────────────────────────────────────
+  analysis_periodic_schedule_fft_v1: materials_science
+  analysis_defect_density_classification_v1: materials_science
+  analysis_stress_strain_capacity_v1: materials_science
+  analysis_creep_fatigue_prediction_v1: materials_science
+
+  # ── reliability ────────────────────────────────────────────────────────
+  analysis_bathtub_curve_lifecycle_v1: reliability
+  analysis_fmea_rpn_scoring_v1: reliability
+  analysis_fault_tree_minimal_cuts_v1: reliability
+  analysis_reliability_block_diagram_v1: reliability
+
+  # ── control_theory ─────────────────────────────────────────────────────
+  analysis_pid_controller_analogue_v1: control_theory
+  analysis_lyapunov_stability_v1: control_theory
+  analysis_bode_frequency_response_v1: control_theory
+  analysis_controllability_gramian_v1: control_theory
+
+  # ── topology ───────────────────────────────────────────────────────────
+  analysis_persistent_homology_regimes_v1: topology
+  analysis_mapper_subpopulations_v1: topology
+  analysis_persistence_landscape_features_v1: topology
+  analysis_vietoris_rips_higher_order_v1: topology
+  analysis_euler_characteristic_curve_v1: topology
+  analysis_sheaf_consistency_v1: topology
+  analysis_functorial_migration_v1: topology
+  analysis_operad_composition_v1: topology
+  analysis_grothendieck_coverage_v1: topology
+
+  # ── chaos ──────────────────────────────────────────────────────────────
+  analysis_lyapunov_exponent_chaos_v1: chaos
+  analysis_fractal_dimension_attractor_v1: chaos
+  analysis_takens_embedding_v1: chaos
+
+  # ── combinatorial_optimization ─────────────────────────────────────────
+  analysis_job_shop_scheduling_bound_v1: combinatorial_optimization
+  analysis_bin_packing_utilization_v1: combinatorial_optimization
+  analysis_csp_binding_rules_v1: combinatorial_optimization
+  analysis_min_cost_flow_throughput_v1: combinatorial_optimization
+
+  # ── information_theory ─────────────────────────────────────────────────
+  analysis_kolmogorov_complexity_ncd_v1: information_theory
+  analysis_renyi_entropy_spectrum_v1: information_theory
+  analysis_pid_synergy_redundancy_v1: information_theory
+  analysis_excess_entropy_memory_v1: information_theory
+  analysis_channel_capacity_bound_v1: information_theory
+
+  # ── graph_advanced ─────────────────────────────────────────────────────
+  analysis_spectral_graph_fiedler_v1: graph_advanced
+  analysis_graph_wavelet_multiscale_v1: graph_advanced
+  analysis_cheeger_bottleneck_v1: graph_advanced
+
+  # ── sabermetrics ───────────────────────────────────────────────────────
+  analysis_war_value_above_replacement_v1: sabermetrics
+  analysis_win_probability_added_v1: sabermetrics
+  analysis_leverage_index_dag_v1: sabermetrics
+  analysis_pythagorean_expectation_v1: sabermetrics
+
+  # ── linguistics ────────────────────────────────────────────────────────
+  analysis_zipf_law_frequency_v1: linguistics
+  analysis_entropy_rate_step_sequences_v1: linguistics
+  analysis_levenshtein_workflow_dist_v1: linguistics
+  analysis_ngram_step_transitions_v1: linguistics
+
+  # ── psychophysics ──────────────────────────────────────────────────────
+  analysis_weber_fechner_threshold_v1: psychophysics
+  analysis_stevens_power_law_severity_v1: psychophysics
+  analysis_signal_detection_dprime_v1: psychophysics
+
+  # ── psychometrics ──────────────────────────────────────────────────────
+  analysis_irt_step_difficulty_v1: psychometrics
+  analysis_rasch_step_host_scale_v1: psychometrics
+  analysis_cronbach_alpha_consistency_v1: psychometrics
+
+  # ── social_network ─────────────────────────────────────────────────────
+  analysis_structural_holes_broker_v1: social_network
+  analysis_weak_ties_bridge_v1: social_network
+  analysis_assortativity_scheduling_bias_v1: social_network
+
+  # ── game_theory ────────────────────────────────────────────────────────
+  analysis_nash_equilibrium_contention_v1: game_theory
+  analysis_mechanism_design_scheduling_v1: game_theory
+  analysis_vickrey_priority_truth_v1: game_theory
+
+  # ── forensic_accounting ────────────────────────────────────────────────
+  analysis_benford_second_digit_v1: forensic_accounting
+
+  # ── astronomy ──────────────────────────────────────────────────────────
+  analysis_bls_periodic_outage_v1: astronomy
+  analysis_pulsar_timing_residual_v1: astronomy
+  analysis_hr_diagram_classification_v1: astronomy
+
+  # ── oceanography ───────────────────────────────────────────────────────
+  analysis_tidal_harmonic_cycles_v1: oceanography
+  analysis_wave_directional_spectra_v1: oceanography
+  analysis_thermohaline_circulation_v1: oceanography
+  analysis_ekman_transport_indirect_v1: oceanography
+
+  # ── seismology ─────────────────────────────────────────────────────────
+  analysis_gutenberg_richter_bvalue_v1: seismology
+  analysis_omori_aftershock_decay_v1: seismology
+  analysis_etas_self_exciting_cascade_v1: seismology
+  analysis_psha_probabilistic_risk_v1: seismology
+
+  # ── geospatial ─────────────────────────────────────────────────────────
+  analysis_moran_i_autocorrelation_v1: geospatial
+  analysis_kriging_missing_data_v1: geospatial
+  analysis_ripley_k_temporal_clustering_v1: geospatial
+  analysis_getis_ord_hotspot_v1: geospatial
+
+  # ── military_or ────────────────────────────────────────────────────────
+  analysis_lanchester_concentration_v1: military_or
+  analysis_salvo_burst_threshold_v1: military_or
+  analysis_koopman_search_allocation_v1: military_or
+  analysis_ooda_loop_bottleneck_v1: military_or
+
+  # ── actuarial ──────────────────────────────────────────────────────────
+  analysis_chain_ladder_ibnr_v1: actuarial
+  analysis_buhlmann_credibility_v1: actuarial
+  analysis_lee_carter_trend_decomp_v1: actuarial
+  analysis_experience_rating_score_v1: actuarial
+
+  # ── climatology ────────────────────────────────────────────────────────
+  analysis_teleconnection_lag_v1: climatology
+  analysis_return_period_evt_v1: climatology
+  analysis_climate_attribution_far_v1: climatology
+
+  # ── signal_processing ──────────────────────────────────────────────────
+  analysis_cepstral_decomposition_v1: signal_processing
+  analysis_synchrosqueezing_drift_v1: signal_processing
+  analysis_wigner_ville_coupling_v1: signal_processing
+  analysis_spectral_coherence_coupling_v1: signal_processing
+  analysis_matched_filter_anomaly_v1: signal_processing
+
+  # ── music_theory ───────────────────────────────────────────────────────
+  analysis_onset_detection_rhythm_v1: music_theory
+  analysis_tempo_tracking_cadence_v1: music_theory
+  analysis_self_similarity_matrix_v1: music_theory
+  analysis_markov_harmonic_progression_v1: music_theory
+  analysis_polyrhythm_contention_v1: music_theory
+
+  # ── network_science ────────────────────────────────────────────────────
+  analysis_community_detection_dag_v1: graph_advanced
+  analysis_network_controllability_v1: graph_advanced
+  analysis_temporal_network_bottleneck_v1: graph_advanced
+  analysis_kshell_decomposition_v1: graph_advanced
+
+  # ── queueing_advanced ──────────────────────────────────────────────────
+  analysis_kingman_vut_decomposition_v1: chain_makespan
+  analysis_fork_join_straggler_v1: chain_makespan
+  analysis_fluid_model_backlog_v1: chain_makespan
+  analysis_diffusion_approx_heavy_traffic_v1: chain_makespan
+  analysis_phase_type_multimodal_v1: chain_makespan
+
+  # ── telecom ────────────────────────────────────────────────────────────
+  analysis_erlang_bc_blocking_v1: telecom
+  analysis_cdma_interference_sir_v1: telecom
+
+  # ── compiler_optimization ──────────────────────────────────────────────
+  analysis_heft_list_scheduling_v1: compiler_optimization
+  analysis_dataflow_dead_output_v1: compiler_optimization
+  analysis_amdahl_law_serial_fraction_v1: compiler_optimization
+  analysis_graph_coloring_resources_v1: compiler_optimization
+
+  # ── archaeology ────────────────────────────────────────────────────────
+  analysis_seriation_ordering_v1: archaeology
+  analysis_stratigraphic_layers_v1: archaeology
+  analysis_harris_matrix_ordering_v1: archaeology
+
+  # ── evolutionary ───────────────────────────────────────────────────────
+  analysis_fitness_landscape_mapping_v1: evolutionary
+  analysis_punctuated_equilibrium_v1: evolutionary
+  analysis_neutral_drift_noise_v1: evolutionary
+  analysis_red_queen_arms_race_v1: evolutionary
+
+  # ── cognitive ──────────────────────────────────────────────────────────
+  analysis_hick_law_pool_sizing_v1: cognitive
+  analysis_fitts_law_precision_v1: cognitive
+  analysis_cognitive_load_concurrency_v1: cognitive
+
+  # ── supply_chain ───────────────────────────────────────────────────────
+  analysis_bullwhip_effect_detection_v1: supply_chain
+  analysis_eoq_batch_sizing_v1: supply_chain
+  analysis_toc_binding_constraint_v1: supply_chain
+  analysis_safety_stock_buffer_v1: supply_chain
+
+  # ── semiconductor ──────────────────────────────────────────────────────
+  analysis_spc_cpk_capability_v1: semiconductor
+  analysis_poisson_yield_complexity_v1: semiconductor
+  analysis_virtual_metrology_early_v1: semiconductor
+  analysis_r2r_ewma_control_v1: semiconductor
+
+  # ── library_science ────────────────────────────────────────────────────
+  analysis_tfidf_step_importance_v1: library_science
+  analysis_bradford_law_core_hosts_v1: library_science
+  analysis_lotka_law_concentration_v1: library_science
+
+  # ── demography ─────────────────────────────────────────────────────────
+  analysis_life_table_hazard_v1: demography
+  analysis_population_pyramid_shape_v1: demography
+  analysis_demographic_transition_v1: demography
+
+  # ── voting_theory ──────────────────────────────────────────────────────
+  analysis_condorcet_host_ranking_v1: voting_theory
+  analysis_borda_count_multicriteria_v1: voting_theory
+  analysis_arrow_impossibility_pareto_v1: voting_theory
+
+  # ── sports_physiology ──────────────────────────────────────────────────
+  analysis_hrv_intercompletion_v1: sports_physiology
+  analysis_vo2max_capacity_ceiling_v1: sports_physiology
+  analysis_banister_fitness_fatigue_v1: sports_physiology
+
+  # ── computational_geometry ─────────────────────────────────────────────
+  analysis_voronoi_resource_partition_v1: computational_geometry
+  analysis_delaunay_interpolation_v1: computational_geometry
+  analysis_convex_hull_operating_envelope_v1: computational_geometry

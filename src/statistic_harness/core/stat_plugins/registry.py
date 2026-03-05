@@ -43,6 +43,27 @@ from statistic_harness.core.stat_plugins.next30_addon import (
 from statistic_harness.core.stat_plugins.next30b_addon import (
     HANDLERS as NEXT30B_HANDLERS,
 )
+from statistic_harness.core.stat_plugins.cross_domain_life_sciences import (
+    HANDLERS as CROSS_DOMAIN_LIFE_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_physics_engineering import (
+    HANDLERS as CROSS_DOMAIN_PHYSICS_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_pure_math import (
+    HANDLERS as CROSS_DOMAIN_MATH_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_social_sports import (
+    HANDLERS as CROSS_DOMAIN_SOCIAL_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_earth_space import (
+    HANDLERS as CROSS_DOMAIN_EARTH_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_signal_music_network import (
+    HANDLERS as CROSS_DOMAIN_SIGNAL_HANDLERS,
+)
+from statistic_harness.core.stat_plugins.cross_domain_unconventional import (
+    HANDLERS as CROSS_DOMAIN_UNCONVENTIONAL_HANDLERS,
+)
 
 try:  # optional
     from scipy import stats as scipy_stats
@@ -3414,3 +3435,10 @@ HANDLERS.update(IDEASPACE_HANDLERS)
 HANDLERS.update(ERP_NEXT_WAVE_HANDLERS)
 HANDLERS.update(NEXT30_HANDLERS)
 HANDLERS.update(NEXT30B_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_LIFE_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_PHYSICS_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_MATH_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_SOCIAL_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_EARTH_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_SIGNAL_HANDLERS)
+HANDLERS.update(CROSS_DOMAIN_UNCONVENTIONAL_HANDLERS)
