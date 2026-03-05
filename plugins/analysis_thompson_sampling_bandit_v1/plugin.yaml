@@ -1,0 +1,21 @@
+id: analysis_thompson_sampling_bandit_v1
+name: "Thompson Sampling Bandit (v1)"
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: "Thompson sampling multi-armed bandit using Beta-Binomial posteriors to identify the best categorical arm given binary rewards."
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Thompson Sampling (Beta-Binomial)"
+  reference_key: "thompson_sampling_bandit"
+  paper: ""
+  finding_kind: "distribution"

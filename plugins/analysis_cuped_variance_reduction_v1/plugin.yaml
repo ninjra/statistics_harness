@@ -1,0 +1,21 @@
+id: analysis_cuped_variance_reduction_v1
+name: CUPED Variance Reduction (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: CUPED (Controlled-experiment Using Pre-Experiment Data) variance reduction using pre-experiment covariates.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "CUPED Variance Reduction"
+  reference_key: "cuped_variance_reduction"
+  paper: "Deng et al., 2013"
+  finding_kind: "distribution"

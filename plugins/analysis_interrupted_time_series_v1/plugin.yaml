@@ -1,0 +1,21 @@
+id: analysis_interrupted_time_series_v1
+name: Interrupted Time Series (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Segmented regression for interrupted time series analysis to detect intervention effects.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Interrupted Time Series"
+  reference_key: "interrupted_time_series"
+  paper: "Bernal et al., 2017"
+  finding_kind: "counterfactual"

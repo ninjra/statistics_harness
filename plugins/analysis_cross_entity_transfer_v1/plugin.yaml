@@ -1,0 +1,8 @@
+id: analysis_cross_entity_transfer_v1
+version: 1
+kind: role_inference
+depends_on:
+  - analysis_ideaspace_energy_ebm_v1
+sandbox:
+  network: false
+  filesystem: read

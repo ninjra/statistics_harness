@@ -1,0 +1,21 @@
+id: analysis_neural_ode_dynamics_v1
+name: Neural ODE Dynamics (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Neural ODE dynamics modeling using torchdiffeq. Models a time series as a continuous-time ODE and reports fit quality.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Neural ODE (torchdiffeq)"
+  reference_key: "neural_ode_dynamics"
+  paper: "Chen et al. 2018 - Neural Ordinary Differential Equations"
+  finding_kind: "time_series"

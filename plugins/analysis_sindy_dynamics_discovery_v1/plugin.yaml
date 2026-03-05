@@ -1,0 +1,23 @@
+id: analysis_sindy_dynamics_discovery_v1
+name: "SINDy Dynamics Discovery (v1)"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+settings:
+  description: >
+    Uses PySINDy to discover sparse governing equations from numeric
+    state-variable columns. Reports discovered equations and coefficients.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "SINDy (Sparse Identification of Nonlinear Dynamics)"
+  reference_key: "sindy_dynamics_discovery"
+  paper: "Brunton et al. 2016 - Discovering governing equations from data"
+  finding_kind: "time_series"

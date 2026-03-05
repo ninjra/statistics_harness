@@ -1,0 +1,26 @@
+id: analysis_shapley_interactions_v1
+name: "analysis_shapley_interactions_v1"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+capabilities:
+  - analysis
+settings:
+  description: "Pairwise Shapley interaction values via shapiq on RandomForest"
+  defaults:
+    seed: 1337
+    target_column: null
+    max_features: 10
+    max_rows: 2000
+    top_n: 10
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - run_dir
+
+citation:
+  method: "Shapley Interaction Values (k-SII)"
+  reference_key: "shapley_interactions"
+  paper: "Fumagalli et al. 2024 - shapiq: Shapley Interactions for Machine Learning"
+  finding_kind: "role_inference"

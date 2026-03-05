@@ -13,6 +13,13 @@ from statistic_harness.core.report_v2_utils import (
     load_artifact_json,
     load_plugin_payloads,
 )
+from statistic_harness.core.reporting.guardrails import (
+    check_forbidden_slide_kit_columns,
+    check_recommendation_dedupe_conflicts,
+    check_waterfall_reconciliation,
+)
+from statistic_harness.core.reporting.redaction import pseudonymize
+from statistic_harness.core.reporting.traceability import Claim, ClaimRegistry
 from statistic_harness.core.types import PluginArtifact, PluginResult
 from statistic_harness.core.utils import json_dumps, now_iso, write_json
 
@@ -288,8 +295,12 @@ class Plugin:
             )
             business_lines.append("")
 
+        business_text = "\n".join(business_lines)
+        if enable_redaction:
+            business_text = pseudonymize(business_text)
+
         business_path = ctx.run_dir / "business_summary.md"
-        ctx.write_text(business_path, "\n".join(business_lines))
+        ctx.write_text(business_path, business_text)
 
         engineering_lines: list[str] = []
         engineering_lines.append("# Engineering Summary")
@@ -441,6 +452,49 @@ class Plugin:
 
         appendix_path = ctx.run_dir / "appendix_raw.md"
         ctx.write_text(appendix_path, "\n".join(appendix_lines))
+
+        # --- Guardrail checks ---
+        slide_kit_dir = ctx.run_dir / "slide_kit"
+
+        waterfall_dict = None
+        if waterfall_rows:
+            waterfall_dict = waterfall_rows[0] if len(waterfall_rows) == 1 else None
+            # If multiple rows, look for a totals row
+            for wr in waterfall_rows:
+                if str(wr.get("label", "")).lower() in ("total", "totals", "all"):
+                    waterfall_dict = wr
+                    break
+            if waterfall_dict is None and waterfall_rows:
+                waterfall_dict = waterfall_rows[0]
+
+        for gv in check_waterfall_reconciliation(waterfall_dict):
+            _record_contract_failure(
+                contract_failures,
+                failure_class="guardrail",
+                code=gv.code,
+                message=gv.message,
+            )
+
+        for gv in check_forbidden_slide_kit_columns(slide_kit_dir):
+            _record_contract_failure(
+                contract_failures,
+                failure_class="guardrail",
+                code=gv.code,
+                message=gv.message,
+            )
+
+        dedupe_recs = []
+        if isinstance(recs_payload, dict):
+            dedupe_recs = recs_payload.get("recommendations") or recs_payload.get("summary_recommendations") or []
+        for gv in check_recommendation_dedupe_conflicts(dedupe_recs):
+            _record_contract_failure(
+                contract_failures,
+                failure_class="guardrail",
+                code=gv.code,
+                message=gv.message,
+            )
+
+        degraded = degraded or bool(contract_failures)
 
         contract_path = ctx.run_dir / "slide_kit" / "report_contract_checks.json"
         write_json(

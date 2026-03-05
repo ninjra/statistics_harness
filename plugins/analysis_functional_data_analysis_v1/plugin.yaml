@@ -1,0 +1,23 @@
+id: analysis_functional_data_analysis_v1
+name: "Functional Data Analysis (v1)"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+settings:
+  description: >
+    Converts rows of a numeric matrix into functional data using scikit-fda (skfda).
+    Computes functional mean, variance, and outlier detection via modified band depth.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Functional Data Analysis (scikit-fda)"
+  reference_key: "functional_data_analysis"
+  paper: ""
+  finding_kind: "distribution"

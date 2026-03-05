@@ -1,0 +1,24 @@
+id: analysis_fairness_bias_detection_v1
+name: "Fairness Bias Detection (v1)"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+settings:
+  description: >
+    Computes group-level disparity metrics using fairlearn MetricFrame.
+    Reports demographic parity difference and equalized odds difference
+    across a sensitive attribute column for a binary outcome.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Fairness Bias Detection (Fairlearn MetricFrame)"
+  reference_key: "fairness_bias_detection"
+  paper: ""
+  finding_kind: "distribution"

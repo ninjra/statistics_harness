@@ -1,0 +1,21 @@
+id: analysis_double_ml_ate_v1
+name: Double Machine Learning ATE (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Estimates average treatment effect using Double Machine Learning (Partially Linear Regression).
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Double Machine Learning"
+  reference_key: "double_ml_ate"
+  paper: "Chernozhukov et al., 2018"
+  finding_kind: "causal"

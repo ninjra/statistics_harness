@@ -1,0 +1,24 @@
+id: analysis_temporal_fusion_transformer_v1
+name: "Temporal Fusion Transformer (Lightweight LSTM, v1)"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+settings:
+  description: >
+    Lightweight time-series forecasting using a simple LSTM model via PyTorch.
+    Trains on the first 80% of a numeric series, predicts the last 20%,
+    and reports forecast accuracy (RMSE, MAE). Skips if fewer than 50 data points.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "LSTM Time-Series Forecast"
+  reference_key: "temporal_fusion_transformer_lstm"
+  paper: ""
+  finding_kind: "time_series"

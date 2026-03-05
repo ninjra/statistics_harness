@@ -53,5 +53,9 @@ stat-harness = "statistic_harness.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = ["B101"]
+
 [tool.pytest.ini_options]
 console_output_style = "progress"

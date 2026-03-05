@@ -1,8 +1,8 @@
 # Full Instruction Coverage Report
 
-- Source files scanned: 78
-- Requirement/reference items scanned: 2662
-- Missing/incomplete items detected: 1
+- Source files scanned: 80
+- Requirement/reference items scanned: 2840
+- Missing/incomplete items detected: 3
 
 ## Matrix Status
 - binding_missing_any: False
@@ -15,5 +15,7 @@
 ## Missing Items
 | source | line | type | missing_paths | unresolved_plugins | todo_marker |
 |---|---:|---|---:|---:|---:|
+| `CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md` | 899 | reference_text | 0 | 1 | 0 |
+| `CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md` | 937 | reference_text | 0 | 1 | 0 |
 | `docs/each-plugin-delivering-actionable-results-plan.md` | 40 | reference_text | 1 | 0 | 0 |
 

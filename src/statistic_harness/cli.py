@@ -456,6 +456,45 @@ def cmd_db_doctor(full: bool = False) -> None:
     print("OK")
 
 
+def cmd_db_prune(days: int = 90, dry_run: bool = False, vacuum: bool = False) -> None:
+    """Prune old runs from the state database."""
+    tenant_ctx = get_tenant_context()
+    storage = Storage(tenant_ctx.db_path, tenant_ctx.tenant_id)
+    summary = storage.retention_summary()
+    print(f"Current state: {summary['total_runs']} runs, {summary['db_size_mb']} MB")
+    print(f"Oldest run: {summary['oldest_run_date']}")
+
+    if dry_run:
+        import datetime
+        cutoff = (
+            datetime.datetime.now(datetime.timezone.utc)
+            - datetime.timedelta(days=days)
+        ).isoformat()
+        with storage.connection() as conn:
+            count = conn.execute(
+                "SELECT COUNT(*) FROM runs WHERE created_at < ?", (cutoff,)
+            ).fetchone()[0]
+        print(f"Would delete {count} runs older than {days} days")
+        return
+
+    archive_dir = tenant_ctx.tenant_root / "archive"
+    deleted = storage.prune_runs_older_than_days(
+        days, archive=True, archive_dir=archive_dir
+    )
+    print(f"Deleted {deleted} runs older than {days} days")
+
+    orphans = storage.prune_orphaned_artifacts()
+    if orphans:
+        print(f"Removed {orphans} orphaned artifacts")
+
+    if vacuum:
+        storage.vacuum()
+        after = storage.retention_summary()
+        print(f"After vacuum: {after['db_size_mb']} MB")
+
+    print("Done")
+
+
 def cmd_replay(run_id: str) -> None:
     tenant_ctx = get_tenant_context()
     run_dir = tenant_ctx.tenant_root / "runs" / run_id
@@ -829,6 +868,10 @@ def main() -> None:
     db_sub = db_parser.add_subparsers(dest="db_command", required=True)
     db_doctor = db_sub.add_parser("doctor")
     db_doctor.add_argument("--full", action="store_true")
+    db_prune = db_sub.add_parser("prune")
+    db_prune.add_argument("--days", type=int, default=90, help="Delete runs older than N days")
+    db_prune.add_argument("--dry-run", action="store_true", help="Show what would be deleted")
+    db_prune.add_argument("--vacuum", action="store_true", help="VACUUM after pruning")
 
     serve_parser = sub.add_parser("serve")
     serve_parser.add_argument("--host", default="127.0.0.1")
@@ -922,6 +965,8 @@ def main() -> None:
     elif args.command == "db":
         if args.db_command == "doctor":
             cmd_db_doctor(full=bool(args.full))
+        elif args.db_command == "prune":
+            cmd_db_prune(days=args.days, dry_run=args.dry_run, vacuum=args.vacuum)
         else:
             raise SystemExit(2)
     elif args.command == "serve":

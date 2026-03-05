@@ -1,0 +1,21 @@
+id: analysis_causal_forest_hte_v1
+name: Causal Forest HTE (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Estimates heterogeneous treatment effects using econml CausalForestDML with feature importance for treatment heterogeneity.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Causal Forest"
+  reference_key: "causal_forest_hte"
+  paper: "Athey et al., 2019"
+  finding_kind: "causal"

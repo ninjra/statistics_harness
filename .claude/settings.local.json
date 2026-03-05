@@ -16,7 +16,12 @@
       "mcp__plugin_context-mode_context-mode__batch_execute",
       "mcp__plugin_context-mode_context-mode__execute",
       "Bash(git stash:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git:*)",
+      "Bash(wc:*)",
+      "Bash(cat:*)",
+      "Bash(.venv/bin/pip show:*)"
     ]
   }
 }

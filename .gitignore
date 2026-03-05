@@ -32,4 +32,10 @@ repomix-output.md
 *.gz
 *.7z
 *.bin
+# Stale convenience wrappers
+/g
+/r
+/s
+/w
+/get
 # End repo hygiene policy

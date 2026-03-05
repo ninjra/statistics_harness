@@ -1,0 +1,21 @@
+id: analysis_shap_feature_attribution_v1
+name: SHAP Feature Attribution (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Computes SHAP values to attribute feature importance using TreeExplainer.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "SHAP Feature Attribution"
+  reference_key: "shap_feature_attribution"
+  paper: "Lundberg & Lee, 2017"
+  finding_kind: "role_inference"

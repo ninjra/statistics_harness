@@ -1,0 +1,21 @@
+id: analysis_reservoir_computing_esn_v1
+name: Reservoir Computing ESN (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Echo State Network time series prediction using reservoir computing. Trains on first 80% of data and evaluates prediction on last 20%.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Echo State Network (Reservoir Computing)"
+  reference_key: "reservoir_computing_esn"
+  paper: ""
+  finding_kind: "time_series"

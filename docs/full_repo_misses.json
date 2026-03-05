@@ -7,6 +7,39 @@
       {
         "has_todo_marker": false,
         "item_type": "reference_text",
+        "line_no": 899,
+        "missing_paths": [],
+        "plugin_tokens": [
+          "analysis_rqa_recurrence_v1"
+        ],
+        "referenced_paths": [],
+        "requirement_ids": [],
+        "source": "CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md",
+        "text": "- **58** `analysis_rqa_recurrence_v1` \u2014 kind: `chaos`, TS. Determinism, laminarity, trapping time.",
+        "unresolved_plugin_tokens": [
+          "analysis_rqa_recurrence_v1"
+        ]
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
+        "line_no": 937,
+        "missing_paths": [],
+        "plugin_tokens": [
+          "analysis_benford_first_digit_v1",
+          "analysis_benfords_law_anomaly_v1"
+        ],
+        "referenced_paths": [],
+        "requirement_ids": [],
+        "source": "CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md",
+        "text": "- **93** `analysis_benford_first_digit_v1` \u2014 kind: `forensic_accounting`, XS. (Check if overlaps with existing `analysis_benfords_law_anomaly_v1` \u2014 if so, skip or extend)",
+        "unresolved_plugin_tokens": [
+          "analysis_benford_first_digit_v1"
+        ]
+      },
+      {
+        "has_todo_marker": false,
+        "item_type": "reference_text",
         "line_no": 40,
         "missing_paths": [
           "docs/release_evidence/contract_baseline_full_with_runbook30_probe.json"
@@ -32,7 +65,7 @@
     "required_sql_not_using": []
   },
   "summary": {
-    "hard_gap_count": 1,
+    "hard_gap_count": 3,
     "optional_sql_not_using_count": 0,
     "recommended_sql_not_using_count": 0,
     "required_sql_not_using_count": 0

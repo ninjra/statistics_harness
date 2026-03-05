@@ -1,0 +1,6 @@
+retention:
+  max_age_days: 90
+  max_runs: 500
+  archive_before_delete: true
+  archive_dir: appdata/archive
+  vacuum_after_prune: true

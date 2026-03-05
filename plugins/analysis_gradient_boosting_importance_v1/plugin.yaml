@@ -1,0 +1,21 @@
+id: analysis_gradient_boosting_importance_v1
+name: Gradient Boosting Feature Importance (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Computes gain-based feature importances using XGBoost XGBRegressor.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "XGBoost Gain-Based Feature Importance"
+  reference_key: "gradient_boosting_importance"
+  paper: "Chen & Guestrin, 2016"
+  finding_kind: "role_inference"

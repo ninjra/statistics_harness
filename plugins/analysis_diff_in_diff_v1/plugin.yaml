@@ -1,0 +1,21 @@
+id: analysis_diff_in_diff_v1
+name: Difference-in-Differences (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Difference-in-Differences estimation for causal treatment effects.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Difference-in-Differences"
+  reference_key: "diff_in_diff"
+  paper: "Angrist & Pischke, 2009"
+  finding_kind: "counterfactual"

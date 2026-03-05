@@ -1,0 +1,21 @@
+id: analysis_bayesian_optimization_v1
+name: "Bayesian Optimization (v1)"
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: "Bayesian optimization over numeric parameter columns to maximize an objective column using Gaussian process surrogates."
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Bayesian Optimization (GP)"
+  reference_key: "bayesian_optimization"
+  paper: ""
+  finding_kind: "distribution"

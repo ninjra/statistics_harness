@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import hashlib
 import json
 import os
@@ -3059,3 +3060,95 @@ class Storage:
                 node_ids,
             )
             return {"nodes": nodes, "edges": [dict(row) for row in edges_cur.fetchall()]}
+
+    # ------------------------------------------------------------------
+    # Pruning / retention
+    # ------------------------------------------------------------------
+
+    def prune_runs_older_than_days(
+        self, days: int, *, archive: bool = False, archive_dir: Path | None = None
+    ) -> int:
+        """Delete runs older than *days*. Returns count of deleted runs.
+
+        Cascades through plugin_results_v2, plugin_executions, analysis_jobs,
+        artifacts, and events linked to the pruned runs.
+
+        If *archive* is True, each run's metadata is written as a JSON file
+        to *archive_dir* before deletion.
+        """
+        cutoff = (
+            datetime.datetime.now(datetime.timezone.utc)
+            - datetime.timedelta(days=days)
+        ).isoformat()
+
+        with self.connection() as conn:
+            rows = conn.execute(
+                "SELECT run_id, created_at, status, input_filename FROM runs WHERE created_at < ?",
+                (cutoff,),
+            ).fetchall()
+            if not rows:
+                return 0
+
+            run_ids = [dict(r)["run_id"] for r in rows]
+
+            if archive and archive_dir:
+                archive_dir.mkdir(parents=True, exist_ok=True)
+                for r in rows:
+                    d = dict(r)
+                    path = archive_dir / f"{d['run_id']}.json"
+                    path.write_text(json.dumps(d, default=str), encoding="utf-8")
+
+            placeholders = ", ".join(["?"] * len(run_ids))
+            conn.execute(
+                f"DELETE FROM plugin_results_v2 WHERE run_id IN ({placeholders})",
+                run_ids,
+            )
+            conn.execute(
+                f"DELETE FROM plugin_executions WHERE run_id IN ({placeholders})",
+                run_ids,
+            )
+            conn.execute(
+                f"DELETE FROM events WHERE run_id IN ({placeholders})",
+                run_ids,
+            )
+            conn.execute(
+                f"DELETE FROM artifacts WHERE run_id IN ({placeholders})",
+                run_ids,
+            )
+            conn.execute(
+                f"DELETE FROM runs WHERE run_id IN ({placeholders})",
+                run_ids,
+            )
+
+        return len(run_ids)
+
+    def prune_orphaned_artifacts(self) -> int:
+        """Remove artifact rows whose run_id no longer exists in runs."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "DELETE FROM artifacts WHERE run_id NOT IN (SELECT run_id FROM runs)"
+            )
+            return cur.rowcount
+
+    def vacuum(self) -> None:
+        """Run VACUUM to reclaim disk space after pruning."""
+        conn = self._connect()
+        try:
+            conn.execute("VACUUM")
+        finally:
+            conn.close()
+
+    def retention_summary(self) -> dict[str, Any]:
+        """Return summary statistics about stored runs."""
+        with self.connection() as conn:
+            total = conn.execute("SELECT COUNT(*) FROM runs").fetchone()[0]
+            oldest_row = conn.execute(
+                "SELECT MIN(created_at) FROM runs"
+            ).fetchone()
+            oldest = oldest_row[0] if oldest_row else None
+            db_size = self.db_path.stat().st_size / (1024 * 1024) if self.db_path.exists() else 0.0
+        return {
+            "total_runs": total,
+            "oldest_run_date": oldest,
+            "db_size_mb": round(db_size, 2),
+        }

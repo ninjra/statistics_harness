@@ -625,6 +625,87 @@ def recommend_add_qpec_capacity_plus_one_v1(
     )
 
 
+LEVER_COMPOSITIONS: list[dict[str, Any]] = [
+    {
+        "prereqs": {"split_batches", "blackout_scheduled_jobs"},
+        "composition": LeverRecommendation(
+            lever_id="split_batches_during_close_window",
+            title="Split oversized batches during close windows",
+            action="Split oversized batches and black out non-critical jobs during close windows.",
+            estimated_improvement_pct=None,
+            confidence=0.6,
+            evidence={"composed_from": ["split_batches", "blackout_scheduled_jobs"]},
+            limitations=["Composite lever; validate both constituent levers independently."],
+        ),
+    },
+    {
+        "prereqs": {"cap_concurrency", "priority_isolation"},
+        "composition": LeverRecommendation(
+            lever_id="throttle_with_priority_lanes",
+            title="Throttle with priority-based lane routing",
+            action="Cap concurrency with priority-based lane routing.",
+            estimated_improvement_pct=None,
+            confidence=0.6,
+            evidence={"composed_from": ["cap_concurrency", "priority_isolation"]},
+            limitations=["Composite lever; validate both constituent levers independently."],
+        ),
+    },
+    {
+        "prereqs": {"retry_backoff", "cap_concurrency"},
+        "composition": LeverRecommendation(
+            lever_id="circuit_breaker_with_cap",
+            title="Circuit breaker with concurrency cap",
+            action="Circuit breaker with concurrency cap to prevent cascading failures.",
+            estimated_improvement_pct=None,
+            confidence=0.6,
+            evidence={"composed_from": ["retry_backoff", "cap_concurrency"]},
+            limitations=["Composite lever; validate both constituent levers independently."],
+        ),
+    },
+    {
+        "prereqs": {"resource_affinity", "parallelize_branches"},
+        "composition": LeverRecommendation(
+            lever_id="affinity_aware_parallelism",
+            title="Affinity-aware parallelism",
+            action="Parallelize branches with resource affinity to minimize cold starts.",
+            estimated_improvement_pct=None,
+            confidence=0.5,
+            evidence={"composed_from": ["resource_affinity", "parallelize_branches"]},
+            limitations=["Composite lever; validate both constituent levers independently."],
+        ),
+    },
+]
+
+
+def compose_levers(base_levers: list[LeverRecommendation]) -> list[LeverRecommendation]:
+    """Return composite levers whose prereqs are all present in *base_levers*."""
+    ids = {lr.lever_id for lr in base_levers}
+    composites: list[LeverRecommendation] = []
+    for entry in LEVER_COMPOSITIONS:
+        if entry["prereqs"] <= ids:
+            composites.append(entry["composition"])
+    return composites
+
+
+def dynamic_threshold(
+    values: np.ndarray | pd.Series,
+    multiplier: float = 1.5,
+    fallback: float | None = None,
+) -> float:
+    """Compute a distribution-relative threshold: median + multiplier * std.
+
+    Self-calibrating across dataset scales. Falls back to *fallback* (or
+    ``float('inf')``) when the input is empty or entirely NaN.
+    """
+    arr = np.asarray(values, dtype=float)
+    arr = arr[np.isfinite(arr)]
+    if arr.size == 0:
+        return fallback if fallback is not None else float("inf")
+    med = float(np.median(arr))
+    std = float(np.std(arr))
+    return med + multiplier * std
+
+
 def build_default_lever_recommendations(
     df: pd.DataFrame,
     cols: IdeaspaceColumns,
@@ -649,4 +730,5 @@ def build_default_lever_recommendations(
             reco = None
         if reco is not None:
             recos.append(reco)
+    recos.extend(compose_levers(recos))
     return recos

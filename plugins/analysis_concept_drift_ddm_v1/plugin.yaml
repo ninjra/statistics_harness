@@ -1,0 +1,23 @@
+id: analysis_concept_drift_ddm_v1
+name: "analysis_concept_drift_ddm_v1"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+capabilities:
+  - analysis
+settings:
+  description: "Concept drift detection using river DDM on a numeric column"
+  defaults:
+    seed: 1337
+    target_column: null
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - run_dir
+
+citation:
+  method: "DDM (Drift Detection Method)"
+  reference_key: "ddm_concept_drift"
+  paper: "Gama et al. 2004 - Learning with Drift Detection"
+  finding_kind: "changepoint"

@@ -347,6 +347,31 @@ def filter_excluded_processes(
     return filtered
 
 
+def normalize_scale_factor(
+    items: list[dict[str, Any]],
+    key: str = "delta_hours",
+    scale_factor: float | None = None,
+) -> list[dict[str, Any]]:
+    """Apply a scale factor to numeric values across recommendation items.
+
+    When a dataset represents a sample of a larger population, scale_factor
+    converts sample-level deltas into population-level estimates.
+    """
+    if scale_factor is None or scale_factor == 1.0:
+        return items
+    out: list[dict[str, Any]] = []
+    for item in items:
+        copy = dict(item)
+        raw = copy.get(key)
+        if raw is not None:
+            try:
+                copy[key] = round(float(raw) * scale_factor, 6)
+            except (TypeError, ValueError):
+                pass
+        out.append(copy)
+    return out
+
+
 def redact_if_needed(value: str, enable_redaction: bool) -> str:
     if not enable_redaction:
         return value

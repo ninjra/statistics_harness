@@ -1,0 +1,21 @@
+id: analysis_regression_discontinuity_v1
+name: Regression Discontinuity (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Sharp regression discontinuity design using rdrobust or OLS fallback.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Regression Discontinuity"
+  reference_key: "regression_discontinuity"
+  paper: "Imbens & Lemieux, 2008"
+  finding_kind: "counterfactual"

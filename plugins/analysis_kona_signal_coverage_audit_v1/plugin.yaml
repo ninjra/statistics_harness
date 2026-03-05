@@ -1,0 +1,22 @@
+id: analysis_kona_signal_coverage_audit_v1
+name: Kona Signal Coverage Audit (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Audits signal coverage — which finding kinds from analysis plugins are consumed by lever detectors vs stranded.
+  defaults: {}
+capabilities:
+  - diagnostic_only
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Signal Coverage Audit"
+  reference_key: "kona_signal_coverage_audit"
+  paper: ""
+  finding_kind: "role_inference"

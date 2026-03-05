@@ -1,0 +1,21 @@
+id: analysis_inverse_propensity_weighting_v1
+name: Inverse Propensity Weighting (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Estimates ATE using inverse propensity weighting via econml LinearDML or manual IPW with sklearn LogisticRegression.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Inverse Propensity Weighting"
+  reference_key: "inverse_propensity_weighting"
+  paper: "Horvitz & Thompson, 1952"
+  finding_kind: "causal"

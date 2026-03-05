@@ -1,0 +1,22 @@
+id: analysis_finding_to_lever_bridge_v1
+name: Finding-to-Lever Bridge (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Maps analysis plugin findings to lever candidates via a static dispatch table.
+  defaults: {}
+capabilities:
+  - diagnostic_only
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Finding-to-Lever Bridge"
+  reference_key: "finding_to_lever_bridge"
+  paper: ""
+  finding_kind: "role_inference"

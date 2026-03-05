@@ -1234,6 +1234,24 @@ class Pipeline:
             result.debug = debug
             return result
 
+        # ── DAAF Pattern 1A: Typed error classification ──────────────────────
+        ERROR_CATEGORIES: dict[str, str] = {
+            "ImportError": "dependency_missing",
+            "ModuleNotFoundError": "dependency_missing",
+            "TimeoutError": "budget_exceeded",
+            "MemoryError": "memory_exceeded",
+            "numpy.linalg.LinAlgError": "numerical_failure",
+            "ValueError": "input_invalid",
+            "KeyError": "column_missing",
+            "ConvergenceWarning": "convergence_failure",
+        }
+
+        def classify_error(error: PluginError) -> str:
+            for pattern, category in ERROR_CATEGORIES.items():
+                if pattern in (error.type or "") or pattern in (error.traceback or ""):
+                    return category
+            return "unknown"
+
         def finalize_result_contract(spec: PluginSpec, result: PluginResult) -> PluginResult:
             result = normalize_result_status(spec, result)
             result.findings = attach_evidence(result.findings, plugin_id=spec.plugin_id)
@@ -1259,6 +1277,9 @@ class Pipeline:
                 )
                 result = normalize_result_status(spec, result)
                 result.findings = attach_evidence(result.findings, plugin_id=spec.plugin_id)
+            # DAAF 1A: Attach error_category when result has an error.
+            if result.error is not None:
+                result.metrics["error_category"] = classify_error(result.error)
             return result
 
         def logger(msg: str) -> None:
@@ -1420,6 +1441,12 @@ class Pipeline:
                         }
                     ).encode("utf-8")
                 ).hexdigest()
+                # DAAF 1B: Per-plugin input snapshot
+                input_snapshot = {
+                    "row_count": dataset_row_count,
+                    "column_count": dataset_column_count,
+                    "dataset_hash": cache_dataset_hash,
+                }
                 self.storage.insert_event(
                     kind="plugin_started",
                     created_at=now_iso(),
@@ -1430,6 +1457,7 @@ class Pipeline:
                         "execution_id": execution_id,
                         "execution_fingerprint": execution_fingerprint,
                         "plugin_seed": plugin_seed,
+                        "input_snapshot": input_snapshot,
                     },
                 )
                 # Cache reuse policy:
@@ -2433,6 +2461,96 @@ class Pipeline:
         manifest["summary"]["strict_result_quality_violation"] = bool(
             strict_result_quality_violation
         )
+
+        # ── DAAF 1A: Aggregate error categories in manifest ──────────────
+        error_categories: dict[str, int] = {}
+        for row in plugin_results:
+            if str(row.get("status") or "").lower() in {"error", "aborted"}:
+                err_payload = row.get("error_json") or row.get("error") or "{}"
+                if isinstance(err_payload, str):
+                    try:
+                        err_data = json.loads(err_payload)
+                    except Exception:
+                        err_data = {}
+                elif isinstance(err_payload, dict):
+                    err_data = err_payload
+                else:
+                    err_data = {}
+                cat_from_metrics = None
+                metrics_raw = row.get("metrics_json") or row.get("metrics") or "{}"
+                if isinstance(metrics_raw, str):
+                    try:
+                        metrics_data = json.loads(metrics_raw)
+                    except Exception:
+                        metrics_data = {}
+                elif isinstance(metrics_raw, dict):
+                    metrics_data = metrics_raw
+                else:
+                    metrics_data = {}
+                cat_from_metrics = metrics_data.get("error_category")
+                if cat_from_metrics:
+                    cat = str(cat_from_metrics)
+                else:
+                    pe = PluginError(
+                        type=str(err_data.get("type", "")),
+                        message=str(err_data.get("message", "")),
+                        traceback=str(err_data.get("traceback", "")),
+                    )
+                    cat = classify_error(pe)
+                error_categories[cat] = error_categories.get(cat, 0) + 1
+        if error_categories:
+            manifest["summary"]["error_categories"] = dict(
+                sorted(error_categories.items())
+            )
+
+        # ── DAAF 1C: Run-level signals aggregation ───────────────────────
+        signals: list[dict[str, Any]] = []
+        for row in plugin_results:
+            pid = str(row.get("plugin_id") or "")
+            status = str(row.get("status") or "").lower()
+            if status != "ok":
+                continue
+            metrics_raw = row.get("metrics_json") or row.get("metrics") or "{}"
+            if isinstance(metrics_raw, str):
+                try:
+                    mdata = json.loads(metrics_raw)
+                except Exception:
+                    mdata = {}
+            elif isinstance(metrics_raw, dict):
+                mdata = metrics_raw
+            else:
+                mdata = {}
+            budget_raw = row.get("budget_json") or row.get("budget") or "{}"
+            if isinstance(budget_raw, str):
+                try:
+                    bdata = json.loads(budget_raw)
+                except Exception:
+                    bdata = {}
+            elif isinstance(budget_raw, dict):
+                bdata = budget_raw
+            else:
+                bdata = {}
+            if bdata.get("sampled"):
+                signals.append({
+                    "type": "sampled_input",
+                    "plugin_id": pid,
+                    "note": "Result based on sampled data, not full dataset",
+                })
+            n = mdata.get("n_observations")
+            if isinstance(n, (int, float)) and 30 <= n <= 50:
+                signals.append({
+                    "type": "marginal_sample_size",
+                    "plugin_id": pid,
+                    "note": f"n={n}, just above minimum",
+                })
+            debug_raw = row.get("debug_json") or row.get("debug") or "{}"
+            if isinstance(debug_raw, str) and "convergence" in debug_raw.lower():
+                signals.append({"type": "convergence_concern", "plugin_id": pid})
+            elif isinstance(debug_raw, dict) and "convergence" in str(debug_raw).lower():
+                signals.append({"type": "convergence_concern", "plugin_id": pid})
+        if signals:
+            manifest["summary"]["signals"] = signals
+
         manifest_path = run_dir / "run_manifest.json"
         write_json(manifest_path, manifest)
         manifest_sha = file_sha256(manifest_path)

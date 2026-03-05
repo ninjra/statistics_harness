@@ -1,7 +1,40 @@
 {
   "generated_by": "scripts/full_instruction_coverage_report.py",
-  "item_count": 2662,
+  "item_count": 2840,
   "items": [
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 899,
+      "missing_paths": [],
+      "plugin_tokens": [
+        "analysis_rqa_recurrence_v1"
+      ],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md",
+      "text": "- **58** `analysis_rqa_recurrence_v1` \u2014 kind: `chaos`, TS. Determinism, laminarity, trapping time.",
+      "unresolved_plugin_tokens": [
+        "analysis_rqa_recurrence_v1"
+      ]
+    },
+    {
+      "has_todo_marker": false,
+      "item_type": "reference_text",
+      "line_no": 937,
+      "missing_paths": [],
+      "plugin_tokens": [
+        "analysis_benford_first_digit_v1",
+        "analysis_benfords_law_anomaly_v1"
+      ],
+      "referenced_paths": [],
+      "requirement_ids": [],
+      "source": "CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md",
+      "text": "- **93** `analysis_benford_first_digit_v1` \u2014 kind: `forensic_accounting`, XS. (Check if overlaps with existing `analysis_benfords_law_anomaly_v1` \u2014 if so, skip or extend)",
+      "unresolved_plugin_tokens": [
+        "analysis_benford_first_digit_v1"
+      ]
+    },
     {
       "has_todo_marker": false,
       "item_type": "reference_text",
@@ -28,8 +61,9 @@
     "sql_required_not_using_sql": []
   },
   "missing_by_source": {
+    "CROSS_DOMAIN_PLUGIN_IMPLEMENTATION_GUIDE.md": 2,
     "docs/each-plugin-delivering-actionable-results-plan.md": 1
   },
-  "missing_item_count": 1,
-  "source_count": 78
+  "missing_item_count": 3,
+  "source_count": 80
 }

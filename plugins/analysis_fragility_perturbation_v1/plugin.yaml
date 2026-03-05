@@ -1,0 +1,8 @@
+id: analysis_fragility_perturbation_v1
+version: 1
+kind: distribution
+depends_on:
+  - analysis_ideaspace_energy_ebm_v1
+sandbox:
+  network: false
+  filesystem: read

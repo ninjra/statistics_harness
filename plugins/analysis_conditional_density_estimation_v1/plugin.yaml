@@ -1,0 +1,21 @@
+id: analysis_conditional_density_estimation_v1
+name: "Conditional Density Estimation (v1)"
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: "Conditional density estimation using kernel density per group with KL divergence between group densities."
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Conditional Density Estimation (KDE)"
+  reference_key: "conditional_density_estimation"
+  paper: ""
+  finding_kind: "distribution"

@@ -1,0 +1,24 @@
+id: analysis_sliced_wasserstein_drift_v1
+name: "analysis_sliced_wasserstein_drift_v1"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+capabilities:
+  - analysis
+settings:
+  description: "Distribution drift detection using sliced Wasserstein distance (POT)"
+  defaults:
+    seed: 1337
+    target_column: null
+    n_projections: 50
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - run_dir
+
+citation:
+  method: "Sliced Wasserstein Distance"
+  reference_key: "sliced_wasserstein"
+  paper: "Bonneel et al. 2015 - Sliced and Radon Wasserstein Barycenters"
+  finding_kind: "distribution"

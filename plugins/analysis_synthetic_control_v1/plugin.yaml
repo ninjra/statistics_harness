@@ -1,0 +1,21 @@
+id: analysis_synthetic_control_v1
+name: Synthetic Control (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Synthetic control method for estimating causal effects using weighted combination of donor units.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Synthetic Control"
+  reference_key: "synthetic_control"
+  paper: "Abadie et al., 2010"
+  finding_kind: "counterfactual"

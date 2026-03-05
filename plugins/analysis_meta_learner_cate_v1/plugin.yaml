@@ -1,0 +1,21 @@
+id: analysis_meta_learner_cate_v1
+name: Meta-Learner CATE (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Estimates conditional average treatment effects (CATE) using econml LinearDML, reporting ATE and heterogeneity metrics.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+  - appdata
+  - plugins
+  - run_dir
+citation:
+  method: "Meta-Learner CATE"
+  reference_key: "meta_learner_cate"
+  paper: "Chernozhukov et al., 2018"
+  finding_kind: "causal"

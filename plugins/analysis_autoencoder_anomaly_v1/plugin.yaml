@@ -1,0 +1,21 @@
+id: analysis_autoencoder_anomaly_v1
+name: Autoencoder Anomaly Detection (v1)
+version: 0.1.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on: []
+settings:
+  description: Anomaly detection using a PyTorch autoencoder. Trains on numeric columns and flags rows with high reconstruction error as anomalies.
+  defaults: {}
+capabilities: []
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Autoencoder Anomaly Detection"
+  reference_key: "autoencoder_anomaly"
+  paper: ""
+  finding_kind: "anomaly"

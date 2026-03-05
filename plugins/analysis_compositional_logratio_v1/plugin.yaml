@@ -1,0 +1,24 @@
+id: analysis_compositional_logratio_v1
+name: "analysis_compositional_logratio_v1"
+version: "0.1.0"
+type: analysis
+entrypoint: "plugin.py:Plugin"
+depends_on: []
+capabilities:
+  - analysis
+settings:
+  description: "Centered log-ratio (CLR) analysis of compositional/proportion data"
+  defaults:
+    seed: 1337
+    compositional_columns: null
+    sum_tolerance: 0.05
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - run_dir
+
+citation:
+  method: "CLR (Centered Log-Ratio) Transform"
+  reference_key: "compositional_clr"
+  paper: "Aitchison 1986 - The Statistical Analysis of Compositional Data"
+  finding_kind: "distribution"
