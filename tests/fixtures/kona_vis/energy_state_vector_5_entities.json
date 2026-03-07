@@ -1,0 +1,113 @@
+{
+  "schema_version": "energy_state_vector.v1",
+  "energy_keys": ["duration_p95", "queue_delay_p95", "error_rate", "rate_per_min", "background_overhead_per_min"],
+  "weights": {
+    "duration_p95": 1.0,
+    "queue_delay_p95": 2.0,
+    "error_rate": 1.0,
+    "rate_per_min": 0.5,
+    "background_overhead_per_min": 1.0
+  },
+  "entities": [
+    {
+      "entity_key": "ALL",
+      "observed": {
+        "duration_p95": 120.0,
+        "queue_delay_p95": 45.0,
+        "error_rate": 0.05,
+        "rate_per_min": 8.0,
+        "background_overhead_per_min": 3.5
+      },
+      "ideal": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "energy_total": 3.72,
+      "energy_gap": 3.72,
+      "energy_constraints": 0.0
+    },
+    {
+      "entity_key": "PROC_A",
+      "observed": {
+        "duration_p95": 85.0,
+        "queue_delay_p95": 30.0,
+        "error_rate": 0.03,
+        "rate_per_min": 10.0,
+        "background_overhead_per_min": 2.0
+      },
+      "ideal": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "energy_total": 2.45,
+      "energy_gap": 2.45,
+      "energy_constraints": 0.0
+    },
+    {
+      "entity_key": "PROC_B",
+      "observed": {
+        "duration_p95": 200.0,
+        "queue_delay_p95": 80.0,
+        "error_rate": 0.08,
+        "rate_per_min": 5.0,
+        "background_overhead_per_min": 6.0
+      },
+      "ideal": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "energy_total": 5.81,
+      "energy_gap": 5.81,
+      "energy_constraints": 0.0
+    },
+    {
+      "entity_key": "PROC_C",
+      "observed": {
+        "duration_p95": 50.0,
+        "queue_delay_p95": 12.0,
+        "error_rate": 0.02,
+        "rate_per_min": 12.0,
+        "background_overhead_per_min": 1.0
+      },
+      "ideal": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "energy_total": 0.95,
+      "energy_gap": 0.95,
+      "energy_constraints": 0.0
+    },
+    {
+      "entity_key": "PROC_D",
+      "observed": {
+        "duration_p95": 150.0,
+        "queue_delay_p95": 60.0,
+        "error_rate": 0.06,
+        "rate_per_min": 6.0,
+        "background_overhead_per_min": 4.5
+      },
+      "ideal": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "energy_total": 4.15,
+      "energy_gap": 4.15,
+      "energy_constraints": 0.0
+    }
+  ]
+}

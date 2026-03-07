@@ -1,0 +1,29 @@
+id: analysis_kohonen_energy_map_v1
+name: Kohonen Energy Map (v1)
+version: 1.0.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_ideaspace_energy_ebm_v1
+settings:
+  description: Kohonen Self-Organizing Map for topology-preserving energy space visualization.
+  defaults:
+    enabled: false
+    som_max_side: 20
+    som_max_iterations: 50000
+    include_route_overlay: true
+    min_entities: 5
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Kohonen Self-Organizing Map"
+  reference_key: "kohonen_energy_map"
+  paper: ""
+  finding_kind: "kohonen_energy_map"

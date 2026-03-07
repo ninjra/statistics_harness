@@ -267,6 +267,13 @@ mappings:
   analysis_bayesian_point_displacement: bayesian_point_displacement
   analysis_empirical_bayes_shrinkage_v1: bayesian_point_displacement
 
+  # ── energy_landscape ─────────────────────────────────────────────────────
+  analysis_kona_3d_landscape_v1: energy_landscape
+  analysis_kohonen_energy_map_v1: energy_landscape
+
+  # ── energy_optimization ─────────────────────────────────────────────────
+  analysis_kona_weight_learner_v1: energy_optimization
+
   # ── ideaspace_gap ────────────────────────────────────────────────────────
   analysis_ideaspace_action_planner: ideaspace_gap
   analysis_ideaspace_energy_ebm_v1: ideaspace_gap

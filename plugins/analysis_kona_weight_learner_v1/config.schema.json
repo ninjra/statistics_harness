@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "enabled": {"type": "boolean", "default": false},
+    "min_calibration_actions": {"type": "integer", "minimum": 2, "default": 3},
+    "max_optimizer_iterations": {"type": "integer", "minimum": 10, "maximum": 1000, "default": 200},
+    "apply_learned_weights": {"type": "boolean", "default": false}
+  }
+}

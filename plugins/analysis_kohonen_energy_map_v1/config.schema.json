@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "enabled": {"type": "boolean", "default": false},
+    "som_max_side": {"type": "integer", "minimum": 3, "maximum": 30, "default": 20},
+    "som_max_iterations": {"type": "integer", "minimum": 100, "maximum": 100000, "default": 50000},
+    "include_route_overlay": {"type": "boolean", "default": true},
+    "min_entities": {"type": "integer", "minimum": 3, "default": 5}
+  }
+}

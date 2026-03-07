@@ -1,0 +1,117 @@
+{
+  "schema_version": "verified_actions.v1",
+  "actions": [
+    {
+      "lever_id": "tune_schedule_qemail_frequency_v1",
+      "confidence": 0.85,
+      "estimated_improvement_pct": 45.0,
+      "delta_energy": 1.82,
+      "observed_metrics": {
+        "duration_p95": 120.0,
+        "queue_delay_p95": 45.0,
+        "error_rate": 0.05,
+        "rate_per_min": 8.0,
+        "background_overhead_per_min": 3.5
+      },
+      "ideal_metrics": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "modeled_metrics_after": {
+        "duration_p95": 80.0,
+        "queue_delay_p95": 25.0,
+        "error_rate": 0.04,
+        "rate_per_min": 10.0,
+        "background_overhead_per_min": 1.5
+      },
+      "evidence": {"qemail_rows": 142, "eligible_wait_gt_hours": 3}
+    },
+    {
+      "lever_id": "add_qpec_capacity_plus_one_v1",
+      "confidence": 0.72,
+      "estimated_improvement_pct": 30.0,
+      "delta_energy": 1.25,
+      "observed_metrics": {
+        "duration_p95": 120.0,
+        "queue_delay_p95": 45.0,
+        "error_rate": 0.05,
+        "rate_per_min": 8.0,
+        "background_overhead_per_min": 3.5
+      },
+      "ideal_metrics": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "modeled_metrics_after": {
+        "duration_p95": 100.0,
+        "queue_delay_p95": 35.0,
+        "error_rate": 0.04,
+        "rate_per_min": 9.0,
+        "background_overhead_per_min": 2.5
+      },
+      "evidence": {"qpec_host_count": 3}
+    },
+    {
+      "lever_id": "reduce_batch_size_v1",
+      "confidence": 0.60,
+      "estimated_improvement_pct": 20.0,
+      "delta_energy": 0.95,
+      "observed_metrics": {
+        "duration_p95": 120.0,
+        "queue_delay_p95": 45.0,
+        "error_rate": 0.05,
+        "rate_per_min": 8.0,
+        "background_overhead_per_min": 3.5
+      },
+      "ideal_metrics": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "modeled_metrics_after": {
+        "duration_p95": 90.0,
+        "queue_delay_p95": 40.0,
+        "error_rate": 0.03,
+        "rate_per_min": 9.5,
+        "background_overhead_per_min": 3.0
+      },
+      "evidence": {"batch_count": 50}
+    },
+    {
+      "lever_id": "isolate_workload_v1",
+      "confidence": 0.55,
+      "estimated_improvement_pct": 15.0,
+      "delta_energy": 0.65,
+      "observed_metrics": {
+        "duration_p95": 120.0,
+        "queue_delay_p95": 45.0,
+        "error_rate": 0.05,
+        "rate_per_min": 8.0,
+        "background_overhead_per_min": 3.5
+      },
+      "ideal_metrics": {
+        "duration_p95": 30.0,
+        "queue_delay_p95": 5.0,
+        "error_rate": 0.01,
+        "rate_per_min": 15.0,
+        "background_overhead_per_min": 0.5
+      },
+      "modeled_metrics_after": {
+        "duration_p95": 110.0,
+        "queue_delay_p95": 42.0,
+        "error_rate": 0.045,
+        "rate_per_min": 8.5,
+        "background_overhead_per_min": 2.8
+      },
+      "evidence": {"workload_groups": 2}
+    }
+  ]
+}

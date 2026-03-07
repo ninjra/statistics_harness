@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "enabled": {"type": "boolean", "default": false},
+    "grid_resolution": {"type": "integer", "minimum": 10, "maximum": 200, "default": 50},
+    "grid_margin_pct": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.15},
+    "include_route_overlay": {"type": "boolean", "default": true},
+    "min_entities_for_surface": {"type": "integer", "minimum": 3, "default": 4}
+  }
+}

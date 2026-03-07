@@ -1,0 +1,46 @@
+{
+  "schema_version": "kona_route_plan.v1",
+  "decision": "modeled",
+  "steps": [
+    {
+      "step_index": 0,
+      "lever_id": "tune_schedule_qemail_frequency_v1",
+      "modeled_metrics_after": {
+        "duration_p95": 80.0,
+        "queue_delay_p95": 25.0,
+        "error_rate": 0.04,
+        "rate_per_min": 10.0,
+        "background_overhead_per_min": 1.5
+      },
+      "energy_after": 2.10
+    },
+    {
+      "step_index": 1,
+      "lever_id": "add_qpec_capacity_plus_one_v1",
+      "modeled_metrics_after": {
+        "duration_p95": 55.0,
+        "queue_delay_p95": 15.0,
+        "error_rate": 0.025,
+        "rate_per_min": 12.0,
+        "background_overhead_per_min": 0.9
+      },
+      "energy_after": 0.85
+    },
+    {
+      "step_index": 2,
+      "lever_id": "reduce_batch_size_v1",
+      "modeled_metrics_after": {
+        "duration_p95": 40.0,
+        "queue_delay_p95": 8.0,
+        "error_rate": 0.015,
+        "rate_per_min": 14.0,
+        "background_overhead_per_min": 0.6
+      },
+      "energy_after": 0.25
+    }
+  ],
+  "totals": {
+    "stop_reason": "energy_threshold",
+    "total_steps": 3
+  }
+}

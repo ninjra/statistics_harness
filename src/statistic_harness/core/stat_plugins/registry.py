@@ -64,6 +64,9 @@ from statistic_harness.core.stat_plugins.cross_domain_signal_music_network impor
 from statistic_harness.core.stat_plugins.cross_domain_unconventional import (
     HANDLERS as CROSS_DOMAIN_UNCONVENTIONAL_HANDLERS,
 )
+from statistic_harness.core.stat_plugins.kona_visualization import (
+    KONA_VIS_HANDLERS,
+)
 
 try:  # optional
     from scipy import stats as scipy_stats
@@ -3442,3 +3445,4 @@ HANDLERS.update(CROSS_DOMAIN_SOCIAL_HANDLERS)
 HANDLERS.update(CROSS_DOMAIN_EARTH_HANDLERS)
 HANDLERS.update(CROSS_DOMAIN_SIGNAL_HANDLERS)
 HANDLERS.update(CROSS_DOMAIN_UNCONVENTIONAL_HANDLERS)
+HANDLERS.update(KONA_VIS_HANDLERS)

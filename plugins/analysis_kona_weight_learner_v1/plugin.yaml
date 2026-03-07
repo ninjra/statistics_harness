@@ -1,0 +1,29 @@
+id: analysis_kona_weight_learner_v1
+name: Kona Weight Learner (v1)
+version: 1.0.0
+type: analysis
+entrypoint: plugin.py:Plugin
+depends_on:
+  - analysis_ideaspace_energy_ebm_v1
+  - analysis_ebm_action_verifier_v1
+settings:
+  description: Per-dataset energy weight optimization via L-BFGS-B maximizing Spearman rank correlation.
+  defaults:
+    enabled: false
+    min_calibration_actions: 3
+    max_optimizer_iterations: 200
+    apply_learned_weights: false
+capabilities: []
+config_schema: config.schema.json
+output_schema: output.schema.json
+sandbox:
+  no_network: true
+  fs_allowlist:
+    - appdata
+    - plugins
+    - run_dir
+citation:
+  method: "Kona Weight Learner"
+  reference_key: "kona_weight_learner"
+  paper: ""
+  finding_kind: "kona_weight_learner"
