@@ -25,4 +25,4 @@ def test_clr_skips_non_compositional(run_dir):
     df = pd.DataFrame({"a": [10.0, 20.0, 30.0], "b": [40.0, 50.0, 60.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

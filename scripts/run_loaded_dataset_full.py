@@ -2122,13 +2122,36 @@ def main() -> int:
     else:
         _debug_stage("discover_plugins_start")
         # Full harness run: execute every non-ingest plugin on the loaded dataset.
-        # (Ingest is file-driven and is skipped for DB-only runs.)
+        # Use the planner as a pre-filter for analysis plugins to skip plugins
+        # whose data requirements aren't met by the dataset.
         profiles = _discover_plugin_ids({"profile"})
         planners = _discover_plugin_ids({"planner"})
         transforms = _discover_plugin_ids({"transform"})
         analyses = _discover_plugin_ids({"analysis"})
         reports = _discover_plugin_ids({"report"})
         llm = _discover_plugin_ids({"llm"})
+
+        # Pre-filter analysis plugins via planner (if storage is available)
+        try:
+            from statistic_harness.core.plugin_manager import PluginManager
+            from statistic_harness.core.planner import select_plugins as _select
+            from statistic_harness.core.storage import Storage as _Storage
+
+            _mgr = PluginManager(REPO_ROOT / "plugins")
+            _specs = _mgr.discover()
+            _stor = _Storage(db_path, tenant_id=None, mode="ro", initialize=False)
+            planner_selected = set(_select(_specs, _stor, dataset_version_id))
+            all_analysis = set(analyses)
+            analyses = sorted(all_analysis & planner_selected)
+            skipped_by_planner = all_analysis - planner_selected
+            if skipped_by_planner:
+                print(
+                    f"PLANNER_PRE_FILTER=selected:{len(analyses)},skipped:{len(skipped_by_planner)}",
+                    flush=True,
+                )
+        except Exception as exc:
+            print(f"PLANNER_PRE_FILTER=fallback (error: {exc})", flush=True)
+
         plugin_ids = [*profiles, *planners, *transforms, *analyses, *reports, *llm]
         if excluded_plugin_ids:
             plugin_ids = [pid for pid in plugin_ids if pid not in excluded_plugin_ids]

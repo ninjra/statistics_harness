@@ -22,4 +22,4 @@ def test_dml_skips_without_treatment(run_dir):
     df = pd.DataFrame({"x": np.random.randn(100), "y": np.random.randn(100)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

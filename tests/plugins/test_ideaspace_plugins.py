@@ -100,7 +100,7 @@ def test_ideaspace_normative_gap_and_action_planner(tmp_path: Path) -> None:
 def test_normative_gap_skips_when_missing_columns(tmp_path: Path) -> None:
     df = pd.DataFrame({"foo": [1, 2], "bar": [3, 4]})
     result = GapPlugin().run(_Ctx(tmp_path, df, {}))
-    assert result.status == "skipped"
+    assert result.status == "na"
 
 
 def test_normative_gap_deterministic_sampling(tmp_path: Path) -> None:
@@ -122,7 +122,7 @@ def test_action_planner_skip_when_no_source_findings(tmp_path: Path) -> None:
             return []
 
     result = ActionPlugin().run(_Ctx(tmp_path, df, {}, storage=_EmptyStore()))
-    assert result.status == "skipped"
+    assert result.status == "na"
 
 
 def test_action_planner_skip_when_gates_fail(tmp_path: Path) -> None:
@@ -140,5 +140,5 @@ def test_action_planner_skip_when_gates_fail(tmp_path: Path) -> None:
     ]
     dummy_df = _base_dataset().head(5)
     result = ActionPlugin().run(_Ctx(tmp_path, dummy_df, {}, storage=_StorageStub(findings)))
-    assert result.status == "skipped"
+    assert result.status == "na"
     assert result.findings[0]["measurement_type"] == "not_applicable"

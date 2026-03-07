@@ -4,13 +4,14 @@ version: "0.1.0"
 type: analysis
 entrypoint: "plugin.py:Plugin"
 depends_on: []
-capabilities:
-  - analysis
+capabilities: [needs_eventlog, needs_numeric]
 settings:
   description: "Concept drift detection using river DDM on a numeric column"
   defaults:
     seed: 1337
     target_column: null
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

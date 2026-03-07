@@ -36,7 +36,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             comp_cols = ctx.settings.get("compositional_columns")
             if comp_cols:
@@ -47,7 +47,7 @@ class Plugin:
 
             if not comp_cols or len(comp_cols) < 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "No compositional columns detected",
                     {},
                     [],
@@ -58,7 +58,7 @@ class Plugin:
             work = df[comp_cols].dropna()
             if len(work) < 5:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient rows ({len(work)})",
                     {},
                     [],

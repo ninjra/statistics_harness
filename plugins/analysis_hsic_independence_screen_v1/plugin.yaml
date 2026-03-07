@@ -14,8 +14,7 @@ settings:
     max_rows: 8000
     max_features: 16
     top_k: 20
-capabilities:
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -167,7 +167,7 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         columns_meta = []
         role_by_name: dict[str, str] = {}
@@ -271,13 +271,13 @@ class Plugin:
 
         if not process_col:
             return PluginResult(
-                "skipped", "No process/activity column detected", {}, [], [], None
+                "na", "No process/activity column detected", {}, [], [], None
             )
 
         base_timestamp_col = timestamp_col or start_col or end_col
         if not base_timestamp_col:
             return PluginResult(
-                "skipped", "No timestamp column detected", {}, [], [], None
+                "na", "No timestamp column detected", {}, [], [], None
             )
 
         work = df.copy()
@@ -300,7 +300,7 @@ class Plugin:
         work = work.loc[work["__timestamp"].notna()].copy()
         if work.empty:
             return PluginResult(
-                "skipped", "No valid timestamps found", {}, [], [], None
+                "na", "No valid timestamps found", {}, [], [], None
             )
 
         duration_label = duration_col
@@ -317,7 +317,7 @@ class Plugin:
             duration_label = f"{start_col}->{end_col}"
         else:
             return PluginResult(
-                "skipped",
+                "na",
                 "No duration data available",
                 {},
                 [],
@@ -328,14 +328,14 @@ class Plugin:
         work["__duration"] = duration
         work = work.loc[work["__duration"].notna() & (work["__duration"] > 0)].copy()
         if work.empty:
-            return PluginResult("skipped", "No valid durations found", {}, [], [], None)
+            return PluginResult("na", "No valid durations found", {}, [], [], None)
 
         work["__process"] = work[process_col].astype(str).str.strip()
         work["__process_norm"] = work["__process"].str.lower()
         invalid = {"", "nan", "none", "null"}
         work = work.loc[~work["__process_norm"].isin(invalid)].copy()
         if work.empty:
-            return PluginResult("skipped", "No valid process values", {}, [], [], None)
+            return PluginResult("na", "No valid process values", {}, [], [], None)
 
         # ---- Baseline vs Target Close Window Spillover (20->5 baseline, 20->EOM target) ----
         baseline_close_start_day = int(ctx.settings.get("baseline_close_start_day", 20))

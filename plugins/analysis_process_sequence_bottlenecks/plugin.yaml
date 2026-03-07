@@ -19,9 +19,7 @@ settings:
     max_process_columns: 2
     max_start_columns: 2
     max_end_columns: 2
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

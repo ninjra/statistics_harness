@@ -11,7 +11,7 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
             return PluginResult(
-                "skipped", "Not enough numeric columns", {}, [], [], None
+                "na", "Not enough numeric columns", {}, [], [], None
             )
         max_cols = ctx.settings.get("max_cols")
         if isinstance(max_cols, int) and max_cols > 0:

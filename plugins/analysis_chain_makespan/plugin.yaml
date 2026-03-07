@@ -13,9 +13,7 @@ settings:
     duration_column: null
     max_sequences: 10
     max_examples: 25
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

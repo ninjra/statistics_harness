@@ -27,4 +27,4 @@ def test_shapley_skips_too_few_columns(run_dir):
     df = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

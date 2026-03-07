@@ -22,7 +22,7 @@ def test_autoencoder_anomaly_smoke(run_dir) -> None:
     df = _numeric_df_with_outliers()
     ctx = make_context(run_dir, df, {"epochs": 30}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped", "degraded")
+    assert result.status in ("ok", "na", "degraded")
     if result.status == "ok":
         assert "n_anomalies" in result.metrics
         assert "anomaly_rate" in result.metrics
@@ -35,4 +35,4 @@ def test_autoencoder_anomaly_empty(run_dir) -> None:
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

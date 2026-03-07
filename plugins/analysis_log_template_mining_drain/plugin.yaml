@@ -7,8 +7,7 @@ depends_on: []
 settings:
   description: Extract log templates and rare patterns.
   defaults: {}
-capabilities:
-  - needs_eventlog
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

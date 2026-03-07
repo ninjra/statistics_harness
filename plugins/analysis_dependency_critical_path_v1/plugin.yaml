@@ -10,8 +10,7 @@ settings:
   description: Computes a dependency-chain depth proxy from parent/dependency ID columns.
   defaults:
     max_depth: 50
-capabilities:
-  - needs_categorical
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

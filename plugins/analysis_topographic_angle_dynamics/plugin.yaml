@@ -8,9 +8,7 @@ depends_on:
 settings:
   description: Topo/TDA addon pack plugin.
   defaults: {}
-capabilities:
-- needs_multi_numeric
-- needs_timestamp
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

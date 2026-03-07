@@ -16,6 +16,7 @@ from statistic_harness.core.report_v2_utils import (
 from statistic_harness.core.reporting.guardrails import (
     check_forbidden_slide_kit_columns,
     check_recommendation_dedupe_conflicts,
+    check_unclaimed_numbers,
     check_waterfall_reconciliation,
 )
 from statistic_harness.core.reporting.redaction import pseudonymize
@@ -253,11 +254,11 @@ class Plugin:
         )
         business_lines.append("Full detail: slide_kit/top_process_contributors.csv")
         business_lines.append("")
-        business_lines.append("## Recommendations (Top 10)")
+        business_lines.append("## Recommendations (Top 3)")
         summary_recs = []
         if isinstance(recs_payload, dict):
             summary_recs = recs_payload.get("summary_recommendations") or []
-        for idx, rec in enumerate(summary_recs[:10], start=1):
+        for idx, rec in enumerate(summary_recs[:3], start=1):
             target = rec.get("target") or ""
             evidence = rec.get("evidence") or []
             delta_hours = rec.get("delta_hours")
@@ -298,6 +299,37 @@ class Plugin:
         business_text = "\n".join(business_lines)
         if enable_redaction:
             business_text = pseudonymize(business_text)
+
+        # Wire ClaimRegistry: load traceability manifest claims and validate
+        # that every registered claim appears in the rendered business summary.
+        # Only register non-synthesized claims — synthesized stubs are local
+        # placeholders and should not trigger validation failures.
+        if trace_manifest_present and not synthesized_traceability:
+            claim_registry = ClaimRegistry()
+            for cid, claim_data in claims.items():
+                if not isinstance(claim_data, dict):
+                    continue
+                source = claim_data.get("source") or {}
+                claim_registry.register(Claim(
+                    claim_id=cid,
+                    label=claim_data.get("label") or source.get("measurement_type") or "unknown",
+                    summary_text=claim_data.get("summary_text") or "",
+                    value=None,
+                    unit="hours",
+                    population_scope="",
+                    source_plugin=source.get("plugin") or "",
+                    source_kind=source.get("kind") or "",
+                    measurement_type=source.get("measurement_type") or "",
+                    artifact_path=source.get("artifact_path") or "",
+                    render_targets=["business_summary"],
+                ))
+            for gv in check_unclaimed_numbers(claim_registry, business_text):
+                _record_contract_failure(
+                    contract_failures,
+                    failure_class="guardrail",
+                    code=gv.code,
+                    message=gv.message,
+                )
 
         business_path = ctx.run_dir / "business_summary.md"
         ctx.write_text(business_path, business_text)
@@ -456,18 +488,7 @@ class Plugin:
         # --- Guardrail checks ---
         slide_kit_dir = ctx.run_dir / "slide_kit"
 
-        waterfall_dict = None
-        if waterfall_rows:
-            waterfall_dict = waterfall_rows[0] if len(waterfall_rows) == 1 else None
-            # If multiple rows, look for a totals row
-            for wr in waterfall_rows:
-                if str(wr.get("label", "")).lower() in ("total", "totals", "all"):
-                    waterfall_dict = wr
-                    break
-            if waterfall_dict is None and waterfall_rows:
-                waterfall_dict = waterfall_rows[0]
-
-        for gv in check_waterfall_reconciliation(waterfall_dict):
+        for gv in check_waterfall_reconciliation(waterfall_rows):
             _record_contract_failure(
                 contract_failures,
                 failure_class="guardrail",

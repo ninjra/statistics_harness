@@ -9,8 +9,7 @@ depends_on:
 settings:
   description: Build decision waterfall summary for over-threshold wait.
   defaults: {}
-capabilities:
-  - needs_artifacts
+capabilities: [needs_numeric]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -13,8 +13,7 @@ settings:
     max_features: 10
     max_edges: 18
     top_k: 12
-capabilities:
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

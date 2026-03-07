@@ -20,4 +20,4 @@ def test_its_skips_short_series(run_dir):
     df = pd.DataFrame({"x": [1.0, 2.0, 3.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

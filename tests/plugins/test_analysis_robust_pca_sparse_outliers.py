@@ -28,4 +28,4 @@ def test_analysis_robust_pca_sparse_outliers_smoke(run_dir):
     df["ts"] = df["ts"].astype(str)
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped")
+    assert result.status in ("ok", "na")

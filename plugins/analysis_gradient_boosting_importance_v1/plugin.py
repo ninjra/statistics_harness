@@ -13,11 +13,11 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 2:
-                return PluginResult("skipped", "Need at least 2 numeric columns", {}, [], [], None)
+                return PluginResult("na", "Need at least 2 numeric columns", {}, [], [], None)
 
             # Use last numeric column as target, rest as features
             target_col = numeric_cols[-1]
@@ -25,7 +25,7 @@ class Plugin:
 
             work = df[feature_cols + [target_col]].dropna()
             if len(work) < 30:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             # Budget: cap rows
             max_rows = int(ctx.budget.get("row_limit") or 5000)

@@ -78,7 +78,7 @@ class Plugin:
 
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
@@ -87,7 +87,7 @@ class Plugin:
         group_cols = inferred.get("group_by") or []
 
         if len(value_cols) < 2:
-            return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
+            return PluginResult("na", "Not enough numeric columns", {}, [], [], None)
 
         if time_col and time_col in df.columns:
             df = df.sort_values(time_col)

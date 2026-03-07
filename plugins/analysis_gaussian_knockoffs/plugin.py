@@ -57,7 +57,7 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
             return PluginResult(
-                "skipped", "Not enough numeric columns", {}, [], [], None
+                "na", "Not enough numeric columns", {}, [], [], None
             )
         target_column = ctx.settings.get("target_column")
         target_columns = [target_column] if target_column else list(numeric.columns)

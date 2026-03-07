@@ -14,9 +14,7 @@ settings:
     n_clusters: 8
     max_items: 200
     top_k: 20
-capabilities:
-- needs_eventlog
-- needs_text
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

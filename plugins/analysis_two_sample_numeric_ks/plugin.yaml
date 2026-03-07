@@ -8,7 +8,7 @@ depends_on:
 settings:
   description: Auto-generated plugin skeleton.
   defaults: {}
-capabilities: []
+capabilities: [needs_numeric]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -91,5 +91,5 @@ def test_leftfield_plugins_smoke_no_error_no_skip(tmp_path, plugin_id: str) -> N
     plugin = mod.Plugin()
     ctx.settings = {}
     result = plugin.run(ctx)
-    assert result.status not in {"error", "skipped"}
+    assert result.status not in {"error", "na"}
     assert isinstance(result.metrics, dict)

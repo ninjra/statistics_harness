@@ -15,9 +15,7 @@ settings:
     target_index: 0
     min_env_rows: 100
     top_k: 10
-capabilities:
-- needs_numeric
-- needs_timestamp
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

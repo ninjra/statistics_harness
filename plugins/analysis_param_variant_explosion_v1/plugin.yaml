@@ -11,9 +11,7 @@ settings:
   defaults:
     min_runs: 200
     unique_ratio_trigger: 0.5
-capabilities:
-  - needs_text
-  - needs_categorical
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

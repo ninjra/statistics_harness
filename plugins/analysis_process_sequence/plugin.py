@@ -12,7 +12,7 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         case_col = None
         activity_col = None
@@ -50,7 +50,7 @@ class Plugin:
 
         if case_col is None or activity_col is None:
             return PluginResult(
-                "skipped",
+                "na",
                 "No event log columns detected",
                 {},
                 [],
@@ -84,7 +84,7 @@ class Plugin:
 
         if not sequences:
             return PluginResult(
-                "skipped",
+                "na",
                 "No sequences detected",
                 {},
                 [],

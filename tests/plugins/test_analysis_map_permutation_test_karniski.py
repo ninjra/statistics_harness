@@ -29,4 +29,4 @@ def test_analysis_map_permutation_test_karniski_smoke(run_dir):
     df["ts"] = df["ts"].astype(str)
     ctx = make_context(run_dir, df, {}, run_seed=1337)
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped", "degraded")
+    assert result.status in ("ok", "na", "degraded")

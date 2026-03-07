@@ -39,4 +39,4 @@ def test_fragility_skips_without_ebm_artifact(run_dir):
     df = pd.DataFrame({"a": [1.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

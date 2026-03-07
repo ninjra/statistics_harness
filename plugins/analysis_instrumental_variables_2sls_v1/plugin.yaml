@@ -4,8 +4,7 @@ version: "0.1.0"
 type: analysis
 entrypoint: "plugin.py:Plugin"
 depends_on: []
-capabilities:
-  - analysis
+capabilities: [needs_eventlog, needs_numeric]
 settings:
   description: "Two-stage least squares (IV-2SLS) for causal inference with instruments"
   defaults:
@@ -14,6 +13,8 @@ settings:
     endogenous_column: null
     instrument_column: null
     exogenous_columns: null
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

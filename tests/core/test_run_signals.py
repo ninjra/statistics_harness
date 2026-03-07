@@ -100,7 +100,7 @@ def test_skipped_plugins_excluded() -> None:
     results = [
         {
             "plugin_id": "plugin_e",
-            "status": "skipped",
+            "status": "na",
             "metrics": {"n_observations": 35},
             "budget": {"sampled": True},
             "debug": {},

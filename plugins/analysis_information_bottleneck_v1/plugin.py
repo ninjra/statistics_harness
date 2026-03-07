@@ -16,7 +16,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             target_col = settings.get("target_column")
@@ -25,7 +25,7 @@ class Plugin:
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Need at least 2 numeric columns, found {len(numeric_cols)}",
                     {}, [], [], None,
                 )
@@ -35,11 +35,11 @@ class Plugin:
 
             feature_cols = [c for c in numeric_cols if c != target_col]
             if not feature_cols:
-                return PluginResult("skipped", "No feature columns after excluding target", {}, [], [], None)
+                return PluginResult("na", "No feature columns after excluding target", {}, [], [], None)
 
             work = df[feature_cols + [target_col]].dropna()
             if len(work) < 10:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             X = work[feature_cols].values
             y = work[target_col].values
@@ -47,7 +47,7 @@ class Plugin:
             # Discretize target for MI computation
             n_bins = min(10, len(np.unique(y)))
             if n_bins < 2:
-                return PluginResult("skipped", "Target column has fewer than 2 unique values", {}, [], [], None)
+                return PluginResult("na", "Target column has fewer than 2 unique values", {}, [], [], None)
 
             kbd = KBinsDiscretizer(n_bins=n_bins, encode="ordinal", strategy="quantile")
             y_discrete = kbd.fit_transform(y.reshape(-1, 1)).ravel().astype(int)

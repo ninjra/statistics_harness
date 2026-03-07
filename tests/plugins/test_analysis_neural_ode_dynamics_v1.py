@@ -18,7 +18,7 @@ def test_neural_ode_smoke(run_dir) -> None:
     df = _time_series_df()
     ctx = make_context(run_dir, df, {"n_iters": 30}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped", "degraded")
+    assert result.status in ("ok", "na", "degraded")
     if result.status == "ok":
         assert "rmse" in result.metrics
         assert "mae" in result.metrics
@@ -31,4 +31,4 @@ def test_neural_ode_too_few_points(run_dir) -> None:
     df = pd.DataFrame({"a": pd.Series(list(range(10)), dtype=float)})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

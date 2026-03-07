@@ -36,7 +36,7 @@ class Plugin:
         busy_payload = load_artifact_json(ctx.run_dir, busy_path)
         if not busy_payload:
             return PluginResult(
-                "skipped",
+                "na",
                 "Missing busy period segmentation output",
                 {},
                 [],

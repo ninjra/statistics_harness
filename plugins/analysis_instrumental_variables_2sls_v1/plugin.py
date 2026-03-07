@@ -16,14 +16,14 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [
                 c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])
             ]
             if len(numeric_cols) < 3:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Need at least 3 numeric columns",
                     {},
                     [],
@@ -38,7 +38,7 @@ class Plugin:
 
             if not outcome_col or not endogenous_col or not instrument_col:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Requires outcome_column, endogenous_column, and instrument_column in settings",
                     {},
                     [],
@@ -50,7 +50,7 @@ class Plugin:
             for col in required:
                 if col not in df.columns:
                     return PluginResult(
-                        "skipped",
+                        "na",
                         f"Column '{col}' not found",
                         {},
                         [],
@@ -71,7 +71,7 @@ class Plugin:
             work = df[all_cols].dropna()
             if len(work) < 30:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient rows ({len(work)})",
                     {},
                     [],

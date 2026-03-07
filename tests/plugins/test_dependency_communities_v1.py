@@ -12,8 +12,8 @@ def test_dependency_communities_plugins_are_wired() -> None:
 
     res1 = Louvain().run(_StubCtx())
     res2 = Leiden().run(_StubCtx())
-    assert res1.status == "skipped"
-    assert res2.status == "skipped"
+    assert res1.status == "na"
+    assert res2.status == "na"
     assert "transform_normalize_mixed" in res1.summary
     assert "transform_normalize_mixed" in res2.summary
 

@@ -22,8 +22,7 @@ settings:
     ideaspace_parallelize_pair_min: 25
     ideaspace_parallelize_balance_trigger: 0.25
     ideaspace_prestage_min_count: 20
-capabilities:
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

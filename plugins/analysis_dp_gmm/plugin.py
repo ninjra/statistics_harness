@@ -20,13 +20,13 @@ class Plugin:
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.empty:
-            return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+            return PluginResult("na", "No numeric columns", {}, [], [], None)
 
         seed = int(getattr(ctx, "run_seed", 0) or 0)
         values = numeric.to_numpy(dtype=float)
         values = values[~np.isnan(values).any(axis=1)]
         if values.shape[0] < 5:
-            return PluginResult("skipped", "Too few rows after NaN removal", {}, [], [], None)
+            return PluginResult("na", "Too few rows after NaN removal", {}, [], [], None)
 
         if not HAS_SKLEARN:
             return PluginResult("degraded", "sklearn not available for DP-GMM", {}, [], [], None)

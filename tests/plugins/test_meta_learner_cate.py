@@ -17,7 +17,7 @@ def test_meta_learner_cate_smoke(run_dir):
     ctx = make_context(run_dir, df, {"treatment_column": "treatment", "outcome_column": "outcome"})
     result = Plugin().run(ctx)
     # econml may not be installed; accept ok or skipped
-    assert result.status in ("ok", "skipped")
+    assert result.status in ("ok", "na")
     if result.status == "ok":
         assert result.findings[0]["kind"] == "causal"
         assert result.findings[0]["measurement_type"] == "measured"
@@ -28,4 +28,4 @@ def test_meta_learner_cate_skips_empty_dataframe(run_dir):
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

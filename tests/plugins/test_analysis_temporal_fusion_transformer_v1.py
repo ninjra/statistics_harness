@@ -35,4 +35,4 @@ def test_temporal_fusion_transformer_skips_short_series(run_dir):
     df = pd.DataFrame({"value": [1.0, 2.0, 3.0]})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

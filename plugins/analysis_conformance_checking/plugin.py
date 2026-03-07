@@ -59,7 +59,7 @@ class Plugin:
 
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         roles = {}
         if ctx.dataset_version_id:
@@ -68,7 +68,7 @@ class Plugin:
 
         case_col, activity_col, timestamp_col = _infer_eventlog_columns(df, roles)
         if case_col is None or activity_col is None:
-            return PluginResult("skipped", "No event log columns detected", {}, [], [], None)
+            return PluginResult("na", "No event log columns detected", {}, [], [], None)
 
         work = df.copy().reset_index().rename(columns={"index": "row_index"})
         sort_cols = [case_col]
@@ -87,7 +87,7 @@ class Plugin:
                 transitions[(a, b)] += 1
 
         if not transitions:
-            return PluginResult("skipped", "No transitions detected", {}, [], [], None)
+            return PluginResult("na", "No transitions detected", {}, [], [], None)
 
         ordered = sorted(transitions.items(), key=lambda item: (-item[1], item[0]))
         max_variants = int(config["conformance"].get("max_variants", 20))

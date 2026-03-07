@@ -20,10 +20,10 @@ class Plugin:
         else:
             numeric = df.select_dtypes(include="number")
             if numeric.empty:
-                return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+                return PluginResult("na", "No numeric columns", {}, [], [], None)
             columns = list(numeric.columns)
         if not columns:
-            return PluginResult("skipped", "No value columns", {}, [], [], None)
+            return PluginResult("na", "No value columns", {}, [], [], None)
 
         max_rows = int(ctx.settings.get("max_rows", 5000))
         min_window = int(ctx.settings.get("min_window", 5))

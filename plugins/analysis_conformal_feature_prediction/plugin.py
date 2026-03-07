@@ -15,7 +15,7 @@ class Plugin:
             msg = str(exc)
             if "Eval disabled by policy" in msg:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Optional dependency blocked by policy (sklearn requires eval)",
                     {},
                     [],
@@ -24,7 +24,7 @@ class Plugin:
                     debug={"gating_reason": "policy_eval_disabled"},
                 )
             return PluginResult(
-                "skipped",
+                "na",
                 f"Optional dependency unavailable: {type(exc).__name__}",
                 {},
                 [],
@@ -35,11 +35,11 @@ class Plugin:
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.empty:
-            return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+            return PluginResult("na", "No numeric columns", {}, [], [], None)
         numeric = numeric.dropna(axis=0, how="any")
         if numeric.empty:
             return PluginResult(
-                "skipped", "No complete numeric rows", {"count": 0}, [], [], None
+                "na", "No complete numeric rows", {"count": 0}, [], [], None
             )
 
         seed = int(getattr(ctx, "run_seed", 0) or 0)
@@ -111,7 +111,7 @@ class Plugin:
 
         if not findings:
             return PluginResult(
-                "skipped",
+                "na",
                 "No anomalies detected",
                 {"count": 0},
                 [],

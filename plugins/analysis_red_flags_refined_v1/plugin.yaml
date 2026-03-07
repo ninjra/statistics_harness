@@ -17,8 +17,7 @@ settings:
     - Exempt
     max_p_value_for_timing_flag: 0.1
     min_effect_size_for_timing_flag: 0.5
-capabilities:
-- needs_cross_dataset
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

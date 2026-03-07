@@ -9,7 +9,9 @@ settings:
     Uses PySINDy to discover sparse governing equations from numeric
     state-variable columns. Reports discovered equations and coefficients.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

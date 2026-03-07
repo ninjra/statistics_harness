@@ -10,8 +10,7 @@ settings:
   description: Heuristic change detection on queue delay/duration time series to flag close-cycle drift.
   defaults:
     drift_ratio_trigger: 1.5
-capabilities:
-  - needs_time
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

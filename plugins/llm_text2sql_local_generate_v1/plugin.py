@@ -49,7 +49,7 @@ class Plugin:
         enabled = bool(ctx.settings.get("enabled", False))
         if not enabled:
             return PluginResult(
-                "skipped",
+                "na",
                 "Local text2sql generation disabled (set enabled=true for this plugin)",
                 metrics={},
                 findings=[],
@@ -110,7 +110,7 @@ class Plugin:
         if missing:
             # Bypassable: if models aren't present, skip cleanly.
             return PluginResult(
-                "skipped",
+                "na",
                 "Model dir(s) missing: " + ", ".join(missing),
                 metrics={"models_root": str(models_root)},
                 findings=[],
@@ -123,7 +123,7 @@ class Plugin:
             from vllm import LLM, SamplingParams  # type: ignore
         except Exception as exc:
             return PluginResult(
-                "skipped",
+                "na",
                 f"vLLM not available in this environment ({type(exc).__name__}: {exc})",
                 metrics={"model_dir": str(model_dir)},
                 findings=[],

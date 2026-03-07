@@ -13,7 +13,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             objective_col = settings.get("objective_column")
@@ -25,7 +25,7 @@ class Plugin:
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Need at least 2 numeric columns, found {len(numeric_cols)}",
                     {}, [], [], None,
                 )
@@ -36,11 +36,11 @@ class Plugin:
                 param_cols = [c for c in numeric_cols if c != objective_col]
 
             if not param_cols:
-                return PluginResult("skipped", "No parameter columns identified", {}, [], [], None)
+                return PluginResult("na", "No parameter columns identified", {}, [], [], None)
 
             work = df[param_cols + [objective_col]].dropna()
             if len(work) < 5:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             # Build parameter bounds from data
             pbounds = {}

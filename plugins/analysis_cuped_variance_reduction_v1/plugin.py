@@ -13,7 +13,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             pre_col = settings.get("pre_metric")
@@ -24,7 +24,7 @@ class Plugin:
                 numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
                 if len(numeric_cols) < 2:
                     return PluginResult(
-                        "skipped",
+                        "na",
                         "Need at least 2 numeric columns for CUPED (pre_metric, post_metric)",
                         {}, [], [], None,
                     )
@@ -35,17 +35,17 @@ class Plugin:
                     post_col = numeric_cols[1] if numeric_cols[1] != pre_col else numeric_cols[0]
                     if post_col == pre_col:
                         return PluginResult(
-                            "skipped",
+                            "na",
                             "pre_metric and post_metric must be different columns",
                             {}, [], [], None,
                         )
 
             if pre_col not in df.columns or post_col not in df.columns:
-                return PluginResult("skipped", f"Required columns missing: pre={pre_col}, post={post_col}", {}, [], [], None)
+                return PluginResult("na", f"Required columns missing: pre={pre_col}, post={post_col}", {}, [], [], None)
 
             work = df[[pre_col, post_col]].dropna()
             if len(work) < 10:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             pre = work[pre_col].values.astype(float)
             post = work[post_col].values.astype(float)
@@ -53,7 +53,7 @@ class Plugin:
             # CUPED: theta = Cov(post, pre) / Var(pre)
             var_pre = float(np.var(pre, ddof=1))
             if var_pre < 1e-15:
-                return PluginResult("skipped", "Pre-metric has zero variance", {}, [], [], None)
+                return PluginResult("na", "Pre-metric has zero variance", {}, [], [], None)
 
             cov_post_pre = float(np.cov(post, pre, ddof=1)[0, 1])
             theta = cov_post_pre / var_pre

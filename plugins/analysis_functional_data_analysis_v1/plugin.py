@@ -14,12 +14,12 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = df.select_dtypes(include="number").columns.tolist()
             if len(numeric_cols) < 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Need at least 2 numeric columns for functional data",
                     {}, [], [], None,
                 )
@@ -27,7 +27,7 @@ class Plugin:
             work = df[numeric_cols].dropna()
             if len(work) < 5:
                 return PluginResult(
-                    "skipped", f"Insufficient rows ({len(work)}) for FDA", {}, [], [], None,
+                    "na", f"Insufficient rows ({len(work)}) for FDA", {}, [], [], None,
                 )
 
             try:
@@ -36,7 +36,7 @@ class Plugin:
                 from skfda.exploratory.depth import ModifiedBandDepth
                 from skfda.exploratory.stats import mean as fda_mean, var as fda_var
             except ImportError:
-                return PluginResult("skipped", "skfda not installed", {}, [], [], None)
+                return PluginResult("na", "skfda not installed", {}, [], [], None)
 
             data_matrix = work.values.astype(float)
             grid_points = np.linspace(0, 1, data_matrix.shape[1])

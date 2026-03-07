@@ -10,7 +10,9 @@ settings:
     Reports demographic parity difference and equalized odds difference
     across a sensitive attribute column for a binary outcome.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

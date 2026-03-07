@@ -29,7 +29,7 @@ def test_analysis_one_class_svm_smoke(run_dir):
     df["ts"] = df["ts"].astype(str)
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped")
+    assert result.status in ("ok", "na")
 
 
 def test_analysis_one_class_svm_large_n_uses_deterministic_fallback(run_dir):

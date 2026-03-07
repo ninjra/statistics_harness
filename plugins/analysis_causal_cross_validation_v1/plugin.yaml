@@ -13,8 +13,9 @@ depends_on:
 settings:
   description: Cross-validates causal plugin results for sign and magnitude agreement.
   defaults: {}
-capabilities:
-  - diagnostic_only
+capabilities: [diagnostic_only, needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

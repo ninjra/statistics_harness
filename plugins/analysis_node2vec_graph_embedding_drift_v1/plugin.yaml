@@ -15,9 +15,7 @@ settings:
     walks_per_node: 16
     embedding_dim: 8
     top_k: 12
-capabilities:
-- needs_eventlog
-- needs_timestamp
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

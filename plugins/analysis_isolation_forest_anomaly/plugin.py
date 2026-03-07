@@ -54,7 +54,7 @@ class Plugin:
 
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
@@ -63,12 +63,12 @@ class Plugin:
         process_col = group_cols[0] if group_cols else None
 
         if len(value_cols) < 2:
-            return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
+            return PluginResult("na", "Not enough numeric columns", {}, [], [], None)
 
         numeric_df = df[value_cols].dropna()
         matrix = numeric_df.to_numpy(dtype=float)
         if matrix.size == 0:
-            return PluginResult("skipped", "No numeric data after filtering", {}, [], [], None)
+            return PluginResult("na", "No numeric data after filtering", {}, [], [], None)
 
         cfg = config["iforest"]
         sample_size = int(cfg.get("sample_size", 10000))

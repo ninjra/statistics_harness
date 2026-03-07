@@ -15,9 +15,7 @@ settings:
     min_cluster_size: 10
     min_samples: 5
     top_k: 20
-capabilities:
-- needs_eventlog
-- needs_text
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

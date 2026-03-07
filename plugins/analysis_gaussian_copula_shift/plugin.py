@@ -15,7 +15,7 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
             return PluginResult(
-                "skipped", "Not enough numeric columns", {}, [], [], None
+                "na", "Not enough numeric columns", {}, [], [], None
             )
         values = numeric.to_numpy()
         n = values.shape[0]
@@ -31,7 +31,7 @@ class Plugin:
         split = n // 2
         if split == 0:
             return PluginResult(
-                "skipped", "Not enough rows for split", {}, [], [], None
+                "na", "Not enough rows for split", {}, [], [], None
             )
         first = values[:split]
         second = values[split:]

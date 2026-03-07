@@ -11,9 +11,7 @@ settings:
   defaults:
     min_runs: 200
     min_retry_rate: 0.05
-capabilities:
-  - needs_numeric
-  - needs_categorical
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

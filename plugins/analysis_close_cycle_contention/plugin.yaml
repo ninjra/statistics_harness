@@ -40,9 +40,7 @@ settings:
     priority_min_close_runs: 10
     priority_min_modeled_pct: 0.05
     priority_window_gain_ratio: 1.25
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -51,14 +51,14 @@ class Plugin:
 
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
         text_cols = inferred.get("text_columns") or []
 
         if not text_cols:
-            return PluginResult("skipped", "No text/log columns detected", {}, [], [], None)
+            return PluginResult("na", "No text/log columns detected", {}, [], [], None)
 
         privacy = config.get("privacy") if isinstance(config.get("privacy"), dict) else {}
         redactor = build_redactor(privacy)
@@ -80,7 +80,7 @@ class Plugin:
                     entry["examples"].append(redactor(value)[:120])
 
         if not templates:
-            return PluginResult("skipped", "No templates extracted", {}, [], [], None)
+            return PluginResult("na", "No templates extracted", {}, [], [], None)
 
         ordered = sorted(templates.items(), key=lambda item: (-item[1]["count"], item[0]))
         max_templates = int(config["log_templates"].get("max_templates", 50))

@@ -7,7 +7,9 @@ depends_on: []
 settings:
   description: Sharp regression discontinuity design using rdrobust or OLS fallback.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

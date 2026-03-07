@@ -96,10 +96,10 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         loader = getattr(ctx, "dataset_loader", None)
         if not callable(loader):
-            return PluginResult("skipped", "dataset_loader unavailable", {}, [], [], None)
+            return PluginResult("na", "dataset_loader unavailable", {}, [], [], None)
         df = loader()
         if df is None or len(df) == 0:
-            return PluginResult("skipped", "Empty dataset", {"rows": 0}, [], [], None)
+            return PluginResult("na", "Empty dataset", {"rows": 0}, [], [], None)
 
         t_col = ctx.settings.get("treatment_column")
         y_col = ctx.settings.get("outcome_column")
@@ -109,7 +109,7 @@ class Plugin:
             y_col = y_col if isinstance(y_col, str) and y_col in df.columns else y_guess
         if not t_col or not y_col:
             return PluginResult(
-                "skipped",
+                "na",
                 "Need treatment and outcome numeric columns",
                 {"rows": int(len(df)), "columns": int(len(df.columns))},
                 [], [], None,
@@ -122,7 +122,7 @@ class Plugin:
         y = y[valid]
         if len(t) < 8:
             return PluginResult(
-                "skipped",
+                "na",
                 "Not enough valid rows for causal approximation",
                 {"rows_used": int(len(t))},
                 [], [], None,

@@ -388,7 +388,7 @@ def _ideaspace_normative_gap(
     )
     if not has_process_signal or not has_time_signal:
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="Missing required process/time columns for ideaspace gap analysis",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -420,7 +420,7 @@ def _ideaspace_normative_gap(
 
     if not entities:
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="No entities",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -727,7 +727,7 @@ def _ideaspace_action_planner(
             "target": None,
         }
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="No actionable levers triggered under evidence gates",
             metrics=_basic_metrics(df, sample_meta),
             findings=[finding],
@@ -972,7 +972,7 @@ def _ideaspace_energy_ebm_v1(
 
     if not entities:
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="No entities",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -1290,7 +1290,7 @@ def _ebm_action_verifier_v1(
     energy_path = ctx.run_dir / "artifacts" / "analysis_ideaspace_energy_ebm_v1" / "energy_state_vector.json"
     if not action_path.exists() or not energy_path.exists():
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="Missing prerequisites (action planner and/or energy artifacts)",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -1313,7 +1313,7 @@ def _ebm_action_verifier_v1(
         energy = {}
     if not isinstance(actions, list) or not isinstance(energy, dict):
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="Invalid prerequisites (action planner and/or energy artifacts)",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -1328,7 +1328,7 @@ def _ebm_action_verifier_v1(
     weights_f = _default_energy_weights(weights)
     if not isinstance(entities, list) or not entities:
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="No energy entities to score",
             metrics=_basic_metrics(df, sample_meta),
             findings=[],
@@ -1690,7 +1690,7 @@ def _ebm_action_verifier_v1(
     if not verified:
         summary = "No actions to verify"
     return PluginResult(
-        status="ok" if verified else "skipped",
+        status="ok" if verified else "na",
         summary=summary,
         metrics=_basic_metrics(df, sample_meta),
         findings=findings,

@@ -15,7 +15,7 @@ class Plugin:
         try:
             vector_path = ctx.run_dir / "artifacts" / "analysis_ideaspace_energy_ebm_v1" / "energy_state_vector.json"
             if not vector_path.exists():
-                return PluginResult("skipped", "No energy state vector found", {}, [], [], None)
+                return PluginResult("na", "No energy state vector found", {}, [], [], None)
 
             with open(vector_path) as f:
                 state = json.load(f)
@@ -26,7 +26,7 @@ class Plugin:
             # Need at least 2 non-ALL entities to compare
             comparable = [e for e in entities if e.get("entity_key") != "ALL"]
             if len(comparable) < 2 or not energy_keys:
-                return PluginResult("skipped", "Need at least 2 non-ALL entities", {}, [], [], None)
+                return PluginResult("na", "Need at least 2 non-ALL entities", {}, [], [], None)
 
             findings = []
             # Compare each pair: find entities similar on most metrics but differing on one
@@ -100,7 +100,7 @@ class Plugin:
                     })
 
             if not findings:
-                return PluginResult("skipped", "No transfer opportunities found", {}, [], [], None)
+                return PluginResult("na", "No transfer opportunities found", {}, [], [], None)
 
             # Sort by magnitude of difference
             findings.sort(key=lambda f: abs(f["source_value"] - f["target_value"]), reverse=True)

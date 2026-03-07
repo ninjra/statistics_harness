@@ -14,7 +14,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             group_col = settings.get("group_column")
@@ -40,7 +40,7 @@ class Plugin:
 
             if not group_col or not outcome_col:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Could not identify a group column and a binary outcome column",
                     {}, [], [], None,
                 )
@@ -49,7 +49,7 @@ class Plugin:
             work[outcome_col] = work[outcome_col].astype(float)
             arms = work[group_col].unique()
             if len(arms) < 2:
-                return PluginResult("skipped", f"Need >=2 arms, found {len(arms)}", {}, [], [], None)
+                return PluginResult("na", f"Need >=2 arms, found {len(arms)}", {}, [], [], None)
 
             # Compute posterior Beta(successes+1, failures+1) for each arm
             arm_stats = {}

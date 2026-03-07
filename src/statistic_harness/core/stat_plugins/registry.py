@@ -196,7 +196,7 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
     df = ctx.dataset_loader()
     if df is None or df.empty:
         return PluginResult(
-            status="skipped",
+            status="na",
             summary="Empty dataset",
             metrics={"rows_seen": 0, "rows_used": 0, "cols_used": 0},
             findings=[],
@@ -331,7 +331,7 @@ def run_plugin(plugin_id: str, ctx) -> PluginResult:
         budget = {}
     if budget:
         result.budget = {**budget, **(result.budget or {})}
-    if result.status in {"skipped", "degraded"}:
+    if result.status in {"na", "skipped", "degraded"}:
         # Cross-cutting contract: when a plugin is not fully applicable, callers
         # should have a structured reason to display without parsing the summary.
         result.debug.setdefault("gating_reason", result.summary)
@@ -532,10 +532,10 @@ def _local_outlier_factor(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 20:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
     max_rows_for_lof = int(config.get("max_rows_for_lof", 50000))
     use_lof = (
@@ -598,10 +598,10 @@ def _one_class_svm_plugin(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 20:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     # OCSVM can explode in CPU/RAM on large N due kernel complexity.
     # For large matrices, use deterministic robust-z fallback to keep the full gauntlet stable.
     max_rows_for_ocsvm = int(config.get("max_rows_for_ocsvm", 50000))
@@ -664,10 +664,10 @@ def _robust_covariance_outliers(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 10)))
     if X.size == 0 or X.shape[0] < 20:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     if HAS_SKLEARN and EmpiricalCovariance is not None:
         cov = EmpiricalCovariance().fit(X)
         scores = cov.mahalanobis(X)
@@ -711,7 +711,7 @@ def _evt_gumbel_tail(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=5)
     if not numeric_cols or not HAS_SCIPY:
-        return PluginResult("skipped", "No numeric columns or scipy missing", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns or scipy missing", _basic_metrics(df, sample_meta), [], [], None)
     findings: list[dict[str, Any]] = []
     for col in numeric_cols:
         series = df[col].dropna().to_numpy(dtype=float)
@@ -757,7 +757,7 @@ def _evt_peaks_over_threshold(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=5)
     if not numeric_cols or not HAS_SCIPY:
-        return PluginResult("skipped", "No numeric columns or scipy missing", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns or scipy missing", _basic_metrics(df, sample_meta), [], [], None)
     findings: list[dict[str, Any]] = []
     for col in numeric_cols:
         series = df[col].dropna().to_numpy(dtype=float)
@@ -801,15 +801,15 @@ def _matrix_profile_discords(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 50:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     max_points = min(series.size, 2000)
     series = series[:max_points]
     m = max(10, int(len(series) * 0.05))
     if len(series) <= m * 2:
-        return PluginResult("skipped", "Series too short for motifs", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Series too short for motifs", _basic_metrics(df, sample_meta), [], [], None)
     windows = np.lib.stride_tricks.sliding_window_view(series, m)
     window_norm = (windows - windows.mean(axis=1, keepdims=True)) / (windows.std(axis=1, keepdims=True) + 1e-6)
     # naive nearest-neighbor distance
@@ -821,7 +821,7 @@ def _matrix_profile_discords(
         dists[idx] = np.inf
         distances.append(float(np.min(dists)))
     if not distances:
-        return PluginResult("skipped", "No motif distances computed", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No motif distances computed", _basic_metrics(df, sample_meta), [], [], None)
     discord_idx = int(np.argmax(distances))
     evidence = {"metrics": {"discord_distance": float(np.max(distances)), "window": m, "index": discord_idx}}
     finding = _make_finding(
@@ -853,11 +853,11 @@ def _burst_detection(
     time_col = inferred.get("time_column")
     text_cols = inferred.get("text_columns") or []
     if not time_col or not text_cols:
-        return PluginResult("skipped", "Need time + text columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need time + text columns", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     bucket = pd.to_datetime(df[time_col], errors="coerce").dt.floor("D")
     if bucket.isna().all():
-        return PluginResult("skipped", "Time column unparseable", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Time column unparseable", _basic_metrics(df, sample_meta), [], [], None)
     df = df.assign(_bucket=bucket)
     privacy = config.get("privacy", {})
     max_ex = int(privacy.get("max_exemplars", 3))
@@ -970,13 +970,13 @@ def _event_count_bocpd_poisson(
 ) -> PluginResult:
     time_col = inferred.get("time_column")
     if not time_col:
-        return PluginResult("skipped", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     bucket = pd.to_datetime(df[time_col], errors="coerce").dt.floor("D")
     df = df.assign(_bucket=bucket)
     counts = df.groupby("_bucket").size()
     if counts.size < 10:
-        return PluginResult("skipped", "Insufficient time buckets", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient time buckets", _basic_metrics(df, sample_meta), [], [], None)
     data = counts.to_numpy(dtype=float)
     hazard_lambda = float(config.get("bocpd", {}).get("hazard_lambda", 200.0))
     cp_threshold = float(config.get("bocpd", {}).get("threshold", 0.5))
@@ -1018,13 +1018,13 @@ def _hawkes_self_exciting(
 ) -> PluginResult:
     time_col = inferred.get("time_column")
     if not time_col:
-        return PluginResult("skipped", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
     times = pd.to_datetime(df[time_col], errors="coerce").dropna().sort_values()
     if times.size < 50:
-        return PluginResult("skipped", "Insufficient events", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient events", _basic_metrics(df, sample_meta), [], [], None)
     deltas = times.diff().dropna().dt.total_seconds().to_numpy()
     if deltas.size == 0:
-        return PluginResult("skipped", "No inter-arrival times", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No inter-arrival times", _basic_metrics(df, sample_meta), [], [], None)
     mean = float(np.mean(deltas))
     std = float(np.std(deltas))
     cv = float(std / (mean + 1e-6))
@@ -1054,16 +1054,16 @@ def _periodicity_spectral_scan(
 ) -> PluginResult:
     time_col = inferred.get("time_column")
     if not time_col:
-        return PluginResult("skipped", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No time column detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     bucket = pd.to_datetime(df[time_col], errors="coerce").dt.floor("D")
     counts = bucket.value_counts().sort_index()
     if counts.size < 10:
-        return PluginResult("skipped", "Insufficient time buckets", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient time buckets", _basic_metrics(df, sample_meta), [], [], None)
     series = counts.to_numpy(dtype=float)
     spectrum = np.abs(np.fft.rfft(series - np.mean(series)))
     if spectrum.size <= 1:
-        return PluginResult("skipped", "No spectral components", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No spectral components", _basic_metrics(df, sample_meta), [], [], None)
     peak_idx = int(np.argmax(spectrum[1:]) + 1)
     peak = float(spectrum[peak_idx])
     median = float(np.median(spectrum[1:]))
@@ -1094,10 +1094,10 @@ def _kalman_residuals(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 50:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     q = 1e-3
     r = np.var(series) * 0.1 if np.var(series) > 0 else 1.0
     x = series[0]
@@ -1151,7 +1151,7 @@ def _multivariate_t2_control(
     numeric_cols = inferred.get("numeric_columns") or []
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     mu = np.mean(X, axis=0)
     cov = _covariance_matrix(X)
     inv = np.linalg.pinv(cov)
@@ -1186,7 +1186,7 @@ def _multivariate_ewma_control(
     numeric_cols = inferred.get("numeric_columns") or []
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     lam = float(config.get("mv_control", {}).get("mewma_lambda", 0.2))
     mu = np.mean(X, axis=0)
     z = np.zeros_like(mu)
@@ -1227,7 +1227,7 @@ def _pca_control_chart(
     numeric_cols = inferred.get("numeric_columns") or []
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     n = X.shape[0]
     baseline_n = max(10, int(n * 0.3))
     base = X[:baseline_n]
@@ -1301,10 +1301,10 @@ def _changepoint_pelt(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 100:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     max_points = int(config.get("pelt", {}).get("max_points", 20000))
     series = series[:max_points]
     min_size = int(config.get("pelt", {}).get("min_segment_size", 50))
@@ -1360,10 +1360,10 @@ def _changepoint_energy_edivisive(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 100:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     max_points = min(series.size, 2000)
     series = series[:max_points]
     best_stat = 0.0
@@ -1475,10 +1475,10 @@ def _drift_adwin(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 100:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
 
     adwin_delta = float(config.get("adwin", {}).get("delta", 0.002))
     drift_points = _adwin_detect(series, delta=adwin_delta)
@@ -1577,7 +1577,7 @@ def _markov_transition_shift(
     case_cols = inferred.get("id_like_columns") or []
     case_col = case_cols[0] if case_cols else None
     if not event_col:
-        return PluginResult("skipped", "No event column detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No event column detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     def _transition_matrix(frame: pd.DataFrame) -> dict[tuple[str, str], int]:
@@ -1632,7 +1632,7 @@ def _sequential_patterns_prefixspan(
     case_cols = inferred.get("id_like_columns") or []
     case_col = case_cols[0] if case_cols else None
     if not event_col:
-        return PluginResult("skipped", "No event column detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No event column detected", _basic_metrics(df, sample_meta), [], [], None)
     seqs = _build_sequences(df, event_col, time_col, case_col)
     counts: dict[tuple[str, ...], int] = {}
     for seq in seqs:
@@ -1674,7 +1674,7 @@ def _hmm_latent_state_sequences(
     numeric_cols = inferred.get("numeric_columns") or []
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 5)))
     if X.size == 0 or X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     k = min(4, X.shape[0])
     if HAS_SKLEARN and KMeans is not None:
         model = KMeans(n_clusters=k, n_init=5, random_state=int(config.get("seed", 1337)))
@@ -1712,7 +1712,7 @@ def _dependency_graph_change_detection(
     numeric_cols = inferred.get("numeric_columns") or []
     time_col = inferred.get("time_column")
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     def _corr(frame: pd.DataFrame) -> np.ndarray:
         return frame[numeric_cols].corr().fillna(0.0).to_numpy()
@@ -1748,7 +1748,7 @@ def _graphical_lasso_dependency_network(
     numeric_cols = inferred.get("numeric_columns") or []
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.size == 0 or X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     if X.shape[0] > int(config.get("max_rows_for_covariance", 20000)):
         step = int(math.ceil(float(X.shape[0]) / float(config.get("max_rows_for_covariance", 20000))))
         X = X[:: max(1, step), :]
@@ -1840,7 +1840,7 @@ def _mutual_information_screen(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
     max_cols = min(6, len(numeric_cols))
     cols = numeric_cols[:max_cols]
     scores = []
@@ -1889,7 +1889,7 @@ def _transfer_entropy_directional(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
     cols = numeric_cols[:5]
     top: list[tuple[float, str, str]] = []
     for i, col_a in enumerate(cols):
@@ -1934,14 +1934,14 @@ def _lagged_predictability_test(
 ) -> PluginResult:
     numeric_cols = _top_numeric_columns(df, inferred.get("numeric_columns") or [], max_cols=1)
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     series = df[numeric_cols[0]].dropna().to_numpy(dtype=float)
     if series.size < 10:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     x = series[:-1]
     y = series[1:]
     if x.size == 0:
-        return PluginResult("skipped", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient series length", _basic_metrics(df, sample_meta), [], [], None)
     corr = float(np.corrcoef(x, y)[0, 1])
     evidence = {"metrics": {"lag1_corr": corr}}
     finding = _make_finding(
@@ -1970,7 +1970,7 @@ def _copula_dependence(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need at least two numeric columns", _basic_metrics(df, sample_meta), [], [], None)
     cols = numeric_cols[:5]
     top: list[tuple[float, str, str]] = []
     for i, col_a in enumerate(cols):
@@ -2054,10 +2054,10 @@ def _conformance_alignments(
     case_cols = inferred.get("id_like_columns") or []
     case_col = case_cols[0] if case_cols else None
     if not event_col or not case_col:
-        return PluginResult("skipped", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
     seqs = _build_sequences(df, event_col, time_col, case_col)
     if not seqs:
-        return PluginResult("skipped", "No sequences detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No sequences detected", _basic_metrics(df, sample_meta), [], [], None)
     max_sequences = int(config.get("max_sequences", 3000))
     max_variant_length = int(config.get("max_variant_length", 80))
     max_edit_cells = int(config.get("max_edit_cells", 25000))
@@ -2114,7 +2114,7 @@ def _process_drift_conformance_over_time(
     case_cols = inferred.get("id_like_columns") or []
     case_col = case_cols[0] if case_cols else None
     if not event_col or not case_col:
-        return PluginResult("skipped", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     max_variant_length = int(config.get("max_variant_length", 80))
 
@@ -2158,7 +2158,7 @@ def _variant_differential(
     case_cols = inferred.get("id_like_columns") or []
     case_col = case_cols[0] if case_cols else None
     if not event_col or not case_col:
-        return PluginResult("skipped", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need event + case id columns", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     max_variant_length = int(config.get("max_variant_length", 80))
 
@@ -2215,10 +2215,10 @@ def _template_drift_two_sample(
     text_cols = inferred.get("text_columns") or []
     time_col = inferred.get("time_column")
     if not text_cols:
-        return PluginResult("skipped", "No text columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No text columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for template drift", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for template drift", _basic_metrics(df, sample_meta), [], [], None)
     col = text_cols[0]
     privacy = config.get("privacy", {})
     def _counts(frame: pd.DataFrame) -> dict[str, int]:
@@ -2264,7 +2264,7 @@ def _message_entropy_drift(
     text_cols = inferred.get("text_columns") or []
     time_col = inferred.get("time_column")
     if not text_cols or not time_col:
-        return PluginResult("skipped", "Need text + time columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need text + time columns", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     col = text_cols[0]
     privacy = config.get("privacy", {})
@@ -2311,19 +2311,19 @@ def _topic_model_lda(
 ) -> PluginResult:
     text_cols = inferred.get("text_columns") or []
     if not text_cols:
-        return PluginResult("skipped", "No text columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No text columns detected", _basic_metrics(df, sample_meta), [], [], None)
     col = text_cols[0]
     docs = df[col].dropna().astype(str).head(2000).tolist()
     privacy = config.get("privacy", {})
     docs = [build_redactor(privacy)(doc) for doc in docs]
     if not docs:
-        return PluginResult("skipped", "No text samples", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No text samples", _basic_metrics(df, sample_meta), [], [], None)
     topics = []
     if HAS_SKLEARN and CountVectorizer is not None and LatentDirichletAllocation is not None:
         vectorizer = CountVectorizer(max_features=500, stop_words="english")
         X = vectorizer.fit_transform(docs)
         if X.shape[1] == 0:
-            return PluginResult("skipped", "No vocabulary for LDA", _basic_metrics(df, sample_meta), [], [], None)
+            return PluginResult("na", "No vocabulary for LDA", _basic_metrics(df, sample_meta), [], [], None)
         lda = LatentDirichletAllocation(n_components=3, random_state=int(config.get("seed", 1337)))
         lda.fit(X)
         terms = np.array(vectorizer.get_feature_names_out())
@@ -2364,7 +2364,7 @@ def _term_burst_kleinberg(
     text_cols = inferred.get("text_columns") or []
     time_col = inferred.get("time_column")
     if not text_cols or not time_col:
-        return PluginResult("skipped", "Need text + time columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need text + time columns", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     col = text_cols[0]
     bucket = pd.to_datetime(df[time_col], errors="coerce").dt.floor("D")
@@ -2460,11 +2460,11 @@ def _survival_kaplan_meier(
 ) -> PluginResult:
     duration_cols = _duration_columns(inferred, df)
     if not duration_cols:
-        return PluginResult("skipped", "No duration columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No duration columns detected", _basic_metrics(df, sample_meta), [], [], None)
     col = duration_cols[0]
     durations = df[col].dropna().to_numpy(dtype=float)
     if durations.size < 30:
-        return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
 
     event_flags = _detect_censoring(df, inferred)
     if event_flags is not None:
@@ -2542,12 +2542,12 @@ def _proportional_hazards_duration(
     duration_cols = _duration_columns(inferred, df)
     group_cols = inferred.get("group_by") or []
     if not duration_cols or not group_cols:
-        return PluginResult("skipped", "Need duration + group columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need duration + group columns", _basic_metrics(df, sample_meta), [], [], None)
     col = duration_cols[0]
     group_col = group_cols[0]
     groups = df[group_col].dropna().astype(str)
     if groups.nunique() < 2:
-        return PluginResult("skipped", "Insufficient group variety", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient group variety", _basic_metrics(df, sample_meta), [], [], None)
 
     event_flags = _detect_censoring(df, inferred)
 
@@ -2595,7 +2595,7 @@ def _proportional_hazards_duration(
         left = df.loc[groups == top_group, col].dropna().to_numpy(dtype=float)
         right = df.loc[groups != top_group, col].dropna().to_numpy(dtype=float)
         if left.size == 0 or right.size == 0:
-            return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
+            return PluginResult("na", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
         ratio = float(np.median(left) / (np.median(right) + 1e-6))
         hazard_ratios = [{"covariate": top_group, "hazard_ratio": round(ratio, 4), "p_value": None, "ci_95_lower": None, "ci_95_upper": None}]
         concordance = None
@@ -2632,17 +2632,17 @@ def _quantile_regression_duration(
     duration_cols = _duration_columns(inferred, df)
     group_cols = inferred.get("group_by") or []
     if not duration_cols or not group_cols:
-        return PluginResult("skipped", "Need duration + group columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need duration + group columns", _basic_metrics(df, sample_meta), [], [], None)
     col = duration_cols[0]
     group_col = group_cols[0]
     groups = df[group_col].dropna().astype(str)
     if groups.nunique() < 2:
-        return PluginResult("skipped", "Insufficient group variety", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient group variety", _basic_metrics(df, sample_meta), [], [], None)
     top_group = groups.value_counts().index[0]
     left = df.loc[groups == top_group, col].dropna().to_numpy(dtype=float)
     right = df.loc[groups != top_group, col].dropna().to_numpy(dtype=float)
     if left.size == 0 or right.size == 0:
-        return PluginResult("skipped", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient duration data", _basic_metrics(df, sample_meta), [], [], None)
     q_left = float(np.quantile(left, 0.9))
     q_right = float(np.quantile(right, 0.9))
     delta = q_left - q_right
@@ -2674,14 +2674,14 @@ def _queue_model_fit(
     time_col = inferred.get("time_column")
     duration_cols = _duration_columns(inferred, df)
     if not time_col or not duration_cols:
-        return PluginResult("skipped", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
     times = pd.to_datetime(df[time_col], errors="coerce").dropna().sort_values()
     if times.size < 20:
-        return PluginResult("skipped", "Insufficient timestamps", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient timestamps", _basic_metrics(df, sample_meta), [], [], None)
     inter_arrivals = times.diff().dropna().dt.total_seconds().to_numpy()
     service = df[duration_cols[0]].dropna().to_numpy(dtype=float)
     if inter_arrivals.size == 0 or service.size == 0:
-        return PluginResult("skipped", "Insufficient arrival/service data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient arrival/service data", _basic_metrics(df, sample_meta), [], [], None)
     lam = 1.0 / (np.mean(inter_arrivals) + 1e-6)
     mu = 1.0 / (np.mean(service) + 1e-6)
     rho = lam / mu if mu > 0 else 0.0
@@ -2720,12 +2720,12 @@ def _littles_law_consistency(
     time_col = inferred.get("time_column")
     duration_cols = _duration_columns(inferred, df)
     if not time_col or not duration_cols:
-        return PluginResult("skipped", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
     times = pd.to_datetime(df[time_col], errors="coerce").dropna().sort_values()
     inter_arrivals = times.diff().dropna().dt.total_seconds().to_numpy()
     wait = df[duration_cols[0]].dropna().to_numpy(dtype=float)
     if inter_arrivals.size == 0 or wait.size == 0:
-        return PluginResult("skipped", "Insufficient data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data", _basic_metrics(df, sample_meta), [], [], None)
     lam = 1.0 / (np.mean(inter_arrivals) + 1e-6)
     W = float(np.mean(wait))
     L_est = lam * W
@@ -2760,12 +2760,12 @@ def _kingman_vut_approx(
     time_col = inferred.get("time_column")
     duration_cols = _duration_columns(inferred, df)
     if not time_col or not duration_cols:
-        return PluginResult("skipped", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need time + duration columns", _basic_metrics(df, sample_meta), [], [], None)
     times = pd.to_datetime(df[time_col], errors="coerce").dropna().sort_values()
     inter_arrivals = times.diff().dropna().dt.total_seconds().to_numpy()
     service = df[duration_cols[0]].dropna().to_numpy(dtype=float)
     if inter_arrivals.size == 0 or service.size == 0:
-        return PluginResult("skipped", "Insufficient data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data", _basic_metrics(df, sample_meta), [], [], None)
     ca2 = float(np.var(inter_arrivals) / (np.mean(inter_arrivals) ** 2 + 1e-6))
     cs2 = float(np.var(service) / (np.mean(service) ** 2 + 1e-6))
     lam = 1.0 / (np.mean(inter_arrivals) + 1e-6)
@@ -2802,7 +2802,7 @@ def _control_chart_individuals(
     time_col = inferred.get("time_column")
     group_cols = inferred.get("group_by") or []
     if not value_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     max_groups = int(config.get("max_groups", 30))
     max_findings = int(config.get("max_findings", 30))
@@ -2862,7 +2862,7 @@ def _control_chart_ewma(
     time_col = inferred.get("time_column")
     group_cols = inferred.get("group_by") or []
     if not value_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     max_groups = int(config.get("max_groups", 30))
     max_findings = int(config.get("max_findings", 30))
@@ -2930,7 +2930,7 @@ def _control_chart_cusum(
     time_col = inferred.get("time_column")
     group_cols = inferred.get("group_by") or []
     if not value_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     df = _sort_by_time(df, time_col)
     max_groups = int(config.get("max_groups", 30))
     max_findings = int(config.get("max_findings", 30))
@@ -3015,10 +3015,10 @@ def _two_sample_numeric_plugin(
     numeric_cols = inferred.get("numeric_columns") or []
     time_col = inferred.get("time_column")
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for two-sample comparison", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for two-sample comparison", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
     findings: list[dict[str, Any]] = []
     scored: list[tuple[float, dict[str, Any]]] = []
@@ -3064,10 +3064,10 @@ def _two_sample_categorical_chi2(
     cat_cols = inferred.get("categorical_columns") or []
     time_col = inferred.get("time_column")
     if not cat_cols:
-        return PluginResult("skipped", "No categorical columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No categorical columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for categorical comparison", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for categorical comparison", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
     scored: list[tuple[float, dict[str, Any]]] = []
     for col in cat_cols:
@@ -3126,17 +3126,17 @@ def _kernel_two_sample_mmd(
     numeric_cols = inferred.get("numeric_columns") or []
     time_col = inferred.get("time_column")
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for MMD", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for MMD", _basic_metrics(df, sample_meta), [], [], None)
     X = left_df[numeric_cols].to_numpy(dtype=float)
     Y = right_df[numeric_cols].to_numpy(dtype=float)
     max_points = min(1000, X.shape[0], Y.shape[0])
     X = X[:max_points]
     Y = Y[:max_points]
     if X.size == 0 or Y.size == 0:
-        return PluginResult("skipped", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient numeric data", _basic_metrics(df, sample_meta), [], [], None)
     X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
     Y = np.nan_to_num(Y, nan=0.0, posinf=0.0, neginf=0.0)
     clip_abs = float(config.get("mmd_clip_abs", 1e6))
@@ -3226,7 +3226,7 @@ def _effect_size_report(
     numeric_cols = inferred.get("numeric_columns") or []
     group_cols = inferred.get("group_by") or []
     if not numeric_cols or not group_cols:
-        return PluginResult("skipped", "Need numeric + group columns", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Need numeric + group columns", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
     findings: list[dict[str, Any]] = []
     for group_col in group_cols:
@@ -3285,10 +3285,10 @@ def _multiple_testing_fdr(
     numeric_cols = inferred.get("numeric_columns") or []
     time_col = inferred.get("time_column")
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for FDR screening", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for FDR screening", _basic_metrics(df, sample_meta), [], [], None)
     pvals: list[float] = []
     stats: list[float] = []
     for col in numeric_cols:
@@ -3302,7 +3302,7 @@ def _multiple_testing_fdr(
         pvals.append(float(p))
         stats.append(float(stat))
     if not pvals:
-        return PluginResult("skipped", "No p-values computed", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No p-values computed", _basic_metrics(df, sample_meta), [], [], None)
     qvals, _ = bh_fdr(pvals)
     findings = []
     for col, p, q, stat in zip(numeric_cols, pvals, qvals, stats):
@@ -3340,10 +3340,10 @@ def _change_impact_pre_post(
     numeric_cols = inferred.get("numeric_columns") or []
     time_col = inferred.get("time_column")
     if not numeric_cols:
-        return PluginResult("skipped", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No numeric columns detected", _basic_metrics(df, sample_meta), [], [], None)
     left_df, right_df = _split_pre_post(df, time_col, fraction=0.5)
     if left_df.empty or right_df.empty:
-        return PluginResult("skipped", "Insufficient data for pre/post impact", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for pre/post impact", _basic_metrics(df, sample_meta), [], [], None)
     max_findings = int(config.get("max_findings", 30))
     scored: list[tuple[float, dict[str, Any]]] = []
     for col in numeric_cols:

@@ -15,8 +15,7 @@ settings:
     timestamp_parse_rate_threshold: 0.8
     ideaspace_max_groups_per_col: 10
     ideaspace_max_entities: 60
-capabilities:
-  - needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

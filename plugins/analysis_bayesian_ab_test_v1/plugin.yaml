@@ -7,7 +7,9 @@ depends_on: []
 settings:
   description: Bayesian A/B testing using Beta-Binomial conjugate model with posterior P(B>A) and expected lift.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

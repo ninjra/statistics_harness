@@ -19,8 +19,7 @@ settings:
     max_dimension_columns: 2
     max_start_columns: 2
     max_eligible_columns: 2
-capabilities:
-  - needs_timestamp
+capabilities: [needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

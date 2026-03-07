@@ -22,4 +22,4 @@ def test_synthetic_control_skips_insufficient(run_dir):
     df = pd.DataFrame({"x": [1.0, 2.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

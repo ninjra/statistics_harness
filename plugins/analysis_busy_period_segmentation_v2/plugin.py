@@ -143,12 +143,12 @@ def _top_n(entries: dict[str, float], limit: int) -> list[dict[str, Any]]:
 class Plugin:
     def run(self, ctx) -> PluginResult:
         if not ctx.dataset_version_id:
-            return PluginResult("skipped", "Dataset version missing", {}, [], [], None)
+            return PluginResult("na", "Dataset version missing", {}, [], [], None)
 
         accessor = DatasetAccessor(ctx.storage, ctx.dataset_version_id)
         df = accessor.load()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         columns_meta = []
         role_by_name: dict[str, str] = {}
@@ -236,7 +236,7 @@ class Plugin:
         interval_start_col = eligible_col or queue_col
         if not interval_start_col or not start_col:
             return PluginResult(
-                "skipped",
+                "na",
                 "Missing eligible/queue or start timestamp columns",
                 {},
                 [],

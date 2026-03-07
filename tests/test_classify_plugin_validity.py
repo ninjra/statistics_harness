@@ -85,8 +85,8 @@ def _init_root_with_manifest(tmp_path: Path) -> Path:
                 "executed": True,
                 "has_result": True,
                 "execution_count": 1,
-                "execution_status": "skipped",
-                "result_status": "skipped",
+                "execution_status": "na",
+                "result_status": "na",
                 "plugin_type": "analysis",
                 "plugin_version": "1",
                 "entrypoint": "run.py:run",
@@ -104,7 +104,7 @@ def _init_root_with_manifest(tmp_path: Path) -> Path:
             "plugin_actionable": {"status": "ok", "findings": []},
             "plugin_low": {"status": "ok", "findings": []},
             "plugin_marker_absent": {"status": "na", "findings": []},
-            "plugin_fail": {"status": "skipped", "findings": []}
+            "plugin_fail": {"status": "na", "findings": []}
         },
         "recommendations": {
             "items": [

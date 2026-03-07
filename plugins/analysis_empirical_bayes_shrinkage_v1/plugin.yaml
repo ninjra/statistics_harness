@@ -11,9 +11,7 @@ settings:
     Stein style de-noising)."
   defaults:
     top_k: 25
-capabilities:
-- needs_eventlog
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

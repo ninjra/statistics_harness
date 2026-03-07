@@ -86,7 +86,7 @@ def test_tiered_degradation_no_numeric_still_ok(run_dir: Path):
     df = pd.DataFrame({"process": ["A"] * 50, "note": ["x"] * 50})
     ctx = make_context(run_dir, df, settings={})
     result = GapPlugin().run(ctx)
-    assert result.status in {"ok", "skipped"}
+    assert result.status in {"ok", "na"}
 
 
 def test_normative_gap_degrades_on_degenerate_frontier_with_variance(run_dir: Path):
@@ -120,7 +120,7 @@ def test_action_planner_no_recos_when_triggers_not_met(run_dir: Path):
     df = pd.DataFrame({"process": ["A"] * 50, "ts": _dt_series_span(50, 60), "duration": [10.0] * 50})
     ctx = make_context(run_dir, df, settings={})
     result = ActionPlugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"
 
 
 def test_reco_priority_isolation_triggered(run_dir: Path):

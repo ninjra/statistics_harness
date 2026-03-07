@@ -40,17 +40,48 @@ def check_unclaimed_numbers(
 
 
 def check_waterfall_reconciliation(
-    waterfall: dict[str, Any] | None,
+    waterfall: dict[str, Any] | list[dict[str, Any]] | None,
     tolerance_hours: float = 0.01,
 ) -> list[GuardrailViolation]:
-    """Fail if waterfall total != top_driver + remainder beyond tolerance."""
-    if not waterfall or not isinstance(waterfall, dict):
+    """Fail if waterfall total != top_driver + remainder beyond tolerance.
+
+    Accepts either a flat dict with legacy keys or a list of rows with
+    ``row_id`` / ``value_hours`` columns (the actual waterfall CSV format).
+    """
+    if not waterfall:
+        return []
+
+    # Normalize list-of-rows format into a lookup dict keyed by row_id.
+    if isinstance(waterfall, list):
+        lookup: dict[str, float | None] = {}
+        for row in waterfall:
+            if not isinstance(row, dict):
+                continue
+            rid = row.get("row_id")
+            val = row.get("value_hours")
+            if rid is not None:
+                try:
+                    lookup[str(rid)] = float(val) if val is not None else None
+                except (TypeError, ValueError):
+                    lookup[str(rid)] = None
+        total = lookup.get("total_bp_over_threshold_wait")
+        top_driver = lookup.get("top_driver_over_threshold_wait")
+        remainder = lookup.get("remainder_without_top_driver")
+    elif isinstance(waterfall, dict):
+        # Support both row_id-based keys and legacy keys.
+        total = waterfall.get("total_bp_over_threshold_wait") or waterfall.get(
+            "total_bp_over_threshold_wait_hours"
+        )
+        top_driver = waterfall.get("top_driver_over_threshold_wait") or waterfall.get(
+            "top_driver_over_threshold_wait_hours"
+        )
+        remainder = waterfall.get("remainder_without_top_driver") or waterfall.get(
+            "remainder_without_top_driver_hours"
+        )
+    else:
         return []
 
     violations: list[GuardrailViolation] = []
-    total = waterfall.get("total_bp_over_threshold_wait_hours")
-    top_driver = waterfall.get("top_driver_over_threshold_wait_hours")
-    remainder = waterfall.get("remainder_without_top_driver_hours")
 
     if total is None or top_driver is None or remainder is None:
         return []

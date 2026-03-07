@@ -7,7 +7,9 @@ depends_on: []
 settings:
   description: Estimates heterogeneous treatment effects using econml CausalForestDML with feature importance for treatment heterogeneity.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

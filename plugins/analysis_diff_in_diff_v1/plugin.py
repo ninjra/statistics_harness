@@ -12,7 +12,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             # Need: outcome (numeric), treatment (binary), post (binary)
             outcome_col = ctx.settings.get("outcome_column")
@@ -26,7 +26,7 @@ class Plugin:
             if not outcome_col:
                 non_binary = [c for c in numeric_cols if c not in binary_cols]
                 if not non_binary:
-                    return PluginResult("skipped", "No continuous outcome column found", {}, [], [], None)
+                    return PluginResult("na", "No continuous outcome column found", {}, [], [], None)
                 outcome_col = non_binary[0]
             if not treatment_col and len(binary_cols) >= 1:
                 treatment_col = binary_cols[0]
@@ -34,16 +34,16 @@ class Plugin:
                 post_col = binary_cols[1]
 
             if not all([outcome_col, treatment_col, post_col]):
-                return PluginResult("skipped", "Missing required columns (outcome, treatment, post)", {}, [], [], None)
+                return PluginResult("na", "Missing required columns (outcome, treatment, post)", {}, [], [], None)
 
             needed = [outcome_col, treatment_col, post_col]
             for c in needed:
                 if c not in df.columns:
-                    return PluginResult("skipped", f"Column {c} not found", {}, [], [], None)
+                    return PluginResult("na", f"Column {c} not found", {}, [], [], None)
 
             work = df[needed].dropna()
             if len(work) < 20:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             import statsmodels.api as sm
 

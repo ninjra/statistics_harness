@@ -8,7 +8,9 @@ settings:
   description: Distribution-free prediction intervals using MAPIE conformal prediction.
   defaults:
     alpha: 0.1
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

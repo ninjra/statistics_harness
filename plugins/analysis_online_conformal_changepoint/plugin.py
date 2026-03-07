@@ -19,10 +19,10 @@ class Plugin:
         else:
             numeric = df.select_dtypes(include="number")
             if numeric.empty:
-                return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+                return PluginResult("na", "No numeric columns", {}, [], [], None)
             columns = list(numeric.columns)
         if not columns:
-            return PluginResult("skipped", "No value columns", {}, [], [], None)
+            return PluginResult("na", "No value columns", {}, [], [], None)
 
         forecast_window = int(ctx.settings.get("forecast_window", 5))
         calib_window = int(ctx.settings.get("calib_window", 10))

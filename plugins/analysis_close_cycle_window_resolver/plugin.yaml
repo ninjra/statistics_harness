@@ -18,9 +18,7 @@ settings:
     dominance_min_share: 0.5
     persistence_days: 2
     indicator_min_months: 3
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

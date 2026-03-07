@@ -26,9 +26,7 @@ settings:
       - qlongjob
     capacity_scale_factor: 0.6667
     max_examples: 25
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

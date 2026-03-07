@@ -13,7 +13,7 @@ from statistic_harness.core.plugin_runner import (
 from statistic_harness.core.types import PluginResult
 
 
-@pytest.mark.parametrize("source_status", ["skipped", "degraded"])
+@pytest.mark.parametrize("source_status", ["skipped", "na", "degraded"])
 def test_pipeline_normalizes_legacy_nonterminal_statuses_to_ok_observation(
     tmp_path, monkeypatch, source_status: str
 ) -> None:

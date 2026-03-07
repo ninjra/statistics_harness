@@ -12,9 +12,7 @@ settings:
     activity_column: null
     time_column: null
     expected_path: []
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

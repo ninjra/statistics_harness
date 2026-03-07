@@ -14,9 +14,7 @@ settings:
     indicator_window_hours: 24
     close_start_day: 20
     indicator_min_months: 3
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

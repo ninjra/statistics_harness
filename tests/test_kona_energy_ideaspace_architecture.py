@@ -98,7 +98,7 @@ def test_verifier_ranks_by_delta_energy_then_confidence(run_dir: Path) -> None:
 
     ctx = make_context(run_dir, df, settings={"max_findings": 10}, run_seed=1, populate=True)
     res = run_plugin("analysis_ebm_action_verifier_v1", ctx)
-    assert res.status in {"ok", "skipped"}
+    assert res.status in {"ok", "na"}
     if not res.findings:
         return
 

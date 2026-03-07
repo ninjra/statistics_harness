@@ -16,12 +16,12 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             # Find first numeric column with enough data
             numeric_cols = df.select_dtypes(include="number").columns.tolist()
             if not numeric_cols:
-                return PluginResult("skipped", "No numeric columns found", {}, [], [], None)
+                return PluginResult("na", "No numeric columns found", {}, [], [], None)
 
             target_col = None
             series = None
@@ -34,7 +34,7 @@ class Plugin:
 
             if series is None:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"No numeric column with >= {MIN_POINTS} non-null values",
                     {}, [], [], None,
                 )
@@ -43,13 +43,13 @@ class Plugin:
                 import torch
                 import torch.nn as nn
             except ImportError:
-                return PluginResult("skipped", "torch not installed", {}, [], [], None)
+                return PluginResult("na", "torch not installed", {}, [], [], None)
 
             # Normalize
             mu, sigma = float(np.mean(series)), float(np.std(series))
             if sigma < 1e-12:
                 return PluginResult(
-                    "skipped", f"Column '{target_col}' has zero variance", {}, [], [], None,
+                    "na", f"Column '{target_col}' has zero variance", {}, [], [], None,
                 )
             normed = (series - mu) / sigma
 
@@ -76,7 +76,7 @@ class Plugin:
 
             X_train, y_train = make_sequences(train_data, lookback)
             if len(X_train) == 0:
-                return PluginResult("skipped", "Not enough training data after sequencing", {}, [], [], None)
+                return PluginResult("na", "Not enough training data after sequencing", {}, [], [], None)
 
             # Simple LSTM model
             torch.manual_seed(ctx.run_seed)

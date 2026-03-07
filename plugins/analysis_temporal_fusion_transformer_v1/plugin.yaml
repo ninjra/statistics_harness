@@ -10,7 +10,9 @@ settings:
     Trains on the first 80% of a numeric series, predicts the last 20%,
     and reports forecast accuracy (RMSE, MAE). Skips if fewer than 50 data points.
   defaults: {}
-capabilities: []
+capabilities: [needs_eventlog, needs_numeric]
+config_schema: config.schema.json
+output_schema: output.schema.json
 sandbox:
   no_network: true
   fs_allowlist:

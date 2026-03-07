@@ -18,9 +18,7 @@ settings:
     annual_limit: 1000.0
     min_excess: 0.0
     batch_size: 100000
-capabilities:
-- needs_eventlog
-- needs_cross_dataset
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

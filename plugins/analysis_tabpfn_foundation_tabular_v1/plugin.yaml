@@ -14,8 +14,7 @@ settings:
     max_features: 12
     n_bootstrap: 12
     top_k: 10
-capabilities:
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

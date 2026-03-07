@@ -17,4 +17,4 @@ def test_discrete_event_queue_simulator_plugin_is_wired() -> None:
     from plugins.analysis_discrete_event_queue_simulator_v1.plugin import Plugin
 
     res = Plugin().run(_StubCtx())
-    assert res.status in {"ok", "skipped", "degraded"}
+    assert res.status in {"ok", "na", "degraded"}

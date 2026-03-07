@@ -13,18 +13,18 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             # Select numeric columns and drop rows with any NaN
             num_df = df.select_dtypes(include="number").dropna()
             if num_df.shape[1] < 1:
                 return PluginResult(
-                    "skipped", "No numeric columns found",
+                    "na", "No numeric columns found",
                     {}, [], [], None,
                 )
             if num_df.shape[0] < 20:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient rows ({num_df.shape[0]}), need >= 20",
                     {}, [], [], None,
                 )

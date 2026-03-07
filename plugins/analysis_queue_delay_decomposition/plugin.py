@@ -130,7 +130,7 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         columns_meta = []
         role_by_name: dict[str, str] = {}
@@ -235,11 +235,11 @@ class Plugin:
 
         if not process_col:
             return PluginResult(
-                "skipped", "No process/activity column detected", {}, [], [], None
+                "na", "No process/activity column detected", {}, [], [], None
             )
         if not start_col or (not queue_col and not eligible_col):
             return PluginResult(
-                "skipped",
+                "na",
                 "Queue/start timestamps required for delay decomposition",
                 {},
                 [],
@@ -264,7 +264,7 @@ class Plugin:
         work["__process_norm"] = work["__process"].str.lower()
         work = work.loc[~work["__process_norm"].isin(INVALID_STRINGS)].copy()
         if work.empty:
-            return PluginResult("skipped", "No valid process values", {}, [], [], None)
+            return PluginResult("na", "No valid process values", {}, [], [], None)
 
         queue_ts = pd.to_datetime(work[queue_col], errors="coerce", utc=False) if queue_col else None
         eligible_ts = pd.to_datetime(work[eligible_col], errors="coerce", utc=False) if eligible_col else None
@@ -276,14 +276,14 @@ class Plugin:
             eligible_basis = "eligible"
 
         if queue_ts is None and eligible_ts is None:
-            return PluginResult("skipped", "No queue/eligible timestamps", {}, [], [], None)
+            return PluginResult("na", "No queue/eligible timestamps", {}, [], [], None)
 
         work["__start_ts"] = start_ts
         work["__queue_ts"] = queue_ts if queue_ts is not None else eligible_ts
         work["__eligible_ts"] = eligible_ts
         work = work.loc[work["__start_ts"].notna() & work["__eligible_ts"].notna()].copy()
         if work.empty:
-            return PluginResult("skipped", "No valid timestamps found", {}, [], [], None)
+            return PluginResult("na", "No valid timestamps found", {}, [], [], None)
 
         wait_pre = (work["__eligible_ts"] - work["__queue_ts"]).dt.total_seconds()
         wait_pre = wait_pre.clip(lower=0).fillna(0)

@@ -10,6 +10,6 @@ def test_similarity_graph_spectral_clustering_plugin_is_wired() -> None:
     from plugins.analysis_similarity_graph_spectral_clustering_v1.plugin import Plugin
 
     res = Plugin().run(_StubCtx())
-    assert res.status == "skipped"
+    assert res.status == "na"
     assert "transform_normalize_mixed" in res.summary
 

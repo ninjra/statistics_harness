@@ -227,7 +227,7 @@ def test_analysis_issue_cards_v2_smoke(tmp_path: Path) -> None:
     module = import_module("plugins.analysis_issue_cards_v2.plugin")
     result = module.Plugin().run(ctx)
     # Issue cards may produce "ok" or "warn" depending on upstream data
-    assert result.status in {"ok", "warn", "skipped"}, (
+    assert result.status in {"ok", "warn", "na"}, (
         f"analysis_issue_cards_v2 -> {result.status}: {result.summary}"
     )
 
@@ -236,7 +236,7 @@ def test_analysis_upload_linkage_smoke(tmp_path: Path) -> None:
     """Upload linkage plugin must run without error."""
     df = _rich_dataset(200)
     result = _run_plugin(tmp_path, "analysis_upload_linkage", df)
-    assert result.status in {"ok", "warn", "skipped"}, (
+    assert result.status in {"ok", "warn", "na"}, (
         f"analysis_upload_linkage -> {result.status}: {result.summary}"
     )
 
@@ -245,8 +245,8 @@ def test_llm_text2sql_local_generate_v1_smoke(tmp_path: Path) -> None:
     """LLM text2sql plugin must not crash (may skip if model not available)."""
     df = _rich_dataset(100)
     result = _run_plugin(tmp_path, "llm_text2sql_local_generate_v1", df)
-    # Likely "skipped" in CI where model dirs are absent
-    assert result.status in {"ok", "warn", "skipped"}, (
+    # Likely "na" in CI where model dirs are absent
+    assert result.status in {"ok", "warn", "na"}, (
         f"llm_text2sql_local_generate_v1 -> {result.status}: {result.summary}"
     )
 
@@ -280,6 +280,6 @@ def test_report_plain_english_v1_smoke(tmp_path: Path) -> None:
     )
     module = import_module("plugins.report_plain_english_v1.plugin")
     result = module.Plugin().run(ctx)
-    assert result.status in {"ok", "warn", "skipped"}, (
+    assert result.status in {"ok", "warn", "na"}, (
         f"report_plain_english_v1 -> {result.status}: {result.summary}"
     )

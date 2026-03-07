@@ -21,9 +21,7 @@ settings:
     lsh_threshold: 0.85
     min_cluster_size: 5
     ignore_param_keys_regex: (run id|queue id|seq|slice|timestamp)
-capabilities:
-- needs_eventlog
-- needs_text
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

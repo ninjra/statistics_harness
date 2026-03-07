@@ -237,15 +237,17 @@ def select_plugins(
     features = _infer_dataset_features(storage, dataset_version_id)
     dataset_template = storage.fetch_dataset_template(dataset_version_id)
     template_ready = bool(dataset_template and dataset_template.get("status") == "ready")
-    include_untagged = os.environ.get("STAT_HARNESS_PLANNER_INCLUDE_UNTAGGED", "").lower() in {
-        "1",
-        "true",
-        "yes",
+    include_untagged = os.environ.get("STAT_HARNESS_PLANNER_INCLUDE_UNTAGGED", "").lower() not in {
+        "0",
+        "false",
+        "no",
+        "off",
     }
-    enable_topo_tda = os.environ.get("STAT_HARNESS_ENABLE_TOPO_TDA", "").lower() in {
-        "1",
-        "true",
-        "yes",
+    enable_topo_tda = os.environ.get("STAT_HARNESS_ENABLE_TOPO_TDA", "").lower() not in {
+        "0",
+        "false",
+        "no",
+        "off",
     }
     # Keep auto runs lightweight; plugins without recognized capability tags are opt-in
     # (either via allowlist or STAT_HARNESS_PLANNER_INCLUDE_UNTAGGED).

@@ -23,4 +23,4 @@ def test_conformal_skips_insufficient_data(run_dir):
     df = pd.DataFrame({"x": range(10), "y": range(10)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

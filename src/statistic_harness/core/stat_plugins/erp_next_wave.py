@@ -363,7 +363,7 @@ def _dependency_critical_path_v1(
     parent_col = _pick_col_by_name(df, cat_cols, ("parent_process_queue_id", "parent_id", "dep_process_queue_id", "dep_id", "depends"))
     if not (id_col and parent_col):
         return PluginResult(
-            "skipped",
+            "na",
             "Missing required columns for dependency critical path",
             _basic_metrics(df, sample_meta),
             [],
@@ -412,7 +412,7 @@ def _dependency_critical_path_v1(
     depths = [depth(k) for k in mapping.keys()]
     if not depths:
         return PluginResult(
-            "skipped",
+            "na",
             "No dependency edges to analyze",
             _basic_metrics(df, sample_meta),
             [],
@@ -459,7 +459,7 @@ def _param_variant_explosion_v1(
     param_col = _pick_col_by_name(df, text_cols + cat_cols, ("param", "descr", "args", "payload"))
     if not (proc_col and param_col):
         return PluginResult(
-            "skipped",
+            "na",
             "Missing required columns for param variant explosion",
             _basic_metrics(df, sample_meta),
             [],
@@ -511,7 +511,7 @@ def _param_variant_explosion_v1(
         _artifact(ctx, plugin_id, "param_variant_explosion.json", {"top": candidates.to_dict(orient="records"), "param_col": param_col})
     ]
     return PluginResult(
-        "ok" if findings else "skipped",
+        "ok" if findings else "na",
         "Computed param variant explosion" if findings else "No variant explosion hotspots found",
         _basic_metrics(df, sample_meta),
         findings,
@@ -536,7 +536,7 @@ def _close_cycle_change_point_v1(
     time_col = queue_col or start_col or _pick_col_by_name(df, ts_cols, ("time", "timestamp", "date"))
     if not time_col:
         return PluginResult(
-            "skipped",
+            "na",
             "Missing required timestamp column for close-cycle change detection",
             _basic_metrics(df, sample_meta),
             [],
@@ -548,7 +548,7 @@ def _close_cycle_change_point_v1(
     ok = ts.notna()
     if ok.mean() < 0.7:
         return PluginResult(
-            "skipped",
+            "na",
             "Low timestamp parse rate for close-cycle change detection",
             _basic_metrics(df, sample_meta),
             [],
@@ -577,24 +577,24 @@ def _close_cycle_change_point_v1(
         num_cols = [str(c) for c in (inferred.get("numeric_columns") or []) if str(c) in df.columns]
         dur_col = _pick_col_by_name(df, num_cols, ("duration", "elapsed", "latency", "runtime", "seconds", "sec"))
         if not dur_col:
-            return PluginResult("skipped", "No queue-delay/duration metric available", _basic_metrics(df, sample_meta), [], [], None)
+            return PluginResult("na", "No queue-delay/duration metric available", _basic_metrics(df, sample_meta), [], [], None)
         metric = f"{dur_col}_numeric"
         values = pd.to_numeric(df.loc[ok, dur_col], errors="coerce").dropna()
         ts_use = ts[ok].loc[values.index]
 
     if values is None or values.empty:
-        return PluginResult("skipped", "No metric values for change detection", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No metric values for change detection", _basic_metrics(df, sample_meta), [], [], None)
 
     # Build daily p95 series.
     day = ts_use.dt.tz_convert("UTC").dt.floor("D") if ts_use.dt.tz is not None else ts_use.dt.tz_localize("UTC", nonexistent="NaT", ambiguous="NaT").dt.floor("D")
     frame = pd.DataFrame({"day": day, "v": pd.to_numeric(values, errors="coerce")})
     frame = frame.loc[frame["day"].notna() & frame["v"].notna()]
     if frame.empty:
-        return PluginResult("skipped", "No usable data for change detection", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No usable data for change detection", _basic_metrics(df, sample_meta), [], [], None)
 
     series = frame.groupby("day")["v"].apply(lambda x: float(np.nanpercentile(x.to_numpy(dtype=float), 95))).sort_index()
     if series.size < 6:
-        return PluginResult("skipped", "Not enough days for change detection", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Not enough days for change detection", _basic_metrics(df, sample_meta), [], [], None)
 
     values_series = series.to_numpy(dtype=float)
     n = values_series.size
@@ -626,7 +626,7 @@ def _close_cycle_change_point_v1(
 
     artifacts = [_artifact(ctx, plugin_id, "close_cycle_change_point.json", {"metric": metric, "series": {str(k): float(v) for k, v in series.items()}, "ratio": ratio})]
     return PluginResult(
-        "ok" if findings else "skipped",
+        "ok" if findings else "na",
         "Computed close-cycle change detection" if findings else "No close-cycle drift detected",
         _basic_metrics(df, sample_meta),
         findings,

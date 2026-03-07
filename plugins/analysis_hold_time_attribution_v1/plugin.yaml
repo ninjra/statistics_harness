@@ -10,9 +10,7 @@ settings:
   description: Attribute delay into pre-eligibility holds vs eligible-wait, per process.
   defaults:
     min_total_hours: 10.0
-capabilities:
-  - needs_time
-  - needs_categorical
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -22,6 +22,6 @@ def test_conformance_alignments_respects_sequence_caps(run_dir) -> None:
     ctx = make_context(run_dir, df, {})
     ctx.settings = {"max_sequences": 500, "max_variant_length": 20, "max_edit_cells": 5000}
     result = ConformancePlugin().run(ctx)
-    assert result.status in {"ok", "skipped", "degraded"}
+    assert result.status in {"ok", "na", "degraded"}
     assert result.status != "error"
 

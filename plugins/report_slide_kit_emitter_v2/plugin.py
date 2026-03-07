@@ -66,6 +66,7 @@ class Plugin:
                 "bp_over_threshold_wait_hours": current_hours,
                 "delta_hours_vs_current": 0.0,
                 "delta_percent_vs_current": 0.0,
+                "notes": "",
                 "claim_id": claim_id("kpi_bp_ot_wts_hours_total"),
             }
         )
@@ -97,6 +98,7 @@ class Plugin:
             "bp_over_threshold_wait_hours",
             "delta_hours_vs_current",
             "delta_percent_vs_current",
+            "notes",
             "claim_id",
         ]
         with scenario_path.open("w", encoding="utf-8", newline="") as handle:
@@ -104,58 +106,6 @@ class Plugin:
             writer.writeheader()
             for row in scenario_rows:
                 writer.writerow({key: row.get(key, "") for key in scenario_headers})
-
-        # ---- Busy periods table ----
-        busy_rows: list[dict[str, Any]] = []
-        if isinstance(busy_payload, dict):
-            busy_periods = busy_payload.get("busy_periods") or []
-            if isinstance(busy_periods, list):
-                # Sort by total over-threshold wait, descending.
-                sorted_periods = []
-                for row in busy_periods:
-                    if not isinstance(row, dict):
-                        continue
-                    try:
-                        total_sec = float(row.get("total_over_threshold_wait_sec") or 0.0)
-                    except (TypeError, ValueError):
-                        total_sec = 0.0
-                    sorted_periods.append((total_sec, row))
-                sorted_periods.sort(key=lambda t: t[0], reverse=True)
-                for total_sec, row in sorted_periods[:10]:
-                    top_proc = row.get("top_process_by_wait")
-                    top_proc_id = ""
-                    if isinstance(top_proc, dict):
-                        top_proc_id = str(top_proc.get("id") or "")
-                    elif isinstance(top_proc, str):
-                        top_proc_id = top_proc
-                    busy_rows.append(
-                        {
-                            "busy_period_id": row.get("busy_period_id") or "",
-                            "start_ts": row.get("start_ts") or "",
-                            "end_ts": row.get("end_ts") or "",
-                            "total_over_threshold_wait_hours": round(total_sec / 3600.0, 2),
-                            "runs_over_threshold_count": int(row.get("runs_over_threshold_count") or 0),
-                            "top_process_id": top_proc_id,
-                            "claim_id": claim_id(f"busy_period:{row.get('busy_period_id') or ''}"),
-                        }
-                    )
-
-        busy_csv_path = ctx.run_dir / "slide_kit" / "busy_periods.csv"
-        busy_csv_path.parent.mkdir(parents=True, exist_ok=True)
-        busy_headers = [
-            "busy_period_id",
-            "start_ts",
-            "end_ts",
-            "total_over_threshold_wait_hours",
-            "runs_over_threshold_count",
-            "top_process_id",
-            "claim_id",
-        ]
-        with busy_csv_path.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=busy_headers)
-            writer.writeheader()
-            for row in busy_rows:
-                writer.writerow({key: row.get(key, "") for key in busy_headers})
 
         # ---- Top process contributors ----
         process_rows: list[dict[str, Any]] = []
@@ -184,8 +134,10 @@ class Plugin:
                 process_rows.append(
                     {
                         "process_id": process_id,
+                        "process_name_normalized": process_id,
                         "bp_over_threshold_wait_hours": hours,
                         "share_percent": round(share, 2),
+                        "close_cycle_slowdown_ratio": "",
                         "claim_id": claim_lookup.get(
                             f"Process {process_id} over-threshold wait",
                             claim_id(f"process:{process_id}:bp_ot_wts_hours_total"),
@@ -197,8 +149,10 @@ class Plugin:
         process_path.parent.mkdir(parents=True, exist_ok=True)
         process_headers = [
             "process_id",
+            "process_name_normalized",
             "bp_over_threshold_wait_hours",
             "share_percent",
+            "close_cycle_slowdown_ratio",
             "claim_id",
         ]
         with process_path.open("w", encoding="utf-8", newline="") as handle:
@@ -214,23 +168,17 @@ class Plugin:
                 description="Scenario summary table",
             ),
             PluginArtifact(
-                path=str(busy_csv_path.relative_to(ctx.run_dir)),
-                type="csv",
-                description="Busy periods table",
-            ),
-            PluginArtifact(
                 path=str(process_path.relative_to(ctx.run_dir)),
                 type="csv",
                 description="Top process contributors",
             ),
         ]
 
-        metrics = {"scenarios": len(scenario_rows), "busy_periods": len(busy_rows), "processes": len(process_rows)}
+        metrics = {"scenarios": len(scenario_rows), "processes": len(process_rows)}
         findings = [
             {
                 "kind": "slide_kit_summary",
                 "scenarios": len(scenario_rows),
-                "busy_periods": len(busy_rows),
                 "processes": len(process_rows),
                 "measurement_type": "measured",
             }

@@ -120,10 +120,10 @@ def test_evidence_pack_helpers_render_expected_counts() -> None:
                 "status": "completed",
                 "dataset_version_id": "dataset_abc",
                 "plugin_count": 255,
-                "status_counts": {"ok": 250, "skipped": 5},
+                "status_counts": {"ok": 250, "na": 5},
             }
         ]
     )
     assert "Golden Release Evidence Summary" in md
     assert "`run_123`" in md
-    assert "ok:250, skipped:5" in md
+    assert "na:5, ok:250" in md

@@ -825,6 +825,171 @@ def cmd_vector_query(
     print(json.dumps(results, indent=2, sort_keys=True))
 
 
+def _parse_key_val_pairs(raw: str) -> dict[str, float]:
+    out: dict[str, float] = {}
+    for pair in raw.split(","):
+        pair = pair.strip()
+        if "=" not in pair:
+            continue
+        k, v = pair.split("=", 1)
+        out[k.strip()] = float(v.strip())
+    return out
+
+
+def cmd_model(args: argparse.Namespace) -> None:
+    from statistic_harness.core.modeling.engine import ModelingEngine
+    from statistic_harness.core.modeling.scenario import ScenarioConfig
+    from statistic_harness.core.modeling.comparator import ScenarioComparator
+
+    run_dir = Path(args.run_dir)
+
+    if args.batch:
+        _cmd_model_batch(run_dir, Path(args.batch))
+        return
+
+    kwargs: dict[str, Any] = {"name": args.scenario}
+    if args.weights:
+        kwargs["ranking_weights"] = _parse_key_val_pairs(args.weights)
+    if args.close_cycles is not None:
+        kwargs["close_cycles_per_year"] = args.close_cycles
+    if args.max_obviousness is not None:
+        kwargs["max_obviousness"] = args.max_obviousness
+    if args.min_relevance is not None:
+        kwargs["min_relevance_score"] = args.min_relevance
+    if args.require_modeled_hours:
+        kwargs["require_modeled_hours"] = True
+    if args.top_n is not None:
+        kwargs["discovery_top_n"] = args.top_n
+    if args.suppress_actions:
+        kwargs["suppress_action_types"] = frozenset(
+            t.strip() for t in args.suppress_actions.split(",") if t.strip()
+        )
+    if args.value_weights:
+        kwargs["value_component_weights"] = _parse_key_val_pairs(args.value_weights)
+
+    config = ScenarioConfig(**kwargs)
+    engine = ModelingEngine(run_dir)
+    engine.load()
+    result = engine.run_scenario(config)
+
+    if args.diff:
+        baseline = engine.run_scenario(ScenarioConfig(name="baseline"))
+        report = ScenarioComparator.compare(baseline, result)
+        if args.format == "markdown":
+            output = report.to_markdown()
+        else:
+            output = json.dumps(
+                {
+                    "baseline": baseline.summary(),
+                    "modeled": result.summary(),
+                    "movers": len(report.movers),
+                    "appeared": len(report.appeared),
+                    "disappeared": len(report.disappeared),
+                },
+                indent=2,
+                default=str,
+            )
+    else:
+        summary = result.summary()
+        if args.format == "json":
+            output = json.dumps(summary, indent=2, default=str)
+        elif args.format == "markdown":
+            output = _model_summary_to_markdown(summary)
+        else:
+            output = _model_summary_to_table(summary)
+
+    if args.output:
+        Path(args.output).write_text(output, encoding="utf-8")
+    else:
+        print(output)
+
+
+def _cmd_model_batch(run_dir: Path, batch_path: Path) -> None:
+    from statistic_harness.core.modeling.engine import ModelingEngine
+    from statistic_harness.core.modeling.scenario import ScenarioConfig
+    from statistic_harness.core.modeling.comparator import ScenarioComparator
+
+    raw = yaml.safe_load(batch_path.read_text(encoding="utf-8"))
+    scenarios_raw = raw.get("scenarios", [])
+    compares = raw.get("compare", [])
+
+    engine = ModelingEngine(run_dir)
+    engine.load()
+
+    results: dict[str, Any] = {}
+    for s in scenarios_raw:
+        name = s.pop("name", "unnamed")
+        cfg_kwargs: dict[str, Any] = {"name": name}
+        for k, v in s.items():
+            if k == "suppress_action_types" and isinstance(v, list):
+                cfg_kwargs[k] = frozenset(v)
+            elif k == "allow_action_types" and isinstance(v, list):
+                cfg_kwargs[k] = frozenset(v)
+            else:
+                cfg_kwargs[k] = v
+        config = ScenarioConfig(**cfg_kwargs)
+        mr = engine.run_scenario(config)
+        results[name] = mr
+        print(f"--- Scenario: {name} ---")
+        print(json.dumps(mr.summary(), indent=2, default=str))
+        print()
+
+    for comp in compares:
+        b_name = comp.get("baseline")
+        m_name = comp.get("modeled")
+        if b_name in results and m_name in results:
+            report = ScenarioComparator.compare(results[b_name], results[m_name])
+            print(report.to_markdown())
+            print()
+
+
+def _model_summary_to_markdown(summary: dict[str, Any]) -> str:
+    lines = [
+        f"# Scenario: {summary['scenario_name']}",
+        "",
+        f"- Input findings: {summary['total_findings_input']}",
+        f"- After filter: {summary['items_after_filter']}",
+        f"- Filtered out: {summary['items_filtered_out']}",
+        "",
+    ]
+    if summary.get("overrides_applied"):
+        lines.append("## Overrides")
+        for k, v in summary["overrides_applied"].items():
+            lines.append(f"- {k}: {v}")
+        lines.append("")
+    if summary.get("top_5_actions"):
+        lines.append("## Top 5")
+        lines.append("| Rank | Action | Process | Score | Value | Hours |")
+        lines.append("|------|--------|---------|-------|-------|-------|")
+        for item in summary["top_5_actions"]:
+            lines.append(
+                f"| {item['rank']} | {item['action_type']} | {item['process']} "
+                f"| {item['weighted_rank_score']:.4f} | {item['value_score_v2']:.4f} "
+                f"| {item['modeled_delta_hours']} |"
+            )
+    return "\n".join(lines)
+
+
+def _model_summary_to_table(summary: dict[str, Any]) -> str:
+    lines = [
+        f"Scenario: {summary['scenario_name']}",
+        f"Input: {summary['total_findings_input']} | After filter: {summary['items_after_filter']} | Filtered: {summary['items_filtered_out']}",
+        "",
+    ]
+    if summary.get("top_5_actions"):
+        lines.append(f"{'Rank':<6} {'Action':<30} {'Process':<20} {'Score':<10} {'Value':<10} {'Hours':<10}")
+        lines.append("-" * 86)
+        for item in summary["top_5_actions"]:
+            score = item.get("weighted_rank_score") or 0.0
+            value = item.get("value_score_v2") or 0.0
+            hours = item.get("modeled_delta_hours") or 0.0
+            lines.append(
+                f"{item['rank']:<6} {str(item['action_type']):<30} {str(item['process']):<20} "
+                f"{score:<10.4f} {value:<10.4f} {hours:<10.1f}"
+            )
+    return "\n".join(lines)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -929,6 +1094,22 @@ def main() -> None:
     vector_query_parser.add_argument("--k", type=int, default=10)
     vector_query_parser.add_argument("--dimensions", type=int)
 
+    model_parser = sub.add_parser("model")
+    model_parser.add_argument("run_dir", help="Path to the run directory containing report.json")
+    model_parser.add_argument("--scenario", default="default")
+    model_parser.add_argument("--weights", help="Override ranking weights as key=val,...")
+    model_parser.add_argument("--close-cycles", type=float, help="Override close_cycles_per_year")
+    model_parser.add_argument("--max-obviousness", type=float)
+    model_parser.add_argument("--min-relevance", type=float)
+    model_parser.add_argument("--require-modeled-hours", action="store_true")
+    model_parser.add_argument("--top-n", type=int)
+    model_parser.add_argument("--suppress-actions", help="Comma-separated action types to suppress")
+    model_parser.add_argument("--value-weights", help="Override value component weights as key=val,...")
+    model_parser.add_argument("--diff", action="store_true", help="Show rank deltas vs baseline")
+    model_parser.add_argument("--format", choices=["json", "markdown", "table"], default="table")
+    model_parser.add_argument("--output", help="Write results to file")
+    model_parser.add_argument("--batch", help="Path to scenarios YAML for batch mode")
+
     args = parser.parse_args()
 
     if args.command == "list-plugins":
@@ -997,6 +1178,8 @@ def main() -> None:
         cmd_vector_query(
             args.collection, args.text, args.vector, args.k, args.dimensions
         )
+    elif args.command == "model":
+        cmd_model(args)
     else:
         raise SystemExit(2)
 

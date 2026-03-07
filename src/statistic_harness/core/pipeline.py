@@ -1972,6 +1972,12 @@ class Pipeline:
         expanded, added_deps, missing_deps = self._expand_selected_with_deps(
             spec_map, selected
         )
+        # For DB-only runs, ingest_tabular is not needed — strip from deps
+        if input_file is None:
+            expanded.discard("ingest_tabular")
+            missing_deps = [
+                d for d in missing_deps if "ingest_tabular" not in d
+            ]
         if missing_deps:
             for edge in missing_deps:
                 record_missing("pipeline_preflight", f"Missing dependency: {edge}")
@@ -2265,17 +2271,27 @@ class Pipeline:
             if status != "ok":
                 continue
             findings_payload = row.get("findings_json")
-            findings_count = 0
+            loaded: list = []
             if isinstance(findings_payload, str):
                 try:
-                    loaded = json.loads(findings_payload)
-                    if isinstance(loaded, list):
-                        findings_count = len(loaded)
+                    parsed = json.loads(findings_payload)
+                    if isinstance(parsed, list):
+                        loaded = parsed
                 except Exception:
-                    findings_count = 0
+                    pass
             elif isinstance(findings_payload, list):
-                findings_count = len(findings_payload)
-            if findings_count == 0:
+                loaded = findings_payload
+            _non_actionable_kinds = {
+                "plugin_not_applicable",
+                "analysis_no_action_diagnostic",
+            }
+            actionable_count = sum(
+                1
+                for f in loaded
+                if isinstance(f, dict)
+                and f.get("kind") not in _non_actionable_kinds
+            )
+            if actionable_count == 0:
                 analysis_empty_ok.append(plugin_id)
         analysis_empty_ok = sorted(set(analysis_empty_ok))
         analysis_empty_ok_count = len(analysis_empty_ok)
@@ -2335,6 +2351,33 @@ class Pipeline:
                     "plugins": analysis_empty_ok[:50],
                 },
             )
+
+        # Critical dependency cascade detection
+        _CRITICAL_DEPS = {
+            "analysis_close_cycle_window_resolver": 100,
+            "profile_basic": 37,
+            "profile_eventlog": 12,
+        }
+        result_status_by_id: dict[str, str] = {}
+        for row in plugin_results:
+            pid = str(row.get("plugin_id") or "")
+            result_status_by_id[pid] = str(row.get("status") or "").lower()
+        for dep_id, dep_count in _CRITICAL_DEPS.items():
+            dep_status = result_status_by_id.get(dep_id)
+            if dep_status and dep_status in {"error", "aborted"}:
+                self.storage.insert_event(
+                    kind="run_policy_violation",
+                    created_at=now_iso(),
+                    run_id=run_id,
+                    run_fingerprint=run_fingerprint,
+                    payload={
+                        "policy": "critical_dependency_contract",
+                        "reason": "critical_dependency_failed",
+                        "failed_plugin": dep_id,
+                        "failed_status": dep_status,
+                        "downstream_blocked_estimate": dep_count,
+                    },
+                )
 
         # Update run status before final report synthesis so report.json/report.md reflect completion.
         self.storage.update_run_status(run_id, final_status)

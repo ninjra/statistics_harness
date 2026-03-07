@@ -19,7 +19,7 @@ def test_reservoir_esn_smoke(run_dir) -> None:
     df = _time_series_df()
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status in ("ok", "skipped", "degraded")
+    assert result.status in ("ok", "na", "degraded")
     if result.status == "ok":
         assert "rmse" in result.metrics
         assert "mae" in result.metrics
@@ -32,4 +32,4 @@ def test_reservoir_esn_empty(run_dir) -> None:
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

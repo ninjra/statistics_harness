@@ -29,7 +29,7 @@ def test_changepoint_detection_v1_runs(tmp_path: Path) -> None:
     post = [10.0] * 30
     df = pd.DataFrame({"y": pre + post})
     res = Plugin().run(_Ctx(df, tmp_path))
-    assert res.status in {"ok", "skipped"}
+    assert res.status in {"ok", "na"}
     if res.status == "ok":
         assert any(f.get("kind") == "changepoint" for f in res.findings)
 
@@ -55,8 +55,8 @@ def test_process_mining_plugins_run(tmp_path: Path) -> None:
     )
     dres = DiscoveryPlugin().run(_Ctx(df, tmp_path))
     cres = ConformancePlugin().run(_Ctx(df, tmp_path))
-    assert dres.status in {"ok", "skipped"}
-    assert cres.status in {"ok", "skipped"}
+    assert dres.status in {"ok", "na"}
+    assert cres.status in {"ok", "na"}
 
 
 def test_causal_recommendations_v1_runs(tmp_path: Path) -> None:
@@ -69,6 +69,6 @@ def test_causal_recommendations_v1_runs(tmp_path: Path) -> None:
         }
     )
     res = Plugin().run(_Ctx(df, tmp_path))
-    assert res.status in {"ok", "skipped", "degraded"}
+    assert res.status in {"ok", "na", "degraded"}
     if res.status == "ok":
         assert any(f.get("kind") == "recommendation" for f in res.findings)

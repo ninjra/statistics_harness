@@ -23,10 +23,10 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         loader = getattr(ctx, "dataset_loader", None)
         if not callable(loader):
-            return PluginResult("skipped", "dataset_loader unavailable", {}, [], [], None)
+            return PluginResult("na", "dataset_loader unavailable", {}, [], [], None)
         df = loader()
         if df is None or len(df) == 0:
-            return PluginResult("skipped", "Empty dataset", {"rows": 0}, [], [], None)
+            return PluginResult("na", "Empty dataset", {"rows": 0}, [], [], None)
 
         case_col = _pick_column(
             df,
@@ -45,7 +45,7 @@ class Plugin:
         )
         if not case_col or not activity_col:
             return PluginResult(
-                "skipped",
+                "na",
                 "Missing case/activity columns for process discovery",
                 {"rows": int(len(df))},
                 [],

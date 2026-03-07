@@ -21,8 +21,7 @@ settings:
     route_time_budget_ms: 5000
     route_disallowed_lever_ids: []
     route_disallowed_action_types: []
-capabilities:
-  - needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

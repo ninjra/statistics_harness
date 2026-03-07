@@ -133,12 +133,12 @@ def _confidence_weight(count: int) -> float:
 class Plugin:
     def run(self, ctx) -> PluginResult:
         if not ctx.dataset_version_id:
-            return PluginResult("skipped", "Dataset version missing", {}, [], [], None)
+            return PluginResult("na", "Dataset version missing", {}, [], [], None)
 
         accessor = DatasetAccessor(ctx.storage, ctx.dataset_version_id)
         df = accessor.load()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         columns_meta = []
         role_by_name: dict[str, str] = {}
@@ -219,7 +219,7 @@ class Plugin:
 
         if not case_cols or not process_cols or not start_cols:
             return PluginResult(
-                "skipped",
+                "na",
                 "Missing case/process/start columns",
                 {},
                 [],
@@ -400,7 +400,7 @@ class Plugin:
 
         if not findings:
             return PluginResult(
-                "skipped", "No sequence bottlenecks detected", {}, [], [], None
+                "na", "No sequence bottlenecks detected", {}, [], [], None
             )
 
         artifacts_dir = ctx.artifacts_dir("analysis_process_sequence_bottlenecks")

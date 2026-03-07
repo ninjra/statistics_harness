@@ -14,7 +14,7 @@ class Plugin:
             msg = str(exc)
             if "Eval disabled by policy" in msg:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Optional dependency blocked by policy (sklearn requires eval)",
                     {},
                     [],
@@ -23,7 +23,7 @@ class Plugin:
                     debug={"gating_reason": "policy_eval_disabled"},
                 )
             return PluginResult(
-                "skipped",
+                "na",
                 f"Optional dependency unavailable: {type(exc).__name__}",
                 {},
                 [],
@@ -35,12 +35,12 @@ class Plugin:
         numeric = df.select_dtypes(include="number")
         if numeric.shape[1] < 2:
             return PluginResult(
-                "skipped", "Not enough numeric columns", {}, [], [], None
+                "na", "Not enough numeric columns", {}, [], [], None
             )
         numeric = numeric.dropna(axis=0, how="any")
         if numeric.empty:
             return PluginResult(
-                "skipped", "No complete numeric rows", {}, [], [], None
+                "na", "No complete numeric rows", {}, [], [], None
             )
         target_column = ctx.settings.get("target_column")
         target_columns = [target_column] if target_column else list(numeric.columns)

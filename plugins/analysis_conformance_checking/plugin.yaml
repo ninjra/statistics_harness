@@ -7,8 +7,7 @@ depends_on: []
 settings:
   description: Detect deviations from baseline process flow.
   defaults: {}
-capabilities:
-  - needs_eventlog
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

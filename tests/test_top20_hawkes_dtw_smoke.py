@@ -35,11 +35,11 @@ def test_top20_hawkes_and_dtw_plugins_run_after_normalization(tmp_path) -> None:
 
     ctx.settings = {"top_k": 5}
     hawkes_res = Hawkes().run(ctx)
-    assert hawkes_res.status in {"ok", "skipped", "degraded"}
+    assert hawkes_res.status in {"ok", "na", "degraded"}
     assert hawkes_res.status != "error"
 
     ctx.settings = {"top_k": 5}
     dtw_res = Dtw().run(ctx)
-    assert dtw_res.status in {"ok", "skipped", "degraded"}
+    assert dtw_res.status in {"ok", "na", "degraded"}
     assert dtw_res.status != "error"
 

@@ -7,8 +7,7 @@ depends_on: []
 settings:
   description: Detect sparse outliers via low-rank reconstruction.
   defaults: {}
-capabilities:
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

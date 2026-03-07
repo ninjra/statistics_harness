@@ -13,7 +13,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             outcome_col = settings.get("outcome_column")
@@ -28,7 +28,7 @@ class Plugin:
                         binary_cols.append(c)
                 if len(binary_cols) < 2:
                     return PluginResult(
-                        "skipped",
+                        "na",
                         "Need at least 2 binary columns (group + outcome)",
                         {}, [], [], None,
                     )
@@ -38,19 +38,19 @@ class Plugin:
                     outcome_col = binary_cols[1] if binary_cols[1] != group_col else binary_cols[0]
                     if outcome_col == group_col:
                         return PluginResult(
-                            "skipped",
+                            "na",
                             "Cannot use same column for group and outcome",
                             {}, [], [], None,
                         )
 
             work = df[[group_col, outcome_col]].dropna()
             if len(work) < 10:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             # Encode group to 0/1
             groups = work[group_col].unique()
             if len(groups) != 2:
-                return PluginResult("skipped", f"Group column must have exactly 2 levels, found {len(groups)}", {}, [], [], None)
+                return PluginResult("na", f"Group column must have exactly 2 levels, found {len(groups)}", {}, [], [], None)
 
             group_a_label, group_b_label = sorted(groups, key=str)
             mask_a = work[group_col] == group_a_label
@@ -59,7 +59,7 @@ class Plugin:
             # Encode outcome to 0/1
             outcome_vals = work[outcome_col].unique()
             if len(outcome_vals) != 2:
-                return PluginResult("skipped", f"Outcome column must be binary, found {len(outcome_vals)} levels", {}, [], [], None)
+                return PluginResult("na", f"Outcome column must be binary, found {len(outcome_vals)} levels", {}, [], [], None)
 
             outcome_map = {sorted(outcome_vals, key=str)[0]: 0, sorted(outcome_vals, key=str)[1]: 1}
             outcomes = work[outcome_col].map(outcome_map)

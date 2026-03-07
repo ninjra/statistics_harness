@@ -17,7 +17,7 @@ class Plugin:
             # Read EBM energy state vector artifact
             vector_path = ctx.run_dir / "artifacts" / "analysis_ideaspace_energy_ebm_v1" / "energy_state_vector.json"
             if not vector_path.exists():
-                return PluginResult("skipped", "No energy state vector found (EBM not run)", {}, [], [], None)
+                return PluginResult("na", "No energy state vector found (EBM not run)", {}, [], [], None)
 
             with open(vector_path) as f:
                 state = json.load(f)
@@ -27,7 +27,7 @@ class Plugin:
             weights = state.get("weights", {})
 
             if not entities or not energy_keys:
-                return PluginResult("skipped", "Empty energy state", {}, [], [], None)
+                return PluginResult("na", "Empty energy state", {}, [], [], None)
 
             # Focus on low-energy entities (well-performing) — fragility = which metric degradation hurts most
             findings = []
@@ -88,7 +88,7 @@ class Plugin:
                     })
 
             if not findings:
-                return PluginResult("skipped", "No perturbation sensitivity detected", {}, [], [], None)
+                return PluginResult("na", "No perturbation sensitivity detected", {}, [], [], None)
 
             return PluginResult(
                 status="ok",

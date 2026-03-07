@@ -39,7 +39,7 @@ class Plugin:
         df = ctx.dataset_loader()
         numeric = df.select_dtypes(include="number")
         if numeric.empty:
-            return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+            return PluginResult("na", "No numeric columns", {}, [], [], None)
         max_points = ctx.settings.get("max_points")
         if not isinstance(max_points, int) or max_points <= 0:
             # Safe default: this method is O(n^2) memory/time.
@@ -49,7 +49,7 @@ class Plugin:
         sample = sampled.to_numpy()
         n = sample.shape[0]
         if n < 2:
-            return PluginResult("skipped", "Not enough points", {}, [], [], None)
+            return PluginResult("na", "Not enough points", {}, [], [], None)
 
         dists = np.linalg.norm(sample[:, None, :] - sample[None, :, :], axis=-1)
         max_dist = float(dists.max())

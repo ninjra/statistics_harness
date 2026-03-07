@@ -23,10 +23,10 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         loader = getattr(ctx, "dataset_loader", None)
         if not callable(loader):
-            return PluginResult("skipped", "dataset_loader unavailable", {}, [], [], None)
+            return PluginResult("na", "dataset_loader unavailable", {}, [], [], None)
         df = loader()
         if df is None or len(df) == 0:
-            return PluginResult("skipped", "Empty dataset", {"rows": 0}, [], [], None)
+            return PluginResult("na", "Empty dataset", {"rows": 0}, [], [], None)
 
         case_col = _pick_column(
             df,
@@ -45,7 +45,7 @@ class Plugin:
         )
         if not case_col or not activity_col:
             return PluginResult(
-                "skipped",
+                "na",
                 "Missing case/activity columns for process conformance",
                 {"rows": int(len(df))},
                 [],
@@ -68,7 +68,7 @@ class Plugin:
                 variants[" > ".join(acts)] += 1
 
         if not variants:
-            return PluginResult("skipped", "No valid traces for conformance", {"rows": int(len(data))}, [], [], None)
+            return PluginResult("na", "No valid traces for conformance", {"rows": int(len(data))}, [], [], None)
 
         expected_path = [str(x) for x in (ctx.settings.get("expected_path") or []) if isinstance(x, str) and str(x).strip()]
         expected_variant = " > ".join(expected_path) if expected_path else None

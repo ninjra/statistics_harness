@@ -26,10 +26,7 @@ settings:
     assignment_penalty_scale: 0.35
     max_processes: 10
     max_examples: 25
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
-  - needs_host
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

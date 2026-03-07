@@ -7,8 +7,7 @@ depends_on: []
 settings:
   description: Detect coordinated multi-metric drift.
   defaults: {}
-capabilities:
-  - needs_timestamp
+capabilities: [needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

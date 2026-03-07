@@ -26,4 +26,4 @@ def test_cuped_variance_reduction_skips_empty(run_dir):
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

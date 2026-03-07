@@ -106,7 +106,7 @@ class Plugin:
 
         columns = ctx.storage.fetch_dataset_columns(dataset_version_id)
         if not columns:
-            return PluginResult("skipped", "No columns found", {}, [], [], None)
+            return PluginResult("na", "No columns found", {}, [], [], None)
 
         name_counts: dict[str, int] = {}
         col_specs: list[dict[str, Any]] = []

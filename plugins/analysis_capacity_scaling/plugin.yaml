@@ -16,9 +16,7 @@ settings:
     scale_factor: null
     max_groups: 5
     max_examples: 25
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -3,8 +3,7 @@ name: NOTEARS Linear
 version: 0.1.0
 type: analysis
 entrypoint: plugin.py:Plugin
-capabilities:
-- needs_multi_numeric
+capabilities: [needs_numeric]
 depends_on:
 - ingest_tabular
 settings:

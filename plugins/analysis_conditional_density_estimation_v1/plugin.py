@@ -14,7 +14,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             group_col = settings.get("group_column")
@@ -38,7 +38,7 @@ class Plugin:
 
             if not group_col or not value_col:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Could not identify a group column and a numeric value column",
                     {}, [], [], None,
                 )
@@ -46,9 +46,9 @@ class Plugin:
             work = df[[group_col, value_col]].dropna()
             groups = work[group_col].unique()
             if len(groups) < 2:
-                return PluginResult("skipped", f"Need >=2 groups, found {len(groups)}", {}, [], [], None)
+                return PluginResult("na", f"Need >=2 groups, found {len(groups)}", {}, [], [], None)
             if len(work) < 10:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             # Fit KDE per group
             kdes = {}
@@ -63,7 +63,7 @@ class Plugin:
                 group_data[g] = vals
 
             if len(kdes) < 2:
-                return PluginResult("skipped", "Need at least 2 groups with >=3 observations each", {}, [], [], None)
+                return PluginResult("na", "Need at least 2 groups with >=3 observations each", {}, [], [], None)
 
             # Compute KL divergence between each pair of group densities
             # Use shared evaluation grid

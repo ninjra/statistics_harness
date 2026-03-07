@@ -39,4 +39,4 @@ def test_sindy_dynamics_discovery_skips_empty(run_dir):
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

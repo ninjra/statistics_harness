@@ -12,20 +12,20 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 1:
-                return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+                return PluginResult("na", "No numeric columns", {}, [], [], None)
 
             # Use first numeric column as outcome, intervention at midpoint
             outcome_col = ctx.settings.get("outcome_column") or numeric_cols[0]
             if outcome_col not in df.columns:
-                return PluginResult("skipped", f"Column {outcome_col} not found", {}, [], [], None)
+                return PluginResult("na", f"Column {outcome_col} not found", {}, [], [], None)
 
             y = df[outcome_col].dropna().values.astype(float)
             if len(y) < 20:
-                return PluginResult("skipped", f"Insufficient data points ({len(y)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient data points ({len(y)})", {}, [], [], None)
 
             # Intervention point: user setting or midpoint
             intervention_idx = int(ctx.settings.get("intervention_index", len(y) // 2))

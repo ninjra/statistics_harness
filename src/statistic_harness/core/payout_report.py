@@ -70,7 +70,7 @@ def build_payout_report(
     if not proc_col:
         return {
             "schema_version": "v1",
-            "status": "skipped",
+            "status": "na",
             "summary": "No process column found for payout report",
             "metrics": {},
             "per_source": [],

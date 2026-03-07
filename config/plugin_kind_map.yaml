@@ -614,3 +614,9 @@ mappings:
   analysis_voronoi_resource_partition_v1: computational_geometry
   analysis_delaunay_interpolation_v1: computational_geometry
   analysis_convex_hull_operating_envelope_v1: computational_geometry
+
+  # ── legacy_prefixed (non-analysis_ prefix) ────────────────────────────────
+  causal_recommendations_v1: causal
+  changepoint_detection_v1: changepoint
+  process_mining_conformance_v1: process_mining
+  process_mining_discovery_v1: process_mining

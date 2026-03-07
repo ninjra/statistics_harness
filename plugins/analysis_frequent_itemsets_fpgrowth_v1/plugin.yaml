@@ -15,9 +15,7 @@ settings:
     max_itemset_size: 6
     max_item_count: 120
     max_entities: 120000
-capabilities:
-- needs_eventlog
-- needs_text
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -99,7 +99,7 @@ def test_new_plugins_crosscutting_contracts(run_dir, plugin_id: str):
     assert _plugin_result_stable_view(res1) == _plugin_result_stable_view(res2)
 
     # Skip gating reason is present.
-    if res1.status in {"skipped", "degraded"}:
+    if res1.status in {"na", "degraded"}:
         assert isinstance(res1.debug, dict)
         assert isinstance(res1.debug.get("gating_reason"), str)
         assert res1.debug.get("gating_reason")

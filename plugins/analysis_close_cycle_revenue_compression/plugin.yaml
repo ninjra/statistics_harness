@@ -42,9 +42,7 @@ settings:
     min_month_rows: 10
     max_months_output: 24
     max_wait_days: 30
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

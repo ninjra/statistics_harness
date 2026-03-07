@@ -12,21 +12,21 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 2:
-                return PluginResult("skipped", "Need at least 2 numeric columns (running + outcome)", {}, [], [], None)
+                return PluginResult("na", "Need at least 2 numeric columns (running + outcome)", {}, [], [], None)
 
             running_col = ctx.settings.get("running_column") or numeric_cols[0]
             outcome_col = ctx.settings.get("outcome_column") or numeric_cols[1] if len(numeric_cols) > 1 else None
 
             if not outcome_col or running_col not in df.columns or outcome_col not in df.columns:
-                return PluginResult("skipped", "Required columns not found", {}, [], [], None)
+                return PluginResult("na", "Required columns not found", {}, [], [], None)
 
             work = df[[running_col, outcome_col]].dropna()
             if len(work) < 30:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             cutoff = float(ctx.settings.get("cutoff", work[running_col].median()))
 

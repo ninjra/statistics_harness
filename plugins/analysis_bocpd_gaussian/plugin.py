@@ -110,10 +110,10 @@ class Plugin:
         else:
             numeric = df.select_dtypes(include="number")
             if numeric.empty:
-                return PluginResult("skipped", "No numeric columns", {}, [], [], None)
+                return PluginResult("na", "No numeric columns", {}, [], [], None)
             columns = list(numeric.columns)
         if not columns:
-            return PluginResult("skipped", "No value columns", {}, [], [], None)
+            return PluginResult("na", "No value columns", {}, [], [], None)
 
         peak_threshold = float(ctx.settings.get("peak_threshold", 0.3))
         hazard_lambda = float(ctx.settings.get("hazard_lambda", 200.0))

@@ -21,7 +21,7 @@ class Plugin:
         loader = getattr(ctx, "dataset_loader", None)
         if not callable(loader):
             return PluginResult(
-                status="skipped",
+                status="na",
                 summary="dataset_loader unavailable",
                 metrics={},
                 findings=[],
@@ -32,7 +32,7 @@ class Plugin:
         df = loader()
         if df is None or len(df) == 0:
             return PluginResult(
-                status="skipped",
+                status="na",
                 summary="Empty dataset",
                 metrics={"rows": 0},
                 findings=[],
@@ -44,7 +44,7 @@ class Plugin:
         value_column = _pick_numeric_column(df, ctx.settings.get("value_column"))
         if not value_column:
             return PluginResult(
-                status="skipped",
+                status="na",
                 summary="No numeric column for changepoint detection",
                 metrics={"rows": int(len(df)), "columns": int(len(df.columns))},
                 findings=[],
@@ -58,7 +58,7 @@ class Plugin:
         window = int(ctx.settings.get("window", 8))
         if len(series) < max(min_points, (2 * window) + 1):
             return PluginResult(
-                status="skipped",
+                status="na",
                 summary="Not enough points for changepoint detection",
                 metrics={"rows_used": int(len(series))},
                 findings=[],

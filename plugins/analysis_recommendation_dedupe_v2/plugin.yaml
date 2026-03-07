@@ -10,8 +10,7 @@ settings:
   defaults:
     max_summary: 10
     recommendations_override: null
-capabilities:
-  - needs_artifacts
+capabilities: [needs_eventlog, needs_numeric]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

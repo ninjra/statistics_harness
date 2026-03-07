@@ -64,7 +64,7 @@ def test_handlers_return_plugin_result():
 
     for plugin_id, handler in list(HANDLERS.items())[:5]:
         result = handler(plugin_id, ctx, df, config, inferred, timer, sample_meta)
-        assert result.status in ("ok", "skipped", "degraded", "error", "na"), f"{plugin_id}: bad status {result.status}"
+        assert result.status in ("ok", "na", "degraded", "error", "na"), f"{plugin_id}: bad status {result.status}"
         assert isinstance(result.findings, list), f"{plugin_id}: findings not list"
         assert isinstance(result.metrics, dict), f"{plugin_id}: metrics not dict"
 
@@ -82,6 +82,6 @@ def test_all_handlers_callable():
         timer = BudgetTimer(30000)
         try:
             result = handler(plugin_id, ctx, df, config, inferred, timer, sample_meta)
-            assert result.status in ("ok", "skipped", "degraded", "error", "na"), f"{plugin_id}: bad status {result.status}"
+            assert result.status in ("ok", "na", "degraded", "error", "na"), f"{plugin_id}: bad status {result.status}"
         except Exception as e:
             pytest.fail(f"{plugin_id} raised {type(e).__name__}: {e}")

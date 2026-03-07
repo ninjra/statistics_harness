@@ -21,4 +21,4 @@ def test_did_skips_without_binary_columns(run_dir):
     df = pd.DataFrame({"x": np.random.randn(50)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

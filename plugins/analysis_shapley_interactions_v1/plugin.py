@@ -16,7 +16,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             target_col = ctx.settings.get("target_column")
             numeric_cols = [
@@ -25,7 +25,7 @@ class Plugin:
 
             if target_col and target_col not in df.columns:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Column '{target_col}' not found",
                     {},
                     [],
@@ -36,7 +36,7 @@ class Plugin:
             if not target_col:
                 if len(numeric_cols) < 3:
                     return PluginResult(
-                        "skipped",
+                        "na",
                         "Need at least 3 numeric columns",
                         {},
                         [],
@@ -48,7 +48,7 @@ class Plugin:
             feature_cols = [c for c in numeric_cols if c != target_col]
             if len(feature_cols) < 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "Need at least 2 feature columns for interactions",
                     {},
                     [],
@@ -62,7 +62,7 @@ class Plugin:
             work = df[feature_cols + [target_col]].dropna()
             if len(work) < 30:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient rows ({len(work)})",
                     {},
                     [],

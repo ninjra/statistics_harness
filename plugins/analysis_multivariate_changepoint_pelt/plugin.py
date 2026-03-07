@@ -92,7 +92,7 @@ class Plugin:
 
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         df, sample_meta = deterministic_sample(df, config.get("max_rows"), seed=config.get("seed", 1337))
         inferred = infer_columns(df, config)
@@ -100,7 +100,7 @@ class Plugin:
         time_col = inferred.get("time_column")
 
         if len(value_cols) < 2:
-            return PluginResult("skipped", "Not enough numeric columns", {}, [], [], None)
+            return PluginResult("na", "Not enough numeric columns", {}, [], [], None)
 
         if time_col and time_col in df.columns:
             df = df.sort_values(time_col)
@@ -111,7 +111,7 @@ class Plugin:
 
         matrix = df[value_cols].dropna().to_numpy(dtype=float)
         if matrix.shape[0] < int(config["pelt"].get("min_segment_size", 50)) * 2:
-            return PluginResult("skipped", "Not enough rows for changepoint detection", {}, [], [], None)
+            return PluginResult("na", "Not enough rows for changepoint detection", {}, [], [], None)
 
         standardized = _standardize_matrix(matrix)
         u, s, vt = np.linalg.svd(standardized, full_matrices=False)

@@ -14,7 +14,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             outcome_col = settings.get("outcome_column")
@@ -29,7 +29,7 @@ class Plugin:
                         binary_cols.append(c)
                 if len(binary_cols) < 2:
                     return PluginResult(
-                        "skipped",
+                        "na",
                         "Need at least 2 binary columns (sensitive attribute + outcome)",
                         {}, [], [], None,
                     )
@@ -39,20 +39,20 @@ class Plugin:
                     outcome_col = binary_cols[1] if binary_cols[1] != sensitive_col else binary_cols[0]
                     if outcome_col == sensitive_col:
                         return PluginResult(
-                            "skipped",
+                            "na",
                             "Cannot use same column for sensitive attribute and outcome",
                             {}, [], [], None,
                         )
 
             work = df[[sensitive_col, outcome_col]].dropna()
             if len(work) < 10:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             # Encode outcome to 0/1
             outcome_vals = sorted(work[outcome_col].unique(), key=str)
             if len(outcome_vals) != 2:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Outcome column must be binary, found {len(outcome_vals)} levels",
                     {}, [], [], None,
                 )
@@ -69,7 +69,7 @@ class Plugin:
                 from sklearn.metrics import accuracy_score
             except ImportError:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "fairlearn or sklearn not installed",
                     {}, [], [], None,
                 )

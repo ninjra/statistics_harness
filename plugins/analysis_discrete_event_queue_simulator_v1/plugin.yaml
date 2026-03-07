@@ -12,8 +12,7 @@ settings:
   defaults:
     sim_hours: 72
     replications: 5
-capabilities:
-- needs_eventlog
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

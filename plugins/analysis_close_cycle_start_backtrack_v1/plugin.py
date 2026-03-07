@@ -271,7 +271,7 @@ class Plugin:
     def run(self, ctx) -> PluginResult:
         df = ctx.dataset_loader()
         if df.empty:
-            return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+            return PluginResult("na", "Empty dataset", {}, [], [], None)
 
         role_by_name: dict[str, str] = {}
         if ctx.dataset_version_id:

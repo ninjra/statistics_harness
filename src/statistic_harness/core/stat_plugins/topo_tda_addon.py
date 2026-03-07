@@ -214,7 +214,7 @@ def _ttests_auto(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if not numeric_cols or not cat_cols:
-        return PluginResult("skipped", "Need numeric + categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric + categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     privacy = _privacy(config)
     redactor = build_redactor(privacy)
@@ -223,14 +223,14 @@ def _ttests_auto(
     if not isinstance(value_col, str) or value_col not in df.columns:
         value_col = _pick_duration_column(df, numeric_cols)
     if not value_col:
-        return PluginResult("skipped", "No numeric target detected", {}, [], [], None)
+        return PluginResult("na", "No numeric target detected", {}, [], [], None)
 
     max_group_cols = int(config.get("max_group_cols", 8))
     group_cols = _top_group_columns(df, list(cat_cols), max_group_cols, k_min)
     # binary only
     group_cols = [c for c in group_cols if int(df[c].nunique(dropna=True)) == 2]
     if not group_cols:
-        return PluginResult("skipped", "No k-anonymous binary group columns detected", {}, [], [], None)
+        return PluginResult("na", "No k-anonymous binary group columns detected", {}, [], [], None)
 
     max_tests = int(config.get("max_tests", 200))
     pvals: list[float] = []
@@ -310,14 +310,14 @@ def _chi_square_association(
 ) -> PluginResult:
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if not cat_cols or len(cat_cols) < 2:
-        return PluginResult("skipped", "Need categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     privacy = _privacy(config)
     redactor = build_redactor(privacy)
     max_cols = int(config.get("max_group_cols", 12))
     cols = _top_group_columns(df, list(cat_cols), max_cols, k_min)
     if len(cols) < 2:
-        return PluginResult("skipped", "No k-anonymous categorical pairs detected", {}, [], [], None)
+        return PluginResult("na", "No k-anonymous categorical pairs detected", {}, [], [], None)
 
     max_pairs = int(config.get("max_pairs", 80))
     max_levels_per_col = int(config.get("max_unique_levels_per_column", 2000))
@@ -423,7 +423,7 @@ def _anova_auto(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if not numeric_cols or not cat_cols:
-        return PluginResult("skipped", "Need numeric + categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric + categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     privacy = _privacy(config)
     redactor = build_redactor(privacy)
@@ -436,7 +436,7 @@ def _anova_auto(
     if not isinstance(value_col, str) or value_col not in df.columns:
         value_col = _pick_duration_column(df, numeric_cols)
     if not value_col:
-        return PluginResult("skipped", "No numeric target detected", {}, [], [], None)
+        return PluginResult("na", "No numeric target detected", {}, [], [], None)
 
     group_col = config.get("group_column")
     if not isinstance(group_col, str) or group_col not in df.columns:
@@ -446,11 +446,11 @@ def _anova_auto(
         candidates = _top_group_columns(df, list(cat_cols), 10, k_min)
         group_col = candidates[0] if candidates else None
     if not group_col:
-        return PluginResult("skipped", "No suitable group column detected", {}, [], [], None)
+        return PluginResult("na", "No suitable group column detected", {}, [], [], None)
 
     y_all = pd.to_numeric(df[value_col], errors="coerce")
     if y_all.notna().sum() < 20:
-        return PluginResult("skipped", "Insufficient numeric data for ANOVA", {}, [], [], None)
+        return PluginResult("na", "Insufficient numeric data for ANOVA", {}, [], [], None)
 
     max_processes = int(config.get("max_processes", 25))
     max_levels = int(config.get("max_levels", 8))
@@ -552,12 +552,12 @@ def _regression_auto(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     value_col = config.get("target_column")
     if not isinstance(value_col, str) or value_col not in df.columns:
         value_col = _pick_duration_column(df, numeric_cols)
     if not value_col:
-        return PluginResult("skipped", "No numeric target detected", {}, [], [], None)
+        return PluginResult("na", "No numeric target detected", {}, [], [], None)
 
     max_num_features = int(config.get("max_num_features", 12))
     max_cat_features = int(config.get("max_cat_features", 4))
@@ -568,7 +568,7 @@ def _regression_auto(
     y = pd.to_numeric(df[value_col], errors="coerce").to_numpy(dtype=float)
     mask = np.isfinite(y)
     if mask.sum() < 50:
-        return PluginResult("skipped", "Insufficient target data for regression", {}, [], [], None)
+        return PluginResult("na", "Insufficient target data for regression", {}, [], [], None)
 
     # Build a lightweight design matrix: top numeric features + one-hot for a few low-card cats.
     other_nums = [c for c in numeric_cols if c != value_col and c in df.columns][:max_num_features]
@@ -654,13 +654,13 @@ def _time_series_analysis_auto(
     time_col = inferred.get("time_column")
     numeric_cols = inferred.get("numeric_columns") or []
     if not time_col or time_col not in df.columns or not numeric_cols:
-        return PluginResult("skipped", "Need time + numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need time + numeric columns", {}, [], [], None)
     # Choose a small set of top variance metrics.
     max_metrics = int(config.get("max_metrics", 6))
     metrics = numeric_cols[:max_metrics]
     ts = pd.to_datetime(df[time_col], errors="coerce")
     if ts.notna().sum() < 50:
-        return PluginResult("skipped", "Insufficient valid timestamps", {}, [], [], None)
+        return PluginResult("na", "Insufficient valid timestamps", {}, [], [], None)
     work = df.loc[ts.notna(), :].copy()
     work["_t"] = ts.loc[ts.notna()]
     work = work.sort_values("_t")
@@ -703,16 +703,16 @@ def _survival_time_to_event(
     # Minimal gating: needs a duration-like numeric.
     numeric_cols = inferred.get("numeric_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     duration_col = config.get("duration_column")
     if not isinstance(duration_col, str) or duration_col not in df.columns:
         duration_col = _pick_duration_column(df, numeric_cols)
     if not duration_col:
-        return PluginResult("skipped", "No duration-like metric detected", {}, [], [], None)
+        return PluginResult("na", "No duration-like metric detected", {}, [], [], None)
     durations = pd.to_numeric(df[duration_col], errors="coerce").to_numpy(dtype=float)
     durations = durations[np.isfinite(durations)]
     if durations.size < 100:
-        return PluginResult("skipped", "Insufficient durations for survival summary", {}, [], [], None)
+        return PluginResult("na", "Insufficient durations for survival summary", {}, [], [], None)
     # Output a simple KM-like summary: percentiles.
     p50 = float(np.nanpercentile(durations, 50))
     p90 = float(np.nanpercentile(durations, 90))
@@ -740,11 +740,11 @@ def _factor_analysis_auto(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 3:
-        return PluginResult("skipped", "Need 3+ numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need 3+ numeric columns", {}, [], [], None)
     max_cols = int(config.get("max_cols", 20))
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=max_cols)
     if X.shape[0] < 50 or X.shape[1] < 3:
-        return PluginResult("skipped", "Insufficient numeric matrix", {}, [], [], None)
+        return PluginResult("na", "Insufficient numeric matrix", {}, [], [], None)
     n_components = int(config.get("n_components", min(5, X.shape[1])))
     if HAS_SKLEARN and PCA is not None:
         pca = PCA(n_components=n_components, random_state=int(config.get("seed", 1337)))
@@ -778,14 +778,14 @@ def _cluster_analysis_auto(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need 2+ numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need 2+ numeric columns", {}, [], [], None)
     if not (HAS_SKLEARN and KMeans is not None):
         return PluginResult("degraded", "sklearn missing; clustering unavailable", _basic_metrics(df, sample_meta), [], [], None)
     max_points = int(config.get("max_points", 2000))
     max_cols = int(config.get("max_cols", 12))
     X, cols = _numeric_matrix(df.head(max_points), numeric_cols, max_cols=max_cols)
     if X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient rows for clustering", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for clustering", {}, [], [], None)
     # Pick k by a small silhouette sweep.
     best_k = None
     best_score = -1.0
@@ -833,12 +833,12 @@ def _pca_auto(
 ) -> PluginResult:
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need 2+ numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need 2+ numeric columns", {}, [], [], None)
     max_points = int(config.get("max_points", 5000))
     max_cols = int(config.get("max_cols", 20))
     X, cols = _numeric_matrix(df.head(max_points), numeric_cols, max_cols=max_cols)
     if X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient rows for PCA", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for PCA", {}, [], [], None)
     n_components = int(config.get("n_components", min(5, X.shape[1])))
     if HAS_SKLEARN and PCA is not None:
         pca = PCA(n_components=n_components, random_state=int(config.get("seed", 1337)))
@@ -874,18 +874,18 @@ def _topographic_similarity_angle_projection(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if len(numeric_cols) < 2 or not cat_cols:
-        return PluginResult("skipped", "Need multi-numeric + categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric + categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     privacy = _privacy(config)
     redactor = build_redactor(privacy)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 30)))
     if X.shape[0] < 50 or X.shape[1] < 2:
-        return PluginResult("skipped", "Insufficient numeric matrix", {}, [], [], None)
+        return PluginResult("na", "Insufficient numeric matrix", {}, [], [], None)
 
     max_groups = int(config.get("max_groups", 6))
     group_cols = _top_group_columns(df, list(cat_cols), max_cols=int(config.get("max_group_cols", 6)), k_min=k_min)
     if not group_cols:
-        return PluginResult("skipped", "No k-anonymous group columns", {}, [], [], None)
+        return PluginResult("na", "No k-anonymous group columns", {}, [], [], None)
     global_map = np.nanmedian(X, axis=0)
     rows: list[dict[str, Any]] = []
     for gcol in group_cols:
@@ -946,14 +946,14 @@ def _topographic_angle_dynamics(
     time_col = inferred.get("time_column")
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric columns", {}, [], [], None)
     if not time_col or time_col not in df.columns:
-        return PluginResult("skipped", "Need time column for dynamics", {}, [], [], None)
+        return PluginResult("na", "Need time column for dynamics", {}, [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 30)))
     ts = pd.to_datetime(df[time_col], errors="coerce")
     m = ts.notna()
     if m.sum() < 100:
-        return PluginResult("skipped", "Insufficient valid timestamps", {}, [], [], None)
+        return PluginResult("na", "Insufficient valid timestamps", {}, [], [], None)
     order = np.argsort(ts[m].to_numpy())
     Xs = X[m.to_numpy()][order]
     ts_s = ts[m].to_numpy()[order]
@@ -991,15 +991,15 @@ def _topographic_tanova_permutation(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if len(numeric_cols) < 2 or not cat_cols:
-        return PluginResult("skipped", "Need multi-numeric + categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric + categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     max_group_cols = int(config.get("max_group_cols", 8))
     group_cols = _top_group_columns(df, list(cat_cols), max_cols=max_group_cols, k_min=k_min)
     if not group_cols:
-        return PluginResult("skipped", "No k-anonymous group columns", {}, [], [], None)
+        return PluginResult("na", "No k-anonymous group columns", {}, [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 25)))
     if X.shape[0] < 80:
-        return PluginResult("skipped", "Insufficient rows for permutation test", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for permutation test", {}, [], [], None)
     n_perm = int(config.get("n_permutations", 200))
     rng = np.random.RandomState(int(config.get("seed", 1337)))
 
@@ -1077,20 +1077,20 @@ def _map_permutation_test_karniski(
     numeric_cols = inferred.get("numeric_columns") or []
     cat_cols = inferred.get("categorical_columns") or inferred.get("group_by") or []
     if len(numeric_cols) < 2 or not cat_cols:
-        return PluginResult("skipped", "Need multi-numeric + categorical columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric + categorical columns", {}, [], [], None)
     k_min = _k_min(config)
     group_col = config.get("group_column")
     if not isinstance(group_col, str) or group_col not in df.columns:
         candidates = _top_group_columns(df, list(cat_cols), max_cols=8, k_min=k_min)
         group_col = candidates[0] if candidates else None
     if not group_col:
-        return PluginResult("skipped", "No suitable group column detected", {}, [], [], None)
+        return PluginResult("na", "No suitable group column detected", {}, [], [], None)
     X, cols = _numeric_matrix(df, numeric_cols, max_cols=int(config.get("max_cols", 30)))
     labels = df[group_col]
     vc = labels.value_counts(dropna=False)
     levels = [lvl for lvl in vc.index if int(vc[lvl]) >= k_min][:2]
     if len(levels) != 2:
-        return PluginResult("skipped", "Need two k-anonymous groups for Karniski-style test", {}, [], [], None)
+        return PluginResult("na", "Need two k-anonymous groups for Karniski-style test", {}, [], [], None)
     a, b = levels[0], levels[1]
     idx_a = (labels == a).to_numpy()
     idx_b = (labels == b).to_numpy()
@@ -1265,14 +1265,14 @@ def _tda_persistent_homology(
         return PluginResult("degraded", "Heavy TDA disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistent_homology", "disabled_by_config"), [], None)
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric columns", {}, [], [], None)
     max_points = int(config.get("max_points", 1200))
     X, cols = _numeric_matrix(df.head(max_points), numeric_cols, max_cols=int(config.get("max_cols", 20)))
     if X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient points for TDA proxy", {}, [], [], None)
+        return PluginResult("na", "Insufficient points for TDA proxy", {}, [], [], None)
     edges = _knn_edges(X, k=int(config.get("knn_k", 10)), timer=timer)
     if not edges:
-        return PluginResult("skipped", "No graph edges produced", {}, [], [], None)
+        return PluginResult("na", "No graph edges produced", {}, [], [], None)
     lifetimes, mst_len = _h0_from_edges(int(X.shape[0]), edges, timer)
     comps = _connected_components_from_edges(int(X.shape[0]), edges)
     V = int(X.shape[0])
@@ -1307,18 +1307,18 @@ def _tda_persistence_landscapes(
         return PluginResult("degraded", "Heavy TDA disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_persistence_landscapes", "disabled_by_config"), [], None)
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric columns", {}, [], [], None)
     X, cols = _numeric_matrix(
         df.head(int(config.get("max_points", 1200))),
         numeric_cols,
         max_cols=int(config.get("max_cols", 20)),
     )
     if X.shape[0] < 50:
-        return PluginResult("skipped", "Insufficient points for landscapes proxy", {}, [], [], None)
+        return PluginResult("na", "Insufficient points for landscapes proxy", {}, [], [], None)
     edges = _knn_edges(X, k=int(config.get("knn_k", 10)), timer=timer)
     lifetimes, _ = _h0_from_edges(int(X.shape[0]), edges, timer)
     if not lifetimes:
-        return PluginResult("skipped", "Insufficient topology signal", {}, [], [], None)
+        return PluginResult("na", "Insufficient topology signal", {}, [], [], None)
     life = np.array(lifetimes, dtype=float)
     t_max = float(np.nanmax(life))
     grid_n = max(10, int(config.get("landscape_grid", 40)))
@@ -1361,14 +1361,14 @@ def _tda_mapper_graph(
         return PluginResult("degraded", "Heavy mapper disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("tda_mapper_graph", "disabled_by_config"), [], None)
     numeric_cols = inferred.get("numeric_columns") or []
     if len(numeric_cols) < 2:
-        return PluginResult("skipped", "Need multi-numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric columns", {}, [], [], None)
     X, cols = _numeric_matrix(
         df.head(int(config.get("max_points", 1200))),
         numeric_cols,
         max_cols=int(config.get("max_cols", 20)),
     )
     if X.shape[0] < 80:
-        return PluginResult("skipped", "Insufficient points for mapper graph", {}, [], [], None)
+        return PluginResult("na", "Insufficient points for mapper graph", {}, [], [], None)
 
     seed = int(config.get("seed", 1337))
     n_intervals = max(4, int(config.get("n_intervals", 8)))
@@ -1384,7 +1384,7 @@ def _tda_mapper_graph(
     lo = float(np.nanmin(lens))
     hi = float(np.nanmax(lens))
     if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
-        return PluginResult("skipped", "Lens is degenerate", {}, [], [], None)
+        return PluginResult("na", "Lens is degenerate", {}, [], [], None)
 
     span = hi - lo
     width = span / float(n_intervals)
@@ -1439,7 +1439,7 @@ def _tda_mapper_graph(
             )
 
     if not nodes:
-        return PluginResult("skipped", "No mapper nodes survived thresholds", {}, [], [], None)
+        return PluginResult("na", "No mapper nodes survived thresholds", {}, [], [], None)
 
     edges_set: set[tuple[int, int]] = set()
     for node_ids in point_to_nodes.values():
@@ -1499,11 +1499,11 @@ def _tda_betti_curve_changepoint(
     if time_col is None:
         time_col = _pick_column_by_tokens(df, ("time", "date", "timestamp", "created", "start"))
     if len(numeric_cols) < 2 or not isinstance(time_col, str) or time_col not in df.columns:
-        return PluginResult("skipped", "Need multi-numeric columns and time column", {}, [], [], None)
+        return PluginResult("na", "Need multi-numeric columns and time column", {}, [], [], None)
     ts = pd.to_datetime(df[time_col], errors="coerce")
     valid = ts.notna()
     if int(valid.sum()) < 120:
-        return PluginResult("skipped", "Insufficient valid timestamps", {}, [], [], None)
+        return PluginResult("na", "Insufficient valid timestamps", {}, [], [], None)
     order = np.argsort(ts[valid].to_numpy())
     dff = df.loc[valid].iloc[order]
     tsv = ts[valid].to_numpy()[order]
@@ -1511,7 +1511,7 @@ def _tda_betti_curve_changepoint(
     window = max(60, int(config.get("window_rows", 200)))
     step = max(20, int(config.get("step_rows", max(40, window // 4))))
     if len(dff) < window:
-        return PluginResult("skipped", "Insufficient rows for betti windows", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for betti windows", {}, [], [], None)
     k = int(config.get("knn_k", 8))
     rows = []
     for start in range(0, len(dff) - window + 1, step):
@@ -1535,7 +1535,7 @@ def _tda_betti_curve_changepoint(
             }
         )
     if len(rows) < 5:
-        return PluginResult("skipped", "Insufficient betti windows", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient betti windows", _basic_metrics(df, sample_meta), [], [], None)
 
     b1 = np.array([float(r["betti1_proxy"]) for r in rows], dtype=float)
     jump = np.abs(np.diff(b1))
@@ -1578,10 +1578,10 @@ def _surface_multiscale_wavelet_curvature(
         return PluginResult("degraded", "Surface complexity disabled by config", _basic_metrics(df, sample_meta), _heavy_placeholder("surface_multiscale_wavelet_curvature", "disabled_by_config"), [], None)
     numeric_cols = inferred.get("numeric_columns") or []
     if not numeric_cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
     if not cols:
-        return PluginResult("skipped", "No numeric columns selected", {}, [], [], None)
+        return PluginResult("na", "No numeric columns selected", {}, [], [], None)
     scales = [int(v) for v in config.get("scales", [1, 2, 4, 8, 16]) if int(v) > 0]
     rows = []
     for col in cols:
@@ -1605,7 +1605,7 @@ def _surface_multiscale_wavelet_curvature(
         mean_curv = float(np.nanmean([r["curvature_mean_abs"] for r in scale_rows]))
         rows.append({"column": str(col), "mean_multiscale_curvature": mean_curv, "scales": scale_rows})
     if not rows:
-        return PluginResult("skipped", "No valid surface curvature rows", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No valid surface curvature rows", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: float(r["mean_multiscale_curvature"]), reverse=True)
     findings = [
         {
@@ -1634,7 +1634,7 @@ def _surface_fractal_dimension_variogram(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 10))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     max_lag = max(4, int(config.get("max_lag", 24)))
     rows = []
     for col in cols:
@@ -1671,7 +1671,7 @@ def _surface_fractal_dimension_variogram(
             }
         )
     if not rows:
-        return PluginResult("skipped", "Insufficient data for variogram dimension", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Insufficient data for variogram dimension", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: float(r["fractal_dimension"]), reverse=True)
     findings = [
         {
@@ -1701,7 +1701,7 @@ def _surface_rugosity_index(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     rows = []
     for col in cols:
         if timer.exceeded():
@@ -1720,7 +1720,7 @@ def _surface_rugosity_index(
         local = float(np.nanmedian(np.abs(diff)) / robust_range)
         rows.append({"column": str(col), "rugosity_index": rugosity, "local_roughness": local})
     if not rows:
-        return PluginResult("skipped", "No valid rugosity metrics", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No valid rugosity metrics", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: float(r["rugosity_index"]), reverse=True)
     findings = [
         {
@@ -1750,7 +1750,7 @@ def _surface_terrain_position_index(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     window = max(5, int(config.get("window", 15)))
     if window % 2 == 0:
         window += 1
@@ -1777,7 +1777,7 @@ def _surface_terrain_position_index(
             }
         )
     if not rows:
-        return PluginResult("skipped", "No terrain position metrics produced", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No terrain position metrics produced", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: float(r["mean_abs_tpi"]), reverse=True)
     findings = [
         {
@@ -1811,7 +1811,7 @@ def _surface_fabric_sso_eigen(
         max_cols=int(config.get("max_cols", 12)),
     )
     if X.shape[0] < 60 or X.shape[1] < 2:
-        return PluginResult("skipped", "Need at least 60 rows and 2 numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need at least 60 rows and 2 numeric columns", {}, [], [], None)
     cov = np.cov(X, rowvar=False)
     eigvals, eigvecs = np.linalg.eigh(cov)
     order = np.argsort(eigvals)[::-1]
@@ -1820,7 +1820,7 @@ def _surface_fabric_sso_eigen(
     eigvals = np.maximum(eigvals, 0.0)
     total = float(np.sum(eigvals))
     if total <= 0.0:
-        return PluginResult("skipped", "Degenerate covariance for fabric eigen analysis", {}, [], [], None)
+        return PluginResult("na", "Degenerate covariance for fabric eigen analysis", {}, [], [], None)
     lam = eigvals / total
     anisotropy = float((lam[0] - lam[1]) / max(1e-9, float(np.sum(lam[:2]))))
     planarity = float((lam[1] - lam[2]) / max(1e-9, float(np.sum(lam[:3])))) if lam.size >= 3 else 0.0
@@ -1857,12 +1857,12 @@ def _surface_hydrology_flow_watershed(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 6))]
     if len(cols) < 3:
-        return PluginResult("skipped", "Need at least 3 numeric columns for flow/watershed proxy", {}, [], [], None)
+        return PluginResult("na", "Need at least 3 numeric columns for flow/watershed proxy", {}, [], [], None)
     frame = df[cols].head(int(config.get("max_points", 2000))).apply(pd.to_numeric, errors="coerce")
     frame = frame.fillna(frame.median(numeric_only=True))
     arr = frame.to_numpy(dtype=float)
     if arr.shape[0] < 80:
-        return PluginResult("skipped", "Insufficient rows for watershed proxy", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for watershed proxy", {}, [], [], None)
     elev = arr[:, 2]
     k = max(3, int(config.get("knn_k", 8)))
     edges = _knn_edges(arr[:, :2], k=k, timer=timer)
@@ -1934,7 +1934,7 @@ def _bayesian_point_displacement(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     time_col = inferred.get("time_column")
     if isinstance(time_col, str) and time_col in df.columns:
         ts = pd.to_datetime(df[time_col], errors="coerce")
@@ -1943,7 +1943,7 @@ def _bayesian_point_displacement(
     else:
         dff = df
     if len(dff) < 80:
-        return PluginResult("skipped", "Insufficient rows for displacement", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for displacement", {}, [], [], None)
 
     split = int(len(dff) * 0.5)
     left = dff.iloc[:split]
@@ -1996,7 +1996,7 @@ def _bayesian_point_displacement(
                 }
             )
     if not rows:
-        return PluginResult("skipped", "No valid numeric columns for displacement", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No valid numeric columns for displacement", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: abs(float(r["posterior_mean_delta"])), reverse=True)
     findings.sort(key=lambda r: abs(float(r["posterior_mean_delta"])), reverse=True)
     artifacts = [_artifact(ctx, plugin_id, "bayesian_point_displacement.json", {"rows": rows}, "json")]
@@ -2017,12 +2017,12 @@ def _monte_carlo_surface_uncertainty(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 8))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     frame = df[cols].head(int(config.get("max_points", 3000))).apply(pd.to_numeric, errors="coerce")
     frame = frame.fillna(frame.median(numeric_only=True))
     arr = frame.to_numpy(dtype=float)
     if arr.shape[0] < 80:
-        return PluginResult("skipped", "Insufficient rows for Monte Carlo uncertainty", {}, [], [], None)
+        return PluginResult("na", "Insufficient rows for Monte Carlo uncertainty", {}, [], [], None)
     n_iter = max(40, int(config.get("n_iter", 200)))
     seed = int(config.get("seed", 1337))
     rng = np.random.RandomState(seed)
@@ -2035,7 +2035,7 @@ def _monte_carlo_surface_uncertainty(
         col_std = np.nanstd(sample, axis=0)
         metrics.append(float(np.nanmean(col_std)))
     if not metrics:
-        return PluginResult("skipped", "Monte Carlo halted by time budget", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "Monte Carlo halted by time budget", _basic_metrics(df, sample_meta), [], [], None)
     m = np.array(metrics, dtype=float)
     finding = {
         "kind": "monte_carlo_surface_uncertainty",
@@ -2065,7 +2065,7 @@ def _surface_roughness_metrics(
     numeric_cols = inferred.get("numeric_columns") or []
     cols = [c for c in numeric_cols if c in df.columns][: int(config.get("max_cols", 12))]
     if not cols:
-        return PluginResult("skipped", "Need numeric columns", {}, [], [], None)
+        return PluginResult("na", "Need numeric columns", {}, [], [], None)
     rows = []
     for col in cols:
         if timer.exceeded():
@@ -2102,7 +2102,7 @@ def _surface_roughness_metrics(
             }
         )
     if not rows:
-        return PluginResult("skipped", "No valid roughness rows", _basic_metrics(df, sample_meta), [], [], None)
+        return PluginResult("na", "No valid roughness rows", _basic_metrics(df, sample_meta), [], [], None)
     rows.sort(key=lambda r: float(r["roughness_score"]), reverse=True)
     findings = [
         {
@@ -2254,7 +2254,7 @@ def _actionable_ops_levers_v1(
         else:
             duration_col = _pick_duration_column(df, num_cols)
     if not duration_col:
-        return PluginResult("skipped", "No numeric duration/target column detected", {}, [], [], None)
+        return PluginResult("na", "No numeric duration/target column detected", {}, [], [], None)
 
     process_col = config.get("process_column")
     if not isinstance(process_col, str) or process_col not in df.columns:
@@ -2268,7 +2268,7 @@ def _actionable_ops_levers_v1(
             process_col = _pick_from_all(("process", "activity", "task", "action", "job", "step", "workflow"))
     if not process_col:
         # Without a process key we cannot make specific recommendations.
-        return PluginResult("skipped", "No process/activity column detected", {}, [], [], None)
+        return PluginResult("na", "No process/activity column detected", {}, [], [], None)
 
     # Process exclusions: interpret as patterns (glob/SQL-like/regex), with conservative defaults.
     exclude_list = config.get("exclude_processes")

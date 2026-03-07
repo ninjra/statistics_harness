@@ -5,8 +5,7 @@ type: analysis
 entrypoint: plugin.py:Plugin
 depends_on:
 - ingest_tabular
-capabilities:
-- needs_eventlog
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 settings:
   description: Sequence mining for event logs
   defaults:

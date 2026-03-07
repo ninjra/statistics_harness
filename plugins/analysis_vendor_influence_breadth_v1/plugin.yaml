@@ -11,8 +11,7 @@ settings:
     cross_links_path: null
     vendor_entity_type: org
     top_k: 50
-capabilities:
-- needs_cross_dataset
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

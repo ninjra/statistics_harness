@@ -39,4 +39,4 @@ def test_functional_data_analysis_skips_single_column(run_dir):
     df = pd.DataFrame({"a": [1.0, 2.0, 3.0, 4.0, 5.0]})
     ctx = make_context(run_dir, df, {}, run_seed=42)
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

@@ -37,5 +37,5 @@ def test_group_slicing_plugins_do_not_error_on_wide_grouped_data(run_dir, plugin
     ctx = make_context(run_dir, df, {})
     ctx.settings = {"group_by": ["grp"], "max_groups": 2, "max_findings": 5}
     result = plugin_cls().run(ctx)
-    assert result.status in {"ok", "skipped", "degraded"}
+    assert result.status in {"ok", "na", "degraded"}
     assert result.status != "error"

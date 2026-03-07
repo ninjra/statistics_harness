@@ -13,7 +13,7 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             settings = ctx.settings or {}
             col = settings.get("column")
@@ -27,7 +27,7 @@ class Plugin:
 
             if not col or col not in df.columns:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     "No suitable numeric column found (need >= 30 non-null values)",
                     {}, [], [], None,
                 )
@@ -35,7 +35,7 @@ class Plugin:
             series = df[col].dropna().values.astype(float)
             if len(series) < 30:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient data points ({len(series)}), need >= 30",
                     {}, [], [], None,
                 )
@@ -44,7 +44,7 @@ class Plugin:
             s_min, s_max = float(np.min(series)), float(np.max(series))
             if s_max - s_min < 1e-12:
                 return PluginResult(
-                    "skipped", "Constant series, nothing to predict",
+                    "na", "Constant series, nothing to predict",
                     {}, [], [], None,
                 )
             normed = (series - s_min) / (s_max - s_min)
@@ -59,7 +59,7 @@ class Plugin:
 
             if len(X_test) < 2:
                 return PluginResult(
-                    "skipped", "Test set too small after 80/20 split",
+                    "na", "Test set too small after 80/20 split",
                     {}, [], [], None,
                 )
 

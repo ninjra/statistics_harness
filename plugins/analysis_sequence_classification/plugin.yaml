@@ -12,8 +12,7 @@ settings:
     max_processes: 10
     min_sequence_ratio: 0.0
     max_examples: 25
-capabilities:
-  - needs_eventlog
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

@@ -16,20 +16,20 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [
                 c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])
             ]
             if not numeric_cols:
                 return PluginResult(
-                    "skipped", "No numeric columns", {}, [], [], None
+                    "na", "No numeric columns", {}, [], [], None
                 )
 
             target_col = ctx.settings.get("target_column", numeric_cols[0])
             if target_col not in df.columns:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Column '{target_col}' not found",
                     {},
                     [],
@@ -40,7 +40,7 @@ class Plugin:
             series = df[target_col].dropna().values.astype(np.float64)
             if len(series) < 20:
                 return PluginResult(
-                    "skipped",
+                    "na",
                     f"Insufficient data ({len(series)} rows)",
                     {},
                     [],

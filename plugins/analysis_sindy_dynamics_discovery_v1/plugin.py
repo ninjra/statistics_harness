@@ -14,29 +14,29 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = df.select_dtypes(include="number").columns.tolist()
             if len(numeric_cols) < 1:
-                return PluginResult("skipped", "No numeric columns found", {}, [], [], None)
+                return PluginResult("na", "No numeric columns found", {}, [], [], None)
 
             settings = ctx.settings or {}
             state_cols = settings.get("state_columns", numeric_cols)
             # Filter to columns that actually exist
             state_cols = [c for c in state_cols if c in df.columns]
             if len(state_cols) < 1:
-                return PluginResult("skipped", "No valid state columns", {}, [], [], None)
+                return PluginResult("na", "No valid state columns", {}, [], [], None)
 
             work = df[state_cols].dropna()
             if len(work) < 10:
                 return PluginResult(
-                    "skipped", f"Insufficient rows ({len(work)}) for SINDy", {}, [], [], None,
+                    "na", f"Insufficient rows ({len(work)}) for SINDy", {}, [], [], None,
                 )
 
             try:
                 import pysindy as ps
             except ImportError:
-                return PluginResult("skipped", "pysindy not installed", {}, [], [], None)
+                return PluginResult("na", "pysindy not installed", {}, [], [], None)
 
             X = work.values.astype(float)
             dt = settings.get("dt", 1.0)

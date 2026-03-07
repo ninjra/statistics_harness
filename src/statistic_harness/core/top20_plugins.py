@@ -264,7 +264,7 @@ def _artifact(ctx, plugin_id: str, name: str, payload: Any, kind: str = "json") 
 def _require_template(info: TemplateInfo | None, plugin_id: str) -> tuple[str, TemplateInfo] | PluginResult:
     if info is None:
         return PluginResult(
-            "skipped",
+            "na",
             "No ready normalized template found for dataset; run transform_normalize_mixed first",
             metrics={},
             findings=[],
@@ -704,7 +704,7 @@ def _run_param_near_duplicate_minhash(ctx, plugin_id: str, config: dict[str, Any
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process") or None
     if not proc_col:
-        return PluginResult("skipped", "No process column inferred (role process_name)", {}, [], [], None)
+        return PluginResult("na", "No process column inferred (role process_name)", {}, [], [], None)
 
     exclude_match = _exclude_matcher(ctx, config)
     ignore_re = _parse_ignore_regex(config)
@@ -860,7 +860,7 @@ def _run_param_near_duplicate_simhash(ctx, plugin_id: str, config: dict[str, Any
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process") or None
     if not proc_col:
-        return PluginResult("skipped", "No process column inferred (role process_name)", {}, [], [], None)
+        return PluginResult("na", "No process column inferred (role process_name)", {}, [], [], None)
 
     exclude_match = _exclude_matcher(ctx, config)
     ignore_re = _parse_ignore_regex(config)
@@ -1513,7 +1513,7 @@ def _run_sequential_patterns_prefixspan(ctx, plugin_id: str, config: dict[str, A
     time_col = info.role_field("start_time") or info.role_field("queue_time") or info.role_field("end_time")
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not case_col or not time_col or not proc_col:
-        return PluginResult("skipped", "Missing case/time/process columns for sequence mining", {}, [], [], None)
+        return PluginResult("na", "Missing case/time/process columns for sequence mining", {}, [], [], None)
 
     max_cases = int(config.get("max_cases") or 5000)
     min_support = int(config.get("min_support") or 5)
@@ -1523,7 +1523,7 @@ def _run_sequential_patterns_prefixspan(ctx, plugin_id: str, config: dict[str, A
     with ctx.storage.connection() as conn:
         seqs = _case_sequences(conn, template_table, dataset_version_id, case_col, time_col, proc_col, max_cases=max_cases)
     if not seqs:
-        return PluginResult("skipped", "No case sequences found", {}, [], [], None)
+        return PluginResult("na", "No case sequences found", {}, [], [], None)
 
     ps = PrefixSpan(seqs)
     patterns = ps.frequent(min_support, closed=True)
@@ -1582,7 +1582,7 @@ def _run_sequence_grammar_sequitur(ctx, plugin_id: str, config: dict[str, Any]) 
     time_col = info.role_field("start_time") or info.role_field("queue_time") or info.role_field("end_time")
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not case_col or not time_col or not proc_col:
-        return PluginResult("skipped", "Missing case/time/process columns for sequitur", {}, [], [], None)
+        return PluginResult("na", "Missing case/time/process columns for sequitur", {}, [], [], None)
 
     max_cases = int(config.get("max_cases") or 2000)
     min_rule_uses = int(config.get("min_rule_uses") or 5)
@@ -1591,7 +1591,7 @@ def _run_sequence_grammar_sequitur(ctx, plugin_id: str, config: dict[str, Any]) 
     with ctx.storage.connection() as conn:
         seqs = _case_sequences(conn, template_table, dataset_version_id, case_col, time_col, proc_col, max_cases=max_cases)
     if not seqs:
-        return PluginResult("skipped", "No case sequences found", {}, [], [], None)
+        return PluginResult("na", "No case sequences found", {}, [], [], None)
 
     digram_counts: Counter[tuple[str, str]] = Counter()
     for seq in seqs:
@@ -1660,7 +1660,7 @@ def _run_dependency_community_louvain(ctx, plugin_id: str, config: dict[str, Any
     time_col = info.role_field("start_time") or info.role_field("queue_time") or info.role_field("end_time")
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not case_col or not time_col or not proc_col:
-        return PluginResult("skipped", "Missing case/time/process columns for dependency graph", {}, [], [], None)
+        return PluginResult("na", "Missing case/time/process columns for dependency graph", {}, [], [], None)
 
     min_edge_weight = int(config.get("min_edge_weight") or 5)
     top_k = int(config.get("top_k") or 20)
@@ -1668,7 +1668,7 @@ def _run_dependency_community_louvain(ctx, plugin_id: str, config: dict[str, Any
     with ctx.storage.connection() as conn:
         edges = _transition_edges(conn, template_table, dataset_version_id, case_col, time_col, proc_col, min_edge_weight=min_edge_weight)
     if not edges:
-        return PluginResult("skipped", "No transition edges found (graph empty)", {}, [], [], None)
+        return PluginResult("na", "No transition edges found (graph empty)", {}, [], [], None)
 
     findings: list[dict[str, Any]] = []
     communities_out: list[dict[str, Any]] = []
@@ -1812,7 +1812,7 @@ def _run_biclustering_cheng_church(ctx, plugin_id: str, config: dict[str, Any]) 
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not proc_col:
-        return PluginResult("skipped", "Missing process column for biclustering", {}, [], [], None)
+        return PluginResult("na", "Missing process column for biclustering", {}, [], [], None)
 
     n_clusters = int(config.get("n_clusters") or 8)
     max_items = int(config.get("max_items") or 200)
@@ -1822,7 +1822,7 @@ def _run_biclustering_cheng_church(ctx, plugin_id: str, config: dict[str, Any]) 
         procs, keys, mat = _process_key_matrix(conn, template_table, dataset_version_id, proc_col, max_items=max_items)
 
     if mat.size == 0 or mat.shape[0] < 10 or mat.shape[1] < 10:
-        return PluginResult("skipped", "Insufficient process/param-key matrix for biclustering", {"procs": len(procs), "keys": len(keys)}, [], [], None)
+        return PluginResult("na", "Insufficient process/param-key matrix for biclustering", {"procs": len(procs), "keys": len(keys)}, [], [], None)
 
     # Normalize counts to reduce scale effects.
     X = mat / np.maximum(1.0, mat.sum(axis=1, keepdims=True))
@@ -1890,7 +1890,7 @@ def _run_density_clustering_hdbscan(ctx, plugin_id: str, config: dict[str, Any])
         ).fetchall()
         eids = [int(r["entity_id"]) for r in rows]
         if not eids:
-            return PluginResult("skipped", "No parameter entities found for clustering", {}, [], [], None)
+            return PluginResult("na", "No parameter entities found for clustering", {}, [], [], None)
         placeholders = ",".join("?" for _ in eids)
         ent = conn.execute(
             f"SELECT entity_id, canonical_text FROM parameter_entities WHERE entity_id IN ({placeholders})",
@@ -1901,7 +1901,7 @@ def _run_density_clustering_hdbscan(ctx, plugin_id: str, config: dict[str, Any])
     ordered = [eid for eid in eids if texts.get(eid)]
     docs = [texts[eid] for eid in ordered]
     if len(docs) < 100:
-        return PluginResult("skipped", "Insufficient parameter entities with canonical_text for clustering", {"entities": len(docs)}, [], [], None)
+        return PluginResult("na", "Insufficient parameter entities with canonical_text for clustering", {"entities": len(docs)}, [], [], None)
 
     vec = TfidfVectorizer(max_features=4000, lowercase=True)
     X = vec.fit_transform(docs)
@@ -1953,20 +1953,20 @@ def _run_constrained_clustering_cop_kmeans(ctx, plugin_id: str, config: dict[str
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not proc_col:
-        return PluginResult("skipped", "Missing process column for COP-KMeans", {}, [], [], None)
+        return PluginResult("na", "Missing process column for COP-KMeans", {}, [], [], None)
 
     mod_col = info.role_field("module_code")
     k = int(config.get("k") or 8)
     top_k = int(config.get("top_k") or 20)
 
     if not mod_col:
-        return PluginResult("skipped", "Missing module_code role; cannot derive safe must-link constraints", {}, [], [], None)
+        return PluginResult("na", "Missing module_code role; cannot derive safe must-link constraints", {}, [], [], None)
 
     with ctx.storage.connection() as conn:
         # Aggregate per process: module_code, and key usage vector.
         procs, keys, mat = _process_key_matrix(conn, template_table, dataset_version_id, proc_col, max_items=200)
         if mat.size == 0:
-            return PluginResult("skipped", "Insufficient data for constrained clustering", {"procs": len(procs)}, [], [], None)
+            return PluginResult("na", "Insufficient data for constrained clustering", {"procs": len(procs)}, [], [], None)
         # Map process -> module_code (mode).
         rows = conn.execute(
             f"""
@@ -1997,7 +1997,7 @@ def _run_constrained_clustering_cop_kmeans(ctx, plugin_id: str, config: dict[str
     # Collapse must-link groups by module_code: cluster modules, not individual processes.
     modules = sorted({m for m in mod_by_proc.values() if m})
     if len(modules) < 2:
-        return PluginResult("skipped", "Not enough distinct module_code groups to cluster", {"modules": len(modules)}, [], [], None)
+        return PluginResult("na", "Not enough distinct module_code groups to cluster", {"modules": len(modules)}, [], [], None)
 
     mod_idx = {m: i for i, m in enumerate(modules)}
     X_mod = np.zeros((len(modules), mat.shape[1]), dtype=float)
@@ -2053,7 +2053,7 @@ def _run_similarity_graph_spectral_clustering(ctx, plugin_id: str, config: dict[
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not proc_col:
-        return PluginResult("skipped", "Missing process column for spectral clustering", {}, [], [], None)
+        return PluginResult("na", "Missing process column for spectral clustering", {}, [], [], None)
 
     n_clusters = int(config.get("n_clusters") or 8)
     top_k = int(config.get("top_k") or 20)
@@ -2061,7 +2061,7 @@ def _run_similarity_graph_spectral_clustering(ctx, plugin_id: str, config: dict[
     with ctx.storage.connection() as conn:
         procs, keys, mat = _process_key_matrix(conn, template_table, dataset_version_id, proc_col, max_items=200)
     if mat.size == 0 or mat.shape[0] < 10:
-        return PluginResult("skipped", "Insufficient processes for spectral clustering", {"procs": len(procs)}, [], [], None)
+        return PluginResult("na", "Insufficient processes for spectral clustering", {"procs": len(procs)}, [], [], None)
 
     # Similarity: cosine on normalized key vectors.
     X = mat / np.maximum(1.0, mat.sum(axis=1, keepdims=True))
@@ -2114,13 +2114,13 @@ def _run_graph_min_cut_partition(ctx, plugin_id: str, config: dict[str, Any]) ->
     time_col = info.role_field("start_time") or info.role_field("queue_time") or info.role_field("end_time")
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not case_col or not time_col or not proc_col:
-        return PluginResult("skipped", "Missing case/time/process columns for min-cut", {}, [], [], None)
+        return PluginResult("na", "Missing case/time/process columns for min-cut", {}, [], [], None)
 
     min_edge_weight = int(config.get("min_edge_weight") or 5)
     with ctx.storage.connection() as conn:
         edges = _transition_edges(conn, template_table, dataset_version_id, case_col, time_col, proc_col, min_edge_weight=min_edge_weight)
     if not edges:
-        return PluginResult("skipped", "No transition edges found (graph empty)", {}, [], [], None)
+        return PluginResult("na", "No transition edges found (graph empty)", {}, [], [], None)
     G = nx.Graph()
     for a, b, w in edges:
         if a == b:
@@ -2168,7 +2168,7 @@ def _run_distribution_shift_wasserstein(ctx, plugin_id: str, config: dict[str, A
     proc_col = info.role_field("process_name") or info.role_field("process")
     time_col = info.role_field("queue_time") or info.role_field("start_time") or info.role_field("end_time")
     if not proc_col or not time_col:
-        return PluginResult("skipped", "Missing process/time columns for shift analysis", {}, [], [], None)
+        return PluginResult("na", "Missing process/time columns for shift analysis", {}, [], [], None)
 
     # Numeric target: prefer explicit duration role; else compute service seconds from start/end timestamps.
     numeric_col = info.role_field("duration") or None
@@ -2190,7 +2190,7 @@ def _run_distribution_shift_wasserstein(ctx, plugin_id: str, config: dict[str, A
     # If no numeric column is known, degrade gracefully.
     if not numeric_expr:
         return PluginResult(
-            "skipped",
+            "na",
             "No numeric metric available for Wasserstein shift (need duration role or start/end timestamps)",
             {},
             [],
@@ -2221,14 +2221,14 @@ def _run_distribution_shift_wasserstein(ctx, plugin_id: str, config: dict[str, A
             (dataset_version_id,),
         ).fetchone()
         if mn is None or mx is None:
-            return PluginResult("skipped", "No numeric values for shift analysis", {}, [], [], None)
+            return PluginResult("na", "No numeric values for shift analysis", {}, [], [], None)
         try:
             mn_f = float(mn)
             mx_f = float(mx)
         except Exception:
-            return PluginResult("skipped", "Numeric column did not coerce to float", {}, [], [], None)
+            return PluginResult("na", "Numeric column did not coerce to float", {}, [], [], None)
         if not math.isfinite(mn_f) or not math.isfinite(mx_f) or mx_f <= mn_f:
-            return PluginResult("skipped", "Numeric column range invalid", {}, [], [], None)
+            return PluginResult("na", "Numeric column range invalid", {}, [], [], None)
         edges = np.linspace(mn_f, mx_f, bins + 1)
 
         # Candidate processes by count.
@@ -2316,7 +2316,7 @@ def _run_burst_modeling_hawkes(ctx, plugin_id: str, config: dict[str, Any]) -> P
     proc_col = info.role_field("process_name") or info.role_field("process")
     time_col = info.role_field("queue_time") or info.role_field("start_time") or info.role_field("end_time")
     if not proc_col or not time_col:
-        return PluginResult("skipped", "Missing process/time columns for burst model", {}, [], [], None)
+        return PluginResult("na", "Missing process/time columns for burst model", {}, [], [], None)
 
     top_k = int(config.get("top_k") or 20)
 
@@ -2353,7 +2353,7 @@ def _run_burst_modeling_hawkes(ctx, plugin_id: str, config: dict[str, Any]) -> P
         series = {proc: counts for proc, counts in raw_counts.items() if len(counts) >= 24}
 
     if not series:
-        return PluginResult("skipped", "No sufficient time series for burst model", {}, [], [], None)
+        return PluginResult("na", "No sufficient time series for burst model", {}, [], [], None)
 
     # Hawkes-style proxy: lag-1 autocorrelation as self-excitation signal.
     scored = []
@@ -2400,7 +2400,7 @@ def _run_daily_pattern_alignment_dtw(ctx, plugin_id: str, config: dict[str, Any]
     proc_col = info.role_field("process_name") or info.role_field("process")
     time_col = info.role_field("queue_time") or info.role_field("start_time") or info.role_field("end_time")
     if not proc_col or not time_col:
-        return PluginResult("skipped", "Missing process/time columns for DTW", {}, [], [], None)
+        return PluginResult("na", "Missing process/time columns for DTW", {}, [], [], None)
     top_k = int(config.get("top_k") or 20)
 
     with ctx.storage.connection() as conn:
@@ -2444,7 +2444,7 @@ def _run_daily_pattern_alignment_dtw(ctx, plugin_id: str, config: dict[str, Any]
                 daily[proc] = vec / total
 
     if len(daily) < 3:
-        return PluginResult("skipped", "Insufficient processes for DTW comparison", {"processes": len(daily)}, [], [], None)
+        return PluginResult("na", "Insufficient processes for DTW comparison", {"processes": len(daily)}, [], [], None)
 
     # Compare each process pattern to the median pattern.
     patterns = np.stack(list(daily.values()), axis=0)
@@ -2517,7 +2517,7 @@ def _run_action_search_simulated_annealing(ctx, plugin_id: str, config: dict[str
     iterations = int(config.get("iterations") or 4000)
     candidates = _candidate_actions_from_ops(ctx)
     if not candidates:
-        return PluginResult("skipped", "No candidate actions from analysis_actionable_ops_levers_v1", {}, [], [], None)
+        return PluginResult("na", "No candidate actions from analysis_actionable_ops_levers_v1", {}, [], [], None)
 
     # Keep bounded.
     candidates = candidates[: min(80, len(candidates))]
@@ -2580,7 +2580,7 @@ def _run_action_search_mip(ctx, plugin_id: str, config: dict[str, Any]) -> Plugi
 
     candidates = _candidate_actions_from_ops(ctx)
     if not candidates:
-        return PluginResult("skipped", "No candidate actions from analysis_actionable_ops_levers_v1", {}, [], [], None)
+        return PluginResult("na", "No candidate actions from analysis_actionable_ops_levers_v1", {}, [], [], None)
     candidates = candidates[: min(120, len(candidates))]
 
     model = cp_model.CpModel()
@@ -2630,7 +2630,7 @@ def _run_discrete_event_queue_simulator(ctx, plugin_id: str, config: dict[str, A
     # Read MIP plan, if present.
     mip = _load_plugin_findings(ctx, "analysis_action_search_mip_batched_scheduler_v1")
     if not mip:
-        return PluginResult("skipped", "Missing MIP plan; run analysis_action_search_mip_batched_scheduler_v1 first", {}, [], [], None)
+        return PluginResult("na", "Missing MIP plan; run analysis_action_search_mip_batched_scheduler_v1 first", {}, [], [], None)
 
     # Extract modeled delta as throughput boost factor.
     total_delta = 0.0
@@ -2696,7 +2696,7 @@ def _run_empirical_bayes_shrinkage(ctx, plugin_id: str, config: dict[str, Any]) 
     dataset_version_id = str(ctx.dataset_version_id)
     proc_col = info.role_field("process_name") or info.role_field("process")
     if not proc_col:
-        return PluginResult("skipped", "Missing process role for shrinkage", {}, [], [], None)
+        return PluginResult("na", "Missing process role for shrinkage", {}, [], [], None)
 
     num_col = info.role_field("duration") or None
     numeric_expr = None
@@ -2712,7 +2712,7 @@ def _run_empirical_bayes_shrinkage(ctx, plugin_id: str, config: dict[str, Any]) 
             numeric_label = "service_seconds"
     if not numeric_expr:
         return PluginResult(
-            "skipped",
+            "na",
             "Missing numeric metric for shrinkage (need duration role or start/end timestamps)",
             {},
             [],
@@ -2741,7 +2741,7 @@ def _run_empirical_bayes_shrinkage(ctx, plugin_id: str, config: dict[str, Any]) 
             (dataset_version_id,),
         ).fetchall()
     if not rows:
-        return PluginResult("skipped", "No per-process numeric stats available for shrinkage", {}, [], [], None)
+        return PluginResult("na", "No per-process numeric stats available for shrinkage", {}, [], [], None)
 
     stats = []
     for r in rows:

@@ -7,8 +7,7 @@ depends_on: []
 settings:
   description: Detect distribution drift with FDR control.
   defaults: {}
-capabilities:
-  - needs_timestamp
+capabilities: [needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

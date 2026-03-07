@@ -126,7 +126,7 @@ class Plugin:
 
         columns = ctx.storage.fetch_dataset_columns(ctx.dataset_version_id)
         if not columns:
-            return PluginResult("skipped", "No columns available", {}, [], [], None)
+            return PluginResult("na", "No columns available", {}, [], [], None)
 
         name_to_safe = {
             col["original_name"]: col["safe_name"] for col in columns if col.get("safe_name")
@@ -137,7 +137,7 @@ class Plugin:
                 return PluginResult("error", "Dataset version not found", {}, [], [], None)
             safe_cols = [col["safe_name"] for col in columns]
             if not safe_cols:
-                return PluginResult("skipped", "No dataset columns", {}, [], [], None)
+                return PluginResult("na", "No dataset columns", {}, [], [], None)
             quoted = ", ".join(quote_identifier(col) for col in safe_cols)
             sql = (
                 f"SELECT {quoted} FROM {quote_identifier(version['table_name'])} "

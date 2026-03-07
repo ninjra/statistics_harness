@@ -45,7 +45,7 @@ def test_cross_entity_transfer_skips_without_artifact(run_dir):
     df = pd.DataFrame({"a": [1.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"
 
 
 def test_cross_entity_transfer_skips_single_entity(run_dir):
@@ -67,4 +67,4 @@ def test_cross_entity_transfer_skips_single_entity(run_dir):
     df = pd.DataFrame({"a": [1.0]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

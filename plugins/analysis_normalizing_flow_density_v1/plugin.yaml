@@ -14,8 +14,7 @@ settings:
     max_features: 8
     quantiles: 32
     top_k: 12
-capabilities:
-- needs_numeric
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

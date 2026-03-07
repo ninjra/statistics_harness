@@ -13,8 +13,7 @@ settings:
   defaults:
     max_actions: 8
     top_k: 10
-capabilities:
-- needs_eventlog
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

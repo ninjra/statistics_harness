@@ -32,4 +32,4 @@ def test_quorum_fixture_smoke_for_eventlog_plugins(run_dir):
 
     for plugin_cls in plugins:
         result = plugin_cls().run(ctx)
-        assert result.status in {"ok", "skipped"}
+        assert result.status in {"ok", "na"}

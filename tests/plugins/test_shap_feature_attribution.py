@@ -22,10 +22,10 @@ def test_shap_skips_on_insufficient_columns(run_dir):
     df = pd.DataFrame({"x": [1, 2, 3]})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"
 
 def test_shap_skips_on_empty_dataset(run_dir):
     df = pd.DataFrame({"a": pd.Series([], dtype=float)})
     ctx = make_context(run_dir, df, {})
     result = Plugin().run(ctx)
-    assert result.status == "skipped"
+    assert result.status == "na"

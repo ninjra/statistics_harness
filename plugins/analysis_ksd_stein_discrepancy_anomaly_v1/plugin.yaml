@@ -13,9 +13,7 @@ settings:
     max_rows: 6000
     max_features: 10
     top_k: 8
-capabilities:
-- needs_numeric
-- needs_timestamp
+capabilities: []
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

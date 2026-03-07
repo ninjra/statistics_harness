@@ -17,9 +17,7 @@ settings:
     max_top_rows: 50
     max_top_processes: 10
     max_top_hosts: 10
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_host, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:

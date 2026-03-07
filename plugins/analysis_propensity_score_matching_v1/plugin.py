@@ -13,11 +13,11 @@ class Plugin:
         try:
             df = ctx.dataset_loader()
             if df.empty:
-                return PluginResult("skipped", "Empty dataset", {}, [], [], None)
+                return PluginResult("na", "Empty dataset", {}, [], [], None)
 
             numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
             if len(numeric_cols) < 3:
-                return PluginResult("skipped", "Need at least 3 numeric columns", {}, [], [], None)
+                return PluginResult("na", "Need at least 3 numeric columns", {}, [], [], None)
 
             treatment_col = ctx.settings.get("treatment_column")
             outcome_col = ctx.settings.get("outcome_column")
@@ -27,21 +27,21 @@ class Plugin:
 
             if not treatment_col:
                 if not binary_cols:
-                    return PluginResult("skipped", "No binary treatment column found", {}, [], [], None)
+                    return PluginResult("na", "No binary treatment column found", {}, [], [], None)
                 treatment_col = binary_cols[0]
             if not outcome_col:
                 if not non_binary:
-                    return PluginResult("skipped", "No continuous outcome column found", {}, [], [], None)
+                    return PluginResult("na", "No continuous outcome column found", {}, [], [], None)
                 outcome_col = non_binary[0]
 
             covariate_cols = [c for c in numeric_cols if c not in (treatment_col, outcome_col)]
             if len(covariate_cols) < 1:
-                return PluginResult("skipped", "Need at least 1 covariate", {}, [], [], None)
+                return PluginResult("na", "Need at least 1 covariate", {}, [], [], None)
 
             needed = [outcome_col, treatment_col] + covariate_cols
             work = df[needed].dropna()
             if len(work) < 50:
-                return PluginResult("skipped", f"Insufficient rows ({len(work)})", {}, [], [], None)
+                return PluginResult("na", f"Insufficient rows ({len(work)})", {}, [], [], None)
 
             max_rows = int(ctx.budget.get("row_limit") or 5000)
             rng = np.random.RandomState(ctx.run_seed)
@@ -68,7 +68,7 @@ class Plugin:
             control_idx = np.where(T == 0)[0]
 
             if len(treated_idx) < 5 or len(control_idx) < 5:
-                return PluginResult("skipped", "Too few treated or control units", {}, [], [], None)
+                return PluginResult("na", "Too few treated or control units", {}, [], [], None)
 
             nn = NearestNeighbors(n_neighbors=1, metric="euclidean")
             nn.fit(ps[control_idx].reshape(-1, 1))

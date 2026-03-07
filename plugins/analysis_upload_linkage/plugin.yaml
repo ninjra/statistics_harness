@@ -14,9 +14,7 @@ settings:
     user_column: null
     upload_window_hours: 48
     max_examples: 10
-capabilities:
-  - needs_eventlog
-  - needs_timestamp
+capabilities: [needs_eventlog, needs_numeric, needs_timestamp]
 config_schema: config.schema.json
 output_schema: output.schema.json
 sandbox:
